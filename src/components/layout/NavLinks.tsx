@@ -7,10 +7,18 @@ type NavLinksProps = {
 export function NavLinks({ className }: NavLinksProps) {
   return (
     <div className={className}>
-      <Link href="/">Inicio</Link>
-      <Link href="/jugar">Jugar</Link>
-      <Link href="/social">Social</Link>
-      <Link href="/perfil">Perfil</Link>
+      <Link href="/" className="transition-colors hover:text-primary">
+        Inicio
+      </Link>
+      <Link href="/jugar" className="transition-colors hover:text-primary">
+        Jugar
+      </Link>
+      <Link href="/social" className="transition-colors hover:text-primary">
+        Social
+      </Link>
+      <Link href="/perfil" className="transition-colors hover:text-primary">
+        Perfil
+      </Link>
     </div>
   );
 }
