@@ -17,6 +17,10 @@ export const jugadores: Jugador[] = [
       { nombre: "Valencia", pais: "España", escudo: "/escudos/valencia.png" },
       { nombre: "Barcelona", pais: "España", escudo: "/escudos/barcelona.png" },
     ],
+    valorDeMercado: 20,
+    goles: 100,
+    asistencias: 50,
+    partidos: 600,
   },
   {
     nombre: "Denílson",
@@ -25,6 +29,10 @@ export const jugadores: Jugador[] = [
     equipos: [
       { nombre: "Betis", pais: "España", escudo: "/escudos/betis.png" },
     ],
+    valorDeMercado: 2,
+    goles: 10,
+    asistencias: 50,
+    partidos: 600,
   },
   {
     nombre: "Neymar",
@@ -34,6 +42,10 @@ export const jugadores: Jugador[] = [
       { nombre: "Barcelona", pais: "España", escudo: "/escudos/barcelona.png" },
       { nombre: "PSG", pais: "Francia", escudo: "/escudos/psg.png" },
     ],
+    valorDeMercado: 220,
+    goles: 300,
+    asistencias: 55,
+    partidos: 700,
   },
   {
     nombre: "Fabián",
@@ -44,6 +56,10 @@ export const jugadores: Jugador[] = [
       { nombre: "PSG", pais: "Francia", escudo: "/escudos/psg.png" },
       { nombre: "Betis", pais: "España", escudo: "/escudos/betis.png" },
     ],
+    valorDeMercado: 60,
+    goles: 45,
+    asistencias: 50,
+    partidos: 200,
   },
   {
     nombre: "Ter Stegen",
@@ -54,5 +70,9 @@ export const jugadores: Jugador[] = [
       { nombre: "PSG", pais: "Francia", escudo: "/escudos/psg.png" },
       { nombre: "Betis", pais: "España", escudo: "/escudos/betis.png" },
     ],
+    valorDeMercado: 10,
+    goles: 0,
+    asistencias: 3,
+    partidos: 444,
   },
 ];

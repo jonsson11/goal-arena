@@ -1,5 +1,5 @@
-import { GridBoard } from "@/features/games/grid/GridBoard";
+import { HigherLowerGame } from "@/features/games/higher-lower/HigherLowerGame";
 
 export default function JugarPage() {
-  return <GridBoard />;
+  return <HigherLowerGame />;
 }

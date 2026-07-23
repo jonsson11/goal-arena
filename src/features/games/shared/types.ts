@@ -9,4 +9,8 @@ export type Jugador = {
   fechaNacimiento: string;
   equipos: Equipo[];
   nacionalidad: string;
+  valorDeMercado: number;
+  goles: number;
+  asistencias: number;
+  partidos: number;
 };
