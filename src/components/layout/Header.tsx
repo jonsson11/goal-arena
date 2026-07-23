@@ -2,32 +2,29 @@
 
 import { useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { NavLinks } from "./NavLinks";
 
 export default function Header() {
   const [open, setOpen] = useState(false);
 
   return (
-    <header className="relative flex items-center justify-between bg-background px-6 py-4">
-      {/* Bloque izquierdo (desktop) */}
+    <header className="relative flex items-center justify-between border-b border-border bg-background px-6 py-3">
       <div className="hidden flex-1 md:flex">
-        <NavLinks className="flex gap-4 text-foreground" />
+        <NavLinks className="flex gap-6 text-sm font-semibold uppercase tracking-wide text-foreground" />
       </div>
 
-      {/* Logo */}
-      <Image
-        src="/logo-header.jpg"
-        alt="Goal Arena"
-        width={160}
-        height={49}
-        priority
-        className="flex-none"
-      />
+      <Link href="/" className="flex-none transition-opacity hover:opacity-80 md:ml-auto">
+        <Image
+          src="/logo-icon.png"
+          alt="Goal Arena"
+          width={44}
+          height={44}
+          priority
+          className="h-11 w-11"
+        />
+      </Link>
 
-      {/* Bloque derecho (desktop) — de momento vacío */}
-      <div className="hidden flex-1 justify-end md:flex" />
-
-      {/* Botón hamburguesa (solo móvil) */}
       <button
         className="flex-none text-2xl text-foreground md:hidden"
         onClick={() => setOpen(!open)}
@@ -36,10 +33,9 @@ export default function Header() {
         ☰
       </button>
 
-      {/* Menú desplegable (solo móvil) */}
       {open && (
-        <div className="absolute top-full left-0 w-full bg-card md:hidden">
-          <NavLinks className="flex flex-col gap-2 p-6 text-card-foreground" />
+        <div className="absolute top-full left-0 w-full border-t border-border bg-card md:hidden">
+          <NavLinks className="flex flex-col gap-4 p-6 text-sm font-semibold uppercase tracking-wide text-card-foreground" />
         </div>
       )}
     </header>
