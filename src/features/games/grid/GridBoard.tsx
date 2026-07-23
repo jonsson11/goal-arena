@@ -1,8 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import type { Tablero, Celda, Jugador } from "./type";
-import { jugadores, generarTableroVacio } from "./data";
+import type { Jugador } from "@/features/games/shared/types";
+import { jugadores } from "@/features/games/shared/data";
+import type { Tablero, Celda } from "./type";
+import { generarTableroVacio } from "./data";
 import { celdasValidasParaJugador } from "./logic";
 import {
   Dialog,

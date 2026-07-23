@@ -1,4 +1,5 @@
-import type { Jugador, Condicion, Tablero, Celda } from "./type";
+import type { Jugador } from "@/features/games/shared/types";
+import type { Condicion, Tablero, Celda } from "./type";
 
 export function cumpleCondicion(jugador: Jugador, condicion: Condicion): boolean {
   if (condicion.tipo === "equipo") {

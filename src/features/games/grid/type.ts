@@ -1,15 +1,4 @@
-export type Equipo = {
-  nombre: string;
-  pais: string;
-  escudo: string;
-};
-
-export type Jugador = {
-  nombre: string;
-  fechaNacimiento: string;
-  equipos: Equipo[];
-  nacionalidad: string;
-};
+import type { Jugador } from "@/features/games/shared/types";
 
 export type TipoCondicion = "equipo" | "nacionalidad";
 
