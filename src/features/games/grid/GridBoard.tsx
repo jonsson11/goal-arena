@@ -3,16 +3,10 @@
 import { useState } from "react";
 import type { Jugador } from "@/features/games/shared/types";
 import { jugadores } from "@/features/games/shared/data";
+import { GameResultDialog } from "@/features/games/shared/GameResultDialog";
 import type { Tablero, Celda } from "./type";
 import { generarTableroVacio } from "./data";
 import { celdasValidasParaJugador } from "./logic";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-} from "@/components/ui/dialog";
 
 function segundosTranscurridos(inicio: number): number {
   return Math.floor((Date.now() - inicio) / 1000);
@@ -147,6 +141,9 @@ export function GridBoard() {
         <input
           value={nombreBuscado}
           onChange={(e) => setNombreBuscado(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") handleBuscar();
+          }}
           placeholder="Escribe un jugador..."
           className="rounded-md border border-border bg-card px-3 py-2 text-foreground"
         />
@@ -166,48 +163,30 @@ export function GridBoard() {
 
       {mensaje && <p className="text-sm text-muted-foreground">{mensaje}</p>}
 
-      <Dialog open={popupAbierto} onOpenChange={setPopupAbierto}>
-        <DialogContent className="border-primary/30 bg-card text-center sm:max-w-md">
-          {resultado === "completado" && (
-            <DialogHeader className="items-center gap-3">
-              <div className="flex h-16 w-16 items-center justify-center rounded-full bg-primary/15 text-3xl">
-                🏆
-              </div>
-              <DialogTitle className="text-4xl font-extrabold tracking-tight text-primary">
-                GRID COMPLETADO
-              </DialogTitle>
-              <DialogDescription className="text-base text-muted-foreground">
+      {resultado && (
+        <GameResultDialog
+          open={popupAbierto}
+          onOpenChange={setPopupAbierto}
+          resultado={resultado === "completado" ? "exito" : "fracaso"}
+          titulo={resultado === "completado" ? "GRID COMPLETADO" : "GRID NO COMPLETADO"}
+          descripcion={
+            resultado === "completado" ? (
+              <>
                 Has resuelto las 9 casillas en{" "}
                 <span className="font-semibold text-foreground">{tiempoFinal}</span>{" "}
                 segundos.
-              </DialogDescription>
-            </DialogHeader>
-          )}
-
-          {resultado === "rendido" && (
-            <DialogHeader className="items-center gap-3">
-              <div className="flex h-16 w-16 items-center justify-center rounded-full bg-destructive/15 text-3xl">
-                🏳️
-              </div>
-              <DialogTitle className="text-4xl font-extrabold tracking-tight text-destructive">
-                GRID NO COMPLETADO
-              </DialogTitle>
-              <DialogDescription className="text-base text-muted-foreground">
+              </>
+            ) : (
+              <>
                 Te has rendido con{" "}
                 <span className="font-semibold text-foreground">{celdasRellenas}/9</span>{" "}
                 casillas resueltas.
-              </DialogDescription>
-            </DialogHeader>
-          )}
-
-          <button
-            onClick={jugarDeNuevo}
-            className="mt-2 rounded-md bg-primary px-4 py-2 font-semibold text-primary-foreground transition-opacity hover:opacity-90"
-          >
-            Volver a jugar
-          </button>
-        </DialogContent>
-      </Dialog>
+              </>
+            )
+          }
+          onJugarDeNuevo={jugarDeNuevo}
+        />
+      )}
     </div>
   );
 }

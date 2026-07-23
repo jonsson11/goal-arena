@@ -35,4 +35,24 @@ export const jugadores: Jugador[] = [
       { nombre: "PSG", pais: "Francia", escudo: "/escudos/psg.png" },
     ],
   },
+  {
+    nombre: "Fabián",
+    fechaNacimiento: "1992-02-05",
+    nacionalidad: "España",
+    equipos: [
+      { nombre: "Barcelona", pais: "España", escudo: "/escudos/barcelona.png" },
+      { nombre: "PSG", pais: "Francia", escudo: "/escudos/psg.png" },
+      { nombre: "Betis", pais: "España", escudo: "/escudos/betis.png" },
+    ],
+  },
+  {
+    nombre: "Ter Stegen",
+    fechaNacimiento: "1992-02-05",
+    nacionalidad: "Alemania",
+    equipos: [
+      { nombre: "Barcelona", pais: "España", escudo: "/escudos/barcelona.png" },
+      { nombre: "PSG", pais: "Francia", escudo: "/escudos/psg.png" },
+      { nombre: "Betis", pais: "España", escudo: "/escudos/betis.png" },
+    ],
+  },
 ];
