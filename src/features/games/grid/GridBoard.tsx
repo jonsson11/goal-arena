@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import type { Tablero, Celda, Jugador } from "./type";
-import { jugadores, tableroEjemplo } from "./data";
+import { jugadores, generarTableroVacio } from "./data";
 import { celdasValidasParaJugador } from "./logic";
 import {
   Dialog,
@@ -17,15 +17,16 @@ function segundosTranscurridos(inicio: number): number {
 }
 
 export function GridBoard() {
-  const [tablero, setTablero] = useState<Tablero>(tableroEjemplo);
+  const [tablero, setTablero] = useState<Tablero>(() => generarTableroVacio());
   const [nombreBuscado, setNombreBuscado] = useState("");
   const [mensaje, setMensaje] = useState("");
   const [celdasPendientes, setCeldasPendientes] = useState<Celda[]>([]);
   const [jugadorPendiente, setJugadorPendiente] = useState<Jugador | null>(null);
 
-  const [horaInicio] = useState(() => Date.now());
+  const [horaInicio, setHoraInicio] = useState(() => Date.now());
   const [tiempoFinal, setTiempoFinal] = useState<number | null>(null);
-  const completado = tiempoFinal !== null;
+  const [resultado, setResultado] = useState<"completado" | "rendido" | null>(null);
+  const [popupAbierto, setPopupAbierto] = useState(false);
 
   function obtenerCelda(fila: number, columna: number): Celda {
     return tablero.celdas.find(
@@ -49,6 +50,8 @@ export function GridBoard() {
     const todasLlenas = nuevasCeldas.every((c) => c.jugador !== null);
     if (todasLlenas) {
       setTiempoFinal(segundosTranscurridos(horaInicio));
+      setResultado("completado");
+      setPopupAbierto(true);
     }
   }
 
@@ -74,6 +77,26 @@ export function GridBoard() {
       setMensaje(`${jugador.nombre} vale para varias casillas. Elige una.`);
     }
   }
+
+  function handleRendirse() {
+    setTiempoFinal(segundosTranscurridos(horaInicio));
+    setResultado("rendido");
+    setPopupAbierto(true);
+  }
+
+  function jugarDeNuevo() {
+    setTablero(generarTableroVacio());
+    setNombreBuscado("");
+    setMensaje("");
+    setCeldasPendientes([]);
+    setJugadorPendiente(null);
+    setHoraInicio(Date.now());
+    setTiempoFinal(null);
+    setResultado(null);
+    setPopupAbierto(false);
+  }
+
+  const celdasRellenas = tablero.celdas.filter((c) => c.jugador !== null).length;
 
   return (
     <div className="flex flex-col items-center gap-6 p-6">
@@ -131,25 +154,56 @@ export function GridBoard() {
         >
           Comprobar
         </button>
+        <button
+          onClick={handleRendirse}
+          className="rounded-md bg-destructive px-4 py-2 font-semibold text-white transition-opacity hover:opacity-90"
+        >
+          Rendirse
+        </button>
       </div>
 
       {mensaje && <p className="text-sm text-muted-foreground">{mensaje}</p>}
 
-      <Dialog open={completado}>
+      <Dialog open={popupAbierto} onOpenChange={setPopupAbierto}>
         <DialogContent className="border-primary/30 bg-card text-center sm:max-w-md">
-          <DialogHeader className="items-center gap-3">
-            <div className="flex h-16 w-16 items-center justify-center rounded-full bg-primary/15 text-3xl">
-              🏆
-            </div>
-            <DialogTitle className="text-4xl font-extrabold tracking-tight text-primary">
-              GRID COMPLETADO
-            </DialogTitle>
-            <DialogDescription className="text-base text-muted-foreground">
-              Has resuelto las 9 casillas en{" "}
-              <span className="font-semibold text-foreground">{tiempoFinal}</span>{" "}
-              segundos.
-            </DialogDescription>
-          </DialogHeader>
+          {resultado === "completado" && (
+            <DialogHeader className="items-center gap-3">
+              <div className="flex h-16 w-16 items-center justify-center rounded-full bg-primary/15 text-3xl">
+                🏆
+              </div>
+              <DialogTitle className="text-4xl font-extrabold tracking-tight text-primary">
+                GRID COMPLETADO
+              </DialogTitle>
+              <DialogDescription className="text-base text-muted-foreground">
+                Has resuelto las 9 casillas en{" "}
+                <span className="font-semibold text-foreground">{tiempoFinal}</span>{" "}
+                segundos.
+              </DialogDescription>
+            </DialogHeader>
+          )}
+
+          {resultado === "rendido" && (
+            <DialogHeader className="items-center gap-3">
+              <div className="flex h-16 w-16 items-center justify-center rounded-full bg-destructive/15 text-3xl">
+                🏳️
+              </div>
+              <DialogTitle className="text-4xl font-extrabold tracking-tight text-destructive">
+                GRID NO COMPLETADO
+              </DialogTitle>
+              <DialogDescription className="text-base text-muted-foreground">
+                Te has rendido con{" "}
+                <span className="font-semibold text-foreground">{celdasRellenas}/9</span>{" "}
+                casillas resueltas.
+              </DialogDescription>
+            </DialogHeader>
+          )}
+
+          <button
+            onClick={jugarDeNuevo}
+            className="mt-2 rounded-md bg-primary px-4 py-2 font-semibold text-primary-foreground transition-opacity hover:opacity-90"
+          >
+            Volver a jugar
+          </button>
         </DialogContent>
       </Dialog>
     </div>

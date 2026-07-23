@@ -100,8 +100,12 @@ function crearCeldasVacias(): Celda[] {
   return celdas;
 }
 
-export const tableroEjemplo: Tablero = {
-  condicionesFila,
-  condicionesColumna,
-  celdas: crearCeldasVacias(),
-};
+export function generarTableroVacio(): Tablero {
+  return {
+    condicionesFila,
+    condicionesColumna,
+    celdas: crearCeldasVacias(),
+  };
+}
+
+export const tableroEjemplo: Tablero = generarTableroVacio();
