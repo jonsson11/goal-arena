@@ -1,11 +1,11 @@
-export const BANDERAS: Record<string, string> = {
-  España: "🇪🇸",
-  Argentina: "🇦🇷",
-  Francia: "🇫🇷",
-  Brasil: "🇧🇷",
-  Alemania: "🇩🇪",
+export const CODIGOS_PAIS: Record<string, string> = {
+  España: "es",
+  Argentina: "ar",
+  Francia: "fr",
+  Brasil: "br",
+  Alemania: "de",
 };
 
-export function obtenerBandera(nacionalidad: string): string {
-  return BANDERAS[nacionalidad] ?? "🏳️";
+export function obtenerCodigoPais(nacionalidad: string): string | null {
+  return CODIGOS_PAIS[nacionalidad] ?? null;
 }

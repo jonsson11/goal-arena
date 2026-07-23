@@ -1,6 +1,7 @@
 "use client";
-import { obtenerBandera } from "@/features/games/shared/banderas";
+
 import { useState } from "react";
+import { obtenerCodigoPais } from "@/features/games/shared/banderas";
 import { GameResultDialog } from "@/features/games/shared/GameResultDialog";
 import type { EntradaTop10, RankingTop10 } from "./type";
 import { rankings } from "./data";
@@ -10,6 +11,52 @@ const RANKING_ACTUAL: RankingTop10 = rankings[0];
 
 function segundosTranscurridos(inicio: number): number {
   return Math.floor((Date.now() - inicio) / 1000);
+}
+
+type EstiloPosicion = {
+  fila: string;
+  badge: string;
+  nombre: string;
+};
+
+function obtenerEstiloPosicion(posicion: number, acertado: boolean): EstiloPosicion {
+  if (!acertado) {
+    return {
+      fila: "border-border bg-card",
+      badge: "bg-muted text-muted-foreground",
+      nombre: "text-muted-foreground",
+    };
+  }
+
+  if (posicion === 1) {
+    return {
+      fila: "border-[var(--gold)] bg-[var(--gold)]/10 shadow-[0_0_18px_-2px_var(--gold)]",
+      badge: "bg-[var(--gold)] text-[#1a1200]",
+      nombre: "text-[var(--gold)]",
+    };
+  }
+
+  if (posicion === 2) {
+    return {
+      fila: "border-[var(--silver)] bg-[var(--silver)]/10 shadow-[0_0_18px_-2px_var(--silver)]",
+      badge: "bg-[var(--silver)] text-[#1a1c20]",
+      nombre: "text-[var(--silver)]",
+    };
+  }
+
+  if (posicion === 3) {
+    return {
+      fila: "border-[var(--bronze)] bg-[var(--bronze)]/10 shadow-[0_0_18px_-2px_var(--bronze)]",
+      badge: "bg-[var(--bronze)] text-[#1a0f00]",
+      nombre: "text-[var(--bronze)]",
+    };
+  }
+
+  return {
+    fila: "border-primary/50 bg-primary/10",
+    badge: "bg-primary text-primary-foreground",
+    nombre: "text-primary",
+  };
 }
 
 export function Top10Game() {
@@ -78,29 +125,35 @@ export function Top10Game() {
         {RANKING_ACTUAL.titulo}
       </h1>
 
-      <div className="flex w-full max-w-md flex-col gap-2">
+      <div className="grid w-full max-w-md grid-flow-col grid-cols-2 grid-rows-5 gap-2 sm:flex sm:max-w-2xl sm:flex-col">
         {RANKING_ACTUAL.respuestas.map((entrada, i) => {
+          const posicion = i + 1;
           const acertado = estaAcertado(entrada);
+          const codigoPais = obtenerCodigoPais(entrada.nacionalidad);
+          const estilo = obtenerEstiloPosicion(posicion, acertado);
 
           return (
             <div
               key={i}
-              className={`flex items-center justify-between rounded-md border px-4 py-3 ${
-                acertado ? "border-primary/50 bg-primary/10" : "border-border bg-card"
-              }`}
+              className={`flex items-center justify-between rounded-md border px-3 py-2 transition-all duration-300 sm:px-4 sm:py-3 ${estilo.fila}`}
             >
-              <span className="text-sm font-semibold text-muted-foreground">#{i + 1}</span>
               <span
-                className={`flex-1 text-center font-semibold ${
-                  acertado ? "text-primary" : "text-muted-foreground"
-                }`}
+                className={`flex h-6 w-6 items-center justify-center rounded-full text-xs font-bold sm:h-7 sm:w-7 sm:text-sm ${estilo.badge}`}
+              >
+                {posicion}
+              </span>
+              <span
+                className={`flex-1 text-center text-sm font-semibold sm:text-base ${estilo.nombre}`}
               >
                 {acertado ? entrada.nombre : "???"}
               </span>
-              <span className="flex items-center gap-2 text-sm text-muted-foreground">
-                <span className="text-lg">{obtenerBandera(entrada.nacionalidad)}</span>
-                {entrada.nacionalidad}
-</span>
+              <span className="flex items-center justify-end">
+                {codigoPais && (
+                  <span
+                    className={`fi fi-${codigoPais} h-[15px] w-[20px] rounded-sm sm:h-[24px] sm:w-[36px]`}
+                  />
+                )}
+              </span>
             </div>
           );
         })}

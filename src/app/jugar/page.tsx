@@ -5,7 +5,7 @@ import { PodiumIcon } from "@/components/icons/PodiumIcon";
 
 const JUEGOS = [
   {
-    href: "/jugar/3x3",
+    href: "/jugar/grid",
     nombre: "3x3",
     descripcion: "Completa el tablero cruzando clubes y selecciones.",
     Icono: GridIcon,
