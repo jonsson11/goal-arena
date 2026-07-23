@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { GridIcon } from "@/components/icons/grid";
 import { HigherLowerIcon } from "@/components/icons/higher-lower";
+import { PodiumIcon } from "@/components/icons/PodiumIcon";
 
 const JUEGOS = [
   {
@@ -16,6 +17,13 @@ const JUEGOS = [
     descripcion: "Adivina quién tiene el valor más alto y mantén la racha.",
     Icono: HigherLowerIcon,
     acento: "secondary" as const,
+  },
+  {
+    href: "/jugar/top10",
+    nombre: "Top 10",
+    descripcion: "Adivina los diez jugadores de un ranking, con pistas.",
+    Icono: PodiumIcon,
+    acento: "primary" as const,
   },
 ];
 
