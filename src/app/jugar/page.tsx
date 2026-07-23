@@ -1,31 +1,5 @@
 import Link from "next/link";
-import { GridIcon } from "@/components/icons/grid";
-import { HigherLowerIcon } from "@/components/icons/higher-lower";
-import { PodiumIcon } from "@/components/icons/PodiumIcon";
-
-const JUEGOS = [
-  {
-    href: "/jugar/grid",
-    nombre: "3x3",
-    descripcion: "Completa el tablero cruzando clubes y selecciones.",
-    Icono: GridIcon,
-    acento: "primary" as const,
-  },
-  {
-    href: "/jugar/higher-lower",
-    nombre: "Higher or Lower",
-    descripcion: "Adivina quién tiene el valor más alto y mantén la racha.",
-    Icono: HigherLowerIcon,
-    acento: "secondary" as const,
-  },
-  {
-    href: "/jugar/top10",
-    nombre: "Top 10",
-    descripcion: "Adivina los diez jugadores de un ranking, con pistas.",
-    Icono: PodiumIcon,
-    acento: "primary" as const,
-  },
-];
+import { JUEGOS } from "@/features/games/shared/juegos";
 
 export default function JugarPage() {
   return (
@@ -57,9 +31,7 @@ export default function JugarPage() {
             >
               {nombre}
             </span>
-            <span className="text-sm text-muted-foreground">
-              {descripcion}
-            </span>
+            <span className="text-sm text-muted-foreground">{descripcion}</span>
           </Link>
         ))}
       </div>
