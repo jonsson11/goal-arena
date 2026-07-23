@@ -18,7 +18,6 @@ export function GridBoard() {
   const [mensaje, setMensaje] = useState("");
   const [celdasPendientes, setCeldasPendientes] = useState<Celda[]>([]);
   const [jugadorPendiente, setJugadorPendiente] = useState<Jugador | null>(null);
-
   const [horaInicio, setHoraInicio] = useState(() => Date.now());
   const [tiempoFinal, setTiempoFinal] = useState<number | null>(null);
   const [resultado, setResultado] = useState<"completado" | "rendido" | null>(null);
