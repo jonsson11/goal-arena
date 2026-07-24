@@ -62,15 +62,7 @@ function parseBirthDate(raw: string | null): Date | null {
   const m = raw.match(/(\d{4})\|(\d{1,2})\|(\d{1,2})/);
   if (!m) return null;
   const [, year, month, day] = m;
-  return new Date(Number(year), Number(month) - 1, Number(day));
-}
-
-// "[[France national football team|France]]" -> "France"
-function parseNacionalidad(raw: string | null): string | null {
-  if (!raw) return null;
-  const club = parseClub(raw);
-  if (!club) return null;
-  return club.display.replace(/national (under-\d+ )?football team/i, "").trim() || null;
+  return new Date(Date.UTC(Number(year), Number(month) - 1, Number(day)));
 }
 
 function parseYears(raw: string | null): { startYear: number | null; endYear: number | null } {
@@ -110,21 +102,19 @@ function extraerEtapas(wikitext: string): StintCrudo[] {
 
 type DatosPerfil = {
   fechaNacimiento: Date | null;
-  nacionalidad: string | null;
   equipoActual: string | null; // nombre del club, para casar con Team
 };
 
 function extraerPerfil(wikitext: string): DatosPerfil {
   const infoboxMatch = wikitext.match(/\{\{Infobox football biography([\s\S]*?)\n\}\}/i);
-  if (!infoboxMatch) return { fechaNacimiento: null, nacionalidad: null, equipoActual: null };
+  if (!infoboxMatch) return { fechaNacimiento: null, equipoActual: null };
   const infobox = infoboxMatch[1];
 
   const fechaNacimiento = parseBirthDate(getField(infobox, "birth_date"));
-  const nacionalidad = parseNacionalidad(getField(infobox, "nationalteam1"));
   const currentClubRaw = getField(infobox, "currentclub");
   const equipoActual = currentClubRaw ? parseClub(currentClubRaw)?.display ?? null : null;
 
-  return { fechaNacimiento, nacionalidad, equipoActual };
+  return { fechaNacimiento, equipoActual };
 }
 
 async function findOrCreateTeam(nombre: string) {
@@ -164,14 +154,13 @@ async function syncJugador(nombreWikipedia: string) {
       goles: golesTotales,
       partidos: partidosTotales,
       fechaNacimiento: perfil.fechaNacimiento,
-      nacionalidad: perfil.nacionalidad ?? "Desconocida",
       equipoActualId: equipoActual?.id ?? null,
     },
     create: {
       externalId: `wiki:${nombreWikipedia}`,
       nombre: nombreWikipedia,
       fechaNacimiento: perfil.fechaNacimiento,
-      nacionalidad: perfil.nacionalidad ?? "Desconocida",
+      nacionalidad: "Desconocida", // TODO: pendiente de otra fuente
       equipoActualId: equipoActual?.id ?? null,
       goles: golesTotales,
       asistencias: 0, // TODO: no disponible en Wikipedia, pendiente de otra fuente

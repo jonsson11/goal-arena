@@ -99,7 +99,7 @@ model Player {
   id              String   @id @default(cuid())
   externalId      String?  @unique
   nombre          String
-  fechaNacimiento DateTime?
+  fechaNacimiento DateTime? @db.Date
   nacionalidad    String
 
   // Totales de carrera, para Higher/Lower y Top10 "globales"
