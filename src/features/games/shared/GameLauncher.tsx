@@ -1,15 +1,26 @@
-import Link from "next/link";
-import type { JuegoInfo } from "./juegos";
+"use client";
 
-type GamePageHeaderProps = {
-  juego: JuegoInfo;
+import { useState, type ReactNode } from "react";
+import Link from "next/link";
+import { JUEGOS } from "./juegos";
+import { GameButton } from "./GameButton";
+
+type GameLauncherProps = {
+  href: string;
+  children: ReactNode;
 };
 
-export function GamePageHeader({ juego }: GamePageHeaderProps) {
+export function GameLauncher({ href, children }: GameLauncherProps) {
+  const [empezado, setEmpezado] = useState(false);
+  const juego = JUEGOS.find((j) => j.href === href)!;
   const { Icono, nombre, descripcion, acento } = juego;
 
+  if (empezado) {
+    return <>{children}</>;
+  }
+
   return (
-    <div className="flex flex-col items-center gap-4 px-6 pt-10 pb-6 text-center">
+    <div className="flex flex-col items-center gap-4 px-6 pt-10 pb-10 text-center">
       <Link
         href="/jugar"
         className="text-sm font-semibold text-muted-foreground transition-colors hover:text-primary"
@@ -34,6 +45,10 @@ export function GamePageHeader({ juego }: GamePageHeaderProps) {
       </h1>
 
       <p className="max-w-md text-sm text-muted-foreground sm:text-base">{descripcion}</p>
+
+      <GameButton onClick={() => setEmpezado(true)} className="mt-2 px-8 py-3 text-base">
+        Empezar partida
+      </GameButton>
     </div>
   );
 }

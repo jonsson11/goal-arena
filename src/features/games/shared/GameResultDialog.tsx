@@ -8,6 +8,7 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog";
+import { GameButton } from "./GameButton";
 
 type ResultadoJuego = "exito" | "fracaso";
 
@@ -57,12 +58,9 @@ export function GameResultDialog({
           </DialogDescription>
         </DialogHeader>
 
-        <button
-          onClick={onJugarDeNuevo}
-          className="mt-2 rounded-md bg-primary px-4 py-2 font-semibold text-primary-foreground transition-opacity hover:opacity-90"
-        >
+        <GameButton onClick={onJugarDeNuevo} className="mt-2">
           Volver a jugar
-        </button>
+        </GameButton>
       </DialogContent>
     </Dialog>
   );

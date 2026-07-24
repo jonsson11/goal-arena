@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { obtenerCodigoPais } from "@/features/games/shared/banderas";
 import { GameResultDialog } from "@/features/games/shared/GameResultDialog";
+import { GameButton } from "@/features/games/shared/GameButton";
 import type { EntradaTop10, RankingTop10 } from "./type";
 import { rankings } from "./data";
 import { buscarEntradaCoincidente } from "./logic";
@@ -150,7 +151,7 @@ export function Top10Game() {
               <span className="flex items-center justify-end">
                 {codigoPais && (
                   <span
-                    className={`fi fi-${codigoPais} h-[15px] w-[20px] rounded-sm sm:h-[24px] sm:w-[36px]`}
+                    className={`fi fi-${codigoPais} h-3.75 w-5 rounded-sm sm:h-6 sm:w-9`}
                   />
                 )}
               </span>
@@ -169,18 +170,10 @@ export function Top10Game() {
           placeholder="Escribe un jugador..."
           className="rounded-md border border-border bg-card px-3 py-2 text-foreground"
         />
-        <button
-          onClick={handleComprobar}
-          className="rounded-md bg-primary px-4 py-2 font-semibold text-primary-foreground"
-        >
-          Comprobar
-        </button>
-        <button
-          onClick={handleRendirse}
-          className="rounded-md bg-destructive px-4 py-2 font-semibold text-white transition-opacity hover:opacity-90"
-        >
+        <GameButton onClick={handleComprobar}>Comprobar</GameButton>
+        <GameButton variant="destructive" onClick={handleRendirse}>
           Rendirse
-        </button>
+        </GameButton>
       </div>
 
       <p className="text-sm text-muted-foreground">

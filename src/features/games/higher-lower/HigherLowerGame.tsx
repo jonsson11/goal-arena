@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import type { Jugador } from "@/features/games/shared/types";
 import { GameResultDialog } from "@/features/games/shared/GameResultDialog";
+import { GameButton } from "@/features/games/shared/GameButton";
 import { ETIQUETAS_CATEGORIA, type Categoria } from "./type";
 import {
   elegirCategoriaAleatoria,
@@ -179,20 +180,19 @@ export function HigherLowerGame() {
           </div>
 
           <div className="flex gap-4">
-            <button
+            <GameButton
               onClick={() => handleRespuesta("mayor")}
               disabled={botonesDeshabilitados}
-              className="rounded-md bg-primary px-6 py-3 font-semibold text-primary-foreground transition-opacity hover:opacity-90 disabled:opacity-50"
             >
               Mayor ▲
-            </button>
-            <button
+            </GameButton>
+            <GameButton
+              variant="secondary"
               onClick={() => handleRespuesta("menor")}
               disabled={botonesDeshabilitados}
-              className="rounded-md bg-secondary px-6 py-3 font-semibold text-secondary-foreground transition-opacity hover:opacity-90 disabled:opacity-50"
             >
               Menor ▼
-            </button>
+            </GameButton>
           </div>
 
           <p className="text-lg font-bold text-foreground">Racha: {racha}</p>

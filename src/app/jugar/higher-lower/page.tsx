@@ -1,14 +1,10 @@
 import { HigherLowerGame } from "@/features/games/higher-lower/HigherLowerGame";
-import { GamePageHeader } from "@/features/games/shared/GamePageHeader";
-import { JUEGOS } from "@/features/games/shared/juegos";
-
-const juego = JUEGOS.find((j) => j.href === "/jugar/higher-lower")!;
+import { GameLauncher } from "@/features/games/shared/GameLauncher";
 
 export default function HigherLowerPage() {
   return (
-    <>
-      <GamePageHeader juego={juego} />
+    <GameLauncher href="/jugar/higher-lower">
       <HigherLowerGame />
-    </>
+    </GameLauncher>
   );
 }

@@ -1,14 +1,10 @@
 import { Top10Game } from "@/features/games/top10/Top10Game";
-import { GamePageHeader } from "@/features/games/shared/GamePageHeader";
-import { JUEGOS } from "@/features/games/shared/juegos";
-
-const juego = JUEGOS.find((j) => j.href === "/jugar/top10")!;
+import { GameLauncher } from "@/features/games/shared/GameLauncher";
 
 export default function Top10Page() {
   return (
-    <>
-      <GamePageHeader juego={juego} />
+    <GameLauncher href="/jugar/top10">
       <Top10Game />
-    </>
+    </GameLauncher>
   );
 }
