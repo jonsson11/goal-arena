@@ -1,8 +1,12 @@
 import type { Usuario, EstadisticasRapidas, PartidaHistorial, Logro } from "./type";
+import type { Amigo } from "./type";
+
+export const amigos: Amigo[] = [];
 
 export const usuarioInicial: Usuario = {
   nombre: "Jugador",
   avatar: "⚽",
+  avatarTipo: "emoji",
   nivel: 7,
   xpActual: 320,
   xpSiguienteNivel: 500,

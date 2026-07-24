@@ -1,9 +1,13 @@
+export type TipoAvatar = "emoji" | "foto";
+
 export type Usuario = {
   nombre: string;
   avatar: string; // emoji, de momento
+  avatarTipo: TipoAvatar,
   nivel: number;
   xpActual: number;
   xpSiguienteNivel: number;
+
 };
 
 export type EstadisticasRapidas = {
@@ -29,4 +33,11 @@ export type Logro = {
   descripcion: string;
   icono: string;
   desbloqueado: boolean;
+};
+
+export type Amigo = {
+  nombre: string;
+  avatar: string;
+  nivel: number;
+  enLinea: boolean;
 };
