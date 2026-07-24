@@ -12,3 +12,9 @@ export type SolicitudAmistad = {
   avatar: string;
   nivel: number;
 };
+
+export type EstadisticasPublicas = {
+  partidasJugadas: number;
+  porcentajeAcierto: number;
+  rachaMaxima: number;
+};

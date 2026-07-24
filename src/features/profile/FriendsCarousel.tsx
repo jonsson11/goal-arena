@@ -53,7 +53,10 @@ export function FriendsCarousel({ amigos }: FriendsCarouselProps) {
         ‹
       </button>
 
-      <div className="flex flex-1 items-center gap-4 rounded-xl border border-border bg-card px-5 py-3">
+      <Link
+        href={`/perfil/${amigo.nombre.toLowerCase()}`}
+        className="flex flex-1 items-center gap-4 rounded-xl border border-border bg-card px-5 py-3 transition-colors hover:border-primary/40"
+      >
         <div className="relative flex h-12 w-12 flex-none items-center justify-center rounded-full border border-primary/40 bg-primary/10 text-2xl">
           {amigo.avatar}
           {amigo.enLinea && (
@@ -64,7 +67,7 @@ export function FriendsCarousel({ amigos }: FriendsCarouselProps) {
           <span className="text-sm font-semibold text-foreground">{amigo.nombre}</span>
           <span className="text-xs text-muted-foreground">Nivel {amigo.nivel}</span>
         </div>
-      </div>
+      </Link>
 
       <button
         onClick={() => setIndice((i) => (i + 1) % amigos.length)}

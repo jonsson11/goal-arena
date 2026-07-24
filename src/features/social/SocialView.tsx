@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { GameButton } from "@/features/games/shared/GameButton";
 import { amigosIniciales, solicitudesIniciales } from "./data";
 import type { Amigo, SolicitudAmistad } from "./type";
@@ -107,7 +108,10 @@ export function SocialView() {
                 key={amigo.id}
                 className="flex items-center justify-between rounded-lg border border-border bg-card px-4 py-3 transition-all duration-200 hover:border-primary/40 hover:bg-card/80"
               >
-                <div className="flex items-center gap-3">
+                <Link
+                  href={`/perfil/${amigo.nombre.toLowerCase()}`}
+                  className="flex items-center gap-3 transition-opacity hover:opacity-80"
+                >
                   <div className="relative flex h-11 w-11 items-center justify-center rounded-full border border-primary/40 bg-primary/10 text-xl">
                     {amigo.avatar}
                     <span
@@ -120,7 +124,7 @@ export function SocialView() {
                     <span className="text-sm font-semibold text-foreground">{amigo.nombre}</span>
                     <span className="text-xs text-muted-foreground">Nivel {amigo.nivel}</span>
                   </div>
-                </div>
+                </Link>
 
                 <span
                   className={`text-xs font-semibold ${
