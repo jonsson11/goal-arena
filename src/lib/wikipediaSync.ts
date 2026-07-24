@@ -19,10 +19,21 @@ async function fetchWikitext(nombre: string): Promise<string | null> {
   const url = `https://en.wikipedia.org/w/api.php?action=parse&page=${encodeURIComponent(
     nombre
   )}&prop=wikitext&section=0&format=json&origin=*`;
-  const res = await fetch(url);
-  const data = await res.json();
-  if (data.error) return null;
-  return data.parse.wikitext["*"];
+  try {
+    const res = await fetch(url, {
+      headers: {
+        // Wikipedia pide identificarse en sus peticiones a la API; sin esto,
+        // a veces devuelve una página de error en texto plano en vez de JSON.
+        "User-Agent": "GoalArena/0.1 (proyecto personal de aprendizaje)",
+      },
+    });
+    if (!res.ok) return null;
+    const data = await res.json();
+    if (data.error) return null;
+    return data.parse.wikitext["*"];
+  } catch {
+    return null; // respuesta no-JSON, timeout, red caída, etc. — no tumbamos el script entero
+  }
 }
 
 function getField(infobox: string, campo: string): string | null {
