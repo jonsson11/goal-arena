@@ -102,26 +102,96 @@ async function buscarTituloAlternativo(nombre: string): Promise<string | null> {
 async function fetchWikitextConFallback(
   nombreBuscado: string
 ): Promise<{ wikitext: string; tituloUsado: string } | null> {
+  // Estrategia 1: nombre exacto tal cual
   const directo = await fetchWikitextExacto(nombreBuscado);
-  if (directo) return { wikitext: directo, tituloUsado: nombreBuscado };
-
-  await esperar(400); // pequeña pausa antes de la búsqueda alternativa
-
-  const alternativo = await buscarTituloAlternativo(nombreBuscado);
-  if (!alternativo || alternativo === nombreBuscado) return null;
+  if (directo && extraerBloqueInfobox(directo)) {
+    return { wikitext: directo, tituloUsado: nombreBuscado };
+  }
 
   await esperar(400);
 
-  const wikitextAlternativo = await fetchWikitextExacto(alternativo);
-  if (!wikitextAlternativo) return null;
+  // Estrategia 2: "<nombre> (footballer)" — patrón de desambiguación muy
+  // común en apodos de una palabra (Gavi, Koke, Antony...) que chocan con
+  // el nombre de un lugar, otra persona, etc. en Wikipedia.
+  const conDesambiguador = `${nombreBuscado} (footballer)`;
+  const wikitextDesambiguado = await fetchWikitextExacto(conDesambiguador);
+  if (wikitextDesambiguado && extraerBloqueInfobox(wikitextDesambiguado)) {
+    return { wikitext: wikitextDesambiguado, tituloUsado: conDesambiguador };
+  }
 
-  return { wikitext: wikitextAlternativo, tituloUsado: alternativo };
+  await esperar(400);
+
+  // Estrategia 3: búsqueda sesgada añadiendo "footballer" a la query,
+  // para que el buscador priorice la página correcta sobre homónimos.
+  const tituloSesgado = await buscarTituloAlternativo(`${nombreBuscado} footballer`);
+  if (tituloSesgado) {
+    await esperar(400);
+    const wikitextSesgado = await fetchWikitextExacto(tituloSesgado);
+    if (wikitextSesgado && extraerBloqueInfobox(wikitextSesgado)) {
+      return { wikitext: wikitextSesgado, tituloUsado: tituloSesgado };
+    }
+  }
+
+  await esperar(400);
+
+  // Estrategia 4 (último recurso): búsqueda simple, sin sesgo
+  const alternativo = await buscarTituloAlternativo(nombreBuscado);
+  if (alternativo && alternativo !== nombreBuscado && alternativo !== conDesambiguador) {
+    const wikitextAlternativo = await fetchWikitextExacto(alternativo);
+    if (wikitextAlternativo && extraerBloqueInfobox(wikitextAlternativo)) {
+      return { wikitext: wikitextAlternativo, tituloUsado: alternativo };
+    }
+  }
+
+  return null;
+}
+
+/**
+ * Dado un nombre (posiblemente abreviado/apodo), intenta resolver el título
+ * REAL del artículo de Wikipedia del futbolista, sin tocar la base de datos.
+ * Devuelve null si no se encuentra ninguna página con infobox de fútbol.
+ * Útil para limpiar listas de nombres (ej. desde API-Football) antes de
+ * pasarlas a syncJugadorDesdeWikipedia.
+ */
+export async function resolverTituloWikipedia(nombreBuscado: string): Promise<string | null> {
+  const resultado = await fetchWikitextConFallback(nombreBuscado);
+  return resultado?.tituloUsado ?? null;
 }
 
 function getField(infobox: string, campo: string): string | null {
   const re = new RegExp(`\\|\\s*${campo}\\s*=\\s*(.+)`, "i");
   const m = infobox.match(re);
   return m ? m[1].trim().replace(/<!--.*?-->/g, "").trim() : null;
+}
+
+// Extrae el bloque completo del infobox contando llaves {{ }} manualmente.
+// Un regex simple (buscar el primer "}}") falla porque dentro del infobox
+// suele haber plantillas anidadas (banderas, enlaces especiales...) que
+// también se cierran con "}}" antes de llegar a los campos de club/años,
+// cortando la extracción a medias. Contar la profundidad es la única forma
+// fiable de encontrar el cierre real.
+function extraerBloqueInfobox(wikitext: string): string | null {
+  const inicioMatch = wikitext.match(/\{\{Infobox football biography/i);
+  if (!inicioMatch || inicioMatch.index === undefined) return null;
+
+  const inicio = inicioMatch.index;
+  let profundidad = 0;
+  let i = inicio;
+  const n = wikitext.length;
+
+  while (i < n) {
+    if (wikitext.startsWith("{{", i)) {
+      profundidad++;
+      i += 2;
+    } else if (wikitext.startsWith("}}", i)) {
+      profundidad--;
+      i += 2;
+      if (profundidad === 0) return wikitext.slice(inicio, i);
+    } else {
+      i++;
+    }
+  }
+  return null; // llaves sin balancear (wikitext truncado o malformado)
 }
 
 function parseClub(raw: string | null) {
@@ -155,9 +225,8 @@ function parseYears(raw: string | null): { startYear: number | null; endYear: nu
 }
 
 function extraerEtapas(wikitext: string): StintCrudo[] {
-  const infoboxMatch = wikitext.match(/\{\{Infobox football biography([\s\S]*?)\n\}\}/i);
-  if (!infoboxMatch) return [];
-  const infobox = infoboxMatch[1];
+  const infobox = extraerBloqueInfobox(wikitext);
+  if (!infobox) return [];
 
   const etapas: StintCrudo[] = [];
   for (let i = 1; i <= 25; i++) {
@@ -183,9 +252,8 @@ type DatosPerfil = {
 };
 
 function extraerPerfil(wikitext: string): DatosPerfil {
-  const infoboxMatch = wikitext.match(/\{\{Infobox football biography([\s\S]*?)\n\}\}/i);
-  if (!infoboxMatch) return { fechaNacimiento: null, equipoActual: null };
-  const infobox = infoboxMatch[1];
+  const infobox = extraerBloqueInfobox(wikitext);
+  if (!infobox) return { fechaNacimiento: null, equipoActual: null };
 
   const fechaNacimiento = parseBirthDate(getField(infobox, "birth_date"));
   const currentClubRaw = getField(infobox, "currentclub");
@@ -200,6 +268,15 @@ async function findOrCreateTeam(prisma: PrismaClient, nombre: string) {
   return prisma.team.create({
     data: { nombre, pais: "Desconocido" },
   });
+}
+
+// Quita el desambiguador final de un título de Wikipedia, ej:
+// "Gavi (footballer)" -> "Gavi"
+// "Luiz Júnior (footballer, born 2001)" -> "Luiz Júnior"
+// "Jorge Benítez (Paraguayan footballer)" -> "Jorge Benítez"
+// Un título sin paréntesis (el caso normal) no cambia.
+function limpiarNombreVisible(titulo: string): string {
+  return titulo.replace(/\s*\([^)]*\)\s*$/, "").trim();
 }
 
 export type ResultadoSync =
@@ -226,9 +303,12 @@ export async function syncJugadorDesdeWikipedia(
     ? await findOrCreateTeam(prisma, perfil.equipoActual)
     : null;
 
+  const nombreVisible = limpiarNombreVisible(tituloUsado);
+
   const player = await prisma.player.upsert({
     where: { externalId: `wiki:${tituloUsado}` },
     update: {
+      nombre: nombreVisible,
       goles: golesTotales,
       partidos: partidosTotales,
       fechaNacimiento: perfil.fechaNacimiento,
@@ -236,7 +316,7 @@ export async function syncJugadorDesdeWikipedia(
     },
     create: {
       externalId: `wiki:${tituloUsado}`,
-      nombre: tituloUsado,
+      nombre: nombreVisible,
       fechaNacimiento: perfil.fechaNacimiento,
       nacionalidad: "Desconocida",
       equipoActualId: equipoActual?.id ?? null,
