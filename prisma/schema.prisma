@@ -9,7 +9,6 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
 }
 
 // ============================================================
@@ -112,6 +111,7 @@ model Player {
   // Etapas por club, con fechas -> resuelve ADN, Fichajes, XI
   stints          Stint[]
   statsPorTemporada PlayerStat[]
+  top10Entries    Top10Entry[]
 
   // Atajo desnormalizado: equipo actual, útil para mostrar en UI sin JOIN
   equipoActual    Team?    @relation("EquipoActual", fields: [equipoActualId], references: [id])
