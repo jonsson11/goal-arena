@@ -1,0 +1,273 @@
+// ============================================================
+// GOAL ARENA — schema.prisma (borrador para revisión)
+// No se ha tocado nada del código del repo todavía.
+// ============================================================
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ============================================================
+// 1. USUARIOS Y PERFIL
+// (mapea features/profile/type.ts -> Usuario, EstadisticasRapidas)
+// ============================================================
+
+model User {
+  id               String   @id @default(cuid())
+  email            String   @unique
+  nombre           String
+  avatar           String   @default("⚽")
+  avatarTipo       AvatarTipo @default(EMOJI)
+  nivel            Int      @default(1)
+  xpActual         Int      @default(0)
+  xpSiguienteNivel Int      @default(100)
+  createdAt        DateTime @default(now())
+
+  // Relaciones
+  participaciones  MatchParticipant[]
+  logros           UserAchievement[]
+  amistadesA       Friendship[]        @relation("UsuarioA")
+  amistadesB       Friendship[]        @relation("UsuarioB")
+
+  // Contadores denormalizados para no recalcular en cada carga de perfil
+  partidasJugadas    Int @default(0)
+  rachaActual        Int @default(0)
+  rachaMaxima        Int @default(0)
+}
+
+enum AvatarTipo {
+  EMOJI
+  FOTO
+}
+
+model Friendship {
+  id         String   @id @default(cuid())
+  usuarioA   User     @relation("UsuarioA", fields: [usuarioAId], references: [id])
+  usuarioAId String
+  usuarioB   User     @relation("UsuarioB", fields: [usuarioBId], references: [id])
+  usuarioBId String
+  createdAt  DateTime @default(now())
+
+  @@unique([usuarioAId, usuarioBId])
+}
+
+model Achievement {
+  id          String @id @default(cuid())
+  codigo      String @unique // ej: "primera_victoria", "nivel_25"
+  nombre      String
+  descripcion String
+  icono       String
+
+  usuarios UserAchievement[]
+}
+
+model UserAchievement {
+  id            String      @id @default(cuid())
+  user          User        @relation(fields: [userId], references: [id])
+  userId        String
+  achievement   Achievement @relation(fields: [achievementId], references: [id])
+  achievementId String
+  desbloqueadoEn DateTime   @default(now())
+
+  @@unique([userId, achievementId])
+}
+
+// ============================================================
+// 2. DATOS DE FÚTBOL (fuente: football-data.org + Wikipedia)
+// (mapea features/games/shared/types.ts -> Jugador, Equipo)
+// ============================================================
+
+model Team {
+  id         String   @id @default(cuid())
+  externalId String?  @unique // id en football-data.org, para el sync
+  nombre     String
+  pais       String
+  escudo     String?
+
+  stints         Stint[]
+  playerStats    PlayerStat[]
+  gridCeldas     Player[]      @relation("EquipoActual") // ver nota abajo
+
+  @@index([nombre])
+}
+
+model Player {
+  id              String   @id @default(cuid())
+  externalId      String?  @unique
+  nombre          String
+  fechaNacimiento DateTime?
+  nacionalidad    String
+
+  // Totales de carrera, para Higher/Lower y Top10 "globales"
+  valorDeMercado  Float    @default(0) // en millones de €, ej: 45.5
+  goles           Int      @default(0)
+  asistencias     Int      @default(0)
+  partidos        Int      @default(0)
+
+  // Etapas por club, con fechas -> resuelve ADN, Fichajes, XI
+  stints          Stint[]
+  statsPorTemporada PlayerStat[]
+
+  // Atajo desnormalizado: equipo actual, útil para mostrar en UI sin JOIN
+  equipoActual    Team?    @relation("EquipoActual", fields: [equipoActualId], references: [id])
+  equipoActualId  String?
+
+  @@index([nombre])
+  @@index([nacionalidad])
+}
+
+// Etapa de un jugador en un club, con fechas.
+// Es lo que permite reconstruir el orden cronológico (ADN),
+// una transferencia concreta (Fichajes) y la plantilla de un año (XI).
+model Stint {
+  id        String    @id @default(cuid())
+  player    Player    @relation(fields: [playerId], references: [id])
+  playerId  String
+  team      Team      @relation(fields: [teamId], references: [id])
+  teamId    String
+  startDate DateTime
+  endDate   DateTime? // null = etapa actual
+
+  @@index([playerId, startDate])
+  @@index([teamId, startDate])
+}
+
+model Competition {
+  id         String   @id @default(cuid())
+  externalId String?  @unique
+  nombre     String   // "Champions League", "La Liga"...
+
+  playerStats PlayerStat[]
+  rankings    Top10Ranking[]
+}
+
+// Estadísticas de un jugador en una competición/temporada concreta.
+// Necesario para Top10 ("máximos goleadores de la Champions")
+// y para un Higher/Lower más fino que el total de carrera.
+model PlayerStat {
+  id            String      @id @default(cuid())
+  player        Player      @relation(fields: [playerId], references: [id])
+  playerId      String
+  team          Team?       @relation(fields: [teamId], references: [id])
+  teamId        String?
+  competition   Competition @relation(fields: [competitionId], references: [id])
+  competitionId String
+  temporada     String      // "2023-24"
+
+  goles         Int   @default(0)
+  asistencias   Int   @default(0)
+  partidos      Int   @default(0)
+  valorDeMercado Float @default(0) // en millones de €
+
+  @@unique([playerId, competitionId, temporada])
+  @@index([competitionId, temporada])
+}
+
+// Rankings "hardcodeados" o precalculados para Top10
+// (mapea features/games/top10/type.ts -> RankingTop10, EntradaTop10)
+model Top10Ranking {
+  id            String       @id @default(cuid())
+  titulo        String
+  descripcion   String?
+  competition   Competition? @relation(fields: [competitionId], references: [id])
+  competitionId String?
+
+  entradas Top10Entry[]
+}
+
+model Top10Entry {
+  id        String       @id @default(cuid())
+  ranking   Top10Ranking @relation(fields: [rankingId], references: [id])
+  rankingId String
+  posicion  Int
+  player    Player       @relation(fields: [playerId], references: [id])
+  playerId  String
+
+  @@unique([rankingId, posicion])
+}
+
+// ============================================================
+// 3. PARTIDAS Y RONDAS (Individual / 1vs1 / Arena)
+// Diseñado para que generateMatch() sirva para los tres modos,
+// variando solo la lista de participantes y las rondas configuradas.
+// ============================================================
+
+enum GameType {
+  GRID
+  FICHAJES
+  HIGHER_LOWER
+  ADN
+  TOP10
+  XI
+}
+
+enum MatchType {
+  SOLO
+  DUEL
+  ARENA_QUICK
+  ARENA_CLASSIC
+  ARENA_PRIVATE
+}
+
+enum MatchStatus {
+  WAITING
+  IN_PROGRESS
+  FINISHED
+}
+
+model Match {
+  id           String              @id @default(cuid())
+  type         MatchType
+  status       MatchStatus         @default(WAITING)
+  codigo       String?             @unique // para ARENA_PRIVATE
+  createdAt    DateTime            @default(now())
+  finishedAt   DateTime?
+
+  rounds       Round[]
+  participants MatchParticipant[]
+}
+
+model MatchParticipant {
+  id       String        @id @default(cuid())
+  match    Match         @relation(fields: [matchId], references: [id])
+  matchId  String
+  user     User          @relation(fields: [userId], references: [id])
+  userId   String
+  score    Int           @default(0)
+  posicion Int?
+
+  results  RoundResult[]
+
+  @@unique([matchId, userId])
+}
+
+model Round {
+  id        String   @id @default(cuid())
+  match     Match    @relation(fields: [matchId], references: [id])
+  matchId   String
+  orden     Int
+  gameType  GameType
+  challenge Json     // el reto ya generado y congelado (mismo para todos)
+
+  results   RoundResult[]
+
+  @@unique([matchId, orden])
+}
+
+model RoundResult {
+  id            String           @id @default(cuid())
+  round         Round            @relation(fields: [roundId], references: [id])
+  roundId       String
+  participant   MatchParticipant @relation(fields: [participantId], references: [id])
+  participantId String
+  score         Int              @default(0)
+  respuestas    Json?
+  finishedAt    DateTime?
+
+  @@unique([roundId, participantId])
+}
