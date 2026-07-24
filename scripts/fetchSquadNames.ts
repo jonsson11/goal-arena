@@ -1,18 +1,17 @@
 // scripts/fetchSquadNames.ts
 //
-// 1. Habla con API-Football: busca una liga, sus equipos, y las plantillas.
-// 2. Para cada nombre recolectado, resuelve el título REAL de Wikipedia
-//    (soluciona nombres abreviados tipo "W. Szczęsny" -> "Wojciech Szczęsny",
-//    y apodos que chocan con otras páginas tipo "Gavi" -> "Gavi (footballer)").
-// 3. Guarda la lista final, ya lista para pegar en JUGADORES_INICIALES.
+// Solo habla con API-Football. Busca una liga, sus equipos, y las plantillas.
+// Al final imprime la lista de nombres únicos (tal cual los da la API,
+// puede haber abreviaturas) lista para copiar y pegar dentro de
+// JUGADORES_INICIALES en scripts/syncPlayers.ts.
 //
-// No toca la base de datos — solo genera la lista de nombres.
+// No toca la base de datos ni Wikipedia — así, si algo falla a mitad,
+// no dependes de que el proceso entero termine bien.
 //
 // Ejecutar con: npx tsx scripts/fetchSquadNames.ts
 
 import "dotenv/config";
 import { writeFile } from "node:fs/promises";
-import { resolverTituloWikipedia } from "../src/lib/wikipediaSync";
 
 const API_KEY = process.env.API_FOOTBALL_KEY;
 const BASE_URL = "https://v3.football.api-sports.io";
@@ -22,10 +21,8 @@ const LIGA_PAIS = "England";
 const TEMPORADA = 2024; // el free tier solo da acceso a 2022-2024
 
 // El free tier de API-Football limita también por minuto, no solo 100/día.
-const PAUSA_API_FOOTBALL_MS = 7000;
-// Pausa entre resoluciones de Wikipedia (más ligera, pero con cortesía)
-const PAUSA_WIKIPEDIA_MS = 800;
-
+// 7s entre peticiones nos deja tranquilos por debajo de ese límite.
+const PAUSA_MS = 7000;
 function esperar(ms: number) {
   return new Promise((r) => setTimeout(r, ms));
 }
@@ -85,72 +82,41 @@ async function main() {
     process.exit(1);
   }
 
-  console.log(`\n=== ${LIGA_NOMBRE} (temporada ${TEMPORADA}) — recolectando plantillas ===\n`);
+  console.log(`\n=== ${LIGA_NOMBRE} (temporada ${TEMPORADA}) ===\n`);
 
   const ligaId = await obtenerIdLiga();
-  await esperar(PAUSA_API_FOOTBALL_MS);
+  await esperar(PAUSA_MS);
   if (!ligaId) {
     console.error("No se encontró la liga. Revisa LIGA_NOMBRE/LIGA_PAIS.");
     process.exit(1);
   }
 
   const equipos = await obtenerEquipos(ligaId);
-  await esperar(PAUSA_API_FOOTBALL_MS);
+  await esperar(PAUSA_MS);
   if (equipos.length === 0) {
     console.error(`No se encontraron equipos para la temporada ${TEMPORADA}.`);
     process.exit(1);
   }
 
-  const nombresCrudos = new Set<string>();
+  const nombresUnicos = new Set<string>();
   for (const equipo of equipos) {
     console.log(`Plantilla de ${equipo.name}...`);
     const nombres = await obtenerPlantilla(equipo.id);
-    nombres.forEach((n) => nombresCrudos.add(n));
-    await esperar(PAUSA_API_FOOTBALL_MS);
+    nombres.forEach((n) => nombresUnicos.add(n));
+    await esperar(PAUSA_MS);
   }
 
-  console.log(`\n${nombresCrudos.size} nombres en crudo recolectados de API-Football.`);
-  console.log(`Resolviendo cada uno contra Wikipedia (esto tarda un poco más)...\n`);
+  const lista = [...nombresUnicos];
+  console.log(`\n${lista.length} jugadores únicos encontrados.\n`);
 
-  // Resolvemos cada nombre crudo a su título real de Wikipedia.
-  // Usamos un Set en el resultado por si dos nombres distintos (ej. un apodo
-  // y el nombre completo) resuelven a la misma persona.
-  const nombresResueltos = new Set<string>();
-  const noResueltos: string[] = [];
+  // Los dejamos también en un fichero, por si el terminal corta la salida
+  const nombreFichero = `scripts/squad-names-${LIGA_NOMBRE.toLowerCase().replace(/\s+/g, "-")}.json`;
+  await writeFile(nombreFichero, JSON.stringify(lista, null, 2), "utf-8");
+  console.log(`Guardado también en: ${nombreFichero}\n`);
 
-  let i = 0;
-  for (const nombreCrudo of nombresCrudos) {
-    i++;
-    const titulo = await resolverTituloWikipedia(nombreCrudo);
-    if (titulo) {
-      nombresResueltos.add(titulo);
-      const aviso = titulo !== nombreCrudo ? ` (era "${nombreCrudo}")` : "";
-      console.log(`  [${i}/${nombresCrudos.size}] ✓ ${titulo}${aviso}`);
-    } else {
-      noResueltos.push(nombreCrudo);
-      console.warn(`  [${i}/${nombresCrudos.size}] ✗ No resuelto: "${nombreCrudo}"`);
-    }
-    await esperar(PAUSA_WIKIPEDIA_MS);
-  }
-
-  const listaFinal = [...nombresResueltos];
-
-  console.log(`\n=== Resumen ===`);
-  console.log(`Resueltos: ${listaFinal.length}`);
-  console.log(`Sin resolver: ${noResueltos.length}`);
-
-  const slug = LIGA_NOMBRE.toLowerCase().replace(/\s+/g, "-");
-
-  await writeFile(`scripts/squad-names-${slug}.json`, JSON.stringify(listaFinal, null, 2), "utf-8");
-  await writeFile(`scripts/squad-names-${slug}-sin-resolver.txt`, noResueltos.join("\n"), "utf-8");
-
-  console.log(`\nGuardado:`);
-  console.log(`  scripts/squad-names-${slug}.json (nombres resueltos)`);
-  console.log(`  scripts/squad-names-${slug}-sin-resolver.txt (para revisar a mano)`);
-
-  console.log("\nCopia esto dentro de JUGADORES_INICIALES en scripts/syncPlayers.ts:\n");
+  console.log("Copia esto dentro de JUGADORES_INICIALES en scripts/syncPlayers.ts:\n");
   console.log("[");
-  listaFinal.forEach((n) => console.log(`  "${n}",`));
+  lista.forEach((n) => console.log(`  "${n}",`));
   console.log("]");
 }
 
