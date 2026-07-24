@@ -344,6 +344,7 @@ const JUGADORES_INICIALES = [
   "Jan Virgili"
 ];
 
+
 async function main() {
   for (const nombre of JUGADORES_INICIALES) {
     console.log(`\n→ Sincronizando ${nombre}...`);
@@ -356,12 +357,12 @@ async function main() {
     } else {
       console.warn(`  ✗ Fallo: ${resultado.motivo}`);
     }
-    await new Promise((r) => setTimeout(r, 500));
+    await new Promise((r) => setTimeout(r, 1200));
   }
   await prisma.$disconnect();
   console.log("\nSync completo.");
 }
-
+ 
 main().catch((e) => {
   console.error(e);
   process.exit(1);

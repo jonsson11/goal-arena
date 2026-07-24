@@ -7,7 +7,15 @@
 
 import type { PrismaClient } from "@prisma/client";
 
-const USER_AGENT = "GoalArena/0.1 (proyecto personal de aprendizaje)";
+// Wikipedia pide identificarse con contacto real en peticiones automatizadas
+// (ver https://meta.wikimedia.org/wiki/User-Agent_policy). Cambia el email
+// por el tuyo si quieres cumplir esto del todo — no es obligatorio para
+// volumen bajo, pero reduce la posibilidad de que te limiten.
+const USER_AGENT = "GoalArena/0.1 (proyecto personal de aprendizaje; contacto: tu-email@ejemplo.com)";
+
+function esperar(ms: number) {
+  return new Promise((r) => setTimeout(r, ms));
+}
 
 type StintCrudo = {
   startYear: number;
@@ -18,20 +26,59 @@ type StintCrudo = {
   goals: number;
 };
 
-// Intenta obtener el wikitext de una página EXACTA. Null si no existe o falla.
-async function fetchWikitextExacto(titulo: string): Promise<string | null> {
+// Intenta obtener el wikitext de una página EXACTA.
+// Distingue entre "la página no existe" (motivo real) y "algo falló en la
+// petición" (rate limit, red, etc.) — este segundo caso se reintenta y,
+// si persiste, se loguea claramente en vez de esconderse.
+async function fetchWikitextExacto(titulo: string, reintento = 0): Promise<string | null> {
   const url = `https://en.wikipedia.org/w/api.php?action=parse&page=${encodeURIComponent(
     titulo
   )}&prop=wikitext&section=0&format=json&origin=*`;
+
+  let res: Response;
   try {
-    const res = await fetch(url, { headers: { "User-Agent": USER_AGENT } });
-    if (!res.ok) return null;
-    const data = await res.json();
-    if (data.error) return null;
-    return data.parse.wikitext["*"];
-  } catch {
+    res = await fetch(url, { headers: { "User-Agent": USER_AGENT } });
+  } catch (e) {
+    console.warn(`    ⚠ Error de red pidiendo "${titulo}":`, e);
     return null;
   }
+
+  if (res.status === 429 || res.status >= 500) {
+    if (reintento < 3) {
+      const espera = 5000 * (reintento + 1);
+      console.warn(
+        `    … Wikipedia devolvió ${res.status} para "${titulo}", esperando ${espera / 1000}s y reintentando (${reintento + 1}/3)`
+      );
+      await esperar(espera);
+      return fetchWikitextExacto(titulo, reintento + 1);
+    }
+    console.warn(`    ✗ Wikipedia sigue devolviendo ${res.status} para "${titulo}" tras 3 intentos.`);
+    return null;
+  }
+
+  if (!res.ok) {
+    console.warn(`    ✗ Wikipedia respondió ${res.status} para "${titulo}"`);
+    return null;
+  }
+
+  let data: { error?: { code?: string; info?: string }; parse?: { wikitext: { "*": string } } };
+  try {
+    data = await res.json();
+  } catch {
+    console.warn(`    ✗ Respuesta no-JSON de Wikipedia para "${titulo}" (posible bloqueo/rate-limit)`);
+    return null;
+  }
+
+  if (data.error) {
+    // "missingtitle" = de verdad no existe esa página, es un fallo legítimo y silencioso.
+    // Cualquier otro código de error es raro y merece verse en consola.
+    if (data.error.code !== "missingtitle") {
+      console.warn(`    ✗ Wikipedia devolvió error "${data.error.code}" para "${titulo}": ${data.error.info}`);
+    }
+    return null;
+  }
+
+  return data.parse!.wikitext["*"];
 }
 
 // Fallback: busca el título más parecido a "nombre" usando el buscador de
@@ -52,17 +99,18 @@ async function buscarTituloAlternativo(nombre: string): Promise<string | null> {
   }
 }
 
-// Combina las dos: intenta el nombre exacto, y si falla, prueba con
-// el mejor resultado de búsqueda. Devuelve también qué título se usó
-// realmente, para no perder esa información.
 async function fetchWikitextConFallback(
   nombreBuscado: string
 ): Promise<{ wikitext: string; tituloUsado: string } | null> {
   const directo = await fetchWikitextExacto(nombreBuscado);
   if (directo) return { wikitext: directo, tituloUsado: nombreBuscado };
 
+  await esperar(400); // pequeña pausa antes de la búsqueda alternativa
+
   const alternativo = await buscarTituloAlternativo(nombreBuscado);
   if (!alternativo || alternativo === nombreBuscado) return null;
+
+  await esperar(400);
 
   const wikitextAlternativo = await fetchWikitextExacto(alternativo);
   if (!wikitextAlternativo) return null;
@@ -150,7 +198,7 @@ async function findOrCreateTeam(prisma: PrismaClient, nombre: string) {
   const existente = await prisma.team.findFirst({ where: { nombre } });
   if (existente) return existente;
   return prisma.team.create({
-    data: { nombre, pais: "Desconocido" }, // TODO: completar con football-data.org más adelante
+    data: { nombre, pais: "Desconocido" },
   });
 }
 
@@ -158,12 +206,6 @@ export type ResultadoSync =
   | { ok: true; etapas: number; goles: number; partidos: number; nombreUsado: string; renombrado: boolean }
   | { ok: false; motivo: "sin_pagina" | "sin_infobox" | "sin_etapas" };
 
-/**
- * Sincroniza un jugador desde Wikipedia hacia la base de datos.
- * Si "nombreBuscado" no existe como página exacta, intenta encontrar
- * el título correcto vía búsqueda antes de rendirse.
- * Idempotente: se puede llamar varias veces sin duplicar datos.
- */
 export async function syncJugadorDesdeWikipedia(
   prisma: PrismaClient,
   nombreBuscado: string
@@ -184,9 +226,6 @@ export async function syncJugadorDesdeWikipedia(
     ? await findOrCreateTeam(prisma, perfil.equipoActual)
     : null;
 
-  // Usamos el título REAL de Wikipedia (tituloUsado), no el nombre buscado,
-  // para que dos búsquedas distintas que acaben resolviendo al mismo jugador
-  // (ej. "W. Szczęsny" y "Wojciech Szczęsny") no creen dos filas duplicadas.
   const player = await prisma.player.upsert({
     where: { externalId: `wiki:${tituloUsado}` },
     update: {
@@ -199,12 +238,12 @@ export async function syncJugadorDesdeWikipedia(
       externalId: `wiki:${tituloUsado}`,
       nombre: tituloUsado,
       fechaNacimiento: perfil.fechaNacimiento,
-      nacionalidad: "Desconocida", // TODO: pendiente de otra fuente
+      nacionalidad: "Desconocida",
       equipoActualId: equipoActual?.id ?? null,
       goles: golesTotales,
-      asistencias: 0, // TODO: pendiente de otra fuente
+      asistencias: 0,
       partidos: partidosTotales,
-      valorDeMercado: 0, // TODO: pendiente de Transfermarkt/API de pago
+      valorDeMercado: 0,
     },
   });
 
