@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import type { Amigo } from "./type";
+import type { Amigo } from "@/features/social/type";
 
 type FriendsCarouselProps = {
   amigos: Amigo[];

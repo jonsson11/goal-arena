@@ -6,7 +6,8 @@ import { useAuth } from "@/features/auth/AuthContext";
 import { GameButton } from "@/features/games/shared/GameButton";
 import { EditProfileDialog } from "./EditProfileDialog";
 import { FriendsCarousel } from "./FriendsCarousel";
-import { estadisticasRapidas, historialPartidas, logros, amigos } from "./data";
+import { estadisticasRapidas, historialPartidas, logros, } from "./data";
+import { amigosIniciales as amigos } from "@/features/social/data";
 import type { TipoAvatar } from "./type";
 
 export function ProfileView() {

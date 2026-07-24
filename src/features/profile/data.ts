@@ -1,7 +1,5 @@
 import type { Usuario, EstadisticasRapidas, PartidaHistorial, Logro } from "./type";
-import type { Amigo } from "./type";
 
-export const amigos: Amigo[] = [];
 
 export const usuarioInicial: Usuario = {
   nombre: "Jugador",

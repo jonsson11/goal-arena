@@ -36,9 +36,3 @@ export type Logro = {
   desbloqueado: boolean;
 };
 
-export type Amigo = {
-  nombre: string;
-  avatar: string;
-  nivel: number;
-  enLinea: boolean;
-};
