@@ -2,6 +2,7 @@ export type TipoAvatar = "emoji" | "foto";
 
 export type Usuario = {
   nombre: string;
+  email: string;
   avatar: string; // emoji, de momento
   avatarTipo: TipoAvatar,
   nivel: number;

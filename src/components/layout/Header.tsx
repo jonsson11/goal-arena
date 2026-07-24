@@ -4,6 +4,7 @@ import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { NavLinks } from "./NavLinks";
+import { AccountMenu } from "./AccountMenu";
 
 export default function Header() {
   const [open, setOpen] = useState(false);
@@ -14,7 +15,7 @@ export default function Header() {
         <NavLinks className="flex gap-6 text-sm font-semibold uppercase tracking-wide text-foreground" />
       </div>
 
-      <Link href="/" className="flex-none transition-opacity hover:opacity-80 md:ml-auto">
+      <Link href="/" className="flex-none transition-opacity hover:opacity-80">
         <Image
           src="/logo-icon.png"
           alt="Goal Arena"
@@ -24,6 +25,10 @@ export default function Header() {
           className="h-11 w-11"
         />
       </Link>
+
+      <div className="hidden flex-1 justify-end md:flex">
+        <AccountMenu />
+      </div>
 
       <button
         className="flex-none text-2xl text-foreground md:hidden"
@@ -36,6 +41,9 @@ export default function Header() {
       {open && (
         <div className="absolute top-full left-0 w-full border-t border-border bg-card md:hidden">
           <NavLinks className="flex flex-col gap-4 p-6 text-sm font-semibold uppercase tracking-wide text-card-foreground" />
+          <div className="border-t border-border p-6">
+            <AccountMenu />
+          </div>
         </div>
       )}
     </header>

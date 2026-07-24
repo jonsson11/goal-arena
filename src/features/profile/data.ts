@@ -5,6 +5,7 @@ export const amigos: Amigo[] = [];
 
 export const usuarioInicial: Usuario = {
   nombre: "Jugador",
+  email:"jugador@goalarena.com",
   avatar: "⚽",
   avatarTipo: "emoji",
   nivel: 7,

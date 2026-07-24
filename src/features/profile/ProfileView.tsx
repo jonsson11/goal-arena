@@ -1,24 +1,36 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
+import { useAuth } from "@/features/auth/AuthContext";
 import { GameButton } from "@/features/games/shared/GameButton";
 import { EditProfileDialog } from "./EditProfileDialog";
 import { FriendsCarousel } from "./FriendsCarousel";
-import {
-  usuarioInicial,
-  estadisticasRapidas,
-  historialPartidas,
-  logros,
-  amigos,
-} from "./data";
-import type { TipoAvatar, Usuario } from "./type";
+import { estadisticasRapidas, historialPartidas, logros, amigos } from "./data";
+import type { TipoAvatar } from "./type";
 
 export function ProfileView() {
-  const [usuario, setUsuario] = useState<Usuario>(usuarioInicial);
+  const { usuario, actualizarUsuario } = useAuth();
   const [editando, setEditando] = useState(false);
 
+  if (!usuario) {
+    return (
+      <div className="flex min-h-[50vh] flex-col items-center justify-center gap-4 px-6 text-center">
+        <p className="text-lg font-semibold text-foreground">
+          Debes iniciar sesión para ver tu perfil.
+        </p>
+        <Link
+          href="/login"
+          className="rounded-md bg-primary px-6 py-2 font-semibold text-primary-foreground transition-opacity hover:opacity-90"
+        >
+          Iniciar sesión
+        </Link>
+      </div>
+    );
+  }
+
   function guardarPerfil(nombre: string, avatar: string, avatarTipo: TipoAvatar) {
-    setUsuario({ ...usuario, nombre, avatar, avatarTipo });
+    actualizarUsuario({ nombre, avatar, avatarTipo });
   }
 
   const porcentajeXp = Math.round((usuario.xpActual / usuario.xpSiguienteNivel) * 100);
