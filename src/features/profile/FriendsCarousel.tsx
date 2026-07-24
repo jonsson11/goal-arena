@@ -59,9 +59,7 @@ export function FriendsCarousel({ amigos }: FriendsCarouselProps) {
       >
         <div className="relative flex h-12 w-12 flex-none items-center justify-center rounded-full border border-primary/40 bg-primary/10 text-2xl">
           {amigo.avatar}
-          {amigo.enLinea && (
-            <span className="absolute -bottom-0.5 -right-0.5 h-3 w-3 rounded-full border-2 border-card bg-primary" />
-          )}
+          <span className={`absolute -bottom-0.5 -right-0.5 h-3 w-3 rounded-full border-2 border-card ${amigo.enLinea ? "bg-primary" : "bg-destructive"}`}/>
         </div>
         <div className="flex flex-col">
           <span className="text-sm font-semibold text-foreground">{amigo.nombre}</span>

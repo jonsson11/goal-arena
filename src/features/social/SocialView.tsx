@@ -116,7 +116,7 @@ export function SocialView() {
                     {amigo.avatar}
                     <span
                       className={`absolute -bottom-0.5 -right-0.5 h-3 w-3 rounded-full border-2 border-card ${
-                        amigo.enLinea ? "bg-primary" : "bg-muted-foreground"
+                        amigo.enLinea ? "bg-primary" : "bg-destructive"
                       }`}
                     />
                   </div>

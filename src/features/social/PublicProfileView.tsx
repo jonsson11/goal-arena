@@ -32,7 +32,7 @@ export function PublicProfileView({ amigo }: PublicProfileViewProps) {
           </div>
           <span
             className={`absolute -top-1 -right-1 h-4 w-4 rounded-full border-2 border-card ${
-              amigo.enLinea ? "bg-primary" : "bg-muted-foreground"
+              amigo.enLinea ? "bg-primary" : "bg-destructive"
             }`}
           />
         </div>
