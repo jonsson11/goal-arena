@@ -1,199 +1,362 @@
 // scripts/syncPlayers.ts
 //
-// Sincroniza una lista de jugadores desde Wikipedia hacia la base de datos.
-// Es idempotente: se puede volver a correr y no duplica etapas (las reemplaza).
-//
+// Sincroniza una lista de jugadores concreta, escrita a mano.
 // Ejecutar con: npx tsx scripts/syncPlayers.ts
 
 import "dotenv/config";
 import { PrismaClient } from "@prisma/client";
 import { PrismaPg } from "@prisma/adapter-pg";
+import { syncJugadorDesdeWikipedia } from "../src/lib/wikipediaSync";
 
 const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL! });
 const prisma = new PrismaClient({ adapter });
 
-// Lista de arranque. Amplíala según necesites para tener contenido de prueba.
 const JUGADORES_INICIALES = [
-  "Sergio Ramos",
+  "Joan García",
+  "Wojciech Szczęsny",
+  "Marc ter Stegen",
+  "Ronald Araújo",
+  "Alejandro Balde",
+  "Andreas Christensen",
+  "Pau Cubarsí Paredes",
+  "Xavi Espart",
+  "Eric García",
+  "Jules Koundé",
+  "Gerard Martín",
+  "Jofre Torrents",
+  "Marc Bernal",
+  "Marc Casadó",
+  "Fermín",
+  "Gavi",
+  "Tomás Marqués",
+  "Dani Olmo",
+  "Pedri",
+  "Frenkie de Jong",
+  "Hamza Abdelkarim",
+  "Roony Bardghji",
+  "Anthony Gordon",
+  "Lamine Yamal",
+  "Raphinha",
+  "Ferran Torres",
+  "Juan Musso",
+  "Jan Oblak",
+  "José María Giménez",
+  "Álex Grimaldo",
+  "Hancko",
+  "Robin Le Normand",
+  "Marcos Llorente",
+  "Nahuel Molina",
+  "Marc Pubill",
+  "Ruggeri",
+  "Pablo Barrios",
+  "Jhonny Cardoso",
+  "Hjulmand",
+  "Koke",
+  "Rodrigo Mendoza",
+  "Thiago Almada",
+  "Julián Álvarez",
+  "Álex Baena",
+  "Marcos Llorente",
+  "Ademola Lookman",
+  "Giuliano Simeone",
+  "Sørloth",
+  "Unai Simón",
+  "Yeray",
+  "Jesús Areso",
+  "Yuri",
+  "Gorosabel",
+  "Aymeric Laporte",
+  "Aitor Paredes",
+  "Dani Vivian",
+  "Mikel Jauregizar",
+  "Robert Navarro",
+  "Beñat Prados",
+  "Ruíz de Galarreta",
+  "Oihan Sancet",
+  "Mikel Vesga",
+  "Álex Berenguer",
+  "Álvaro Djaló",
+  "Gorka Guruzeta",
+  "Maroan Sannadi",
+  "Nico Serrano",
+  "Iñaki Williams",
+  "Nico Williams",
+  "Stole Dimitrievski",
+  "Copete",
+  "Foulquier",
+  "José Gayà",
+  "César Tárrega",
+  "Jesús Vázquez",
+  "André Almeida",
+  "Javi Guerra",
+  "Pepelu",
+  "Guido Rodríguez",
+  "A. Danjuma",
+  "Hugo Duro",
+  "Dani Raba",
+  "Luis Rioja",
+  "Umar Sadiq",
+  "Diego Conde",
+  "Luíz Júnior",
+  "Arnau Tenas",
+  "Sergi Cardona",
+  "Logan Costa",
+  "Willy Kambwala Ndengushi",
+  "Mouriño",
+  "Pau Navarro",
+  "Renato Veiga",
+  "Buchanan",
+  "Santi Comesaña",
+  "Pape Gueye",
+  "Alberto Moleiro",
+  "Hugo López",
+  "Mikautadze",
+  "Gerard Moreno",
+  "Oluwaseyi",
+  "Nicolas Pépé",
+  "Ayoze Pérez",
+  "Loiodice",
+  "Kirian Rodríguez",
+  "Jesé",
+  "Sandro Ramírez",
+  "O. Vlachodimos",
+  "José Ángel Carmona",
+  "T. Nianzou",
+  "Adrià Pedrosa",
+  "Kike Salas",
+  "Juanlu Sánchez",
+  "L. Agoumé",
+  "Jon Guridi",
+  "Juan Iglesias",
+  "Joan Jordán",
+  "Djibril Sow",
+  "Rubén Vargas",
+  "Akor Adams",
+  "Ejuke",
+  "Peque Fernández",
+  "Isaac Romero",
+  "Ignasi Miquel",
+  "Rubén Peña",
+  "Rubén Pulido",
+  "Carlos Guirao",
+  "Javi Hernández",
+  "Roberto López",
+  "Nico Lozano",
+  "Melero",
+  "Dani Rodríguez",
+  "Andrés Campos",
+  "Juan Cruz",
+  "Marcos Alonso",
+  "Sergio Carreira",
+  "Javi Galán",
+  "Álvaro Núñez",
+  "Unai Núñez",
+  "Javi Rodríguez",
+  "Manu Sánchez",
+  "Starfelt",
+  "Aleix Febas",
+  "Ilaix Moriba",
+  "Hugo Sotelo",
+  "M. Vecino",
+  "Hugo Álvarez",
+  "Iago Aspas",
+  "Pablo Durán",
+  "Borja Iglesias",
+  "Ferran Jutglà",
+  "W. Swedberg",
+  "M. Dmitrović",
+  "Leandro Cabrera",
+  "Omar El Hilali",
+  "Riedel",
+  "Miguel Rubio",
+  "Rubén Sánchez",
+  "Edu Expósito",
+  "Urko González",
+  "Pol Lozano",
+  "TDolan",
+  "Roberto Fernández",
+  "Kike García",
+  "Jofre Carreras",
+  "Pere Milla",
+  "Antoniu Roca",
+  "Thibaut Courtois",
+  "Andriy Lunin",
+  "Trent Alexander-Arnold",
+  "Raúl Asencio",
+  "Álvaro Fernández",
+  "Marc Cucurella",
+  "DDumfries",
+  "Éder Militão",
+  "Dean Huijsen",
+  "Ibrahima Konaté",
+  "Ferland Mendy",
+  "Antonio Rüdiger",
+  "Jude Bellingham",
+  "Eduardo Camavinga",
+  "Brahim Díaz",
+  "Arda Güler",
+  "Thiago Pitarch",
+  "Bernardo Silva",
+  "Aurelien Tchouaméni",
+  "Federico Valverde",
+  "Gonzalo García",
+  "Franco Mastantuono",
   "Kylian Mbappé",
-  "Lionel Messi",
-  "Cristiano Ronaldo",
-  "Kevin De Bruyne",
+  "Rodrygo",
+  "Vinícius Júnior",
+  "Antonio Sivera",
+  "Jonny",
+  "Nacho Tenaglia",
+  "Yusi",
+  "Carles Aleñá",
+  "Antonio Blanco",
+  "Guevara",
+  "Pablo Ibáñez",
+  "C. Benavídez",
+  "Mikel Rodríguez",
+  "Denis Suárez",
+  "L. Boyé",
+  "Mariano Díaz",
+  "A. Manas",
+  "Toni Martínez",
+  "Angel Pérez",
+  "A. Rebbach",
+  "Álvaro Vallés",
+  "Marc Bartra",
+  "Héctor Bellerín",
+  "Pablo Busto",
+  "Junior Firpo",
+  "Fran García",
+  "Diego Llorente",
+  "Natan",
+  "Ángel Ortiz",
+  "Ivan Corralejo",
+  "Deossa",
+  "Álvaro Fidalgo",
+  "Pablo Fornals",
+  "Isco",
+  "Giovanni Lo Celso",
+  "Marc Roca",
+  "Antony",
+  "A. Ezzalzouli",
+  "Pablo García",
+  "Cucho Hernández",
+  "Iker Losada",
+  "R. Marina",
+  "Rodrigo Riquelme",
+  "Aitor Ruibal",
+  "Jorge Benito",
+  "David Soria",
+  "A. Abqar",
+  "Davinchi",
+  "Djené Dakonam",
+  "Andrés García",
+  "Kiko Femenía",
+  "Javi Muñoz",
+  "Mario Martín",
+  "Adrián Riquelme",
+  "Ramón Terrats",
+  "Álex Sancris",
+  "Joselu",
+  "Juanmi",
+  "Borja Mayoral",
+  "M. Satriano",
+  "Paulo Gazzaniga",
+  "Alejandro Francés",
+  "Gibert Jordana",
+  "David López",
+  "Arnau Martínez",
+  "Álex Moreno",
+  "Ricard Artero",
+  "Fran Beltrán",
+  "L. Kourouma",
+  "Iván Martín",
+  "A. Ounahi",
+  "Joel Roca",
+  "V. Tsygankov",
+  "Donny van de Beek",
+  "Bryan Gil",
+  "Oleksandr Pishchur",
+  "Abel Ruiz",
+  "C. Stuani",
+  "V. Vanat",
+  "Álex Remiro",
+  "J. Aramburu",
+  "Sergio Gómez",
+  "Jon Martín",
+  "Aihen Muñoz",
+  "Odriozola",
+  "Zubeldia",
+  "Ibai Aguirre",
+  "Jon Gorrotxategi",
+  "Y. Herrera",
+  "Pablo Marín",
+  "Carlos Soler",
+  "L. Sučić",
+  "Beñat Turrientes",
+  "A. Zakharyan",
+  "Barrenetxea",
+  "Gonçalo Guedes",
+  "T. Kubo",
+  "O. Óskarsson",
+  "Mikel Oyarzabal",
+  "Iván Alejo",
+  "Juanmi Latasa",
+  "Marcos André",
+  "A. Ndiaye",
+  "Aitor Fernández",
+  "Sergio Herrera",
+  "V. Rosier",
+  "Moncayola",
+  "Iker Muñoz",
+  "Aimar Oroz",
+  "A. Budimir",
+  "Raúl García",
+  "Rubén García",
+  "Moi Gómez",
+  "Raul Moro",
+  "A. Batalla",
+  "Pep Chavarría",
+  "F. Lejeune",
+  "A. Rațiu",
+  "R. Nteka",
+  "Óscar Valentín",
+  "Alemão",
+  "Sergio Camello",
+  "Isi Palazón",
+  "Fran Pérez",
+  "Jorge de Frutos",
+  "Toni Lato",
+  "J. Mojica",
+  "Mateu Morey",
+  "Raíllo",
+  "Leo Sánchez",
+  "M. Valjent",
+  "Darder",
+  "J. Garcia",
+  "Manu Morlanes",
+  "Arnau Puigmal",
+  "Samú Costa",
+  "Antonio Sánchez",
+  "Pablo Torre",
+  "J. Kalumba",
+  "Abdón Prats",
+  "Jan Virgili"
 ];
-
-type StintCrudo = {
-  startYear: number;
-  endYear: number | null;
-  team: string;
-  teamTarget: string;
-  caps: number;
-  goals: number;
-};
-
-async function fetchWikitext(nombre: string): Promise<string | null> {
-  const url = `https://en.wikipedia.org/w/api.php?action=parse&page=${encodeURIComponent(
-    nombre
-  )}&prop=wikitext&section=0&format=json&origin=*`;
-  const res = await fetch(url);
-  const data = await res.json();
-  if (data.error) return null;
-  return data.parse.wikitext["*"];
-}
-
-function getField(infobox: string, campo: string): string | null {
-  const re = new RegExp(`\\|\\s*${campo}\\s*=\\s*(.+)`, "i");
-  const m = infobox.match(re);
-  return m ? m[1].trim().replace(/<!--.*?-->/g, "").trim() : null;
-}
-
-function parseClub(raw: string | null) {
-  if (!raw) return null;
-  const limpio = raw.replace(/\(loan\)/i, "").replace(/^→\s*/, "").trim();
-  const linkMatch = limpio.match(/\[\[([^\]|]+)(?:\|([^\]]+))?\]\]/);
-  if (!linkMatch) return { target: limpio, display: limpio };
-  const target = linkMatch[1].trim();
-  const display = (linkMatch[2] || linkMatch[1]).trim();
-  return { target, display };
-}
-
-// "1993|3|18" dentro de {{birth date and age|df=yes|1993|3|18}} -> Date
-function parseBirthDate(raw: string | null): Date | null {
-  if (!raw) return null;
-  const m = raw.match(/(\d{4})\|(\d{1,2})\|(\d{1,2})/);
-  if (!m) return null;
-  const [, year, month, day] = m;
-  return new Date(Date.UTC(Number(year), Number(month) - 1, Number(day)));
-}
-
-function parseYears(raw: string | null): { startYear: number | null; endYear: number | null } {
-  if (!raw) return { startYear: null, endYear: null };
-  if (!raw.includes("–")) {
-    const y = parseInt(raw, 10) || null;
-    return { startYear: y, endYear: y };
-  }
-  const [startPart, endPart] = raw.split("–");
-  const startYear = parseInt(startPart, 10) || null;
-  const endYear = endPart.trim() ? parseInt(endPart, 10) || null : null; // null = etapa actual
-  return { startYear, endYear };
-}
-
-function extraerEtapas(wikitext: string): StintCrudo[] {
-  const infoboxMatch = wikitext.match(/\{\{Infobox football biography([\s\S]*?)\n\}\}/i);
-  if (!infoboxMatch) return [];
-  const infobox = infoboxMatch[1];
-
-  const etapas: StintCrudo[] = [];
-  for (let i = 1; i <= 25; i++) {
-    const yearsRaw = getField(infobox, `years${i}`);
-    const clubsRaw = getField(infobox, `clubs${i}`);
-    if (!yearsRaw && !clubsRaw) break;
-
-    const caps = parseInt(getField(infobox, `caps${i}`) ?? "", 10) || 0;
-    const goals = parseInt(getField(infobox, `goals${i}`) ?? "", 10) || 0;
-    const club = parseClub(clubsRaw);
-    const { startYear, endYear } = parseYears(yearsRaw);
-
-    if (!club || !startYear) continue; // etapa incompleta, la saltamos
-
-    etapas.push({ startYear, endYear, team: club.display, teamTarget: club.target, caps, goals });
-  }
-  return etapas;
-}
-
-type DatosPerfil = {
-  fechaNacimiento: Date | null;
-  equipoActual: string | null; // nombre del club, para casar con Team
-};
-
-function extraerPerfil(wikitext: string): DatosPerfil {
-  const infoboxMatch = wikitext.match(/\{\{Infobox football biography([\s\S]*?)\n\}\}/i);
-  if (!infoboxMatch) return { fechaNacimiento: null, equipoActual: null };
-  const infobox = infoboxMatch[1];
-
-  const fechaNacimiento = parseBirthDate(getField(infobox, "birth_date"));
-  const currentClubRaw = getField(infobox, "currentclub");
-  const equipoActual = currentClubRaw ? parseClub(currentClubRaw)?.display ?? null : null;
-
-  return { fechaNacimiento, equipoActual };
-}
-
-async function findOrCreateTeam(nombre: string) {
-  const existente = await prisma.team.findFirst({ where: { nombre } });
-  if (existente) return existente;
-  return prisma.team.create({
-    data: { nombre, pais: "Desconocido" }, // TODO: completar con football-data.org más adelante
-  });
-}
-
-async function syncJugador(nombreWikipedia: string) {
-  console.log(`\n→ Sincronizando ${nombreWikipedia}...`);
-
-  const wikitext = await fetchWikitext(nombreWikipedia);
-  if (!wikitext) {
-    console.warn(`  ✗ No se encontró página de Wikipedia para "${nombreWikipedia}"`);
-    return;
-  }
-
-  const etapas = extraerEtapas(wikitext);
-  if (etapas.length === 0) {
-    console.warn(`  ✗ No se encontraron etapas de club (infobox distinto o incompleto)`);
-    return;
-  }
-
-  const perfil = extraerPerfil(wikitext);
-  const golesTotales = etapas.reduce((sum, e) => sum + e.goals, 0);
-  const partidosTotales = etapas.reduce((sum, e) => sum + e.caps, 0);
-
-  const equipoActual = perfil.equipoActual ? await findOrCreateTeam(perfil.equipoActual) : null;
-
-  // Usamos "wiki:<nombre>" como externalId provisional, hasta que integremos
-  // football-data.org y podamos usar su id real como externalId.
-  const player = await prisma.player.upsert({
-    where: { externalId: `wiki:${nombreWikipedia}` },
-    update: {
-      goles: golesTotales,
-      partidos: partidosTotales,
-      fechaNacimiento: perfil.fechaNacimiento,
-      equipoActualId: equipoActual?.id ?? null,
-    },
-    create: {
-      externalId: `wiki:${nombreWikipedia}`,
-      nombre: nombreWikipedia,
-      fechaNacimiento: perfil.fechaNacimiento,
-      nacionalidad: "Desconocida", // TODO: pendiente de otra fuente
-      equipoActualId: equipoActual?.id ?? null,
-      goles: golesTotales,
-      asistencias: 0, // TODO: no disponible en Wikipedia, pendiente de otra fuente
-      partidos: partidosTotales,
-      valorDeMercado: 0, // TODO: no disponible en Wikipedia, pendiente de Transfermarkt/API de pago
-    },
-  });
-
-  // Reemplazamos todas sus etapas para que el script sea idempotente
-  // (se puede re-correr tantas veces como quieras sin duplicar datos).
-  await prisma.stint.deleteMany({ where: { playerId: player.id } });
-
-  for (const etapa of etapas) {
-    const team = await findOrCreateTeam(etapa.team);
-    await prisma.stint.create({
-      data: {
-        playerId: player.id,
-        teamId: team.id,
-        startDate: new Date(`${etapa.startYear}-07-01`),
-        endDate: etapa.endYear ? new Date(`${etapa.endYear}-06-30`) : null,
-      },
-    });
-  }
-
-  console.log(
-    `  ✓ ${etapas.length} etapas guardadas (${golesTotales} goles, ${partidosTotales} partidos totales)`
-  );
-}
 
 async function main() {
   for (const nombre of JUGADORES_INICIALES) {
-    await syncJugador(nombre);
-    await new Promise((r) => setTimeout(r, 500)); // pequeña pausa, cortesía con la API de Wikipedia
+    console.log(`\n→ Sincronizando ${nombre}...`);
+    const resultado = await syncJugadorDesdeWikipedia(prisma, nombre);
+    if (resultado.ok) {
+      const aviso = resultado.renombrado ? `  (encontrado como "${resultado.nombreUsado}", revisa que sea correcto)` : "";
+      console.log(
+        `  ✓ ${resultado.etapas} etapas guardadas (${resultado.goles} goles, ${resultado.partidos} partidos totales)${aviso}`
+      );
+    } else {
+      console.warn(`  ✗ Fallo: ${resultado.motivo}`);
+    }
+    await new Promise((r) => setTimeout(r, 500));
   }
   await prisma.$disconnect();
   console.log("\nSync completo.");

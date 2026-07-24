@@ -1,10 +1,13 @@
 // src/lib/wikipediaSync.ts
 //
-// Lógica compartida: dado el nombre de un jugador (tal como aparece
-// en Wikipedia), obtiene su infobox y lo sincroniza en la base de datos.
+// Lógica compartida: dado el nombre de un jugador, intenta encontrar su
+// página de Wikipedia (con fallback a búsqueda si el nombre exacto no
+// existe) y sincroniza su infobox en la base de datos.
 // La usan tanto scripts/syncPlayers.ts como scripts/syncSquads.ts.
 
 import type { PrismaClient } from "@prisma/client";
+
+const USER_AGENT = "GoalArena/0.1 (proyecto personal de aprendizaje)";
 
 type StintCrudo = {
   startYear: number;
@@ -15,25 +18,56 @@ type StintCrudo = {
   goals: number;
 };
 
-async function fetchWikitext(nombre: string): Promise<string | null> {
+// Intenta obtener el wikitext de una página EXACTA. Null si no existe o falla.
+async function fetchWikitextExacto(titulo: string): Promise<string | null> {
   const url = `https://en.wikipedia.org/w/api.php?action=parse&page=${encodeURIComponent(
-    nombre
+    titulo
   )}&prop=wikitext&section=0&format=json&origin=*`;
   try {
-    const res = await fetch(url, {
-      headers: {
-        // Wikipedia pide identificarse en sus peticiones a la API; sin esto,
-        // a veces devuelve una página de error en texto plano en vez de JSON.
-        "User-Agent": "GoalArena/0.1 (proyecto personal de aprendizaje)",
-      },
-    });
+    const res = await fetch(url, { headers: { "User-Agent": USER_AGENT } });
     if (!res.ok) return null;
     const data = await res.json();
     if (data.error) return null;
     return data.parse.wikitext["*"];
   } catch {
-    return null; // respuesta no-JSON, timeout, red caída, etc. — no tumbamos el script entero
+    return null;
   }
+}
+
+// Fallback: busca el título más parecido a "nombre" usando el buscador de
+// Wikipedia (útil cuando la fuente da un nombre abreviado tipo "W. Szczęsny"
+// en vez de "Wojciech Szczęsny").
+async function buscarTituloAlternativo(nombre: string): Promise<string | null> {
+  const url = `https://en.wikipedia.org/w/api.php?action=opensearch&search=${encodeURIComponent(
+    nombre
+  )}&limit=1&namespace=0&format=json&origin=*`;
+  try {
+    const res = await fetch(url, { headers: { "User-Agent": USER_AGENT } });
+    if (!res.ok) return null;
+    const data = await res.json();
+    const titulo: string | undefined = data?.[1]?.[0];
+    return titulo ?? null;
+  } catch {
+    return null;
+  }
+}
+
+// Combina las dos: intenta el nombre exacto, y si falla, prueba con
+// el mejor resultado de búsqueda. Devuelve también qué título se usó
+// realmente, para no perder esa información.
+async function fetchWikitextConFallback(
+  nombreBuscado: string
+): Promise<{ wikitext: string; tituloUsado: string } | null> {
+  const directo = await fetchWikitextExacto(nombreBuscado);
+  if (directo) return { wikitext: directo, tituloUsado: nombreBuscado };
+
+  const alternativo = await buscarTituloAlternativo(nombreBuscado);
+  if (!alternativo || alternativo === nombreBuscado) return null;
+
+  const wikitextAlternativo = await fetchWikitextExacto(alternativo);
+  if (!wikitextAlternativo) return null;
+
+  return { wikitext: wikitextAlternativo, tituloUsado: alternativo };
 }
 
 function getField(infobox: string, campo: string): string | null {
@@ -68,7 +102,7 @@ function parseYears(raw: string | null): { startYear: number | null; endYear: nu
   }
   const [startPart, endPart] = raw.split("–");
   const startYear = parseInt(startPart, 10) || null;
-  const endYear = endPart.trim() ? parseInt(endPart, 10) || null : null; // null = etapa actual
+  const endYear = endPart.trim() ? parseInt(endPart, 10) || null : null;
   return { startYear, endYear };
 }
 
@@ -121,19 +155,23 @@ async function findOrCreateTeam(prisma: PrismaClient, nombre: string) {
 }
 
 export type ResultadoSync =
-  | { ok: true; etapas: number; goles: number; partidos: number }
+  | { ok: true; etapas: number; goles: number; partidos: number; nombreUsado: string; renombrado: boolean }
   | { ok: false; motivo: "sin_pagina" | "sin_infobox" | "sin_etapas" };
 
 /**
  * Sincroniza un jugador desde Wikipedia hacia la base de datos.
- * Idempotente: se puede llamar varias veces para el mismo jugador sin duplicar datos.
+ * Si "nombreBuscado" no existe como página exacta, intenta encontrar
+ * el título correcto vía búsqueda antes de rendirse.
+ * Idempotente: se puede llamar varias veces sin duplicar datos.
  */
 export async function syncJugadorDesdeWikipedia(
   prisma: PrismaClient,
-  nombreWikipedia: string
+  nombreBuscado: string
 ): Promise<ResultadoSync> {
-  const wikitext = await fetchWikitext(nombreWikipedia);
-  if (!wikitext) return { ok: false, motivo: "sin_pagina" };
+  const encontrado = await fetchWikitextConFallback(nombreBuscado);
+  if (!encontrado) return { ok: false, motivo: "sin_pagina" };
+
+  const { wikitext, tituloUsado } = encontrado;
 
   const etapas = extraerEtapas(wikitext);
   if (etapas.length === 0) return { ok: false, motivo: "sin_etapas" };
@@ -146,8 +184,11 @@ export async function syncJugadorDesdeWikipedia(
     ? await findOrCreateTeam(prisma, perfil.equipoActual)
     : null;
 
+  // Usamos el título REAL de Wikipedia (tituloUsado), no el nombre buscado,
+  // para que dos búsquedas distintas que acaben resolviendo al mismo jugador
+  // (ej. "W. Szczęsny" y "Wojciech Szczęsny") no creen dos filas duplicadas.
   const player = await prisma.player.upsert({
-    where: { externalId: `wiki:${nombreWikipedia}` },
+    where: { externalId: `wiki:${tituloUsado}` },
     update: {
       goles: golesTotales,
       partidos: partidosTotales,
@@ -155,8 +196,8 @@ export async function syncJugadorDesdeWikipedia(
       equipoActualId: equipoActual?.id ?? null,
     },
     create: {
-      externalId: `wiki:${nombreWikipedia}`,
-      nombre: nombreWikipedia,
+      externalId: `wiki:${tituloUsado}`,
+      nombre: tituloUsado,
       fechaNacimiento: perfil.fechaNacimiento,
       nacionalidad: "Desconocida", // TODO: pendiente de otra fuente
       equipoActualId: equipoActual?.id ?? null,
@@ -181,5 +222,12 @@ export async function syncJugadorDesdeWikipedia(
     });
   }
 
-  return { ok: true, etapas: etapas.length, goles: golesTotales, partidos: partidosTotales };
+  return {
+    ok: true,
+    etapas: etapas.length,
+    goles: golesTotales,
+    partidos: partidosTotales,
+    nombreUsado: tituloUsado,
+    renombrado: tituloUsado !== nombreBuscado,
+  };
 }
