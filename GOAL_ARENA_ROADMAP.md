@@ -53,7 +53,7 @@ Checklist viva. Márcala con `[x]` a medida que completes tareas. Las estimacion
 
 ---
 
-## Fase 3 — Primer minijuego jugable (3x3)
+## Fase 3 — Primer minijuego jugable (3x3) ✅ (completada)
 
 **Objetivo:** un juego funcionando de principio a fin, **sin backend**, con datos de ejemplo escritos a mano (hardcoded).
 
@@ -70,9 +70,47 @@ Checklist viva. Márcala con `[x]` a medida que completes tareas. Las estimacion
 
 ---
 
+## Fase 3.5 — 3x3 conectado a datos reales ✅ (completada, con pulido pendiente)
+
+**Objetivo:** que el 3x3 deje de depender de datos hardcoded y sea el primer minijuego totalmente "operativo" contra Supabase/Postgres. Esta fase se adelantó a la Fase 6 general porque surgió de forma natural al construir el buscador de jugadores.
+
+**Buscador de jugadores (componente compartido)**
+- [x] `features/games/shared/PlayerSearch.tsx` — combobox reutilizable con teclado completo, avatar/bandera, estado de carga y "sin resultados"
+- [x] Soporta tanto datos locales (`players`) como búsqueda async (`onSearch`), para poder migrar de mock a BD real sin reescribir el componente
+- [x] `excludeNames` + `hideExcluded` — jugadores ya colocados se muestran en rojo con etiqueta "Ya colocado" en vez de desaparecer
+- [x] Corregidos warnings de "setState síncrono dentro de un efecto" — toda la lógica reactiva a eventos del usuario vive en manejadores de evento, no en `useEffect`
+
+**Backend real para el 3x3**
+- [x] `src/lib/prisma.ts` — singleton de `PrismaClient` con adapter-pg para el runtime de Next (Prisma 7)
+- [x] `GET /api/jugadores/buscar` — busca jugadores reales en Postgres, mapea `Player` (Prisma) → `Jugador` (tipo de UI)
+- [x] Búsqueda insensible a acentos también en la API real (antes solo funcionaba en el buscador local) — normalizador compartido en `src/lib/normalizarTexto.ts`, usado tanto por `PlayerSearch` como por la API route
+- [x] `GET /api/tablero/generar` + `features/games/grid/generarTablero.server.ts` — genera el tablero 3x3 a partir de datos reales en vez de condiciones fijas
+  - [x] Verifica intersección real de jugadores para condiciones equipo×equipo (no solo "existe algún jugador", sino "hay un jugador que jugó en AMBOS clubes")
+  - [x] Nunca genera selección×selección (una fila siempre es equipo/club; la nacionalidad solo puede aparecer en columnas)
+  - [x] Filtro por nombre para descartar equipos filiales/juveniles (`U21`, `Sub-XX`, `Jong`, `Primavera`, reservas...) — aplicado tanto a `Team.nombre` como a `Player.nacionalidad`
+  - [x] Intento de diversificar filas por país (parche estadístico, no garantía — limitado por lo poco sincronizado que está el cruce entre ligas ahora mismo)
+- [x] `features/games/grid/indiceEquipos.server.ts` — índice compartido (equipo↔jugador↔nacionalidad) usado tanto por el generador como por la comprobación de soluciones
+- [x] `POST /api/tablero/contar-soluciones` — dado un lote de celdas (condición fila + columna), devuelve cuántos jugadores reales cumplen cada una, y sus nombres
+- [x] Autocompletado de solución única: si el jugador colocado también es la ÚNICA solución posible para otra casilla vacía del mismo tablero, esa casilla se marca sola con un mensaje explicativo (comprobación por celda, no asume solución única global del tablero)
+- [x] Panel de depuración (solo fuera de producción, `NODE_ENV !== "production"`): desplegable en cada casilla vacía con el nº de soluciones y el listado de nombres — para poder verificar el punto anterior sin depender de la suerte jugando
+
+**Resultado esperado:** el 3x3 es jugable de principio a fin contra datos reales de la BD, con tableros generados dinámicamente y validados contra intersecciones reales de jugadores.
+
+### Pendiente / pulido de esta fase
+
+- [ ] **Bug de acentos especiales:** "Leo Østigård" no aparece al buscar "Ostigard" — el normalizador actual (`normalizarTexto.ts`) solo quita diacríticos combinables (tildes, diéresis...) vía `NFD`, pero no cubre caracteres nórdicos que no se descomponen así (Ø, Å, Æ, Ð...). Hay que ampliar el normalizador con un mapa de sustitución manual para esos casos.
+- [ ] **Diseño final del tablero** (pendiente de pulido visual, sigue el patrón de diseño del resto de la página):
+  - Casillas acertadas: glow verde redondeado en vez del borde plano actual; casillas cuadradas (revisar proporciones).
+  - Incorporar imágenes reales: escudos de equipo/selección y foto del jugador dentro de la casilla, junto al nombre, en cuanto se acierta la respuesta (ahora mismo solo se ve el nombre en texto).
+- [ ] **Mensajes residuales al terminar partida:** el último mensaje mostrado durante la partida (p. ej. "Anthony Elanga colocado correctamente") se queda visible tras completar o rendirse — debe desaparecer al mostrarse el diálogo de resultado (`GameResultDialog`).
+- [ ] Evaluar si merece la pena limitar cuántas columnas de tipo "nacionalidad" puede tener un tablero (1 o 2 máximo) para no rebajar demasiado la dificultad — aparcado a propósito hasta ver cómo se comporta el generador con más ligas sincronizadas.
+- [ ] Root cause de fondo sin resolver: `extraerEtapas()` en `wikipediaSync.ts` no distingue el bloque de carrera de club del bloque de selección nacional en el infobox de Wikipedia — el filtro por nombre en el generador es un parche necesario mientras tanto, pero no ataca la causa raíz del sync.
+
+---
+
 ## Fase 4 — Resto de minijuegos (Individual)
 
-**Objetivo:** completar el catálogo de minijuegos en modo Singleplayer, reutilizando los patrones aprendidos en el 3x3.
+**Objetivo:** completar el catálogo de minijuegos en modo Singleplayer, reutilizando los patrones aprendidos en el 3x3 — incluido, ahora, el patrón de conectar un juego a datos reales (buscador + generador + validación server-side) que se estableció en la Fase 3.5.
 
 - [ ] Fichajes
 - [x] Higher or Lower
@@ -106,10 +144,10 @@ Checklist viva. Márcala con `[x]` a medida que completes tareas. Las estimacion
 
 **Objetivo:** pasar de datos simulados a datos persistentes y usuarios reales.
 
-- [ ] Proyecto Supabase configurado
-- [ ] Esquema de base de datos (usuarios, partidas, estadísticas, logros)
-- [ ] Autenticación (email/password y/o proveedor social)
-- [ ] API Routes propias para leer/escribir datos
+- [x] Proyecto Supabase configurado
+- [x] Esquema de base de datos (usuarios, partidas, estadísticas, logros) — `prisma/schema.prisma`, migraciones aplicadas
+- [ ] Autenticación (email/password y/o proveedor social) — sigue con `AuthContext` mock
+- [x] API Routes propias para leer/escribir datos — hechas para el 3x3 (`/api/jugadores/buscar`, `/api/tablero/generar`, `/api/tablero/contar-soluciones`); falta para el resto de juegos y para perfil/social
 - [ ] Conectar el perfil (Fase 5) a datos reales
 - [ ] Guardar resultados de partidas jugadas
 
@@ -194,6 +232,12 @@ Checklist viva. Márcala con `[x]` a medida que completes tareas. Las estimacion
 - [ ] Modo competitivo por temporadas/divisiones
 - [ ] Reto diario
 - [ ] Monetización
+
+---
+
+## Backlog transversal (no ligado a una fase concreta)
+
+- [ ] **Imágenes de jugadores y escudos de equipo.** Ahora mismo `Team.escudo` existe en el schema pero no está claro de dónde sale un set fiable de imágenes reales (ni de jugadores ni de escudos) que se pueda usar libremente. Pendiente decidir fuente (¿API-Football tiene URLs de imágenes en el tier gratuito? ¿Wikipedia/Wikimedia Commons con su propia licencia por imagen? ¿Un CDN propio subiendo los assets a mano?) antes de poder implementar nada — bloquea directamente el punto de diseño final del 3x3 (Fase 3.5) y, a futuro, cualquier pantalla de perfil/social que muestre jugadores o escudos.
 
 ---
 

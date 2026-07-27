@@ -14,8 +14,9 @@
 // es.wikipedia.org (u otro idioma) no va a parsear bien porque esa
 // plantilla tiene otros nombres de campo. Por eso solo se aceptan
 // URLs de en.wikipedia.org.
-
 import type { PrismaClient } from "@prisma/client";
+import { obtenerNacionalidadWikidata } from "./wikidataSync";
+import { limpiarNombreSeleccion } from "./limpiarNombreSeleccion";
 
 // Wikipedia pide identificarse con contacto real en peticiones automatizadas
 // (ver https://meta.wikimedia.org/wiki/User-Agent_policy). Cambia el email
@@ -202,7 +203,7 @@ function getField(infobox: string, campo: string): string | null {
 // cortando la extracción a medias. Contar la profundidad es la única forma
 // fiable de encontrar el cierre real.
 function extraerBloqueInfobox(wikitext: string): string | null {
-  const inicioMatch = wikitext.match(/\{\{Infobox football biography/i);
+  const inicioMatch = wikitext.match(/\{\{Infobox (?:football|soccer) biography/i);
   if (!inicioMatch || inicioMatch.index === undefined) return null;
 
   const inicio = inicioMatch.index;
@@ -277,30 +278,24 @@ function extraerEtapas(wikitext: string): StintCrudo[] {
   return etapas;
 }
 
-// Quita el sufijo típico de los campos "nationalteam*" del infobox, ej:
-// "Argentina national football team" -> "Argentina"
-// "Spain national under-21 football team" -> "Spain"
-// "Brazil women's national football team" -> "Brazil"
-// Si no encaja con ningún patrón conocido, devuelve el texto tal cual
-// (mejor eso que descartar el dato).
-function limpiarNombreSeleccion(display: string): string {
-  return display
-    .replace(/\s+women'?s national (?:under-\d+ )?football team$/i, "")
-    .replace(/\s+national under-\d+ football team$/i, "")
-    .replace(/\s+national football team$/i, "")
-    .trim();
-}
-
-// Fallback cuando no hay ninguna selección en el infobox: coge el último
-// [[wikilink]] del campo birth_place, que en el patrón habitual
-// "[[Ciudad]], [[País]]" corresponde al país. No es infalible (hay
-// ciudades/regiones sin el país enlazado, formatos raros...) pero es mejor
-// aproximación que dejarlo en blanco.
+// Fallback cuando no hay ninguna selección en el infobox: parte el campo
+// birth_place por comas y coge la última parte, que en el patrón habitual
+// "[[Ciudad]], País" o "[[Ciudad]], [[País]]" corresponde al país -- esté
+// o no enlazado (Wikipedia no siempre enlaza el país). Sin ninguna coma
+// (ej. "[[Turin]]" a secas) no hay forma fiable de distinguir "es una
+// ciudad" de "es un país", así que en ese caso se devuelve null en vez
+// de arriesgarse a adivinar mal.
 function paisDesdeBirthPlace(raw: string | null): string | null {
   if (!raw) return null;
-  const links = [...raw.matchAll(/\[\[([^\]|]+)(?:\|[^\]]+)?\]\]/g)].map((m) => m[1].trim());
-  if (links.length === 0) return null;
-  return links[links.length - 1];
+
+  const partes = raw.split(",").map((p) => p.trim());
+  if (partes.length < 2) return null;
+
+  const ultima = partes[partes.length - 1];
+  const linkMatch = ultima.match(/^\[\[([^\]|]+)(?:\|([^\]]+))?\]\]$/);
+  if (linkMatch) return (linkMatch[2] || linkMatch[1]).trim();
+
+  return ultima || null;
 }
 
 // Recorre nationalteam1, nationalteam2... y se queda con la ÚLTIMA
@@ -308,21 +303,23 @@ function paisDesdeBirthPlace(raw: string | null): string | null {
 // (juveniles primero, absoluta al final). Heurística, no infalible:
 // revisa a mano casos de doble nacionalidad o jugadores sin selección
 // absoluta.
+// Sustituye la función entera por esta versión con logs:
 function extraerNacionalidad(infobox: string): string | null {
   let ultimaSeleccion: string | null = null;
 
   for (let i = 1; i <= 10; i++) {
     const raw = getField(infobox, `nationalteam${i}`);
     if (!raw) continue;
+    console.warn(`    [infobox] nationalteam${i} = "${raw}"`);
     const equipo = parseClub(raw);
     if (equipo) ultimaSeleccion = limpiarNombreSeleccion(equipo.display);
   }
 
   if (ultimaSeleccion) return ultimaSeleccion;
 
-  // Nunca convocado (o el infobox no lo recoge): usamos el país de
-  // nacimiento como aproximación.
-  return paisDesdeBirthPlace(getField(infobox, "birth_place"));
+  const birthPlaceRaw = getField(infobox, "birth_place");
+  console.warn(`    [infobox] sin nationalteam -> birth_place = "${birthPlaceRaw ?? "—"}"`);
+  return paisDesdeBirthPlace(birthPlaceRaw);
 }
 
 type DatosPerfil = {
@@ -381,7 +378,6 @@ export async function syncJugadorDesdeWikipedia(
   urlManual?: string
 ): Promise<ResultadoSync> {
   let encontrado: { wikitext: string; tituloUsado: string } | null;
-
   if (urlManual) {
     const tituloDeUrl = extraerTituloDeUrlWikipedia(urlManual);
     if (!tituloDeUrl) {
@@ -392,7 +388,18 @@ export async function syncJugadorDesdeWikipedia(
     }
 
     const wikitext = await fetchWikitextExacto(tituloDeUrl);
-    if (!wikitext || !extraerBloqueInfobox(wikitext)) {
+
+    if (!wikitext) {
+      console.warn(
+        `    ✗ No se encontró ninguna página en en.wikipedia.org con el título "${tituloDeUrl}" (extraído de la URL). Revisa que la URL siga siendo válida abriéndola en el navegador.`
+      );
+      return { ok: false, motivo: "sin_pagina" };
+    }
+
+    if (!extraerBloqueInfobox(wikitext)) {
+      console.warn(
+        `    ✗ La página "${tituloDeUrl}" existe pero no se encontró "{{Infobox football biography" en su contenido. Primeros 200 caracteres del wikitext:\n      ${wikitext.slice(0, 200).replace(/\n/g, " ")}`
+      );
       return { ok: false, motivo: "sin_infobox" };
     }
 
@@ -409,6 +416,8 @@ export async function syncJugadorDesdeWikipedia(
   if (etapas.length === 0) return { ok: false, motivo: "sin_etapas" };
 
   const perfil = extraerPerfil(wikitext);
+  const nacionalidadWikidata = await obtenerNacionalidadWikidata(tituloUsado);
+  const nacionalidad = nacionalidadWikidata ?? perfil.nacionalidad;
   const golesTotales = etapas.reduce((sum, e) => sum + e.goals, 0);
   const partidosTotales = etapas.reduce((sum, e) => sum + e.caps, 0);
 
@@ -426,13 +435,13 @@ export async function syncJugadorDesdeWikipedia(
       partidos: partidosTotales,
       fechaNacimiento: perfil.fechaNacimiento,
       equipoActualId: equipoActual?.id ?? null,
-      nacionalidad: perfil.nacionalidad,
+      nacionalidad,
     },
     create: {
       externalId: `wiki:${tituloUsado}`,
       nombre: nombreVisible,
       fechaNacimiento: perfil.fechaNacimiento,
-      nacionalidad: perfil.nacionalidad,
+      nacionalidad,
       equipoActualId: equipoActual?.id ?? null,
       goles: golesTotales,
       asistencias: 0,

@@ -1,14 +1,13 @@
 // src/app/api/jugadores/buscar/route.ts
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { normalizarTexto } from "@/lib/normalizarTexto";
 import type { Jugador } from "@/features/games/shared/types";
 
-// Evita cachear resultados de búsqueda entre peticiones
 export const dynamic = "force-dynamic";
 
-// Debe coincidir con MIN_CHARS de PlayerSearch.tsx.
-// TODO: extraer a una constante compartida si esto se descoordina.
 const MIN_QUERY_LENGTH = 2;
+const MAX_RESULTADOS = 8;
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
@@ -19,24 +18,50 @@ export async function GET(request: Request) {
   }
 
   try {
+    const consultaNormalizada = normalizarTexto(q);
+
+    // No usamos "contains" de Postgres como filtro principal: ILIKE no
+    // ignora acentos, y no queremos depender ahora mismo de activar la
+    // extensión `unaccent` en Supabase. Con el volumen de jugadores
+    // actual, traer los nombres y filtrar en JS con el MISMO normalizador
+    // que usa PlayerSearch es más simple y garantiza el mismo
+    // comportamiento en la búsqueda local (mock) y en la real (BD).
+    //
+    // TODO: si Player crece a varios miles de filas, esto deja de ser
+    // eficiente. En ese momento: activar `unaccent` en Postgres
+    // (Supabase → Database → Extensions) y mover el filtro a la query
+    // con `unaccent(nombre) ILIKE unaccent('%q%')`.
+    const candidatos = await prisma.player.findMany({
+      select: { nombre: true },
+    });
+
+    const nombresCoincidentes = candidatos
+      .filter((c) => normalizarTexto(c.nombre).includes(consultaNormalizada))
+      .map((c) => c.nombre)
+      .slice(0, MAX_RESULTADOS);
+
+    if (nombresCoincidentes.length === 0) {
+      return NextResponse.json([]);
+    }
+
     const players = await prisma.player.findMany({
-      where: {
-        nombre: { contains: q, mode: "insensitive" },
-      },
+      where: { nombre: { in: nombresCoincidentes } },
       include: {
         stints: {
           include: { team: true },
           orderBy: { startDate: "asc" },
         },
       },
-      take: 8,
     });
+
+    // "in" no respeta el orden de nombresCoincidentes, así que reordenamos
+    // para que el más relevante (según nuestro filtro) siga saliendo primero.
+    const ordenPorNombre = new Map(nombresCoincidentes.map((n, i) => [n, i]));
+    players.sort((a, b) => (ordenPorNombre.get(a.nombre) ?? 0) - (ordenPorNombre.get(b.nombre) ?? 0));
 
     const jugadores: Jugador[] = players.map((player) => ({
       nombre: player.nombre,
-      fechaNacimiento: player.fechaNacimiento
-        ? player.fechaNacimiento.toISOString().split("T")[0]
-        : "",
+      fechaNacimiento: player.fechaNacimiento ? player.fechaNacimiento.toISOString().split("T")[0] : "",
       nacionalidad: player.nacionalidad,
       valorDeMercado: player.valorDeMercado,
       goles: player.goles,
@@ -52,9 +77,6 @@ export async function GET(request: Request) {
     return NextResponse.json(jugadores);
   } catch (err) {
     console.error("GET /api/jugadores/buscar: fallo al consultar la BD", err);
-    return NextResponse.json(
-      { error: "No se pudo completar la búsqueda." },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "No se pudo completar la búsqueda." }, { status: 500 });
   }
 }

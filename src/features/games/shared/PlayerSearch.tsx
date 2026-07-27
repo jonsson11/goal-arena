@@ -5,6 +5,7 @@ import { useCallback, useMemo, useRef, useState } from "react";
 import { Search, X, Loader2 } from "lucide-react";
 import type { Jugador } from "./types";
 import { obtenerCodigoPais } from "./banderas";
+import { normalizarTexto } from "@/lib/normalizarTexto";
 
 interface PlayerSearchProps {
   players?: Jugador[];
@@ -31,16 +32,9 @@ const MIN_CHARS = 2;
 const DEBOUNCE_MS = 180;
 const MAX_RESULTS = 8;
 
-function normalize(text: string) {
-  return text
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .toLowerCase()
-    .trim();
-}
 
 function esQueryCorta(q: string) {
-  return normalize(q).length < MIN_CHARS;
+  return normalizarTexto(q).length < MIN_CHARS;
 }
 
 function clubActual(jugador: Jugador) {
@@ -86,8 +80,8 @@ export function PlayerSearch({
   const searchLocal = useCallback(
     (q: string): Jugador[] => {
       if (!players) return [];
-      const nq = normalize(q);
-      const coincidencias = players.filter((j) => normalize(j.nombre).includes(nq));
+      const nq = normalizarTexto(q);
+      const coincidencias = players.filter((j) => normalizarTexto(j.nombre).includes(nq));
       const visibles = hideExcluded
         ? coincidencias.filter((j) => !excludeSet.has(j.nombre))
         : coincidencias;
