@@ -4,6 +4,16 @@
 // página de Wikipedia (con fallback a búsqueda si el nombre exacto no
 // existe) y sincroniza su infobox en la base de datos.
 // La usan tanto scripts/syncPlayers.ts como scripts/syncSquads.ts.
+//
+// También admite pasar directamente la URL de Wikipedia del jugador,
+// para los casos en los que la búsqueda automática (fetchWikitextConFallback)
+// no da con la página correcta. En ese caso se salta las 4 estrategias
+// de búsqueda y va directo a esa página.
+// IMPORTANTE: el parseo del infobox está hecho para la plantilla
+// "Infobox football biography" de la Wikipedia EN INGLÉS. Un link a
+// es.wikipedia.org (u otro idioma) no va a parsear bien porque esa
+// plantilla tiene otros nombres de campo. Por eso solo se aceptan
+// URLs de en.wikipedia.org.
 
 import type { PrismaClient } from "@prisma/client";
 
@@ -158,6 +168,27 @@ export async function resolverTituloWikipedia(nombreBuscado: string): Promise<st
   return resultado?.tituloUsado ?? null;
 }
 
+// Extrae el título de página a partir de una URL de Wikipedia, ej:
+// "https://en.wikipedia.org/wiki/Fabinho_(footballer)" -> "Fabinho (footballer)"
+// "https://en.wikipedia.org/wiki/Kevin_De_Bruyne" -> "Kevin De Bruyne"
+// Devuelve null si la URL no es de en.wikipedia.org o no tiene forma de
+// URL de artículo (/wiki/...).
+function extraerTituloDeUrlWikipedia(url: string): string | null {
+  let u: URL;
+  try {
+    u = new URL(url);
+  } catch {
+    return null;
+  }
+
+  if (u.hostname !== "en.wikipedia.org") return null;
+
+  const match = u.pathname.match(/^\/wiki\/(.+)$/);
+  if (!match) return null;
+
+  return decodeURIComponent(match[1]).replace(/_/g, " ");
+}
+
 function getField(infobox: string, campo: string): string | null {
   const re = new RegExp(`\\|\\s*${campo}\\s*=\\s*(.+)`, "i");
   const m = infobox.match(re);
@@ -246,20 +277,70 @@ function extraerEtapas(wikitext: string): StintCrudo[] {
   return etapas;
 }
 
+// Quita el sufijo típico de los campos "nationalteam*" del infobox, ej:
+// "Argentina national football team" -> "Argentina"
+// "Spain national under-21 football team" -> "Spain"
+// "Brazil women's national football team" -> "Brazil"
+// Si no encaja con ningún patrón conocido, devuelve el texto tal cual
+// (mejor eso que descartar el dato).
+function limpiarNombreSeleccion(display: string): string {
+  return display
+    .replace(/\s+women'?s national (?:under-\d+ )?football team$/i, "")
+    .replace(/\s+national under-\d+ football team$/i, "")
+    .replace(/\s+national football team$/i, "")
+    .trim();
+}
+
+// Fallback cuando no hay ninguna selección en el infobox: coge el último
+// [[wikilink]] del campo birth_place, que en el patrón habitual
+// "[[Ciudad]], [[País]]" corresponde al país. No es infalible (hay
+// ciudades/regiones sin el país enlazado, formatos raros...) pero es mejor
+// aproximación que dejarlo en blanco.
+function paisDesdeBirthPlace(raw: string | null): string | null {
+  if (!raw) return null;
+  const links = [...raw.matchAll(/\[\[([^\]|]+)(?:\|[^\]]+)?\]\]/g)].map((m) => m[1].trim());
+  if (links.length === 0) return null;
+  return links[links.length - 1];
+}
+
+// Recorre nationalteam1, nationalteam2... y se queda con la ÚLTIMA
+// selección encontrada, asumiendo el orden habitual del infobox
+// (juveniles primero, absoluta al final). Heurística, no infalible:
+// revisa a mano casos de doble nacionalidad o jugadores sin selección
+// absoluta.
+function extraerNacionalidad(infobox: string): string | null {
+  let ultimaSeleccion: string | null = null;
+
+  for (let i = 1; i <= 10; i++) {
+    const raw = getField(infobox, `nationalteam${i}`);
+    if (!raw) continue;
+    const equipo = parseClub(raw);
+    if (equipo) ultimaSeleccion = limpiarNombreSeleccion(equipo.display);
+  }
+
+  if (ultimaSeleccion) return ultimaSeleccion;
+
+  // Nunca convocado (o el infobox no lo recoge): usamos el país de
+  // nacimiento como aproximación.
+  return paisDesdeBirthPlace(getField(infobox, "birth_place"));
+}
+
 type DatosPerfil = {
   fechaNacimiento: Date | null;
   equipoActual: string | null;
+  nacionalidad: string;
 };
 
 function extraerPerfil(wikitext: string): DatosPerfil {
   const infobox = extraerBloqueInfobox(wikitext);
-  if (!infobox) return { fechaNacimiento: null, equipoActual: null };
+  if (!infobox) return { fechaNacimiento: null, equipoActual: null, nacionalidad: "Desconocida" };
 
   const fechaNacimiento = parseBirthDate(getField(infobox, "birth_date"));
   const currentClubRaw = getField(infobox, "currentclub");
   const equipoActual = currentClubRaw ? parseClub(currentClubRaw)?.display ?? null : null;
+  const nacionalidad = extraerNacionalidad(infobox) ?? "Desconocida";
 
-  return { fechaNacimiento, equipoActual };
+  return { fechaNacimiento, equipoActual, nacionalidad };
 }
 
 async function findOrCreateTeam(prisma: PrismaClient, nombre: string) {
@@ -281,13 +362,45 @@ function limpiarNombreVisible(titulo: string): string {
 
 export type ResultadoSync =
   | { ok: true; etapas: number; goles: number; partidos: number; nombreUsado: string; renombrado: boolean }
-  | { ok: false; motivo: "sin_pagina" | "sin_infobox" | "sin_etapas" };
+  | { ok: false; motivo: "sin_pagina" | "sin_infobox" | "sin_etapas" | "url_invalida" };
 
+/**
+ * Sincroniza un jugador desde Wikipedia.
+ *
+ * - Si NO se pasa `urlManual`: usa el nombre para buscar la página, con las
+ *   4 estrategias de fallback habituales.
+ * - Si se pasa `urlManual`: se salta toda la búsqueda y va directo a esa
+ *   página. Solo se aceptan URLs de en.wikipedia.org (ver nota al principio
+ *   del archivo sobre por qué). Útil cuando el nombre no se detecta
+ *   automáticamente, jugadores con nombres muy distintos a como aparecen
+ *   en Wikipedia, etc.
+ */
 export async function syncJugadorDesdeWikipedia(
   prisma: PrismaClient,
-  nombreBuscado: string
+  nombreBuscado: string,
+  urlManual?: string
 ): Promise<ResultadoSync> {
-  const encontrado = await fetchWikitextConFallback(nombreBuscado);
+  let encontrado: { wikitext: string; tituloUsado: string } | null;
+
+  if (urlManual) {
+    const tituloDeUrl = extraerTituloDeUrlWikipedia(urlManual);
+    if (!tituloDeUrl) {
+      console.warn(
+        `    ✗ URL no válida (debe ser de en.wikipedia.org con forma /wiki/Titulo): "${urlManual}"`
+      );
+      return { ok: false, motivo: "url_invalida" };
+    }
+
+    const wikitext = await fetchWikitextExacto(tituloDeUrl);
+    if (!wikitext || !extraerBloqueInfobox(wikitext)) {
+      return { ok: false, motivo: "sin_infobox" };
+    }
+
+    encontrado = { wikitext, tituloUsado: tituloDeUrl };
+  } else {
+    encontrado = await fetchWikitextConFallback(nombreBuscado);
+  }
+
   if (!encontrado) return { ok: false, motivo: "sin_pagina" };
 
   const { wikitext, tituloUsado } = encontrado;
@@ -313,12 +426,13 @@ export async function syncJugadorDesdeWikipedia(
       partidos: partidosTotales,
       fechaNacimiento: perfil.fechaNacimiento,
       equipoActualId: equipoActual?.id ?? null,
+      nacionalidad: perfil.nacionalidad,
     },
     create: {
       externalId: `wiki:${tituloUsado}`,
       nombre: nombreVisible,
       fechaNacimiento: perfil.fechaNacimiento,
-      nacionalidad: "Desconocida",
+      nacionalidad: perfil.nacionalidad,
       equipoActualId: equipoActual?.id ?? null,
       goles: golesTotales,
       asistencias: 0,
@@ -347,6 +461,6 @@ export async function syncJugadorDesdeWikipedia(
     goles: golesTotales,
     partidos: partidosTotales,
     nombreUsado: tituloUsado,
-    renombrado: tituloUsado !== nombreBuscado,
+    renombrado: urlManual ? false : tituloUsado !== nombreBuscado,
   };
 }
