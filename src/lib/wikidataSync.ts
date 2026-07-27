@@ -66,19 +66,15 @@ export async function obtenerNacionalidadWikidata(tituloWikipedia: string): Prom
   const entidad = await obtenerEntidadPorTituloWikipedia(tituloWikipedia);
 
   if (!entidad) {
-    console.warn(`    [wikidata] "${tituloWikipedia}" -> no se encontró elemento de Wikidata para este artículo`);
     return null;
   }
 
   const p1532 = primerValorDePropiedad(entidad.claims, "P1532");
   const p27 = primerValorDePropiedad(entidad.claims, "P27");
-  console.warn(`    [wikidata] "${tituloWikipedia}" -> qid=${entidad.qid} P1532=${p1532 ?? "—"} P27=${p27 ?? "—"}`);
 
   const qidPais = p1532 ?? p27;
   if (!qidPais) return null;
 
   const etiqueta = await obtenerEtiquetaEnIngles(qidPais);
-  console.warn(`    [wikidata] ${qidPais} -> "${etiqueta ?? "sin etiqueta en inglés"}"`);
-
   return etiqueta ? limpiarNombreSeleccion(etiqueta) : null;
 }

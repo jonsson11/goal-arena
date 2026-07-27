@@ -310,7 +310,6 @@ function extraerNacionalidad(infobox: string): string | null {
   for (let i = 1; i <= 10; i++) {
     const raw = getField(infobox, `nationalteam${i}`);
     if (!raw) continue;
-    console.warn(`    [infobox] nationalteam${i} = "${raw}"`);
     const equipo = parseClub(raw);
     if (equipo) ultimaSeleccion = limpiarNombreSeleccion(equipo.display);
   }
@@ -318,7 +317,6 @@ function extraerNacionalidad(infobox: string): string | null {
   if (ultimaSeleccion) return ultimaSeleccion;
 
   const birthPlaceRaw = getField(infobox, "birth_place");
-  console.warn(`    [infobox] sin nationalteam -> birth_place = "${birthPlaceRaw ?? "—"}"`);
   return paisDesdeBirthPlace(birthPlaceRaw);
 }
 
