@@ -373,7 +373,8 @@ export type ResultadoSync =
 export async function syncJugadorDesdeWikipedia(
   prisma: PrismaClient,
   nombreBuscado: string,
-  urlManual?: string
+  urlManual?: string,
+  playerIdExistente?: string
 ): Promise<ResultadoSync> {
   let encontrado: { wikitext: string; tituloUsado: string } | null;
   if (urlManual) {
@@ -426,8 +427,9 @@ export async function syncJugadorDesdeWikipedia(
   const nombreVisible = limpiarNombreVisible(tituloUsado);
 
   const player = await prisma.player.upsert({
-    where: { externalId: `wiki:${tituloUsado}` },
+    where: playerIdExistente ? { id: playerIdExistente } : { externalId: `wiki:${tituloUsado}` },
     update: {
+      externalId: `wiki:${tituloUsado}`,
       nombre: nombreVisible,
       goles: golesTotales,
       partidos: partidosTotales,

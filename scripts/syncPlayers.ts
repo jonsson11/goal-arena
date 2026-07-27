@@ -20,11 +20,12 @@ const prisma = new PrismaClient({ adapter });
 
 type EntradaJugador = string | { nombre: string; url: string };
 
-
+//
 //  { nombre: "", url: "" },
 const JUGADORES_INICIALES: EntradaJugador[] = [
-   "Filimon Gerezgiher",
-];
+  { nombre: "Sergio Reguilón", url: "https://en.wikipedia.org/wiki/Sergio_Reguil%C3%B3n" },
+
+]
 
 async function main() {
   const fallos: { nombre: string; motivo: string }[] = [];
