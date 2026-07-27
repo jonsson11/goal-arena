@@ -126,7 +126,7 @@ model Player {
 // una transferencia concreta (Fichajes) y la plantilla de un año (XI).
 model Stint {
   id        String    @id @default(cuid())
-  player    Player    @relation(fields: [playerId], references: [id])
+  player    Player    @relation(fields: [playerId], references: [id], onDelete:Cascade)
   playerId  String
   team      Team      @relation(fields: [teamId], references: [id])
   teamId    String
@@ -151,7 +151,7 @@ model Competition {
 // y para un Higher/Lower más fino que el total de carrera.
 model PlayerStat {
   id            String      @id @default(cuid())
-  player        Player      @relation(fields: [playerId], references: [id])
+  player        Player      @relation(fields: [playerId], references: [id], onDelete: Cascade)
   playerId      String
   team          Team?       @relation(fields: [teamId], references: [id])
   teamId        String?
@@ -182,7 +182,7 @@ model Top10Ranking {
 
 model Top10Entry {
   id        String       @id @default(cuid())
-  ranking   Top10Ranking @relation(fields: [rankingId], references: [id])
+  ranking   Top10Ranking @relation(fields: [rankingId], references: [id], onDelete: Cascade)
   rankingId String
   posicion  Int
   player    Player       @relation(fields: [playerId], references: [id])
