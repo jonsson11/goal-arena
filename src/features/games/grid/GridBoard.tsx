@@ -1,3 +1,4 @@
+// src/features/games/grid/GridBoard.tsx
 "use client";
 
 import { useState } from "react";
@@ -5,6 +6,7 @@ import type { Jugador } from "@/features/games/shared/types";
 import { jugadores } from "@/features/games/shared/data";
 import { GameResultDialog } from "@/features/games/shared/GameResultDialog";
 import { GameButton } from "@/features/games/shared/GameButton";
+import { PlayerSearch } from "@/features/games/shared/PlayerSearch";
 import type { Tablero, Celda } from "./type";
 import { generarTableroVacio } from "./data";
 import { celdasValidasParaJugador } from "./logic";
@@ -15,7 +17,6 @@ function segundosTranscurridos(inicio: number): number {
 
 export function GridBoard() {
   const [tablero, setTablero] = useState<Tablero>(() => generarTableroVacio());
-  const [nombreBuscado, setNombreBuscado] = useState("");
   const [mensaje, setMensaje] = useState("");
   const [celdasPendientes, setCeldasPendientes] = useState<Celda[]>([]);
   const [jugadorPendiente, setJugadorPendiente] = useState<Jugador | null>(null);
@@ -41,7 +42,6 @@ export function GridBoard() {
     setTablero({ ...tablero, celdas: nuevasCeldas });
     setCeldasPendientes([]);
     setJugadorPendiente(null);
-    setNombreBuscado("");
     setMensaje(`${jugador.nombre} colocado correctamente.`);
 
     const todasLlenas = nuevasCeldas.every((c) => c.jugador !== null);
@@ -52,16 +52,11 @@ export function GridBoard() {
     }
   }
 
-  function handleBuscar() {
-    const jugador = jugadores.find(
-      (j) => j.nombre.toLowerCase() === nombreBuscado.trim().toLowerCase()
-    );
-
-    if (!jugador) {
-      setMensaje("No se ha encontrado ese jugador.");
-      return;
-    }
-
+  // Antes: handleBuscar() leía `nombreBuscado` y buscaba al jugador en el
+  // array mock con un `.find()` por nombre exacto. PlayerSearch ya nos da
+  // el objeto Jugador directamente al seleccionarlo, así que esta función
+  // arranca justo donde antes terminaba el `.find()`.
+  function procesarSeleccion(jugador: Jugador) {
     const validas = celdasValidasParaJugador(jugador, tablero);
 
     if (validas.length === 0) {
@@ -83,7 +78,6 @@ export function GridBoard() {
 
   function jugarDeNuevo() {
     setTablero(generarTableroVacio());
-    setNombreBuscado("");
     setMensaje("");
     setCeldasPendientes([]);
     setJugadorPendiente(null);
@@ -94,6 +88,11 @@ export function GridBoard() {
   }
 
   const celdasRellenas = tablero.celdas.filter((c) => c.jugador !== null).length;
+
+  // Nombres ya colocados en el tablero, para no dejar repetirlos.
+  const nombresUsados = tablero.celdas
+    .filter((c) => c.jugador !== null)
+    .map((c) => c.jugador!.nombre);
 
   return (
     <div className="flex flex-col items-center gap-6 p-6">
@@ -138,17 +137,14 @@ export function GridBoard() {
         ))}
       </div>
 
-      <div className="flex gap-2">
-        <input
-          value={nombreBuscado}
-          onChange={(e) => setNombreBuscado(e.target.value)}
-          onKeyDown={(e) => {
-            if (e.key === "Enter") handleBuscar();
-          }}
+      <div className="flex w-full max-w-xs gap-2">
+        <PlayerSearch
+          players={jugadores}
+          excludeNames={nombresUsados}
+          onSelect={procesarSeleccion}
+          disabled={celdasPendientes.length > 0}
           placeholder="Escribe un jugador..."
-          className="rounded-md border border-border bg-card px-3 py-2 text-foreground"
         />
-        <GameButton onClick={handleBuscar}>Comprobar</GameButton>
         <GameButton variant="destructive" onClick={handleRendirse}>
           Rendirse
         </GameButton>
