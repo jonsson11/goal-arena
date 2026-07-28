@@ -33,12 +33,6 @@ function esValidaContraFila(candidata: Candidata, equipoFila: string, indice: In
   return indice.nacionalidadesPorEquipo.get(equipoFila)?.has(candidata.valor) ?? false;
 }
 
-// Reparte las 3 filas entre países distintos siempre que sea posible, en
-// vez de coger los 3 primeros de una lista barajada. Con una lista plana,
-// si el 70% de los clubes candidatos son italianos, el shuffle va a sacar
-// mayoría italiana el 70% de las veces — no es aleatoriedad rota, es
-// aleatoriedad uniforme sobre una bolsa desequilibrada. Esto arregla eso
-// forzando "1 país -> 1 club" en la primera pasada.
 function elegirFilasDiversificadas(clubesCandidatosFila: string[], indice: Indice): string[] {
   const clubesPorPais = new Map<string, string[]>();
   for (const club of clubesCandidatosFila) {
@@ -50,15 +44,12 @@ function elegirFilasDiversificadas(clubesCandidatosFila: string[], indice: Indic
   const paisesBarajados = barajar([...clubesPorPais.keys()]);
   const filas: string[] = [];
 
-  // 1ª pasada: un club por país distinto.
   for (const pais of paisesBarajados) {
     if (filas.length === LADO) break;
     const clubesDelPais = barajar(clubesPorPais.get(pais)!);
     filas.push(clubesDelPais[0]);
   }
 
-  // 2ª pasada (solo entra si hay menos de 3 países con clubes candidatos):
-  // rellena con clubes que aún no se hayan elegido, aunque repitan país.
   if (filas.length < LADO) {
     const restantes = barajar(clubesCandidatosFila.filter((c) => !filas.includes(c)));
     for (const club of restantes) {
@@ -77,8 +68,13 @@ function columnasValidasPara(filas: string[], poolColumnas: Candidata[], indice:
   });
 }
 
+// Solo los equipos marcados como elegibles (elegibleParaGrid = true en la
+// BD) pueden entrar en el pool de filas/columnas de tipo "equipo". Las
+// nacionalidades no pasan por este filtro -- siguen "todas elegibles",
+// como se decidió.
 function generarCombinacion(indice: Indice): { filas: string[]; columnas: Candidata[] } | null {
   const clubesCandidatosFila = [...indice.jugadoresPorEquipo.entries()]
+    .filter(([equipo]) => indice.equiposElegibles.has(equipo))
     .filter(([, jugadores]) => jugadores.size >= MIN_JUGADORES_EQUIPO_FILA)
     .map(([equipo]) => equipo);
 
@@ -89,21 +85,18 @@ function generarCombinacion(indice: Indice): { filas: string[]; columnas: Candid
     .map(([nacionalidad]) => nacionalidad);
 
   const poolColumnas: Candidata[] = [
-    ...[...indice.jugadoresPorEquipo.keys()].map((valor) => ({ tipo: "equipo", valor }) as Candidata),
+    ...[...indice.jugadoresPorEquipo.keys()]
+      .filter((equipo) => indice.equiposElegibles.has(equipo))
+      .map((valor) => ({ tipo: "equipo", valor }) as Candidata),
     ...nacionalidadesCandidatas.map((valor) => ({ tipo: "nacionalidad", valor }) as Candidata),
   ];
 
-  // Fase 1: filas forzadas a países distintos.
   for (let i = 0; i < INTENTOS_CON_DIVERSIDAD; i++) {
     const filas = elegirFilasDiversificadas(clubesCandidatosFila, indice);
     const columnas = columnasValidasPara(filas, poolColumnas, indice);
     if (columnas.length >= LADO) return { filas, columnas: columnas.slice(0, LADO) };
   }
 
-  // Fase 2 (fallback): si las filas diversificadas nunca encuentran
-  // suficientes columnas válidas —típicamente porque solo tienes 1-2
-  // países bien sincronizados todavía—, se prueba sin forzar países
-  // distintos antes de rendirse del todo.
   for (let i = 0; i < INTENTOS_FALLBACK; i++) {
     const filas = barajar(clubesCandidatosFila).slice(0, LADO);
     const columnas = columnasValidasPara(filas, poolColumnas, indice);

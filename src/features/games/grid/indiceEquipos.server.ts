@@ -14,7 +14,7 @@ export function esNombreValido(nombre: string): boolean {
 
 type StintCrudo = {
   playerId: string;
-  team: { nombre: string; pais: string };
+  team: { nombre: string; pais: string; elegibleParaGrid: boolean };
   player: { nombre: string; nacionalidad: string };
 };
 
@@ -22,7 +22,7 @@ async function obtenerStints(): Promise<StintCrudo[]> {
   const stints = await prisma.stint.findMany({
     select: {
       playerId: true,
-      team: { select: { nombre: true, pais: true } },
+      team: { select: { nombre: true, pais: true, elegibleParaGrid: true } },
       player: { select: { nombre: true, nacionalidad: true } },
     },
   });
@@ -37,6 +37,7 @@ export type Indice = {
   paisPorEquipo: Map<string, string>;
   totalPorNacionalidad: Map<string, number>;
   nombresPorJugador: Map<string, string>; // playerId -> nombre, para mostrar en el debug
+  equiposElegibles: Set<string>; // equipos marcados con elegibleParaGrid = true
 };
 
 export async function construirIndice(): Promise<Indice> {
@@ -48,6 +49,7 @@ export async function construirIndice(): Promise<Indice> {
   const paisPorEquipo = new Map<string, string>();
   const totalPorNacionalidad = new Map<string, number>();
   const nombresPorJugador = new Map<string, string>();
+  const equiposElegibles = new Set<string>();
 
   for (const { playerId, team, player } of stints) {
     const equipo = team.nombre;
@@ -56,6 +58,7 @@ export async function construirIndice(): Promise<Indice> {
     jugadoresPorEquipo.get(equipo)!.add(playerId);
     paisPorEquipo.set(equipo, team.pais);
     nombresPorJugador.set(playerId, player.nombre);
+    if (team.elegibleParaGrid) equiposElegibles.add(equipo);
 
     const nacionalidad = player.nacionalidad;
     const nacionalidadValida =
@@ -79,6 +82,7 @@ export async function construirIndice(): Promise<Indice> {
     paisPorEquipo,
     totalPorNacionalidad,
     nombresPorJugador,
+    equiposElegibles,
   };
 }
 
@@ -101,9 +105,6 @@ export type ResultadoCelda = {
   truncado: boolean;
 };
 
-// Reemplaza a contarSolucionesCelda: ahora devuelve también los nombres,
-// no solo el total. GridBoard sigue pudiendo usar solo `.total` para el
-// autocompletado de soluciones únicas — es compatible con lo que ya había.
 export function listarSolucionesCelda(
   condicionFila: Condicion,
   condicionColumna: Condicion,

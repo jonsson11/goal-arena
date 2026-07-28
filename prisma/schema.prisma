@@ -83,16 +83,23 @@ model UserAchievement {
 
 model Team {
   id         String   @id @default(cuid())
-  externalId String?  @unique // id en football-data.org, para el sync
+  externalId String?  @unique
   nombre     String
   pais       String
   escudo     String?
 
+  // Si el equipo puede aparecer como fila/columna en el generador del
+  // 3x3. Por defecto false -- hay que marcarlo explícitamente. No afecta
+  // a si un jugador "cuenta" como perteneciente a este equipo, solo a
+  // si el equipo es elegible para formar parte del tablero.
+  elegibleParaGrid Boolean @default(false)
+
   stints         Stint[]
   playerStats    PlayerStat[]
-  gridCeldas     Player[]      @relation("EquipoActual") // ver nota abajo
+  gridCeldas     Player[]      @relation("EquipoActual")
 
   @@index([nombre])
+  @@index([elegibleParaGrid])
 }
 
 model Player {
