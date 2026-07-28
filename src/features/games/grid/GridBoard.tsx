@@ -101,29 +101,63 @@ function CeldaDebug({
   );
 }
 
-// Avatar de la celda acertada: escudo del último club si existe (todavía
-// no tenemos ninguno poblado en la BD, pero queda listo para el día que
-// se resuelva la fuente de imágenes), si no bandera de la nacionalidad,
-// si no las iniciales -- misma cadena de fallback que ya usa PlayerSearch.
-function AvatarJugador({ jugador }: { jugador: Jugador }) {
+// Foto del jugador a pantalla completa dentro de la casilla (o
+// escudo/bandera/inicial si no hay foto real) -- ocupa toda la zona
+// superior de la casilla acertada, con el nombre en una banda inferior
+// del mismo verde que el marco.
+// Foto del jugador de fondo, ocupando todo el cuadrado -- position
+// absolute en vez de flex-1, para no depender de que el navegador
+// combine bien "aspect-ratio" con un hijo flex que reparte el alto (esa
+// mezcla puede colapsar a 0 en algunos casos).
+function ImagenJugador({ jugador }: { jugador: Jugador }) {
   const club = jugador.equipos[jugador.equipos.length - 1];
   const codigoPais = obtenerCodigoPais(jugador.nacionalidad);
 
   return (
-    <div className="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-full bg-secondary sm:h-10 sm:w-10">
+    <div className="absolute inset-0 flex items-center justify-center bg-secondary">
       {jugador.imagenUrl ? (
         // eslint-disable-next-line @next/next/no-img-element
-        <img src={jugador.imagenUrl} alt="" className="h-full w-full object-cover" />
+        <img src={jugador.imagenUrl} alt="" className="h-full w-full object-cover object-top" />
       ) : club?.escudo ? (
         // eslint-disable-next-line @next/next/no-img-element
-        <img src={club.escudo} alt="" className="h-6 w-6 object-contain" />
+        <img src={club.escudo} alt="" className="h-2/3 w-2/3 object-contain" />
       ) : codigoPais ? (
-        <span className={`fi fi-${codigoPais} text-lg`} />
+        <span className={`fi fi-${codigoPais} text-4xl sm:text-5xl`} />
       ) : (
-        <span className="text-xs font-semibold text-secondary-foreground">{jugador.nombre[0]}</span>
+        <span className="text-3xl font-bold text-secondary-foreground sm:text-4xl">
+          {jugador.nombre[0]}
+        </span>
       )}
     </div>
   );
+}
+
+// Partículas habituales de apellidos compuestos -- si el nombre no cabe
+// entero y hay que quedarse solo con el apellido, estas palabras se
+// mantienen pegadas a él en vez de perderse ("De Bruyne", no "Bruyne").
+const PARTICULAS_APELLIDO = new Set([
+  "de", "del", "van", "von", "der", "den", "du", "la", "le", "dos", "das", "do", "da", "di", "al",
+]);
+
+const LIMITE_NOMBRE_COMPLETO = 12;
+
+// Si el nombre completo es corto, se muestra entero. Si no, se queda
+// solo con el apellido (con su partícula, si tiene) -- casi siempre
+// entra en una línea, incluso con la letra más grande. El `truncate`
+// del render es la red de seguridad final para el apellido larguísimo
+// que aun así no quepa.
+function nombreParaCasilla(nombreCompleto: string): string {
+  if (nombreCompleto.length <= LIMITE_NOMBRE_COMPLETO) return nombreCompleto;
+
+  const palabras = nombreCompleto.trim().split(/\s+/);
+  if (palabras.length === 1) return nombreCompleto; // nombre de una sola palabra (Koke, Ederson...)
+
+  let inicio = palabras.length - 1;
+  while (inicio > 0 && PARTICULAS_APELLIDO.has(palabras[inicio - 1].toLowerCase())) {
+    inicio--;
+  }
+
+  return palabras.slice(inicio).join(" ");
 }
 
 function CasillaGrid({
@@ -139,13 +173,13 @@ function CasillaGrid({
 }) {
   if (celda.jugador) {
     return (
-      <div
-        className="flex aspect-square w-full animate-in flex-col items-center justify-center gap-1.5 rounded-xl border border-primary/60 bg-primary/10 p-2 text-center shadow-[0_0_24px_-4px_rgba(74,222,154,0.5)] duration-300 fade-in zoom-in-90"
-      >
-        <AvatarJugador jugador={celda.jugador} />
-        <p className="line-clamp-2 text-xs font-semibold leading-tight text-foreground sm:text-sm">
-          {celda.jugador.nombre}
-        </p>
+      <div className="relative aspect-square w-full animate-in overflow-hidden rounded-xl border-2 border-primary shadow-[0_0_24px_-4px_rgba(74,222,154,0.5)] duration-300 fade-in zoom-in-90">
+        <ImagenJugador jugador={celda.jugador} />
+        <div className="absolute inset-x-0 bottom-0 flex items-center justify-center bg-primary px-1.5 py-0.2">
+          <p className="min-w-0 max-w-full truncate text-center text-xs font-extrabold uppercase text-primary-foreground sm:text-sm">
+            {nombreParaCasilla(celda.jugador.nombre)}
+          </p>
+        </div>
       </div>
     );
   }

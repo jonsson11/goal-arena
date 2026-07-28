@@ -1,21 +1,25 @@
 // scripts/actualizarFotosJugadores.ts
 //
-// Rellena `imagenUrl` para los jugadores que ya están en la BD y todavía
-// no la tienen, pidiendo las imágenes a Wikipedia EN LOTES de 50 (no una
-// petición por jugador). Los que no tengan imagen en Wikipedia (o cuyo
-// externalId no tenga forma "wiki:...") se listan aparte para revisión
-// manual -- no son errores del script, es información real: esa persona
-// no tiene foto en su artículo.
+// Rellena `imagenUrl` para los jugadores que ya están en la BD y
+// todavía no la tienen, usando la REST API de resumen de página de
+// Wikipedia (una petición por jugador, con ritmo controlado). A los que
+// salen como página de desambiguación se les re-busca el título
+// correcto y se actualiza su externalId de paso.
 // Ejecutar con: npx tsx scripts/actualizarFotosJugadores.ts
 
 import "dotenv/config";
 import { writeFile } from "node:fs/promises";
 import { PrismaClient } from "@prisma/client";
 import { PrismaPg } from "@prisma/adapter-pg";
-import { obtenerImagenesWikipedia } from "../src/lib/wikipediaImagen";
+import { obtenerImagenesSecuencial, obtenerImagenWikipedia } from "../src/lib/wikipediaImagen";
+import { resolverTituloWikipedia } from "../src/lib/wikipediaSync";
 
 const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL! });
 const prisma = new PrismaClient({ adapter });
+
+function esperar(ms: number) {
+  return new Promise((r) => setTimeout(r, ms));
+}
 
 function tituloDesdeExternalId(externalId: string | null): string | null {
   if (!externalId || !externalId.startsWith("wiki:")) return null;
@@ -42,40 +46,71 @@ async function main() {
     });
 
   console.log(`Con externalId válido para consultar: ${conTitulo.length}`);
-  console.log(`Sin externalId válido (se listan al final, revisar a mano): ${sinExternalIdValido.length}\n`);
+  console.log(`Esto va a tardar un rato -- una petición por jugador, con pausa entre cada una.\n`);
 
-  const titulos = conTitulo.map((e) => e.titulo!);
-  const mapaImagenes = await obtenerImagenesWikipedia(titulos);
+  const mapaEntrada = new Map(conTitulo.map((e) => [e.titulo!, e]));
 
   let actualizados = 0;
-  const sinImagenEnWikipedia: string[] = [];
+  const sinImagenReal: string[] = [];
+  const recuperadosPorReDesambiguacion: { nombre: string; tituloViejo: string; tituloNuevo: string }[] = [];
+  const desambiguacionSinResolver: string[] = [];
 
-  for (const { jugador, titulo } of conTitulo) {
-    const url = mapaImagenes.get(titulo!);
+  await obtenerImagenesSecuencial(
+    conTitulo.map((e) => e.titulo!),
+    async (titulo, resultado) => {
+      const { jugador } = mapaEntrada.get(titulo)!;
 
-    if (!url) {
-      sinImagenEnWikipedia.push(jugador.nombre);
-      continue;
+      if (resultado.imagenUrl) {
+        await prisma.player.update({ where: { id: jugador.id }, data: { imagenUrl: resultado.imagenUrl } });
+        actualizados++;
+        console.log(`  ✓ ${jugador.nombre}`);
+        return;
+      }
+
+      if (resultado.esDesambiguacion) {
+        console.log(`  … "${jugador.nombre}" (${titulo}) es página de desambiguación, re-buscando...`);
+        const nuevoTitulo = await resolverTituloWikipedia(jugador.nombre);
+        await esperar(500);
+
+        if (!nuevoTitulo || nuevoTitulo === titulo) {
+          desambiguacionSinResolver.push(jugador.nombre);
+          return;
+        }
+
+        const nuevaUrl = await obtenerImagenWikipedia(nuevoTitulo);
+        await prisma.player.update({
+          where: { id: jugador.id },
+          data: { externalId: `wiki:${nuevoTitulo}`, ...(nuevaUrl ? { imagenUrl: nuevaUrl } : {}) },
+        });
+
+        recuperadosPorReDesambiguacion.push({ nombre: jugador.nombre, tituloViejo: titulo, tituloNuevo: nuevoTitulo });
+        if (nuevaUrl) actualizados++;
+        console.log(`    ✓ Re-resuelto a "${nuevoTitulo}"${nuevaUrl ? " (con imagen)" : " (sin imagen tampoco)"}`);
+        return;
+      }
+
+      sinImagenReal.push(jugador.nombre);
     }
-
-    await prisma.player.update({
-      where: { id: jugador.id },
-      data: { imagenUrl: url },
-    });
-    actualizados++;
-    console.log(`  ✓ ${jugador.nombre}`);
-  }
+  );
 
   console.log(`\n=== Resumen ===`);
   console.log(`Actualizados con imagen: ${actualizados}`);
-  console.log(`Sin imagen en Wikipedia: ${sinImagenEnWikipedia.length}`);
+  console.log(`Re-resueltos por desambiguación: ${recuperadosPorReDesambiguacion.length}`);
+  console.log(`Desambiguación sin resolver: ${desambiguacionSinResolver.length}`);
+  console.log(`Sin imagen real en Wikipedia: ${sinImagenReal.length}`);
   console.log(`Sin externalId válido: ${sinExternalIdValido.length}`);
 
   const lineas = [
-    "=== Sin imagen en Wikipedia (el artículo existe pero no tiene foto) ===",
-    ...sinImagenEnWikipedia,
+    "=== Re-resueltos por desambiguación (revisar que sea la persona correcta) ===",
+    ...recuperadosPorReDesambiguacion.map((r) => `${r.nombre}: "${r.tituloViejo}" -> "${r.tituloNuevo}"`),
     "",
-    "=== Sin externalId válido (revisar manualmente cómo se sincronizaron) ===",
+    "=== Desambiguación sin resolver ===",
+    ...desambiguacionSinResolver,
+    "",
+    "=== Sin imagen real en Wikipedia ===",
+    ...sinImagenReal,
+    "",
+    "=== Sin externalId válido ===",
     ...sinExternalIdValido,
   ].join("\n");
 
