@@ -16,8 +16,11 @@ import { writeFile } from "node:fs/promises";
 const API_KEY = process.env.API_FOOTBALL_KEY;
 const BASE_URL = "https://v3.football.api-sports.io";
 
-const LIGA_NOMBRE = "Ligue 1";
-const LIGA_PAIS = "France";
+//PremierLeague, LaLiga, Bundesliga, Ligue1, SerieA, Eredivisie.
+
+
+const LIGA_NOMBRE = "UEFA Champions League";
+const LIGA_PAIS = "World";
 const TEMPORADA = 2024; // el free tier solo da acceso a 2022-2024
 
 // El free tier de API-Football limita también por minuto, no solo 100/día.
