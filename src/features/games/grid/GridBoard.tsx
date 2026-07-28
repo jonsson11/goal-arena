@@ -6,11 +6,10 @@ import type { Jugador } from "@/features/games/shared/types";
 import { GameResultDialog } from "@/features/games/shared/GameResultDialog";
 import { GameButton } from "@/features/games/shared/GameButton";
 import { PlayerSearch } from "@/features/games/shared/PlayerSearch";
+import { obtenerCodigoPais } from "@/features/games/shared/banderas";
 import type { Tablero, Celda } from "./type";
 import { celdasValidasParaJugador, cumpleAmbasCondiciones } from "./logic";
 
-// Solo se activa fuera de producción: este panel muestra literalmente las
-// respuestas de cada casilla, así que nunca debe verse en el juego real.
 const DEBUG_HABILITADO = process.env.NODE_ENV !== "production";
 
 type ResultadoCelda = { total: number; nombres: string[]; truncado: boolean };
@@ -25,9 +24,7 @@ async function buscarJugadores(query: string): Promise<Jugador[]> {
   return res.json();
 }
 
-async function contarSolucionesTodasLasCeldas(
-  tablero: Tablero
-): Promise<Record<string, ResultadoCelda>> {
+async function contarSolucionesTodasLasCeldas(tablero: Tablero): Promise<Record<string, ResultadoCelda>> {
   const celdas = tablero.condicionesFila.flatMap((condicionFila, fila) =>
     tablero.condicionesColumna.map((condicionColumna, columna) => ({
       fila,
@@ -55,15 +52,11 @@ async function contarSolucionesTodasLasCeldas(
   return mapa;
 }
 
-// Desplegable de depuración: esquina inferior derecha de una casilla,
-// con el nº de soluciones y el listado al abrirlo.
 function CeldaDebug({
-  clave,
   datos,
   abierta,
   onToggle,
 }: {
-  clave: string;
   datos: ResultadoCelda | undefined;
   abierta: boolean;
   onToggle: () => void;
@@ -99,14 +92,74 @@ function CeldaDebug({
                   {nombre}
                 </li>
               ))}
-              {datos.truncado && (
-                <li className="text-[10px] italic text-muted-foreground">...y más</li>
-              )}
+              {datos.truncado && <li className="text-[10px] italic text-muted-foreground">...y más</li>}
             </ul>
           )}
         </div>
       )}
     </div>
+  );
+}
+
+// Avatar de la celda acertada: escudo del último club si existe (todavía
+// no tenemos ninguno poblado en la BD, pero queda listo para el día que
+// se resuelva la fuente de imágenes), si no bandera de la nacionalidad,
+// si no las iniciales -- misma cadena de fallback que ya usa PlayerSearch.
+function AvatarJugador({ jugador }: { jugador: Jugador }) {
+  const club = jugador.equipos[jugador.equipos.length - 1];
+  const codigoPais = obtenerCodigoPais(jugador.nacionalidad);
+
+  return (
+    <div className="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-full bg-secondary sm:h-10 sm:w-10">
+      {club?.escudo ? (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img src={club.escudo} alt="" className="h-6 w-6 object-contain" />
+      ) : codigoPais ? (
+        <span className={`fi fi-${codigoPais} text-lg`} />
+      ) : (
+        <span className="text-xs font-semibold text-secondary-foreground">{jugador.nombre[0]}</span>
+      )}
+    </div>
+  );
+}
+
+function CasillaGrid({
+  celda,
+  esPendiente,
+  bloqueada,
+  onClick,
+}: {
+  celda: Celda;
+  esPendiente: boolean;
+  bloqueada: boolean;
+  onClick: () => void;
+}) {
+  if (celda.jugador) {
+    return (
+      <div
+        className="flex aspect-square w-full animate-in flex-col items-center justify-center gap-1.5 rounded-xl border border-primary/60 bg-primary/10 p-2 text-center shadow-[0_0_24px_-4px_rgba(74,222,154,0.5)] duration-300 fade-in zoom-in-90"
+      >
+        <AvatarJugador jugador={celda.jugador} />
+        <p className="line-clamp-2 text-xs font-semibold leading-tight text-foreground sm:text-sm">
+          {celda.jugador.nombre}
+        </p>
+      </div>
+    );
+  }
+
+  return (
+    <button
+      disabled={bloqueada}
+      onClick={onClick}
+      className={`aspect-square w-full rounded-xl border transition-all duration-150
+        ${
+          esPendiente
+            ? "animate-pulse border-primary bg-primary/15"
+            : "border-border bg-card hover:border-primary/40 disabled:hover:border-border"
+        }
+        ${bloqueada && !esPendiente ? "opacity-40" : ""}
+      `}
+    />
   );
 }
 
@@ -222,6 +275,7 @@ export function GridBoard() {
 
     const todasLlenas = celdasFinales.every((c) => c.jugador !== null);
     if (todasLlenas) {
+      setMensaje("");
       setTiempoFinal(segundosTranscurridos(horaInicio));
       setResultado("completado");
       setPopupAbierto(true);
@@ -244,6 +298,7 @@ export function GridBoard() {
   }
 
   function handleRendirse() {
+    setMensaje("");
     setTiempoFinal(segundosTranscurridos(horaInicio));
     setResultado("rendido");
     setPopupAbierto(true);
@@ -270,18 +325,21 @@ export function GridBoard() {
   const nombresUsados = tablero.celdas.filter((c) => c.jugador !== null).map((c) => c.jugador!.nombre);
 
   return (
-    <div className="flex flex-col items-center gap-6 p-6">
-      <div className="grid grid-cols-4 gap-2">
+    <div className="flex flex-col items-center gap-6 p-4 sm:p-6">
+      <div className="grid w-full max-w-md grid-cols-[minmax(0,0.7fr)_repeat(3,minmax(0,1fr))] gap-1.5 sm:gap-2">
         <div />
         {tablero.condicionesColumna.map((cond, i) => (
-          <div key={i} className="flex items-center justify-center p-2 text-center text-sm font-semibold text-foreground">
+          <div
+            key={i}
+            className="flex items-center justify-center px-1 text-center text-xs font-semibold text-foreground sm:text-sm"
+          >
             {cond.valor}
           </div>
         ))}
 
         {tablero.condicionesFila.map((condFila, fila) => (
           <div key={fila} className="contents">
-            <div className="flex items-center justify-center p-2 text-center text-sm font-semibold text-foreground">
+            <div className="flex items-center justify-center px-1 text-center text-xs font-semibold text-foreground sm:text-sm">
               {condFila.valor}
             </div>
 
@@ -292,28 +350,22 @@ export function GridBoard() {
 
               return (
                 <div key={columna} className="relative">
-                  <button
-                    disabled={!esPendiente && celdasPendientes.length > 0}
+                  <CasillaGrid
+                    celda={celda}
+                    esPendiente={esPendiente}
+                    bloqueada={!esPendiente && celdasPendientes.length > 0}
                     onClick={() => {
                       if (esPendiente && jugadorPendiente) {
                         colocarJugador(jugadorPendiente, celda);
                       }
                     }}
-                    className={`flex h-24 w-24 items-center justify-center rounded-md border text-center text-sm
-                      ${esPendiente ? "border-primary bg-primary/20" : "border-border bg-card"}
-                    `}
-                  >
-                    {celda.jugador?.nombre ?? ""}
-                  </button>
+                  />
 
                   {DEBUG_HABILITADO && celda.jugador === null && (
                     <CeldaDebug
-                      clave={clave}
                       datos={solucionesDebug[clave]}
                       abierta={celdaDebugAbierta === clave}
-                      onToggle={() =>
-                        setCeldaDebugAbierta((actual) => (actual === clave ? null : clave))
-                      }
+                      onToggle={() => setCeldaDebugAbierta((actual) => (actual === clave ? null : clave))}
                     />
                   )}
                 </div>
@@ -336,7 +388,7 @@ export function GridBoard() {
         </GameButton>
       </div>
 
-      {mensaje && <p className="text-sm text-muted-foreground">{mensaje}</p>}
+      {mensaje && !resultado && <p className="text-sm text-muted-foreground">{mensaje}</p>}
 
       {resultado && (
         <GameResultDialog
