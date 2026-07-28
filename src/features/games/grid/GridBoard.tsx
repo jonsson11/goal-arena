@@ -147,10 +147,8 @@ const LIMITE_NOMBRE_COMPLETO = 12;
 // del render es la red de seguridad final para el apellido larguísimo
 // que aun así no quepa.
 function nombreParaCasilla(nombreCompleto: string): string {
-  if (nombreCompleto.length <= LIMITE_NOMBRE_COMPLETO) return nombreCompleto;
-
   const palabras = nombreCompleto.trim().split(/\s+/);
-  if (palabras.length === 1) return nombreCompleto; // nombre de una sola palabra (Koke, Ederson...)
+  if (palabras.length === 1) return nombreCompleto;
 
   let inicio = palabras.length - 1;
   while (inicio > 0 && PARTICULAS_APELLIDO.has(palabras[inicio - 1].toLowerCase())) {
@@ -173,10 +171,10 @@ function CasillaGrid({
 }) {
   if (celda.jugador) {
     return (
-      <div className="relative aspect-square w-full animate-in overflow-hidden rounded-xl border-2 border-primary shadow-[0_0_24px_-4px_rgba(74,222,154,0.5)] duration-300 fade-in zoom-in-90">
+      <div className="relative aspect-square w-full animate-in overflow-hidden rounded-xl border-2 border-primary shadow-[0_0_24px_-4px_rgba(74,222,154,0.5)] duration-300 fade-in zoom-in-90 [container-type:inline-size]">
         <ImagenJugador jugador={celda.jugador} />
-        <div className="absolute inset-x-0 bottom-0 flex items-center justify-center bg-primary px-1.5 py-0.2">
-          <p className="min-w-0 max-w-full truncate text-center text-xs font-extrabold uppercase text-primary-foreground sm:text-sm">
+        <div className="absolute inset-x-0 bottom-0 flex items-center justify-center bg-primary px-1.5 py-1">
+          <p className="min-w-0 max-w-full truncate text-center font-extrabold uppercase text-primary-foreground text-[clamp(0.55rem,7.5cqw,0.9rem)]">
             {nombreParaCasilla(celda.jugador.nombre)}
           </p>
         </div>
