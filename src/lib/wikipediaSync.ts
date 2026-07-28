@@ -17,6 +17,7 @@
 import type { PrismaClient } from "@prisma/client";
 import { obtenerNacionalidadWikidata } from "./wikidataSync";
 import { limpiarNombreSeleccion } from "./limpiarNombreSeleccion";
+import { obtenerImagenWikipedia } from "./wikipediaImagen";
 
 // Wikipedia pide identificarse con contacto real en peticiones automatizadas
 // (ver https://meta.wikimedia.org/wiki/User-Agent_policy). Cambia el email
@@ -416,6 +417,7 @@ export async function syncJugadorDesdeWikipedia(
 
   const perfil = extraerPerfil(wikitext);
   const nacionalidadWikidata = await obtenerNacionalidadWikidata(tituloUsado);
+  const imagenUrl = await obtenerImagenWikipedia(tituloUsado);
   const nacionalidad = nacionalidadWikidata ?? perfil.nacionalidad;
   const golesTotales = etapas.reduce((sum, e) => sum + e.goals, 0);
   const partidosTotales = etapas.reduce((sum, e) => sum + e.caps, 0);
@@ -436,6 +438,7 @@ export async function syncJugadorDesdeWikipedia(
       fechaNacimiento: perfil.fechaNacimiento,
       equipoActualId: equipoActual?.id ?? null,
       nacionalidad,
+      imagenUrl,
     },
     create: {
       externalId: `wiki:${tituloUsado}`,
@@ -447,6 +450,7 @@ export async function syncJugadorDesdeWikipedia(
       asistencias: 0,
       partidos: partidosTotales,
       valorDeMercado: 0,
+      imagenUrl,
     },
   });
 
