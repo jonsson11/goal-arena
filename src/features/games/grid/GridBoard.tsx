@@ -1,7 +1,7 @@
 // src/features/games/grid/GridBoard.tsx
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import type { Jugador } from "@/features/games/shared/types";
 import { GameResultDialog } from "@/features/games/shared/GameResultDialog";
 import { GameButton } from "@/features/games/shared/GameButton";
@@ -111,7 +111,10 @@ function AvatarJugador({ jugador }: { jugador: Jugador }) {
 
   return (
     <div className="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-full bg-secondary sm:h-10 sm:w-10">
-      {club?.escudo ? (
+      {jugador.imagenUrl ? (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img src={jugador.imagenUrl} alt="" className="h-full w-full object-cover" />
+      ) : club?.escudo ? (
         // eslint-disable-next-line @next/next/no-img-element
         <img src={club.escudo} alt="" className="h-6 w-6 object-contain" />
       ) : codigoPais ? (
@@ -180,11 +183,24 @@ export function GridBoard() {
   const [solucionesDebug, setSolucionesDebug] = useState<Record<string, ResultadoCelda>>({});
   const [celdaDebugAbierta, setCeldaDebugAbierta] = useState<string | null>(null);
 
+  const cargaIdRef = useRef(0);
+
+
   useEffect(() => {
     cargarTablero();
   }, []);
 
+  // cargaIdRef descarta resultados de peticiones obsoletas -- mismo patrón
+  // que ya usa PlayerSearch. Hace falta porque React Strict Mode (activo
+  // en `npm run dev`) ejecuta el useEffect de montaje dos veces a
+  // propósito, lo que aquí pedía dos tableros aleatorios distintos y
+  // hacía que se viera "parpadear" uno antes de que el otro lo
+  // sustituyera. En producción esto no pasa (Strict Mode es solo de
+  // desarrollo), pero así queda limpio también mientras trabajas.
+
   async function cargarTablero() {
+    const miCargaId = ++cargaIdRef.current;
+
     setCargando(true);
     setErrorCarga(null);
     setMensaje("");
@@ -203,16 +219,22 @@ export function GridBoard() {
         throw new Error(data?.error ?? "No se pudo generar el tablero.");
       }
       const nuevoTablero: Tablero = await res.json();
+
+      if (miCargaId !== cargaIdRef.current) return; // esta carga ya quedó obsoleta
+
       setTablero(nuevoTablero);
       setHoraInicio(Date.now());
 
       if (DEBUG_HABILITADO) {
-        contarSolucionesTodasLasCeldas(nuevoTablero).then(setSolucionesDebug);
+        contarSolucionesTodasLasCeldas(nuevoTablero).then((datos) => {
+          if (miCargaId === cargaIdRef.current) setSolucionesDebug(datos);
+        });
       }
     } catch (err) {
+      if (miCargaId !== cargaIdRef.current) return;
       setErrorCarga(err instanceof Error ? err.message : "Error desconocido.");
     } finally {
-      setCargando(false);
+      if (miCargaId === cargaIdRef.current) setCargando(false);
     }
   }
 

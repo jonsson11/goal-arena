@@ -20,17 +20,6 @@ export async function GET(request: Request) {
   try {
     const consultaNormalizada = normalizarTexto(q);
 
-    // No usamos "contains" de Postgres como filtro principal: ILIKE no
-    // ignora acentos, y no queremos depender ahora mismo de activar la
-    // extensión `unaccent` en Supabase. Con el volumen de jugadores
-    // actual, traer los nombres y filtrar en JS con el MISMO normalizador
-    // que usa PlayerSearch es más simple y garantiza el mismo
-    // comportamiento en la búsqueda local (mock) y en la real (BD).
-    //
-    // TODO: si Player crece a varios miles de filas, esto deja de ser
-    // eficiente. En ese momento: activar `unaccent` en Postgres
-    // (Supabase → Database → Extensions) y mover el filtro a la query
-    // con `unaccent(nombre) ILIKE unaccent('%q%')`.
     const candidatos = await prisma.player.findMany({
       select: { nombre: true },
     });
@@ -54,8 +43,6 @@ export async function GET(request: Request) {
       },
     });
 
-    // "in" no respeta el orden de nombresCoincidentes, así que reordenamos
-    // para que el más relevante (según nuestro filtro) siga saliendo primero.
     const ordenPorNombre = new Map(nombresCoincidentes.map((n, i) => [n, i]));
     players.sort((a, b) => (ordenPorNombre.get(a.nombre) ?? 0) - (ordenPorNombre.get(b.nombre) ?? 0));
 
@@ -67,6 +54,7 @@ export async function GET(request: Request) {
       goles: player.goles,
       asistencias: player.asistencias,
       partidos: player.partidos,
+      imagenUrl: player.imagenUrl,
       equipos: player.stints.map((stint) => ({
         nombre: stint.team.nombre,
         pais: stint.team.pais,

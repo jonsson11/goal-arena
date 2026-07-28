@@ -37,6 +37,10 @@ export function Footer() {
           © 2026 Goal Arena. Todos los derechos reservados.
         </span>
 
+          <p className="mt-2 text-center text-[11px] text-muted-foreground/70 sm:text-left">
+          Las imágenes de jugadores mostradas en la web proceden de Wikipedia. Todos los créditos
+          a sus autores originales y a la comunidad de Wikipedia.
+        </p>
         <div className="flex gap-5">
           <a href="#" aria-label="Instagram" className="text-muted-foreground transition-colors hover:text-primary">
             <IconoInstagram className="h-5 w-5" />

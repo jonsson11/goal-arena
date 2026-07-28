@@ -7,7 +7,7 @@
 // hay ningún problema de términos de uso aquí.
 
 import { limpiarNombreSeleccion } from "./limpiarNombreSeleccion";
-
+import { obtenerImagenWikipedia } from "./wikipediaImagen";
 
 const WIKIDATA_USER_AGENT =
   "GoalArena/0.1 (proyecto personal de aprendizaje; contacto: tu-email@ejemplo.com)";

@@ -291,14 +291,10 @@ export function PlayerSearch({
                     >
                       {jugador.nombre}
                     </p>
-                    {yaColocado ? (
+                     {yaColocado && (
                       <p className="truncate text-xs font-semibold uppercase tracking-wide text-destructive">
                         {excludedLabel}
                       </p>
-                    ) : (
-                      club && (
-                        <p className="truncate text-xs text-muted-foreground">{club.nombre}</p>
-                      )
                     )}
                   </div>
                 </li>

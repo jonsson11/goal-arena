@@ -13,4 +13,5 @@ export type Jugador = {
   goles: number;
   asistencias: number;
   partidos: number;
+  imagenUrl: string | null;
 };

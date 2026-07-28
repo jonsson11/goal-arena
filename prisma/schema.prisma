@@ -108,6 +108,7 @@ model Player {
   nombre          String
   fechaNacimiento DateTime? @db.Date
   nacionalidad    String
+  imagenUrl       String?
 
   // Totales de carrera, para Higher/Lower y Top10 "globales"
   valorDeMercado  Float    @default(0) // en millones de €, ej: 45.5
