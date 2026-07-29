@@ -1,0 +1,12 @@
+
+--- Ejecución 2026-07-29T10:02:05.102Z ---
+Club Atlético de Madrid / BD:"Club Atlético de Madrid" — sin resultado/logo en API-Football
+Wolverhampton Wanderers / BD:"Wolverhampton Wanderers FC" — sin resultado/logo en API-Football
+TSG Hoffenheim / BD:"TSG Hoffenheim" — sin resultado/logo en API-Football
+Borussia Mönchengladbach / BD:"Borussia Mönchengladbach" — sin resultado/logo en API-Football
+Paris Saint-Germain / BD:"Paris Saint-Germain" — sin resultado/logo en API-Football
+Benfica / BD:"Benfica" — sin resultado/logo en API-Football
+Sporting CP / BD:"Sporting CP" — sin resultado/logo en API-Football
+Celtic / BD:"Celtic" — sin resultado/logo en API-Football
+Rangers / BD:"Rangers" — sin resultado/logo en API-Football
+Galatasaray / BD:"Galatasaray" — sin resultado/logo en API-Football
