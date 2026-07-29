@@ -42,6 +42,7 @@ export async function generarTop10DesdeBD(excluirId?: string): Promise<RankingTo
         orderBy: { posicion: "asc" },
         select: {
           posicion: true,
+          valor: true,
           player: { select: { nombre: true, nacionalidad: true } },
         },
       },
@@ -59,6 +60,7 @@ export async function generarTop10DesdeBD(excluirId?: string): Promise<RankingTo
     respuestas: ranking.entradas.map((e) => ({
       nombre: e.player.nombre,
       nacionalidad: e.player.nacionalidad,
+      valor: e.valor,
     })),
   };
 }

@@ -26,7 +26,7 @@ export default function Top10Page() {
           </p>
         </header>
 
-        <div className="w-full max-w-md rounded-2xl border border-primary/40 bg-card shadow-[0_0_40px_-8px_rgba(74,222,154,0.35)]">
+        <div className="w-full max-w-2xl rounded-2xl border border-primary/40 bg-card shadow-[0_0_40px_-8px_rgba(74,222,154,0.35)]">
           <Top10Game />
         </div>
       </div>
