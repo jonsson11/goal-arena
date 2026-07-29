@@ -7,7 +7,7 @@ import { GameResultDialog } from "@/features/games/shared/GameResultDialog";
 import { GameButton } from "@/features/games/shared/GameButton";
 import { PlayerSearch } from "@/features/games/shared/PlayerSearch";
 import { obtenerCodigoPais } from "@/features/games/shared/banderas";
-import type { Tablero, Celda } from "./type";
+import type { Tablero, Celda, Condicion } from "./type";
 import { celdasValidasParaJugador, cumpleAmbasCondiciones } from "./logic";
 
 const DEBUG_HABILITADO = process.env.NODE_ENV !== "production";
@@ -156,6 +156,41 @@ function nombreParaCasilla(nombreCompleto: string): string {
   }
 
   return palabras.slice(inicio).join(" ");
+}
+
+// Cabecera de fila/columna: escudo del equipo o bandera de la selección
+// encima del nombre, en vez de solo texto. Si el equipo todavía no tiene
+// escudo guardado (ver scripts/sync-escudos-equipos.ts), cae al texto
+// solo, igual que antes.
+function EncabezadoCondicion({ condicion }: { condicion: Condicion }) {
+  const codigoPais = condicion.tipo === "nacionalidad" ? obtenerCodigoPais(condicion.valor) : null;
+  const texto = condicion.valor;
+
+  return (
+    <div className="isolate flex flex-col items-center justify-center gap-1 px-1 text-center [container-type:inline-size]">
+      {condicion.tipo === "equipo" && condicion.escudo ? (
+        // Tamaño calibrado a ojo para que pese visualmente parecido a la
+        // bandera de abajo (las banderas son más anchas que altas por
+        // naturaleza, los escudos casi cuadrados -- no van a medir
+        // exactamente lo mismo, pero con esto no se nota descompensado).
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
+          src={condicion.escudo}
+          alt=""
+          className="h-9 w-9 shrink-0 object-contain mix-blend-multiply sm:h-11 sm:w-11"
+        />
+      ) : codigoPais ? (
+        <span className={`fi fi-${codigoPais} shrink-0 text-3xl sm:text-4xl`} />
+      ) : null}
+      {/* clamp() ligado al ancho del contenedor ([container-type:inline-size]
+          en el div de arriba): el texto se encoge solo si no cabe. El
+          truncate es la red de seguridad final, igual que en
+          nombreParaCasilla. */}
+      <p className="min-w-0 max-w-full truncate text-[clamp(0.6rem,9cqw,0.85rem)] font-semibold text-foreground">
+        {texto}
+      </p>
+    </div>
+  );
 }
 
 function CasillaGrid({
@@ -383,19 +418,12 @@ export function GridBoard() {
       <div className="grid w-full max-w-md grid-cols-[minmax(0,0.7fr)_repeat(3,minmax(0,1fr))] gap-1.5 sm:gap-2">
         <div />
         {tablero.condicionesColumna.map((cond, i) => (
-          <div
-            key={i}
-            className="flex items-center justify-center px-1 text-center text-xs font-semibold text-foreground sm:text-sm"
-          >
-            {cond.valor}
-          </div>
+          <EncabezadoCondicion key={i} condicion={cond} />
         ))}
 
         {tablero.condicionesFila.map((condFila, fila) => (
           <div key={fila} className="contents">
-            <div className="flex items-center justify-center px-1 text-center text-xs font-semibold text-foreground sm:text-sm">
-              {condFila.valor}
-            </div>
+            <EncabezadoCondicion condicion={condFila} />
 
             {[0, 1, 2].map((columna) => {
               const celda = obtenerCelda(fila, columna);

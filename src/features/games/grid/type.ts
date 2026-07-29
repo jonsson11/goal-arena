@@ -5,6 +5,7 @@ export type TipoCondicion = "equipo" | "nacionalidad";
 export type Condicion = {
   tipo: TipoCondicion;
   valor: string;
+  escudo?: string | null;
 };
 
 export type Celda = {

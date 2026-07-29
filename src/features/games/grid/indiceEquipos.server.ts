@@ -14,7 +14,7 @@ export function esNombreValido(nombre: string): boolean {
 
 type StintCrudo = {
   playerId: string;
-  team: { nombre: string; pais: string; elegibleParaGrid: boolean };
+  team: { nombre: string; pais: string; elegibleParaGrid: boolean; escudo: string | null };
   player: { nombre: string; nacionalidad: string };
 };
 
@@ -22,7 +22,7 @@ async function obtenerStints(): Promise<StintCrudo[]> {
   const stints = await prisma.stint.findMany({
     select: {
       playerId: true,
-      team: { select: { nombre: true, pais: true, elegibleParaGrid: true } },
+      team: { select: { nombre: true, pais: true, elegibleParaGrid: true, escudo: true } },
       player: { select: { nombre: true, nacionalidad: true } },
     },
   });
@@ -35,6 +35,7 @@ export type Indice = {
   jugadoresPorNacionalidad: Map<string, Set<string>>;
   nacionalidadesPorEquipo: Map<string, Set<string>>;
   paisPorEquipo: Map<string, string>;
+  escudoPorEquipo: Map<string, string | null>;
   totalPorNacionalidad: Map<string, number>;
   nombresPorJugador: Map<string, string>; // playerId -> nombre, para mostrar en el debug
   equiposElegibles: Set<string>; // equipos marcados con elegibleParaGrid = true
@@ -47,6 +48,7 @@ export async function construirIndice(): Promise<Indice> {
   const jugadoresPorNacionalidad = new Map<string, Set<string>>();
   const nacionalidadesPorEquipo = new Map<string, Set<string>>();
   const paisPorEquipo = new Map<string, string>();
+  const escudoPorEquipo = new Map<string, string | null>();
   const totalPorNacionalidad = new Map<string, number>();
   const nombresPorJugador = new Map<string, string>();
   const equiposElegibles = new Set<string>();
@@ -57,6 +59,7 @@ export async function construirIndice(): Promise<Indice> {
     if (!jugadoresPorEquipo.has(equipo)) jugadoresPorEquipo.set(equipo, new Set());
     jugadoresPorEquipo.get(equipo)!.add(playerId);
     paisPorEquipo.set(equipo, team.pais);
+    escudoPorEquipo.set(equipo, team.escudo);
     nombresPorJugador.set(playerId, player.nombre);
     if (team.elegibleParaGrid) equiposElegibles.add(equipo);
 
@@ -80,6 +83,7 @@ export async function construirIndice(): Promise<Indice> {
     jugadoresPorNacionalidad,
     nacionalidadesPorEquipo,
     paisPorEquipo,
+    escudoPorEquipo,
     totalPorNacionalidad,
     nombresPorJugador,
     equiposElegibles,

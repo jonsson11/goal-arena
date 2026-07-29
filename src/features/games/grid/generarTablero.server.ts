@@ -126,16 +126,22 @@ export async function generarTableroDesdeBD(): Promise<Tablero> {
     );
   }
 
-  const condicionesFila = combinacion.filas.map((valor) => ({ tipo: "equipo", valor }) as Condicion) as [
-    Condicion,
-    Condicion,
-    Condicion,
-  ];
-  const condicionesColumna = combinacion.columnas.map((c) => ({ tipo: c.tipo, valor: c.valor }) as Condicion) as [
-    Condicion,
-    Condicion,
-    Condicion,
-  ];
+  const condicionesFila = combinacion.filas.map(
+    (valor) =>
+      ({
+        tipo: "equipo",
+        valor,
+        escudo: indice.escudoPorEquipo.get(valor) ?? null,
+      }) as Condicion
+  ) as [Condicion, Condicion, Condicion];
+  const condicionesColumna = combinacion.columnas.map(
+    (c) =>
+      ({
+        tipo: c.tipo,
+        valor: c.valor,
+        escudo: c.tipo === "equipo" ? (indice.escudoPorEquipo.get(c.valor) ?? null) : undefined,
+      }) as Condicion
+  ) as [Condicion, Condicion, Condicion];
 
   return { condicionesFila, condicionesColumna, celdas: celdasVacias() };
 }
