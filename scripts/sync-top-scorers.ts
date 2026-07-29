@@ -297,11 +297,29 @@ async function main() {
     return parciales.length === 1 ? parciales[0][1] : null
   }
 
+  /** Equipos de la BD que comparten alguna palabra larga, para sugerir */
+  function sugerirEquipos(nombre: string): string[] {
+    const palabras = normalizarEquipo(nombre)
+      .split(' ')
+      .filter((p) => p.length >= 4)
+    if (palabras.length === 0) return []
+    return equipos
+      .filter((e) => {
+        const suyas = normalizarEquipo(e.nombre).split(' ')
+        return palabras.some((p) => suyas.includes(p))
+      })
+      .map((e) => e.nombre)
+      .slice(0, 8)
+  }
+
   const sinEquipo = fuente.entradas.filter((e) => e.equipo && !buscarEquipo(e.equipo))
   if (sinEquipo.length > 0) {
-    console.warn(`\nEquipos que no he encontrado en la BD (se guarda solo el nombre):`)
-    for (const e of sinEquipo) console.warn(`  "${e.equipo}"`)
-    console.warn(`Equipos en tu BD: ${equipos.map((e) => e.nombre).join(', ')}\n`)
+    console.warn(`\nEquipos sin enlazar (el nombre se guarda igual, la UI no se rompe):`)
+    for (const e of sinEquipo) {
+      const sug = sugerirEquipos(e.equipo!)
+      console.warn(`  "${e.equipo}"${sug.length ? `  ->  ¿es alguno de estos? ${sug.join(' | ')}` : ''}`)
+    }
+    console.warn('')
   }
 
   if (dryRun) {
