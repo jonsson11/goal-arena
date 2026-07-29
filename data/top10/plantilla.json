@@ -1,59 +1,59 @@
 {
-  "competicion": "CL",
-  "temporada": "2024-25",
-  "metrica": "GOLES",
-  "titulo": "Máximos goleadores de UEFA Champions League 2023-24",
-  "descripcion": "Los 10 jugadores con más goles en La Liga durante la temporada 2023-24.",
+  "competicion": "ALL",
+  "temporada": "2025/26",
+  "metrica": "MINUTOS",
+  "titulo": "Jugadores que han disputado los máximos minutos en el Real Madrid en la temporada 2025-2026.",
+  "descripcion": "TOP 10 Minutos Jugados en el Real Madrid en la temporada 2025-26.",
   "entradas": [
     {
-      "nombre": "Serhou Guirassy",
-      "valor": 13,
-      "equipo": "Borussia Dortmund"
-    },
-    {
-      "nombre": "Raphinha",
-      "valor": 13,
-      "equipo": "FC Barcelona"
-    },
-    {
-      "nombre": "Harry Kane",
-      "valor": 11,
-      "equipo": "FC Bayern München"
-    },
-    {
-      "nombre": "Robert Lewandowski",
-      "valor": 11,
-      "equipo": "FC Barcelona"
-    },
-    {
-      "nombre": "Lautaro Martínez",
-      "valor": 9,
-      "equipo": "Inter de Milan"
-    },
-    {
-      "nombre": "Erling Haaland",
-      "valor": 8,
-      "equipo": "Manchester City FC"
-    },
-    {
       "nombre": "Vinicius Junior",
-      "valor": 8,
-      "equipo": "Real Madrid CF"
+      "valor": 4249,
+      "equipo": "Brazil"
     },
     {
-      "nombre": "Ousmane Dembélé",
-      "valor": 8,
-      "equipo": "Paris Saint-Germain FC"
+      "nombre": "Federico Valverde",
+      "valor": 4158,
+      "equipo": "Uruguay"
+    },
+    {
+      "nombre": "Thibaut Courtois",
+      "valor": 4005,
+      "equipo": "Belgium"
+    },
+    {
+      "nombre": "Aurélien Tchouaméni",
+      "valor": 3941,
+      "equipo": "France"
     },
     {
       "nombre": "Kylian Mbappé",
-      "valor": 7,
-      "equipo": "Real Madrid CF"
+      "valor": 3622,
+      "equipo": "France"
     },
     {
-      "nombre": "Jonathan David",
-      "valor": 7,
-      "equipo": "Lille"
+      "nombre": "Álvaro Carreras",
+      "valor": 3402,
+      "equipo": "Spain"
+    },
+    {
+      "nombre": "Arda Güler",
+      "valor": 3255,
+      "equipo": "Spain"
+    },
+    {
+      "nombre": "Dean Huijsen",
+      "valor": 3038,
+      "equipo": "Spain"
+    },
+    {
+      "nombre": "Jude Bellingham",
+      "valor": 2718,
+      "equipo": "Spain"
+    },
+    {
+      "nombre": "Raúl Asencio",
+      "valor": 2516,
+      "equipo": "Spain"
     }
   ]
 }
