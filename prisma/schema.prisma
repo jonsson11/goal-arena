@@ -1,6 +1,5 @@
 // ============================================================
-// GOAL ARENA — schema.prisma (borrador para revisión)
-// No se ha tocado nada del código del repo todavía.
+// GOAL ARENA — schema.prisma
 // ============================================================
 
 generator client {
@@ -8,7 +7,7 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider  = "postgresql"
 }
 
 // ============================================================
@@ -110,6 +109,10 @@ model Player {
   nacionalidad    String
   imagenUrl       String?
 
+  // Nombres alternativos aceptados al adivinar: "CR7", "Cristiano",
+  // "Chicharito"... Sin esto, nadie acierta escribiendo el nombre corto.
+  alias           String[] @default([])
+
   // Totales de carrera, para Higher/Lower y Top10 "globales"
   valorDeMercado  Float    @default(0) // en millones de €, ej: 45.5
   goles           Int      @default(0)
@@ -134,7 +137,7 @@ model Player {
 // una transferencia concreta (Fichajes) y la plantilla de un año (XI).
 model Stint {
   id        String    @id @default(cuid())
-  player    Player    @relation(fields: [playerId], references: [id], onDelete:Cascade)
+  player    Player    @relation(fields: [playerId], references: [id], onDelete: Cascade)
   playerId  String
   team      Team      @relation(fields: [teamId], references: [id])
   teamId    String
@@ -147,8 +150,9 @@ model Stint {
 
 model Competition {
   id         String   @id @default(cuid())
-  externalId String?  @unique
-  nombre     String   // "Champions League", "La Liga"...
+  externalId String?  @unique // id numérico de football-data.org
+  codigo     String?  @unique // "PD", "PL", "CL"... clave estable entre API y datos manuales
+  nombre     String            // "Champions League", "La Liga"...
 
   playerStats PlayerStat[]
   rankings    Top10Ranking[]
@@ -176,16 +180,47 @@ model PlayerStat {
   @@index([competitionId, temporada])
 }
 
-// Rankings "hardcodeados" o precalculados para Top10
+// Qué métrica ordena el ranking. Hoy solo se usa GOLES, pero deja la
+// puerta abierta a "Top 10 asistentes" o "Top 10 más caros" sin migrar.
+enum Top10Metrica {
+  GOLES
+  ASISTENCIAS
+  PARTIDOS
+  VALOR_MERCADO
+}
+
+// Rankings precalculados para Top10, ya vengan de la API o escritos a mano
 // (mapea features/games/top10/type.ts -> RankingTop10, EntradaTop10)
 model Top10Ranking {
   id            String       @id @default(cuid())
-  titulo        String
+  titulo        String       // "Máximos goleadores de La Liga 2012-13"
   descripcion   String?
   competition   Competition? @relation(fields: [competitionId], references: [id])
   competitionId String?
 
+  // Sin temporada no puedes distinguir La Liga 2012 de La Liga 2013.
+  // Nulo = ranking atemporal ("goleadores históricos de la Champions").
+  temporada     String?                     // mismo formato que PlayerStat: "2012-13"
+  metrica       Top10Metrica @default(GOLES)
+
+  totalEntradas Int          @default(10)   // por si algún ranking es Top 5 o Top 20
+  activo        Boolean      @default(true) // retirar un ranking sin borrarlo
+  fuente        Top10Fuente  @default(API)  // de dónde salieron los datos
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+
   entradas Top10Entry[]
+
+  // Evita duplicar el mismo ranking al reejecutar el script.
+  // Ojo: en Postgres los NULL no colisionan entre sí, así que dos rankings
+  // sin competición o sin temporada sí pueden coexistir. Es intencionado.
+  @@unique([competitionId, temporada, metrica])
+  @@index([activo])
+}
+
+enum Top10Fuente {
+  API    // sincronizado desde football-data.org
+  MANUAL // escrito a mano en data/top10/*.json
 }
 
 model Top10Entry {
@@ -196,7 +231,16 @@ model Top10Entry {
   player    Player       @relation(fields: [playerId], references: [id])
   playerId  String
 
+  // El dato que justifica la posición: 46 goles, 21 asistencias, 180.5 M€...
+  // Float en vez de Int para que valga también para valorDeMercado.
+  valor     Float        @default(0)
+
+  // Con qué equipo consiguió ese registro. Texto plano a propósito: el
+  // equipo histórico puede no existir como Team, y aquí solo se muestra.
+  equipoTexto String?
+
   @@unique([rankingId, posicion])
+  @@unique([rankingId, playerId]) // un jugador no sale dos veces en el mismo ranking
 }
 
 // ============================================================

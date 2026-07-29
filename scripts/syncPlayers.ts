@@ -34,7 +34,9 @@ type EntradaJugador = string | { nombre: string; url: string };
 //
 //  { nombre: "", url: "" },
 const JUGADORES_INICIALES: EntradaJugador[] = [
-{nombre:"João Félix", url:"https://en.wikipedia.org/wiki/Jo%C3%A3o_F%C3%A9lix"}
+  {nombre:"Taty Castellanos", url:"https://en.wikipedia.org/wiki/Taty_Castellanos"}
+
+
 ];
 
 // Deriva el externalId ("wiki:Titulo Con Espacios") a partir de una URL

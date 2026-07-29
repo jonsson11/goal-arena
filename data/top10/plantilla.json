@@ -1,0 +1,59 @@
+{
+  "competicion": "PD",
+  "temporada": "2022-23",
+  "metrica": "GOLES",
+  "titulo": "Máximos goleadores de La Liga 2022-23",
+  "descripcion": "Los 10 jugadores con más goles en La Liga durante la temporada 2022-23.",
+  "entradas": [
+    {
+      "nombre": "Robert Lewandowski",
+      "valor": 23,
+      "equipo": "FC Barcelona"
+    },
+    {
+      "nombre": "Karim Benzema",
+      "valor": 19,
+      "equipo": "Real Madrid CF"
+    },
+    {
+      "nombre": "Joselu",
+      "valor": 16,
+      "equipo": "RCD Espanyol de Barcelona"
+    },
+    {
+      "nombre": "Vedat Muriqi",
+      "valor": 15,
+      "equipo": "Celta"
+    },
+    {
+      "nombre": "Borja Iglesias",
+      "valor": 15,
+      "equipo": "Real Betis"
+    },
+    {
+      "nombre": "Antoine Griezmann",
+      "valor": 15,
+      "equipo": "Club Atlético de Madrid"
+    },
+    {
+      "nombre": "Enes Ünal",
+      "valor": 14,
+      "equipo": "Getafe CF"
+    },
+    {
+      "nombre": "Taty Castellanos",
+      "valor": 13,
+      "equipo": "Girona FC"
+    },
+    {
+      "nombre": "Álvaro Morata",
+      "valor": 13,
+      "equipo": "Club Atlético de Madrid"
+    },
+    {
+      "nombre": "Iago Aspas",
+      "valor": 12,
+      "equipo": "Celta de Vigo"
+    }
+  ]
+}
