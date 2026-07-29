@@ -41,14 +41,43 @@ function esperar(ms: number) {
 }
 
 type ApiFootballTeamsResponse = {
+  errors?: Record<string, string> | unknown[];
   response: { team: { id: number; name: string; logo: string | null } }[];
 };
+
+/** true si detectamos que el error viene de cuota/rate-limit, no de "no existe ese equipo". */
+function esErrorDeLimite(mensaje: string): boolean {
+  return /limit|rate|quota|too many/i.test(mensaje);
+}
+
+class ErrorApiFootball extends Error {
+  esLimite: boolean;
+  constructor(mensaje: string, esLimite: boolean) {
+    super(mensaje);
+    this.esLimite = esLimite;
+  }
+}
 
 async function buscarEnApiFootballCrudo(nombre: string) {
   const res = await fetch(`${BASE_URL}/teams?search=${encodeURIComponent(nombre)}`, {
     headers: { "x-apisports-key": API_KEY! },
   });
   const data = (await res.json()) as ApiFootballTeamsResponse;
+
+  // La API de API-Football normalmente responde 200 incluso cuando el
+  // problema es cuota/rate-limit: lo indica dentro de `errors`, no con el
+  // status HTTP. Antes esto se colaba como "sin resultado en API-Football"
+  // (respuesta vacía), indistinguible de un equipo que de verdad no existe.
+  const tieneErrores =
+    data.errors && (Array.isArray(data.errors) ? data.errors.length > 0 : Object.keys(data.errors).length > 0);
+  if (tieneErrores) {
+    const mensaje = JSON.stringify(data.errors);
+    throw new ErrorApiFootball(mensaje, esErrorDeLimite(mensaje));
+  }
+  if (!res.ok) {
+    throw new ErrorApiFootball(`HTTP ${res.status}`, res.status === 429);
+  }
+
   return data?.response?.[0]?.team ?? null;
 }
 
@@ -209,8 +238,22 @@ async function main() {
         actualizados++;
       }
     } catch (e) {
-      console.log(`✗ error: ${(e as Error).message}`);
-      fallos.push(`${nombre} / BD:"${equipoDb.nombre}" — ${(e as Error).message}`);
+      const error = e as Error;
+      console.log(`✗ error de API-Football: ${error.message}`);
+      fallos.push(`${nombre} / BD:"${equipoDb.nombre}" — ${error.message}`);
+
+      // Si es un error de cuota/rate-limit, seguir intentando con el resto
+      // solo quemaría más peticiones (probablemente fallen todos igual) y
+      // ensuciaría el log. Cortamos aquí y que se reintente más tarde --
+      // como el script es idempotente, no repite trabajo ya hecho.
+      if (error instanceof ErrorApiFootball && error.esLimite) {
+        console.log(
+          `\n⚠ Parece un límite de cuota/rate-limit de API-Football, no que estos equipos no existan.` +
+            ` Paro aquí para no gastar más peticiones -- vuelve a ejecutar el script más tarde` +
+            ` (o mañana, si es el límite diario) y seguirá justo por donde se quedó.`
+        );
+        break;
+      }
     }
 
     // Solo esperamos si de verdad hicimos una petición a la API en esta vuelta.

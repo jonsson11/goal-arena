@@ -10,3 +10,6 @@ Sporting CP / BD:"Sporting CP" — sin resultado/logo en API-Football
 Celtic / BD:"Celtic" — sin resultado/logo en API-Football
 Rangers / BD:"Rangers" — sin resultado/logo en API-Football
 Galatasaray / BD:"Galatasaray" — sin resultado/logo en API-Football
+
+--- Ejecución 2026-07-29T10:19:46.952Z ---
+Club Atlético de Madrid / BD:"Club Atlético de Madrid" — {"requests":"You have reached the request limit for the day, Go to https://dashboard.api-football.com to upgrade your plan."}
