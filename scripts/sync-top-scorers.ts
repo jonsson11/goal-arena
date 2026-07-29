@@ -68,6 +68,7 @@ const COMPETICIONES: Record<string, [string, boolean]> = {
   WC: ['Mundial FIFA', true],
   EC: ['Eurocopa', true],
 }
+const SELECCIONES = new Set(['WC', 'EC'])
 
 interface Entrada {
   nombre: string
@@ -286,7 +287,7 @@ async function main() {
   const eqPorNombre = new Map(equipos.map((e) => [normalizarEquipo(e.nombre), e.id]))
 
   function buscarEquipo(nombre?: string): string | null {
-    if (!nombre) return null
+    if (!nombre || SELECCIONES.has(fuente.codigo)) return null
     const clave = normalizarEquipo(nombre)
     if (eqPorNombre.has(clave)) return eqPorNombre.get(clave)!
 
@@ -312,7 +313,10 @@ async function main() {
       .slice(0, 8)
   }
 
-  const sinEquipo = fuente.entradas.filter((e) => e.equipo && !buscarEquipo(e.equipo))
+const sinEquipo = SELECCIONES.has(fuente.codigo)
+    ? []
+    : fuente.entradas.filter((e) => e.equipo && !buscarEquipo(e.equipo))
+
   if (sinEquipo.length > 0) {
     console.warn(`\nEquipos sin enlazar (el nombre se guarda igual, la UI no se rompe):`)
     for (const e of sinEquipo) {
@@ -351,8 +355,8 @@ async function main() {
           temporada: fuente.temporada,
         },
       },
-      update: { goles: r.entrada.goles, ...(teamId ? { teamId } : {}) },
-      create: {
+      update: { goles: r.entrada.goles, teamId },
+        create: {
         playerId: r.playerId,
         competitionId: competition.id,
         temporada: fuente.temporada,

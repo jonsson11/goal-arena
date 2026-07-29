@@ -1,59 +1,59 @@
 {
-  "competicion": "PD",
-  "temporada": "2022-23",
+  "competicion": "CL",
+  "temporada": "2024-25",
   "metrica": "GOLES",
-  "titulo": "Máximos goleadores de La Liga 2022-23",
-  "descripcion": "Los 10 jugadores con más goles en La Liga durante la temporada 2022-23.",
+  "titulo": "Máximos goleadores de UEFA Champions League 2023-24",
+  "descripcion": "Los 10 jugadores con más goles en La Liga durante la temporada 2023-24.",
   "entradas": [
     {
-      "nombre": "Robert Lewandowski",
-      "valor": 23,
+      "nombre": "Serhou Guirassy",
+      "valor": 13,
+      "equipo": "Borussia Dortmund"
+    },
+    {
+      "nombre": "Raphinha",
+      "valor": 13,
       "equipo": "FC Barcelona"
     },
     {
-      "nombre": "Karim Benzema",
-      "valor": 19,
+      "nombre": "Harry Kane",
+      "valor": 11,
+      "equipo": "FC Bayern München"
+    },
+    {
+      "nombre": "Robert Lewandowski",
+      "valor": 11,
+      "equipo": "FC Barcelona"
+    },
+    {
+      "nombre": "Lautaro Martínez",
+      "valor": 9,
+      "equipo": "Inter de Milan"
+    },
+    {
+      "nombre": "Erling Haaland",
+      "valor": 8,
+      "equipo": "Manchester City FC"
+    },
+    {
+      "nombre": "Vinicius Junior",
+      "valor": 8,
       "equipo": "Real Madrid CF"
     },
     {
-      "nombre": "Joselu",
-      "valor": 16,
-      "equipo": "RCD Espanyol de Barcelona"
+      "nombre": "Ousmane Dembélé",
+      "valor": 8,
+      "equipo": "Paris Saint-Germain FC"
     },
     {
-      "nombre": "Vedat Muriqi",
-      "valor": 15,
-      "equipo": "Celta"
+      "nombre": "Kylian Mbappé",
+      "valor": 7,
+      "equipo": "Real Madrid CF"
     },
     {
-      "nombre": "Borja Iglesias",
-      "valor": 15,
-      "equipo": "Real Betis"
-    },
-    {
-      "nombre": "Antoine Griezmann",
-      "valor": 15,
-      "equipo": "Club Atlético de Madrid"
-    },
-    {
-      "nombre": "Enes Ünal",
-      "valor": 14,
-      "equipo": "Getafe CF"
-    },
-    {
-      "nombre": "Taty Castellanos",
-      "valor": 13,
-      "equipo": "Girona FC"
-    },
-    {
-      "nombre": "Álvaro Morata",
-      "valor": 13,
-      "equipo": "Club Atlético de Madrid"
-    },
-    {
-      "nombre": "Iago Aspas",
-      "valor": 12,
-      "equipo": "Celta de Vigo"
+      "nombre": "Jonathan David",
+      "valor": 7,
+      "equipo": "Lille"
     }
   ]
 }

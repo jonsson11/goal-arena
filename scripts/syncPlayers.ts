@@ -34,10 +34,8 @@ type EntradaJugador = string | { nombre: string; url: string };
 //
 //  { nombre: "", url: "" },
 const JUGADORES_INICIALES: EntradaJugador[] = [
-  {nombre:"Taty Castellanos", url:"https://en.wikipedia.org/wiki/Taty_Castellanos"}
-
-
-];
+  {nombre:"Serhou Guirassy", url:"https://en.wikipedia.org/wiki/Serhou_Guirassy"}
+  ];
 
 // Deriva el externalId ("wiki:Titulo Con Espacios") a partir de una URL
 // de en.wikipedia.org, sin tocar wikipediaSync.ts -- misma lógica que
