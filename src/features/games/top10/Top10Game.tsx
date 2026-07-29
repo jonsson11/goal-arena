@@ -1,17 +1,22 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import type { Jugador } from "@/features/games/shared/types";
 import { obtenerCodigoPais } from "@/features/games/shared/banderas";
 import { GameResultDialog } from "@/features/games/shared/GameResultDialog";
 import { GameButton } from "@/features/games/shared/GameButton";
+import { PlayerSearch } from "@/features/games/shared/PlayerSearch";
 import type { EntradaTop10, RankingTop10 } from "./type";
-import { rankings } from "./data";
 import { buscarEntradaCoincidente } from "./logic";
-
-const RANKING_ACTUAL: RankingTop10 = rankings[0];
 
 function segundosTranscurridos(inicio: number): number {
   return Math.floor((Date.now() - inicio) / 1000);
+}
+
+async function buscarJugadores(query: string): Promise<Jugador[]> {
+  const res = await fetch(`/api/jugadores/buscar?q=${encodeURIComponent(query)}`);
+  if (!res.ok) throw new Error("Error al buscar jugadores");
+  return res.json();
 }
 
 type EstiloPosicion = {
@@ -61,8 +66,11 @@ function obtenerEstiloPosicion(posicion: number, acertado: boolean): EstiloPosic
 }
 
 export function Top10Game() {
+  const [ranking, setRanking] = useState<RankingTop10 | null>(null);
+  const [cargando, setCargando] = useState(true);
+  const [errorCarga, setErrorCarga] = useState<string | null>(null);
+
   const [acertados, setAcertados] = useState<EntradaTop10[]>([]);
-  const [textoEscrito, setTextoEscrito] = useState("");
   const [mensaje, setMensaje] = useState("");
 
   const [horaInicio, setHoraInicio] = useState(() => Date.now());
@@ -70,64 +78,116 @@ export function Top10Game() {
   const [rendido, setRendido] = useState(false);
   const [popupAbierto, setPopupAbierto] = useState(false);
 
-  const completado = acertados.length === RANKING_ACTUAL.respuestas.length;
+  // Mismo patrón que GridBoard: descarta respuestas de peticiones obsoletas,
+  // necesario porque React Strict Mode ejecuta el efecto de montaje dos veces
+  // en desarrollo y si no se vería parpadear un ranking antes del definitivo.
+  const cargaIdRef = useRef(0);
+
+  useEffect(() => {
+    cargarRanking();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  async function cargarRanking() {
+    const miCargaId = ++cargaIdRef.current;
+
+    setCargando(true);
+    setErrorCarga(null);
+    setAcertados([]);
+    setMensaje("");
+    setTiempoFinal(null);
+    setRendido(false);
+    setPopupAbierto(false);
+
+    try {
+      // Se excluye el ranking actual para no repetirlo dos veces seguidas
+      const query = ranking ? `?excluir=${encodeURIComponent(ranking.id)}` : "";
+      const res = await fetch(`/api/top10/generar${query}`);
+
+      if (!res.ok) {
+        const data = await res.json().catch(() => null);
+        throw new Error(data?.error ?? "No se pudo generar el Top 10.");
+      }
+
+      const nuevoRanking: RankingTop10 = await res.json();
+      if (miCargaId !== cargaIdRef.current) return; // carga obsoleta
+
+      setRanking(nuevoRanking);
+      setHoraInicio(Date.now());
+    } catch (err) {
+      if (miCargaId !== cargaIdRef.current) return;
+      setErrorCarga(err instanceof Error ? err.message : "Error desconocido.");
+    } finally {
+      if (miCargaId === cargaIdRef.current) setCargando(false);
+    }
+  }
 
   function estaAcertado(entrada: EntradaTop10): boolean {
     return acertados.some((a) => a.nombre === entrada.nombre);
   }
 
-  function handleComprobar() {
-    if (!textoEscrito.trim()) return;
+  // El buscador devuelve cualquier jugador de la base de datos, no solo los
+  // del ranking: aquí se comprueba si el elegido está entre las respuestas.
+  function procesarSeleccion(jugador: Jugador) {
+    if (!ranking) return;
 
-    const encontrada = buscarEntradaCoincidente(RANKING_ACTUAL.respuestas, textoEscrito);
+    const encontrada = buscarEntradaCoincidente(ranking.respuestas, jugador.nombre);
 
     if (!encontrada) {
-      setMensaje("Ese nombre no está en el Top 10.");
-      setTextoEscrito("");
+      setMensaje(`${jugador.nombre} no está en este Top 10.`);
       return;
     }
 
     if (estaAcertado(encontrada)) {
       setMensaje(`${encontrada.nombre} ya ha sido colocado.`);
-      setTextoEscrito("");
       return;
     }
 
     const nuevosAcertados = [...acertados, encontrada];
     setAcertados(nuevosAcertados);
     setMensaje(`¡${encontrada.nombre} correcto!`);
-    setTextoEscrito("");
 
-    if (nuevosAcertados.length === RANKING_ACTUAL.respuestas.length) {
+    if (nuevosAcertados.length === ranking.respuestas.length) {
+      setMensaje("");
       setTiempoFinal(segundosTranscurridos(horaInicio));
       setPopupAbierto(true);
     }
   }
 
   function handleRendirse() {
+    setMensaje("");
     setTiempoFinal(segundosTranscurridos(horaInicio));
     setRendido(true);
     setPopupAbierto(true);
   }
 
-  function jugarDeNuevo() {
-    setAcertados([]);
-    setTextoEscrito("");
-    setMensaje("");
-    setHoraInicio(Date.now());
-    setTiempoFinal(null);
-    setRendido(false);
-    setPopupAbierto(false);
+  if (cargando) {
+    return (
+      <div className="flex flex-col items-center gap-4 p-6">
+        <p className="text-sm text-muted-foreground">Cargando Top 10...</p>
+      </div>
+    );
   }
+
+  if (errorCarga || !ranking) {
+    return (
+      <div className="flex flex-col items-center gap-4 p-6">
+        <p className="text-sm text-destructive">{errorCarga ?? "No se pudo cargar el Top 10."}</p>
+        <GameButton onClick={cargarRanking}>Reintentar</GameButton>
+      </div>
+    );
+  }
+
+  const total = ranking.respuestas.length;
+  const completado = acertados.length === total;
+  const nombresAcertados = acertados.map((a) => a.nombre);
 
   return (
     <div className="flex flex-col items-center gap-6 p-6">
-      <h1 className="text-center text-2xl font-bold text-foreground">
-        {RANKING_ACTUAL.titulo}
-      </h1>
+      <h1 className="text-center text-2xl font-bold text-foreground">{ranking.titulo}</h1>
 
       <div className="grid w-full max-w-md grid-flow-col grid-cols-2 grid-rows-5 gap-2 sm:flex sm:max-w-2xl sm:flex-col">
-        {RANKING_ACTUAL.respuestas.map((entrada, i) => {
+        {ranking.respuestas.map((entrada, i) => {
           const posicion = i + 1;
           const acertado = estaAcertado(entrada);
           const codigoPais = obtenerCodigoPais(entrada.nacionalidad);
@@ -150,9 +210,7 @@ export function Top10Game() {
               </span>
               <span className="flex items-center justify-end">
                 {codigoPais && (
-                  <span
-                    className={`fi fi-${codigoPais} h-3.75 w-5 rounded-sm sm:h-6 sm:w-9`}
-                  />
+                  <span className={`fi fi-${codigoPais} h-3.75 w-5 rounded-sm sm:h-6 sm:w-9`} />
                 )}
               </span>
             </div>
@@ -160,27 +218,26 @@ export function Top10Game() {
         })}
       </div>
 
-      <div className="flex gap-2">
-        <input
-          value={textoEscrito}
-          onChange={(e) => setTextoEscrito(e.target.value)}
-          onKeyDown={(e) => {
-            if (e.key === "Enter") handleComprobar();
-          }}
+      <div className="flex w-full max-w-xs gap-2">
+        <PlayerSearch
+          onSearch={buscarJugadores}
+          excludeNames={nombresAcertados}
+          excludedLabel="Ya acertado"
+          onSelect={procesarSeleccion}
           placeholder="Escribe un jugador..."
-          className="rounded-md border border-border bg-card px-3 py-2 text-foreground"
         />
-        <GameButton onClick={handleComprobar}>Comprobar</GameButton>
         <GameButton variant="destructive" onClick={handleRendirse}>
           Rendirse
         </GameButton>
       </div>
 
       <p className="text-sm text-muted-foreground">
-        {acertados.length}/{RANKING_ACTUAL.respuestas.length} acertados
+        {acertados.length}/{total} acertados
       </p>
 
-      {mensaje && <p className="text-sm text-muted-foreground">{mensaje}</p>}
+      {mensaje && !completado && !rendido && (
+        <p className="text-sm text-muted-foreground">{mensaje}</p>
+      )}
 
       {(completado || rendido) && (
         <GameResultDialog
@@ -191,18 +248,20 @@ export function Top10Game() {
           descripcion={
             completado ? (
               <>
-                Has acertado los 10 en{" "}
+                Has acertado los {total} en{" "}
                 <span className="font-semibold text-foreground">{tiempoFinal}</span> segundos.
               </>
             ) : (
               <>
                 Te has rendido con{" "}
-                <span className="font-semibold text-foreground">{acertados.length}/10</span>{" "}
+                <span className="font-semibold text-foreground">
+                  {acertados.length}/{total}
+                </span>{" "}
                 acertados.
               </>
             )
           }
-          onJugarDeNuevo={jugarDeNuevo}
+          onJugarDeNuevo={cargarRanking}
         />
       )}
     </div>
