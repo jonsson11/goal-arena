@@ -2,6 +2,7 @@ import type { Usuario, EstadisticasRapidas, PartidaHistorial, Logro } from "./ty
 
 
 export const usuarioInicial: Usuario = {
+  id: "usuario-de-mentira",
   nombre: "Jugador",
   email:"jugador@goalarena.com",
   avatar: "⚽",

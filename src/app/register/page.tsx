@@ -7,15 +7,24 @@ import { useAuth } from "@/features/auth/AuthContext";
 import { GameButton } from "@/features/games/shared/GameButton";
 
 export default function RegisterPage() {
-  const { login } = useAuth();
+  const { registrar } = useAuth();
   const router = useRouter();
   const [nombre, setNombre] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState<string | null>(null);
+  const [enviando, setEnviando] = useState(false);
 
-  function handleSubmit(e: FormEvent) {
+  async function handleSubmit(e: FormEvent) {
     e.preventDefault();
-    login();
+    setError(null);
+    setEnviando(true);
+    const resultado = await registrar(nombre, email, password);
+    setEnviando(false);
+    if (resultado.error) {
+      setError(resultado.error);
+      return;
+    }
     router.push("/perfil");
   }
 
@@ -67,8 +76,14 @@ export default function RegisterPage() {
           />
         </div>
 
-        <GameButton type="submit" className="mt-2">
-          Crear cuenta
+        {error && (
+          <p className="rounded-md bg-destructive/10 px-3 py-2 text-center text-sm font-semibold text-destructive">
+            {error}
+          </p>
+        )}
+
+        <GameButton type="submit" className="mt-2" disabled={enviando}>
+          {enviando ? "Creando cuenta..." : "Crear cuenta"}
         </GameButton>
 
         <p className="text-center text-sm text-muted-foreground">

@@ -16,7 +16,12 @@ datasource db {
 // ============================================================
 
 model User {
-  id               String   @id @default(cuid())
+  // OJO: este id ya NO se genera solo (antes era un cuid() aleatorio). Ahora
+  // es el mismo id que crea Supabase Auth para la cuenta (un UUID), y se
+  // asigna explícitamente al crear la fila justo después del alta en
+  // Supabase Auth (ver src/app/api/auth/register/route.ts). Así una cuenta
+  // = una fila de User, sin duplicar ni desincronizar los dos ids.
+  id               String   @id
   email            String   @unique
   nombre           String
   avatar           String   @default("⚽")
@@ -25,12 +30,6 @@ model User {
   xpActual         Int      @default(0)
   xpSiguienteNivel Int      @default(100)
   createdAt        DateTime @default(now())
-
-  // Relaciones
-  participaciones  MatchParticipant[]
-  logros           UserAchievement[]
-  amistadesA       Friendship[]        @relation("UsuarioA")
-  amistadesB       Friendship[]        @relation("UsuarioB")
 
   // Contadores denormalizados para no recalcular en cada carga de perfil
   partidasJugadas    Int @default(0)
@@ -43,37 +42,11 @@ enum AvatarTipo {
   FOTO
 }
 
-model Friendship {
-  id         String   @id @default(cuid())
-  usuarioA   User     @relation("UsuarioA", fields: [usuarioAId], references: [id])
-  usuarioAId String
-  usuarioB   User     @relation("UsuarioB", fields: [usuarioBId], references: [id])
-  usuarioBId String
-  createdAt  DateTime @default(now())
-
-  @@unique([usuarioAId, usuarioBId])
-}
-
-model Achievement {
-  id          String @id @default(cuid())
-  codigo      String @unique // ej: "primera_victoria", "nivel_25"
-  nombre      String
-  descripcion String
-  icono       String
-
-  usuarios UserAchievement[]
-}
-
-model UserAchievement {
-  id            String      @id @default(cuid())
-  user          User        @relation(fields: [userId], references: [id])
-  userId        String
-  achievement   Achievement @relation(fields: [achievementId], references: [id])
-  achievementId String
-  desbloqueadoEn DateTime   @default(now())
-
-  @@unique([userId, achievementId])
-}
+// Nota: aquí vivían Friendship, Achievement y UserAchievement (amigos y
+// logros). Se han quitado del schema porque esas tablas ya se habían
+// borrado a mano en la BD real y no estaban implementadas en ningún sitio
+// del código -- si se retoma esa parte más adelante, se vuelve a diseñar
+// desde cero con una migración nueva.
 
 // ============================================================
 // 2. DATOS DE FÚTBOL (fuente: football-data.org + Wikipedia)
@@ -245,81 +218,11 @@ model Top10Entry {
 
 // ============================================================
 // 3. PARTIDAS Y RONDAS (Individual / 1vs1 / Arena)
-// Diseñado para que generateMatch() sirva para los tres modos,
-// variando solo la lista de participantes y las rondas configuradas.
+//
+// Aquí vivían Match, MatchParticipant, Round, RoundResult (y los enums
+// GameType/MatchType/MatchStatus) -- se han quitado del schema porque
+// nunca llegaron a usarse en ningún juego real y ya se habían borrado a
+// mano en la BD. Cuando se monte el modo 1vs1/Arena, se diseña de nuevo
+// desde cero (con lo aprendido mientras tanto) y se crea con una
+// migración nueva.
 // ============================================================
-
-enum GameType {
-  GRID
-  FICHAJES
-  HIGHER_LOWER
-  ADN
-  TOP10
-  XI
-}
-
-enum MatchType {
-  SOLO
-  DUEL
-  ARENA_QUICK
-  ARENA_CLASSIC
-  ARENA_PRIVATE
-}
-
-enum MatchStatus {
-  WAITING
-  IN_PROGRESS
-  FINISHED
-}
-
-model Match {
-  id           String              @id @default(cuid())
-  type         MatchType
-  status       MatchStatus         @default(WAITING)
-  codigo       String?             @unique // para ARENA_PRIVATE
-  createdAt    DateTime            @default(now())
-  finishedAt   DateTime?
-
-  rounds       Round[]
-  participants MatchParticipant[]
-}
-
-model MatchParticipant {
-  id       String        @id @default(cuid())
-  match    Match         @relation(fields: [matchId], references: [id])
-  matchId  String
-  user     User          @relation(fields: [userId], references: [id])
-  userId   String
-  score    Int           @default(0)
-  posicion Int?
-
-  results  RoundResult[]
-
-  @@unique([matchId, userId])
-}
-
-model Round {
-  id        String   @id @default(cuid())
-  match     Match    @relation(fields: [matchId], references: [id])
-  matchId   String
-  orden     Int
-  gameType  GameType
-  challenge Json     // el reto ya generado y congelado (mismo para todos)
-
-  results   RoundResult[]
-
-  @@unique([matchId, orden])
-}
-
-model RoundResult {
-  id            String           @id @default(cuid())
-  round         Round            @relation(fields: [roundId], references: [id])
-  roundId       String
-  participant   MatchParticipant @relation(fields: [participantId], references: [id])
-  participantId String
-  score         Int              @default(0)
-  respuestas    Json?
-  finishedAt    DateTime?
-
-  @@unique([roundId, participantId])
-}
