@@ -3,6 +3,13 @@
 import { useState, type ReactNode } from "react";
 import Link from "next/link";
 import type { JuegoInfo } from "./juegos";
+import {
+  HALO_POR_ACENTO,
+  HALO_ACTIVO_POR_ACENTO,
+  ICONO_FONDO_POR_ACENTO,
+  TEXTO_POR_ACENTO,
+  DEGRADADO_FONDO_POR_ACENTO,
+} from "./acento";
 
 // El componente de icono (`Icono`) de JuegoInfo es una función, y las
 // funciones no se pueden pasar de un Server Component a uno "use client"
@@ -12,33 +19,17 @@ import type { JuegoInfo } from "./juegos";
 // es un Server Component y puede importar y usar el componente libremente.
 type JuegoSinIcono = Omit<JuegoInfo, "Icono">;
 
-const HALO_POR_ACENTO: Record<JuegoInfo["acento"], string> = {
-  primary:
-    "shadow-[0_0_34px_-6px_rgba(74,222,154,0.35),0_0_0_1px_rgba(74,222,154,0.08)] hover:shadow-[0_0_55px_-4px_rgba(74,222,154,0.65),0_0_0_1px_rgba(74,222,154,0.25)]",
-  secondary:
-    "shadow-[0_0_34px_-6px_rgba(29,122,156,0.45),0_0_0_1px_rgba(29,122,156,0.10)] hover:shadow-[0_0_55px_-4px_rgba(29,122,156,0.75),0_0_0_1px_rgba(29,122,156,0.3)]",
-};
-
-// Cuando la carta está girada, se usa SOLO este set de clases (en vez de
-// combinarlo con HALO_POR_ACENTO) para no tener dos utilidades de
-// box-shadow distintas compitiendo por la misma propiedad a la vez -- con
-// Tailwind eso depende del orden en que genera el CSS, no del orden en el
-// className, así que es mejor evitarlo directamente.
-const HALO_ACTIVO_POR_ACENTO: Record<JuegoInfo["acento"], string> = {
-  primary: "shadow-[0_0_55px_-4px_rgba(74,222,154,0.65),0_0_0_1px_rgba(74,222,154,0.25)]",
-  secondary: "shadow-[0_0_55px_-4px_rgba(29,122,156,0.75),0_0_0_1px_rgba(29,122,156,0.3)]",
-};
-
-const ICONO_FONDO_POR_ACENTO: Record<JuegoInfo["acento"], string> = {
-  primary: "bg-primary/10 text-primary",
-  secondary: "bg-secondary/15 text-secondary",
-};
-
 const ETIQUETA_ESTILO: Record<NonNullable<JuegoInfo["etiqueta"]>, string> = {
   HOT: "border-destructive text-destructive",
   BETA: "border-muted-foreground text-muted-foreground",
   NEW: "border-primary text-primary",
 };
+
+// El mismo recurso del titular de /inicio ("Demuestra cuánto sabes de
+// fútbol. En minutos." -- frase en blanco + acento en verde), aquí en dos
+// líneas: kicker de color arriba, nombre en blanco grande con un resplandor
+// verde debajo, en vez de partir cada nombre de juego en dos colores.
+const GLOW_NOMBRE = { textShadow: "0 0 18px rgba(74,222,154,0.45)" };
 
 export function JuegoCromo({ juego, icono }: { juego: JuegoSinIcono; icono: ReactNode }) {
   const [girado, setGirado] = useState(false);
@@ -75,16 +66,25 @@ export function JuegoCromo({ juego, icono }: { juego: JuegoSinIcono; icono: Reac
           <div className={`z-10 flex h-16 w-16 items-center justify-center rounded-2xl ${ICONO_FONDO_POR_ACENTO[juego.acento]}`}>
             {icono}
           </div>
-          <span className="z-10 text-lg font-extrabold text-foreground">{juego.nombre}</span>
+          <span className={`z-10 text-[10px] font-bold uppercase tracking-widest ${TEXTO_POR_ACENTO[juego.acento]}`}>
+            {juego.categoria}
+          </span>
+          <span className="z-10 text-xl font-extrabold tracking-tight text-foreground" style={GLOW_NOMBRE}>
+            {juego.nombre}
+          </span>
           <span className="z-10 text-[11px] text-muted-foreground">Toca para ver más</span>
         </div>
 
         {/* Cara trasera */}
-        <div className="absolute inset-0 flex [transform:rotateY(180deg)] flex-col items-center justify-center gap-2.5 rounded-[22px] border border-border bg-gradient-to-br from-primary/10 to-card p-5 text-center [backface-visibility:hidden]">
+        <div
+          className={`absolute inset-0 flex [transform:rotateY(180deg)] flex-col items-center justify-center gap-2.5 rounded-[22px] border border-border bg-gradient-to-br p-5 text-center [backface-visibility:hidden] ${DEGRADADO_FONDO_POR_ACENTO[juego.acento]}`}
+        >
           <div className={`flex h-14 w-14 items-center justify-center rounded-2xl ${ICONO_FONDO_POR_ACENTO[juego.acento]}`}>
             {icono}
           </div>
-          <span className="text-lg font-extrabold text-foreground">{juego.nombre}</span>
+          <span className="text-lg font-extrabold tracking-tight text-foreground" style={GLOW_NOMBRE}>
+            {juego.nombre}
+          </span>
           <span className="text-[13px] leading-relaxed text-muted-foreground">{juego.descripcion}</span>
           <Link
             href={juego.href}

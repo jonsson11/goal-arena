@@ -4,6 +4,7 @@ import { useState, type ReactNode } from "react";
 import Link from "next/link";
 import { JUEGOS } from "./juegos";
 import { GameButton } from "./GameButton";
+import { ICONO_BORDE_FONDO_POR_ACENTO, TEXTO_POR_ACENTO } from "./acento";
 
 type GameLauncherProps = {
   href: string;
@@ -30,15 +31,9 @@ export function GameLauncher({ href, children }: GameLauncherProps) {
 
       <div className="flex w-full max-w-md flex-col items-center gap-4 rounded-2xl border border-primary/40 bg-card p-8 text-center shadow-[0_0_40px_-8px_rgba(74,222,154,0.5)]">
         <div
-          className={`flex h-20 w-20 items-center justify-center rounded-2xl border ${
-            acento === "primary"
-              ? "border-primary/40 bg-primary/10"
-              : "border-secondary/40 bg-secondary/10"
-          }`}
+          className={`flex h-20 w-20 items-center justify-center rounded-2xl border ${ICONO_BORDE_FONDO_POR_ACENTO[acento]}`}
         >
-          <Icono
-            className={`h-10 w-10 ${acento === "primary" ? "text-primary" : "text-secondary"}`}
-          />
+          <Icono className={`h-10 w-10 ${TEXTO_POR_ACENTO[acento]}`} />
         </div>
 
         <h1 className="text-3xl font-extrabold tracking-tight text-foreground sm:text-4xl">

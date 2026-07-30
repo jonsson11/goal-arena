@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { JUEGOS } from "@/features/games/shared/juegos";
+import { BORDE_SOMBRA_FIJA_POR_ACENTO, TEXTO_POR_ACENTO } from "@/features/games/shared/acento";
 
 export function GamesCarousel() {
   const [indice, setIndice] = useState(0);
@@ -42,22 +43,10 @@ export function GamesCarousel() {
         </button>
 
         <div
-          className={`flex flex-1 flex-col items-center gap-4 rounded-2xl border bg-card p-10 text-center transition-all duration-300 ${
-            juego.acento === "primary"
-              ? "border-primary/30 shadow-[0_0_30px_-4px_rgba(74,222,154,0.4)]"
-              : "border-secondary/30 shadow-[0_0_30px_-4px_rgba(29,122,156,0.5)]"
-          }`}
+          className={`flex flex-1 flex-col items-center gap-4 rounded-2xl border bg-card p-10 text-center transition-all duration-300 ${BORDE_SOMBRA_FIJA_POR_ACENTO[juego.acento]}`}
         >
-          <Icono
-            className={`h-16 w-16 ${
-              juego.acento === "primary" ? "text-primary" : "text-secondary"
-            }`}
-          />
-          <span
-            className={`text-xl font-bold ${
-              juego.acento === "primary" ? "text-primary" : "text-secondary"
-            }`}
-          >
+          <Icono className={`h-16 w-16 ${TEXTO_POR_ACENTO[juego.acento]}`} />
+          <span className={`text-xl font-bold ${TEXTO_POR_ACENTO[juego.acento]}`}>
             {juego.nombre}
           </span>
           <span className="text-sm text-muted-foreground">{juego.descripcion}</span>
