@@ -13,10 +13,14 @@
 //
 // Ejecutar con:
 //   npx tsx scripts/sync-escudos-equipos.ts
-//   npx tsx scripts/sync-escudos-equipos.ts --dry-run   (no escribe nada)
+//   npx tsx scripts/sync-escudos-equipos.ts --dry-run       (no escribe nada)
+//   npx tsx scripts/sync-escudos-equipos.ts --solo-fallos   (solo reintenta los de sync-escudos-fallos.txt)
 //
 // Requiere en .env: DATABASE_URL y API_FOOTBALL_KEY.
-// Idempotente: si vuelves a ejecutarlo, solo toca los que sigan sin escudo.
+// Idempotente: si vuelves a ejecutarlo, solo toca los que sigan sin escudo
+// (comprueba Team.escudo ANTES de gastar ninguna petición a la API, así que
+// re-ejecutar sin --solo-fallos también es seguro y barato para los que ya
+// tienen escudo puesto, aunque no estén en la lista de fallos).
 
 import "dotenv/config";
 import { PrismaClient } from "@prisma/client";
@@ -32,12 +36,31 @@ const API_KEY = process.env.API_FOOTBALL_KEY;
 const BASE_URL = "https://v3.football.api-sports.io";
 
 const DRY_RUN = process.argv.includes("--dry-run");
+const SOLO_FALLOS = process.argv.includes("--solo-fallos");
 const PAUSA_MS = 6500; // ~9 peticiones/minuto, por debajo del límite de 10/min de API-Football
 
 const FALLOS_PATH = path.resolve(process.cwd(), "scripts/sync-escudos-fallos.txt");
 
 function esperar(ms: number) {
   return new Promise((r) => setTimeout(r, ms));
+}
+
+/**
+ * Lee scripts/sync-escudos-fallos.txt y extrae los nombres (de la lista de
+ * elegibles, no los de la BD) que aparecieron en algún fallo, para poder
+ * reintentar solo esos con --solo-fallos en vez de repasar los 63 de golpe.
+ * Cada línea de fallo tiene el formato `${nombre} / BD:"..." — <motivo>`,
+ * así que basta con quedarnos con lo que hay antes de ` / BD:`.
+ */
+function leerNombresDeFallos(): string[] {
+  if (!fs.existsSync(FALLOS_PATH)) return [];
+  const contenido = fs.readFileSync(FALLOS_PATH, "utf-8");
+  const nombres = new Set<string>();
+  for (const linea of contenido.split("\n")) {
+    const m = linea.match(/^(.+?) \/ BD:/);
+    if (m) nombres.add(m[1].trim());
+  }
+  return [...nombres];
 }
 
 type ApiFootballTeamsResponse = {
@@ -156,6 +179,11 @@ async function main() {
     select: { id: true, nombre: true, escudo: true, externalId: true },
   });
   const eqPorNombre = new Map(equipos.map((e) => [normalizarEquipo(e.nombre), e]));
+  // Para detectar de antemano si el externalId que vamos a guardar ya lo
+  // tiene otra fila (típico de los duplicados/basura del scrapeo que hay
+  // pendientes de limpiar en Team) -- Team.externalId es @unique, así que
+  // si no lo comprobamos antes, Prisma revienta al hacer el update.
+  const eqPorExternalId = new Map(equipos.filter((e) => e.externalId).map((e) => [e.externalId!, e]));
 
   function buscarEquipoDb(nombre: string) {
     const clave = normalizarEquipo(nombre);
@@ -186,7 +214,24 @@ async function main() {
 
   // La lista tiene algún nombre repetido (p.ej. "Schalke 04" dos veces); nos
   // quedamos con nombres únicos para no gastar peticiones de más.
-  const nombresUnicos = [...new Set(EQUIPOS_ELEGIBLES)];
+  let nombresUnicos = [...new Set(EQUIPOS_ELEGIBLES)];
+
+  if (SOLO_FALLOS) {
+    const nombresFallos = leerNombresDeFallos();
+    if (nombresFallos.length === 0) {
+      console.log(
+        `--solo-fallos activado pero ${FALLOS_PATH} no existe o no tiene fallos registrados. Nada que hacer.`
+      );
+      await prisma.$disconnect();
+      return;
+    }
+    // Solo los que sigan estando en la lista de elegibles actual (por si el
+    // archivo de fallos tiene nombres de una versión antigua de la lista).
+    const setElegibles = new Set(nombresUnicos);
+    nombresUnicos = nombresFallos.filter((n) => setElegibles.has(n));
+    console.log(`Modo --solo-fallos: reintentando ${nombresUnicos.length} equipo(s) de ${FALLOS_PATH}`);
+  }
+
   console.log(`Equipos elegibles a comprobar: ${nombresUnicos.length}\n`);
 
   let actualizados = 0;
@@ -220,40 +265,73 @@ async function main() {
       // Buscamos en API-Football por el nombre TAL COMO ESTÁ EN LA BD
       // (más oficial/completo que el de la lista de elegibles), da mejores
       // resultados de búsqueda.
-      const equipoApi = await buscarEnApiFootball(equipoDb.nombre);
+      let equipoApi;
+      try {
+        equipoApi = await buscarEnApiFootball(equipoDb.nombre);
+      } catch (e) {
+        const error = e as Error;
+        console.log(`✗ error de API-Football: ${error.message}`);
+        fallos.push(`${nombre} / BD:"${equipoDb.nombre}" — API-Football: ${error.message}`);
+
+        // Si es un error de cuota/rate-limit, seguir intentando con el resto
+        // solo quemaría más peticiones (probablemente fallen todos igual) y
+        // ensuciaría el log. Cortamos aquí y que se reintente más tarde --
+        // como el script es idempotente, no repite trabajo ya hecho.
+        if (error instanceof ErrorApiFootball && error.esLimite) {
+          console.log(
+            `\n⚠ Parece un límite de cuota/rate-limit de API-Football, no que estos equipos no existan.` +
+              ` Paro aquí para no gastar más peticiones -- vuelve a ejecutar el script más tarde` +
+              ` (o mañana, si es el límite diario) y seguirá justo por donde se quedó.`
+          );
+          break;
+        }
+        if (i < nombresUnicos.length - 1) await esperar(PAUSA_MS);
+        continue;
+      }
+
       if (!equipoApi?.logo) {
         console.log(`✗ sin resultado en API-Football (buscado como "${equipoDb.nombre}")`);
         fallos.push(`${nombre} / BD:"${equipoDb.nombre}" — sin resultado/logo en API-Football`);
       } else {
-        if (!DRY_RUN) {
-          await prisma.team.update({
-            where: { id: equipoDb.id },
-            data: {
-              escudo: equipoApi.logo,
-              externalId: equipoDb.externalId ?? String(equipoApi.id),
-            },
-          });
+        // Si el equipo no tenía externalId todavía, solo se lo asignamos si
+        // ninguna otra fila lo tiene ya (Team.externalId es @unique). Si hay
+        // conflicto, es casi seguro una fila duplicada/basura del scrapeo
+        // (ver ROADMAP) -- se avisa pero no se bloquea el escudo por eso.
+        let externalIdNuevo: string | undefined;
+        let avisoDuplicado = "";
+        if (!equipoDb.externalId) {
+          const candidato = String(equipoApi.id);
+          const conflicto = eqPorExternalId.get(candidato);
+          if (conflicto && conflicto.id !== equipoDb.id) {
+            avisoDuplicado = ` [aviso: externalId ${candidato} ya lo tiene "${conflicto.nombre}" -- probable duplicado en Team, no se ha tocado externalId aquí]`;
+          } else {
+            externalIdNuevo = candidato;
+          }
         }
-        console.log(`✓ (${equipoDb.nombre}) ${equipoApi.logo}`);
-        actualizados++;
+
+        try {
+          if (!DRY_RUN) {
+            await prisma.team.update({
+              where: { id: equipoDb.id },
+              data: {
+                escudo: equipoApi.logo,
+                ...(externalIdNuevo ? { externalId: externalIdNuevo } : {}),
+              },
+            });
+          }
+          console.log(`✓ (${equipoDb.nombre}) ${equipoApi.logo}${avisoDuplicado}`);
+          actualizados++;
+        } catch (e) {
+          const error = e as Error;
+          console.log(`✗ error al guardar en la BD: ${error.message}`);
+          fallos.push(`${nombre} / BD:"${equipoDb.nombre}" — guardar en BD: ${error.message}`);
+        }
       }
     } catch (e) {
+      // Red de seguridad por si algo más (no la API, no el guardado) falla.
       const error = e as Error;
-      console.log(`✗ error de API-Football: ${error.message}`);
+      console.log(`✗ error inesperado: ${error.message}`);
       fallos.push(`${nombre} / BD:"${equipoDb.nombre}" — ${error.message}`);
-
-      // Si es un error de cuota/rate-limit, seguir intentando con el resto
-      // solo quemaría más peticiones (probablemente fallen todos igual) y
-      // ensuciaría el log. Cortamos aquí y que se reintente más tarde --
-      // como el script es idempotente, no repite trabajo ya hecho.
-      if (error instanceof ErrorApiFootball && error.esLimite) {
-        console.log(
-          `\n⚠ Parece un límite de cuota/rate-limit de API-Football, no que estos equipos no existan.` +
-            ` Paro aquí para no gastar más peticiones -- vuelve a ejecutar el script más tarde` +
-            ` (o mañana, si es el límite diario) y seguirá justo por donde se quedó.`
-        );
-        break;
-      }
     }
 
     // Solo esperamos si de verdad hicimos una petición a la API en esta vuelta.
