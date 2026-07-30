@@ -23,7 +23,12 @@ model User {
   // = una fila de User, sin duplicar ni desincronizar los dos ids.
   id               String   @id
   email            String   @unique
-  nombre           String
+
+  // Nombre de usuario -- único (se comprueba sin distinguir mayúsculas de
+  // minúsculas desde la aplicación, ver src/app/api/auth/register/route.ts).
+  // Es a la vez el nombre visible y el identificador para buscar/añadir
+  // amigos y la URL del perfil público (/perfil/ese-nombre).
+  nombre           String   @unique
   avatar           String   @default("⚽")
   avatarTipo       AvatarTipo @default(EMOJI)
   nivel            Int      @default(1)
@@ -31,10 +36,19 @@ model User {
   xpSiguienteNivel Int      @default(100)
   createdAt        DateTime @default(now())
 
+  // Se actualiza en cada "heartbeat" que manda el navegador mientras la app
+  // está abierta (ver /api/heartbeat). Se considera "conectado" si esto es
+  // reciente -- no es presencia en tiempo real, es una aproximación barata.
+  ultimaActividad  DateTime?
+
   // Contadores denormalizados para no recalcular en cada carga de perfil
   partidasJugadas    Int @default(0)
   rachaActual        Int @default(0)
   rachaMaxima        Int @default(0)
+
+  // Relaciones de amistad -- ver el modelo Friendship más abajo.
+  solicitudesEnviadas  Friendship[] @relation("SolicitudesEnviadas")
+  solicitudesRecibidas Friendship[] @relation("SolicitudesRecibidas")
 }
 
 enum AvatarTipo {
@@ -42,11 +56,36 @@ enum AvatarTipo {
   FOTO
 }
 
-// Nota: aquí vivían Friendship, Achievement y UserAchievement (amigos y
-// logros). Se han quitado del schema porque esas tablas ya se habían
-// borrado a mano en la BD real y no estaban implementadas en ningún sitio
-// del código -- si se retoma esa parte más adelante, se vuelve a diseñar
-// desde cero con una migración nueva.
+// Nota: aquí vivían Achievement y UserAchievement (logros). Se han quitado
+// del schema porque esas tablas ya se habían borrado a mano en la BD real y
+// no estaban implementadas en ningún sitio del código -- se diseñan de
+// nuevo cuando se aborde esa parte (necesita antes que los juegos reporten
+// resultados al backend).
+
+enum EstadoAmistad {
+  PENDIENTE
+  ACEPTADA
+}
+
+// Una fila = una solicitud de amistad, en el estado que sea. "Sois amigos"
+// significa "existe una fila entre A y B con estado ACEPTADA", sin
+// importar quién la envió originalmente.
+model Friendship {
+  id             String        @id @default(cuid())
+  solicitante    User          @relation("SolicitudesEnviadas", fields: [solicitanteId], references: [id], onDelete: Cascade)
+  solicitanteId  String
+  receptor       User          @relation("SolicitudesRecibidas", fields: [receptorId], references: [id], onDelete: Cascade)
+  receptorId     String
+  estado         EstadoAmistad @default(PENDIENTE)
+  createdAt      DateTime      @default(now())
+  respondidoEn   DateTime?
+
+  // Evita que A pueda mandarle dos solicitudes a B. La solicitud en la
+  // dirección contraria (B -> A) se resuelve a mano en la aplicación,
+  // aceptando la existente en vez de crear una fila duplicada.
+  @@unique([solicitanteId, receptorId])
+  @@index([receptorId, estado])
+}
 
 // ============================================================
 // 2. DATOS DE FÚTBOL (fuente: football-data.org + Wikipedia)

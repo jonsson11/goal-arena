@@ -2,11 +2,19 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useAuth } from "@/features/auth/AuthContext";
 
 export function AccountMenu() {
   const { usuario, logout } = useAuth();
+  const router = useRouter();
   const [abierto, setAbierto] = useState(false);
+
+  async function handleLogout() {
+    await logout();
+    setAbierto(false);
+    router.push("/login");
+  }
 
   if (!usuario) {
     return (
@@ -53,10 +61,7 @@ export function AccountMenu() {
           </Link>
 
           <button
-            onClick={() => {
-              logout();
-              setAbierto(false);
-            }}
+            onClick={handleLogout}
             className="block w-full rounded-md px-3 py-2 text-left text-sm text-destructive transition-colors hover:bg-destructive/10"
           >
             Cerrar sesión

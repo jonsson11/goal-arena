@@ -1,18 +1,27 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useAuth } from "@/features/auth/AuthContext";
 import { GameButton } from "@/features/games/shared/GameButton";
 import { EditProfileDialog } from "./EditProfileDialog";
 import { FriendsCarousel } from "./FriendsCarousel";
 import { estadisticasRapidas, historialPartidas, logros, } from "./data";
-import { amigosIniciales as amigos } from "@/features/social/data";
+import type { Amigo } from "@/features/social/type";
 import type { TipoAvatar } from "./type";
 
 export function ProfileView() {
   const { usuario, actualizarUsuario } = useAuth();
   const [editando, setEditando] = useState(false);
+  const [amigos, setAmigos] = useState<Amigo[]>([]);
+
+  useEffect(() => {
+    if (!usuario) return;
+    fetch("/api/amigos")
+      .then((res) => res.json())
+      .then((datos) => setAmigos(datos.amigos ?? []))
+      .catch(() => setAmigos([]));
+  }, [usuario]);
 
   if (!usuario) {
     return (

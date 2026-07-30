@@ -1,15 +1,27 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
-import { amigosIniciales } from "@/features/social/data";
 import { PublicProfileView } from "@/features/social/PublicProfileView";
+import type { Amigo } from "@/features/social/type";
 
 export default function PerfilPublicoPage() {
   const params = useParams<{ usuario: string }>();
+  const [amigo, setAmigo] = useState<Amigo | null>(null);
+  const [cargando, setCargando] = useState(true);
 
-  const amigo = amigosIniciales.find(
-    (a) => a.nombre.toLowerCase() === params.usuario.toLowerCase()
-  );
+  useEffect(() => {
+    setCargando(true);
+    fetch(`/api/usuarios/${encodeURIComponent(params.usuario)}`)
+      .then((res) => res.json())
+      .then((datos) => setAmigo(datos.usuario ?? null))
+      .catch(() => setAmigo(null))
+      .finally(() => setCargando(false));
+  }, [params.usuario]);
+
+  if (cargando) {
+    return <p className="p-10 text-center text-muted-foreground">Cargando...</p>;
+  }
 
   if (!amigo) {
     return (

@@ -58,7 +58,12 @@ export function FriendsCarousel({ amigos }: FriendsCarouselProps) {
         className="flex flex-1 items-center gap-4 rounded-xl border border-border bg-card px-5 py-3 transition-colors hover:border-primary/40"
       >
         <div className="relative flex h-12 w-12 flex-none items-center justify-center rounded-full border border-primary/40 bg-primary/10 text-2xl">
-          {amigo.avatar}
+          {amigo.avatarTipo === "foto" ? (
+            // eslint-disable-next-line @next/next/no-img-element -- foto de perfil de otro usuario (URL de Supabase Storage)
+            <img src={amigo.avatar} alt={amigo.nombre} className="h-full w-full rounded-full object-cover" />
+          ) : (
+            amigo.avatar
+          )}
           <span className={`absolute -bottom-0.5 -right-0.5 h-3 w-3 rounded-full border-2 border-card ${amigo.enLinea ? "bg-primary" : "bg-destructive"}`}/>
         </div>
         <div className="flex flex-col">

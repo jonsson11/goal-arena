@@ -33,9 +33,27 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }
 
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect -- carga inicial de sesión al montar, es el patrón esperado
+        // eslint-disable-next-line react-hooks/set-state-in-effect -- carga inicial de sesión al montar, es el patrón esperado
     cargarUsuarioActual().finally(() => setCargando(false));
   }, []);
+
+  // "Heartbeat": mientras haya sesión y la pestaña esté abierta, avisa cada
+  // minuto de que el usuario sigue activo (ver src/lib/presencia.ts --
+  // es lo que permite mostrar "Conectado/Desconectado" en la lista de
+  // amigos sin montar presencia en tiempo real).
+  useEffect(() => {
+    if (!usuario) return;
+
+    function enviarHeartbeat() {
+      fetch("/api/heartbeat", { method: "POST" }).catch(() => {
+        // Sin conexión momentánea: no pasa nada, se reintenta en el siguiente tick.
+      });
+    }
+
+    enviarHeartbeat();
+    const intervalo = setInterval(enviarHeartbeat, 60_000);
+    return () => clearInterval(intervalo);
+  }, [usuario?.id]);
 
   async function login(email: string, password: string): Promise<ResultadoAuth> {
     const res = await fetch("/api/auth/login", {

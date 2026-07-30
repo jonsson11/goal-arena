@@ -42,6 +42,17 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "La contraseña debe tener al menos 6 caracteres." }, { status: 400 });
   }
 
+  // Se comprueba ANTES de crear la cuenta en Supabase Auth -- si lo
+  // hiciéramos al revés y el nombre ya estuviera cogido, nos quedaría una
+  // cuenta de Auth "huérfana" sin perfil (no tenemos permiso para borrarla
+  // desde aquí, necesitaría la service_role key).
+  const nombreEnUso = await prisma.user.findFirst({
+    where: { nombre: { equals: nombre, mode: "insensitive" } },
+  });
+  if (nombreEnUso) {
+    return NextResponse.json({ error: "Ese nombre de usuario ya está en uso." }, { status: 400 });
+  }
+
   const supabase = await crearClienteSupabaseServidor();
   const { data, error } = await supabase.auth.signUp({ email, password });
 

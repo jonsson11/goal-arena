@@ -24,9 +24,18 @@ export function PublicProfileView({ amigo }: PublicProfileViewProps) {
       {/* Cabecera */}
       <div className="flex flex-col items-center gap-4 rounded-2xl border border-primary/30 bg-card p-8 text-center shadow-[0_0_30px_-8px_rgba(74,222,154,0.4)]">
         <div className="relative">
-          <div className="flex h-24 w-24 items-center justify-center rounded-full border-2 border-primary bg-primary/10 text-5xl">
-            {amigo.avatar}
-          </div>
+          {amigo.avatarTipo === "foto" ? (
+            // eslint-disable-next-line @next/next/no-img-element -- foto de perfil de otro usuario (URL de Supabase Storage)
+            <img
+              src={amigo.avatar}
+              alt={amigo.nombre}
+              className="h-24 w-24 rounded-full border-2 border-primary object-cover"
+            />
+          ) : (
+            <div className="flex h-24 w-24 items-center justify-center rounded-full border-2 border-primary bg-primary/10 text-5xl">
+              {amigo.avatar}
+            </div>
+          )}
           <div className="absolute -bottom-1 -right-1 flex h-8 w-8 items-center justify-center rounded-full border-2 border-card bg-primary text-xs font-extrabold text-primary-foreground shadow-[0_0_10px_-1px_rgba(74,222,154,0.8)]">
             {amigo.nivel}
           </div>
