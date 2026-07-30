@@ -30,8 +30,13 @@ export function ProfileView() {
     );
   }
 
-  function guardarPerfil(nombre: string, avatar: string, avatarTipo: TipoAvatar) {
-    actualizarUsuario({ nombre, avatar, avatarTipo });
+  async function guardarPerfil(nombre: string, avatar: string, avatarTipo: TipoAvatar) {
+    const resultado = await actualizarUsuario({ nombre, avatar, avatarTipo });
+    if (resultado.error) {
+      alert(resultado.error);
+      return false;
+    }
+    return true;
   }
 
   const porcentajeXp = Math.round((usuario.xpActual / usuario.xpSiguienteNivel) * 100);

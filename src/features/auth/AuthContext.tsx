@@ -12,7 +12,8 @@ type AuthContextType = {
   login: (email: string, password: string) => Promise<ResultadoAuth>;
   registrar: (nombre: string, email: string, password: string) => Promise<ResultadoAuth>;
   logout: () => Promise<void>;
-  actualizarUsuario: (datos: Partial<Usuario>) => void;
+  /** Guarda nombre/avatar/avatarTipo de verdad en la base de datos. */
+  actualizarUsuario: (datos: Pick<Usuario, "nombre" | "avatar" | "avatarTipo">) => Promise<ResultadoAuth>;
 };
 
 const AuthContext = createContext<AuthContextType | null>(null);
@@ -32,6 +33,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- carga inicial de sesión al montar, es el patrón esperado
     cargarUsuarioActual().finally(() => setCargando(false));
   }, []);
 
@@ -65,13 +67,22 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }
 
   /**
-   * Actualiza el usuario SOLO en memoria (para que la UI reaccione al
-   * instante, p.ej. al cambiar avatar en el diálogo de editar perfil). No
-   * guarda nada en la base de datos -- eso todavía está pendiente de
-   * conectar (fuera del alcance del login/registro).
+   * Guarda nombre/avatar/avatarTipo en la BD (tabla User) y, si sale bien,
+   * actualiza el estado local con lo que confirma el servidor -- así la UI
+   * nunca queda "adelantada" respecto a lo que de verdad quedó guardado.
    */
-  function actualizarUsuario(datos: Partial<Usuario>) {
-    setUsuario((actual) => (actual ? { ...actual, ...datos } : actual));
+  async function actualizarUsuario(
+    datos: Pick<Usuario, "nombre" | "avatar" | "avatarTipo">
+  ): Promise<ResultadoAuth> {
+    const res = await fetch("/api/perfil", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(datos),
+    });
+    const respuesta = await res.json();
+    if (!res.ok) return { error: respuesta.error as string };
+    setUsuario(respuesta.usuario as Usuario);
+    return {};
   }
 
   return (
