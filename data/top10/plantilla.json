@@ -1,59 +1,60 @@
 {
-  "competicion": "ALL",
-  "temporada": "2025/26",
-  "metrica": "MINUTOS",
-  "titulo": "Jugadores que han disputado los máximos minutos en el Real Madrid en la temporada 2025-2026.",
-  "descripcion": "TOP 10 Minutos Jugados en el Real Madrid en la temporada 2025-26.",
+  "competicion": "WC",
+  "temporada": "2018",
+  "metrica": "GOLES",
+  "titulo": "Máximos goleadores de FIFA World Cup 2018",
+  "descripcion": "TOP 10 goleadores en el Mundial 2018.",
   "entradas": [
     {
-      "nombre": "Vinicius Junior",
-      "valor": 4249,
-      "equipo": "Brazil"
+      "nombre": "Harry Kane",
+      "valor": 6,
+      "equipo": "England"
     },
     {
-      "nombre": "Federico Valverde",
-      "valor": 4158,
-      "equipo": "Uruguay"
-    },
-    {
-      "nombre": "Thibaut Courtois",
-      "valor": 4005,
-      "equipo": "Belgium"
-    },
-    {
-      "nombre": "Aurélien Tchouaméni",
-      "valor": 3941,
+      "nombre": "Antoine Griezmann",
+      "valor": 4,
       "equipo": "France"
     },
     {
       "nombre": "Kylian Mbappé",
-      "valor": 3622,
+      "valor": 4,
       "equipo": "France"
     },
+
     {
-      "nombre": "Álvaro Carreras",
-      "valor": 3402,
-      "equipo": "Spain"
+      "nombre": "Romelu Lukaku",
+      "valor": 4,
+      "equipo": "Belgium"
     },
     {
-      "nombre": "Arda Güler",
-      "valor": 3255,
-      "equipo": "Spain"
+      "nombre": "Denis Cheryshev",
+      "valor": 4,
+      "equipo": "Russia"
     },
     {
-      "nombre": "Dean Huijsen",
-      "valor": 3038,
-      "equipo": "Spain"
+      "nombre": "Cristiano Ronaldo",
+      "valor": 4,
+      "equipo": "Portugal"
     },
     {
-      "nombre": "Jude Bellingham",
-      "valor": 2718,
-      "equipo": "Spain"
+      "nombre": "Ivan Perišić",
+      "valor": 3,
+      "equipo": "Croatia"
     },
     {
-      "nombre": "Raúl Asencio",
-      "valor": 2516,
-      "equipo": "Spain"
+      "nombre": "Mario Mandžukić",
+      "valor": 3,
+      "equipo": "Croatia"
+    },
+    {
+      "nombre": "Eden Hazard",
+      "valor": 3,
+      "equipo": "Belgium"
+    },
+    {
+      "nombre": "Artem Dzyuba",
+      "valor": 3,
+      "equipo": "Russia"
     }
   ]
 }
