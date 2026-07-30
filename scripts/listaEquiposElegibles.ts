@@ -14,7 +14,7 @@ export const EQUIPOS_ELEGIBLES: string[] = [
   "Sevilla FC",
   "Real Betis",
   "Valencia CF",
-  "Athletic Bilbao",
+  "Athletic Club",
   "Real Sociedad",
   "Villarreal",
   "Getafe",
