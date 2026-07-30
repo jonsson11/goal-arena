@@ -140,3 +140,62 @@
     animation: none;
   }
 }
+
+/* ------------------------------------------------------------
+   Página "Jugar" -- cromos que se giran + ticker + partículas.
+   ------------------------------------------------------------ */
+
+@keyframes flotar-particula {
+  from {
+    transform: translateY(110%);
+  }
+  to {
+    transform: translateY(-10%);
+  }
+}
+
+.particula-flotante {
+  animation: flotar-particula 9s linear infinite;
+}
+
+@keyframes mover-ticker {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.ticker-movimiento {
+  animation: mover-ticker 22s linear infinite;
+}
+
+@keyframes brillo-cromo {
+  0%,
+  100% {
+    background-position: 0% 0%;
+  }
+  50% {
+    background-position: 100% 100%;
+  }
+}
+
+.cromo-brillo::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: linear-gradient(120deg, transparent 30%, rgba(255, 255, 255, 0.1) 48%, transparent 65%);
+  background-size: 250% 250%;
+  animation: brillo-cromo 3.5s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .particula-flotante,
+  .ticker-movimiento,
+  .cromo-brillo::before {
+    animation: none;
+  }
+}
