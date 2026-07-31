@@ -74,5 +74,6 @@ export const JUEGOS: JuegoInfo[] = [
     etiqueta: "NEW",
     reto: "Diez nombres, sin pistas de más. ¿Cuántos aciertas a la primera?",
     stats: ["🏆 10 nombres por ranking", "⏱️ ~3-5 min", "🧠 Dificultad alta"],
+    imagen: "/capturas/top10.jpg"
   },
 ];

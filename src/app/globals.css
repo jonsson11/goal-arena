@@ -241,4 +241,83 @@
   .launcher-halo-pulso {
     animation: none;
   }
+
+  /* ------------------------------------------------------------
+   Header y Footer -- logo con "kick" al hover, línea de escaneo bajo
+   el header (siempre presente, muy sutil) y foco de estadio recorriendo
+   el borde superior del footer en bucle.
+   ------------------------------------------------------------ */
+
+@keyframes logo-kick {
+  0% {
+    transform: rotate(0deg) scale(1);
+  }
+  35% {
+    transform: rotate(-16deg) scale(1.08);
+  }
+  65% {
+    transform: rotate(8deg) scale(1.04);
+  }
+  100% {
+    transform: rotate(0deg) scale(1);
+  }
+}
+
+.logo-kick {
+  transition: transform 0.2s ease;
+}
+
+.logo-kick:hover {
+  animation: logo-kick 0.5s ease-in-out;
+}
+
+/* Línea inferior del header: en reposo casi invisible, y con un barrido
+   de brillo constante y muy lento -- un detalle que solo se nota si te
+   fijas, no algo que distraiga leyendo la página. */
+@keyframes header-scan {
+  0% {
+    background-position: -60% 0;
+  }
+  100% {
+    background-position: 160% 0;
+  }
+}
+
+.header-scan-border {
+  position: relative;
+}
+
+.header-scan-border::after {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  bottom: -1px;
+  height: 1px;
+  pointer-events: none;
+  background-image: linear-gradient(90deg, transparent, rgba(74, 222, 154, 0.9), transparent);
+  background-repeat: no-repeat;
+  background-size: 40% 100%;
+  animation: header-scan 6s linear infinite;
+}
+
+@keyframes footer-scan {
+  0% {
+    transform: translateX(-120%);
+  }
+  100% {
+    transform: translateX(320%);
+  }
+}
+
+.footer-scan-line {
+  animation: footer-scan 7s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .logo-kick:hover,
+  .header-scan-border::after,
+  .footer-scan-line {
+    animation: none;
+  }
+}
 }

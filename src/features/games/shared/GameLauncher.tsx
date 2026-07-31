@@ -62,10 +62,23 @@ export function GameLauncher({ href, children }: GameLauncherProps) {
 
       <Link
         href="/jugar"
-        className="launcher-entrada relative z-10 mb-8 inline-block text-sm font-semibold text-muted-foreground transition-colors hover:text-primary"
+        // Mismo estilo que el botón "Iniciar sesión" del navbar
+        // (AccountMenu.tsx) a propósito -- un solo estilo de botón
+        // "principal" reconocible en toda la app, en vez de un link de
+        // texto suelto.
+        className="launcher-entrada relative z-10 mb-8 inline-flex items-center gap-1.5 rounded-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90"
         style={conRetraso(0)}
       >
-        ‹ Volver a Jugar
+        <svg viewBox="0 0 20 20" fill="none" className="h-4 w-4" xmlns="http://www.w3.org/2000/svg">
+          <path
+            d="M12.5 15L7.5 10L12.5 5"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </svg>
+        Atrás
       </Link>
 
       <div className="relative z-10 mx-auto grid w-full max-w-4xl items-center gap-10 lg:grid-cols-[1.05fr_1fr] lg:gap-14">
@@ -89,8 +102,11 @@ export function GameLauncher({ href, children }: GameLauncherProps) {
           </span>
 
           <h1
-            className="launcher-entrada text-4xl font-extrabold tracking-tight text-foreground sm:text-5xl"
-            style={conRetraso(0.12, { textShadow: `0 0 24px ${colorAcento}55` })}
+            className="launcher-entrada text-shimmer bg-clip-text text-4xl font-extrabold tracking-tight text-transparent sm:text-5xl"
+            style={conRetraso(0.12, {
+              backgroundImage: `linear-gradient(90deg, ${colorAcento}, #ffffff, ${colorAcento})`,
+              textShadow: `0 0 24px ${colorAcento}55`,
+            })}
           >
             {nombre}
           </h1>

@@ -29,26 +29,43 @@ function IconoX({ className }: { className?: string }) {
   );
 }
 
+// Estilo común de los 3 iconos sociales: al hacer hover se levantan un
+// poco, giran ligeramente y sueltan un resplandor verde -- mismo
+// lenguaje de "glow" que ya usa el resto de la app (halos, sombras de
+// color), no un efecto nuevo inventado para el footer.
+const ICONO_SOCIAL =
+  "text-muted-foreground transition-all duration-300 hover:-translate-y-1 hover:rotate-6 hover:scale-110 hover:text-primary hover:drop-shadow-[0_0_10px_rgba(74,222,154,0.6)]";
+
 export function Footer() {
   return (
-    <footer className="mt-auto border-t border-border bg-background px-6 py-8">
-      <div className="mx-auto flex max-w-4xl flex-col items-center gap-4 sm:flex-row sm:justify-between">
-        <span className="text-xs font-medium tracking-wide text-muted-foreground">
-          © 2026 Goal Arena. Todos los derechos reservados.
-        </span>
+    <footer className="relative mt-auto overflow-hidden border-t border-border bg-background px-6 py-8">
+      {/* Detalle "extravagante" #1: una lucecita (como un foco de
+          estadio) que recorre el borde superior del footer de vez en
+          cuando, de izquierda a derecha, en bucle. Puramente decorativo
+          (aria-hidden), no interactivo. */}
+      <div aria-hidden className="pointer-events-none absolute inset-x-0 top-0 h-px overflow-hidden">
+        <div className="footer-scan-line h-full w-1/3 bg-gradient-to-r from-transparent via-primary/80 to-transparent" />
+      </div>
 
-          <p className="mt-2 text-center text-[11px] text-muted-foreground/70 sm:text-left">
-          Las imágenes de jugadores mostradas en la web proceden de Wikipedia. Todos los créditos
-          a sus autores originales y a la comunidad de Wikipedia.
-        </p>
+      <div className="mx-auto flex max-w-4xl flex-col items-center gap-6 sm:flex-row sm:items-start sm:justify-between">
+        <div className="flex flex-col items-center gap-2 text-center sm:items-start sm:text-left">
+          <span className="text-xs font-medium tracking-wide text-muted-foreground">
+            © 2026 Goal Arena. Todos los derechos reservados.
+          </span>
+          <p className="max-w-sm text-[11px] leading-relaxed text-muted-foreground/70">
+            Las imágenes de jugadores mostradas en la web proceden de Wikipedia. Todos los
+            créditos a sus autores originales y a la comunidad de Wikipedia.
+          </p>
+        </div>
+
         <div className="flex gap-5">
-          <a href="#" aria-label="Instagram" className="text-muted-foreground transition-colors hover:text-primary">
+          <a href="#" aria-label="Instagram" className={ICONO_SOCIAL}>
             <IconoInstagram className="h-5 w-5" />
           </a>
-          <a href="#" aria-label="TikTok" className="text-muted-foreground transition-colors hover:text-primary">
+          <a href="#" aria-label="TikTok" className={ICONO_SOCIAL}>
             <IconoTikTok className="h-5 w-5" />
           </a>
-          <a href="#" aria-label="X" className="text-muted-foreground transition-colors hover:text-primary">
+          <a href="#" aria-label="X" className={ICONO_SOCIAL}>
             <IconoX className="h-5 w-5" />
           </a>
         </div>
