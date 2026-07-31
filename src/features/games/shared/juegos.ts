@@ -26,6 +26,18 @@ export type JuegoInfo = {
   Icono: typeof GridIcon;
   acento: Acento;
   etiqueta?: EtiquetaJuego;
+  // Usados por GameLauncher.tsx (pantalla intermedia antes de cada juego):
+  // `reto` es una frase corta a modo de desafío/gancho (más punchy que
+  // `descripcion`, que se queda como texto explicativo de apoyo). `stats`
+  // son 2-3 datos rápidos y honestos sobre el juego (nada de cifras
+  // inventadas de "gente jugando ahora" -- eso ya está marcado como
+  // placeholder en JuegoTicker, aquí no se repite ese patrón).
+  reto: string;
+  stats: string[];
+  // Ruta en /public a una captura de pantalla real del juego (recomendado
+  // 4:3, ej. 960x720). Si no hay captura todavía, GameLauncher cae a un
+  // mockup estilizado con el icono del juego -- no revienta sin imagen.
+  imagen?: string;
 };
 
 export const JUEGOS: JuegoInfo[] = [
@@ -37,6 +49,9 @@ export const JUEGOS: JuegoInfo[] = [
     Icono: GridIcon,
     acento: "primary",
     etiqueta: "HOT",
+    reto: "¿Serás capaz de completar el tablero sin fallar ni una casilla?",
+    stats: ["🎯 9 casillas por partida", "⏱️ ~2-3 min", "🧠 Dificultad media"],
+    imagen: "/capturas/3x32.jpg"
   },
   {
     href: "/jugar/higher-lower",
@@ -46,6 +61,8 @@ export const JUEGOS: JuegoInfo[] = [
     Icono: HigherLowerIcon,
     acento: "secondary",
     etiqueta: "BETA",
+    reto: "Un fallo y la racha se acaba. ¿Hasta dónde puedes llegar?",
+    stats: ["🔥 Racha infinita", "⏱️ Ronda exprés", "🧠 Dificultad progresiva"],
   },
   {
     href: "/jugar/top10",
@@ -55,5 +72,7 @@ export const JUEGOS: JuegoInfo[] = [
     Icono: PodiumIcon,
     acento: "gold",
     etiqueta: "NEW",
+    reto: "Diez nombres, sin pistas de más. ¿Cuántos aciertas a la primera?",
+    stats: ["🏆 10 nombres por ranking", "⏱️ ~3-5 min", "🧠 Dificultad alta"],
   },
 ];

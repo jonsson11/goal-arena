@@ -10,7 +10,7 @@ export const EQUIPOS_ELEGIBLES: string[] = [
   // --- LaLiga ---
   "Real Madrid CF",
   "Barcelona FC",
-  "Atletico Madrid",
+  "Club Atlético de Madrid",
   "Sevilla FC",
   "Real Betis",
   "Valencia CF",

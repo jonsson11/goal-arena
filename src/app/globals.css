@@ -199,3 +199,46 @@
     animation: none;
   }
 }
+
+/* ------------------------------------------------------------
+   GameLauncher -- pantalla intermedia antes de cada minijuego.
+   Entrada escalonada de los bloques de texto/imagen + halo que
+   "respira" alrededor de la captura de pantalla.
+   ------------------------------------------------------------ */
+
+@keyframes launcher-entrada {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.launcher-entrada {
+  animation: launcher-entrada 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation-delay: var(--retraso, 0s);
+}
+
+@keyframes launcher-halo-pulso {
+  0%,
+  100% {
+    box-shadow: 0 0 40px -10px var(--glow-color, rgba(74, 222, 154, 0.4));
+  }
+  50% {
+    box-shadow: 0 0 70px -6px var(--glow-color, rgba(74, 222, 154, 0.7));
+  }
+}
+
+.launcher-halo-pulso {
+  animation: launcher-halo-pulso 3.2s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .launcher-entrada,
+  .launcher-halo-pulso {
+    animation: none;
+  }
+}
