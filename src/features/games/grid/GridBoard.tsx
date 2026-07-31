@@ -168,7 +168,7 @@ function nombreParaCasilla(nombreCompleto: string): string {
 
 // Cabecera de fila/columna: escudo del equipo o bandera de la selección
 // encima del nombre, en vez de solo texto. Si el equipo todavía no tiene
-// escudo guardado (ver scripts/sync-escudos-equipos.ts), cae al texto
+// escudo guardado (ver scripts/equipos/sync-escudos-equipos.ts), cae al texto
 // solo, igual que antes.
 function EncabezadoCondicion({ condicion }: { condicion: Condicion }) {
   const codigoPais = condicion.tipo === "nacionalidad" ? obtenerCodigoPais(condicion.valor) : null;

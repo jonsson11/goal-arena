@@ -1,7 +1,7 @@
 // src/app/api/jugadores/buscar/route.ts
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { normalizarTexto } from "@/lib/normalizarTexto";
+import { normalizarTexto } from "@/lib/normalizacion/normalizarTexto";
 import type { Jugador } from "@/features/games/shared/types";
 
 export const dynamic = "force-dynamic";
