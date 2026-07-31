@@ -71,7 +71,19 @@ export function NavLinks({ className, mostrarIndicador = true }: NavLinksProps) 
   }
 
   return (
-    <div ref={contenedorRef} className={`relative ${className ?? ""}`}>
+    <div
+      ref={contenedorRef}
+      className={`relative ${className ?? ""}`}
+      // El reseteo va en el CONTENEDOR, no en cada <Link> -- si estuviera en
+      // cada link, cruzar el hueco entre "Inicio" y "Jugar" (por ejemplo)
+      // dispara primero el onMouseLeave del uno (la pastilla vuelve de golpe
+      // a su sitio) y al instante el onMouseEnter del otro (salta de nuevo
+      // hacia delante), y ese doble salto es justo el "se vuelve loca" que
+      // se ve al mover el ratón por encima. Poniéndolo aquí, la pastilla
+      // solo se resetea cuando el ratón sale de TODA la barra, no al pasar
+      // por los huecos entre enlaces.
+      onMouseLeave={alSalirDelLink}
+    >
       {mostrarIndicador && indicador && (
         <span
           aria-hidden
@@ -88,7 +100,6 @@ export function NavLinks({ className, mostrarIndicador = true }: NavLinksProps) 
             refsEnlaces.current[i] = el;
           }}
           onMouseEnter={() => mostrarIndicador && moverIndicadorA(i)}
-          onMouseLeave={alSalirDelLink}
           // Solo el link "Jugar" necesita el gate de sesión (ver
           // useIrAJugar.ts): sin cuenta, en vez de entrar a /jugar te
           // manda a /login?redirect=/jugar.
