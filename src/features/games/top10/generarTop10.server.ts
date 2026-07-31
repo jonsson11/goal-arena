@@ -19,7 +19,7 @@ export async function generarTop10DesdeBD(excluirId?: string): Promise<RankingTo
 
   if (candidatos.length === 0) {
     throw new Error(
-      "No hay ningún Top 10 disponible todavía. Ejecuta scripts/sync-top-scorers.ts para crear alguno."
+      "No hay ningún Top 10 disponible todavía. Ejecuta scripts/jugadores/sync-top-scorers.ts para crear alguno."
     );
   }
 
