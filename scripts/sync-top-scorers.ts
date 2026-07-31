@@ -44,6 +44,7 @@ import { PrismaPg } from '@prisma/adapter-pg'
 import * as dotenv from 'dotenv'
 import * as fs from 'fs'
 import * as path from 'path'
+import { normalizar, normalizarEquipo } from '../src/lib/normalizarEquipo'
 
 dotenv.config({ path: path.resolve(process.cwd(), '.env.local') })
 dotenv.config()
@@ -105,37 +106,12 @@ interface EntradaJson {
 }
 
 // ------------------------------------------------------------
-// Normalización
+// Normalización -- ver src/lib/normalizarEquipo.ts. Antes estaba
+// duplicada aquí y en sync-escudos-equipos.ts; se centralizó porque
+// además la usa ahora findOrCreateTeam en wikipediaSync.ts, que era el
+// sitio donde en realidad nacían los equipos duplicados en Team (ver
+// claude/pendientes-goal-arena.md, sesión "equipos duplicados").
 // ------------------------------------------------------------
-
-/** "Ángel Di María" -> "angel di maria" */
-function normalizar(texto: string): string {
-  return texto
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '')
-    .toLowerCase()
-    .replace(/[^a-z0-9\s]/g, ' ')
-    .replace(/\s+/g, ' ')
-    .trim()
-}
-
-/**
- * "RCD Espanyol de Barcelona" -> "espanyol barcelona".
- * Solo siglas y palabras genéricas. Nada que distinga a un club de otro:
- * "atletico" o "sociedad" NO van aquí, o Atlético Madrid y Real Madrid
- * acabarían siendo el mismo equipo.
- */
-const RUIDO_CLUB = new Set([
-  'fc', 'cf', 'rc', 'rcd', 'cd', 'ud', 'sd', 'ca', 'ac', 'as', 'sc', 'sl',
-  'sad', 'club', 'de', 'del', 'futbol', 'football',
-])
-function normalizarEquipo(nombre: string): string {
-  return normalizar(nombre)
-    .split(' ')
-    .filter((p) => p && !RUIDO_CLUB.has(p))
-    .join(' ')
-}
-
 function temporadaTexto(anio: number, unica: boolean): string {
   return unica ? String(anio) : `${anio}-${String(anio + 1).slice(-2)}`
 }

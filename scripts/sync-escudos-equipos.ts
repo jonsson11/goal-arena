@@ -28,6 +28,7 @@ import { PrismaPg } from "@prisma/adapter-pg";
 import * as fs from "fs";
 import * as path from "path";
 import { EQUIPOS_ELEGIBLES } from "./listaEquiposElegibles";
+import { normalizar, normalizarEquipo, RUIDO_CLUB } from "../src/lib/normalizarEquipo";
 
 const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL! });
 const prisma = new PrismaClient({ adapter });
@@ -105,34 +106,15 @@ async function buscarEnApiFootballCrudo(nombre: string) {
 }
 
 // ------------------------------------------------------------
-// Emparejamiento de nombres (misma lógica que sync-top-scorers.ts):
-// que "Real Madrid" en la lista de elegibles encuentre "Real Madrid CF"
-// en la BD, "Betis" encuentre "Real Betis", etc. Comparar con `equals`
-// exacto fallaba constantemente porque la BD guarda los nombres oficiales
-// completos del scrapeo, no los nombres cortos de la lista de elegibles.
+// Emparejamiento de nombres: que "Real Madrid" en la lista de elegibles
+// encuentre "Real Madrid CF" en la BD, "Betis" encuentre "Real Betis",
+// etc. Comparar con `equals` exacto fallaba constantemente porque la BD
+// guarda los nombres oficiales completos del scrapeo, no los nombres
+// cortos de la lista de elegibles. `normalizar`/`normalizarEquipo` viven
+// en src/lib/normalizarEquipo.ts -- antes estaban copiadas aquí y en
+// sync-top-scorers.ts (y ese +findFirst exacto en wikipediaSync.ts fue lo
+// que generó los duplicados de Team, ver claude/pendientes-goal-arena.md).
 // ------------------------------------------------------------
-
-/** "Ángel Di María" -> "angel di maria" */
-function normalizar(texto: string): string {
-  return texto
-    .normalize("NFD")
-    .replace(/[̀-ͯ]/g, "")
-    .toLowerCase()
-    .replace(/[^a-z0-9\s]/g, " ")
-    .replace(/\s+/g, " ")
-    .trim();
-}
-
-const RUIDO_CLUB = new Set([
-  "fc", "cf", "rc", "rcd", "cd", "ud", "sd", "ca", "ac", "as", "sc", "sl",
-  "sad", "club", "de", "del", "futbol", "football",
-]);
-function normalizarEquipo(nombre: string): string {
-  return normalizar(nombre)
-    .split(" ")
-    .filter((p) => p && !RUIDO_CLUB.has(p))
-    .join(" ");
-}
 
 /**
  * Quita las mismas siglas de ruido (FC, CF, Club, "de"...) pero conservando

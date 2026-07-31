@@ -18,6 +18,7 @@ import type { PrismaClient } from "@prisma/client";
 import { obtenerNacionalidadWikidata } from "./wikidataSync";
 import { limpiarNombreSeleccion } from "./limpiarNombreSeleccion";
 import { obtenerImagenWikipedia } from "./wikipediaImagen";
+import { normalizarEquipo } from "./normalizarEquipo";
 
 // Wikipedia pide identificarse con contacto real en peticiones automatizadas
 // (ver https://meta.wikimedia.org/wiki/User-Agent_policy). Cambia el email
@@ -339,12 +340,47 @@ function extraerPerfil(wikitext: string): DatosPerfil {
   return { fechaNacimiento, equipoActual, nacionalidad };
 }
 
+// Caché en memoria (por proceso) de equipos ya vistos, indexado por nombre
+// NORMALIZADO -- no por el nombre tal cual. Antes esta función hacía
+// `findFirst({ where: { nombre } })`, un match EXACTO de string: como el
+// nombre de cada etapa viene del parseo del infobox de Wikipedia y esa
+// misma club aparece escrita de formas distintas según la página
+// ("Atlético Madrid" en una, "Club Atlético de Madrid" en otra), cada
+// variante acababa creando su PROPIA fila de Team -- el jugador A quedaba
+// enlazado a un id de Team y el jugador B a otro, aunque fuera el mismo
+// club real. Ver claude/pendientes-goal-arena.md (sesión "equipos
+// duplicados") y scripts/detectar-equipos-duplicados.ts /
+// scripts/fusionar-equipos-duplicados.ts para arreglar los que ya
+// existen en la BD de antes de este cambio.
+//
+// Se cachea en memoria (en vez de un `findFirst` normalizado por cada
+// llamada) porque esta función se invoca una vez por etapa de carrera de
+// cada jugador sincronizado -- en un sync de plantilla completa son
+// cientos de llamadas, y triaba/recorrer toda la tabla Team en cada una
+// sería carísimo. Solo vive mientras dura el proceso de `npx tsx`, así
+// que no hay riesgo de que quede desactualizada entre ejecuciones.
+let cacheEquipos: Map<string, { id: string; nombre: string }> | null = null;
+
+async function obtenerCacheEquipos(prisma: PrismaClient) {
+  if (!cacheEquipos) {
+    const equipos = await prisma.team.findMany({ select: { id: true, nombre: true } });
+    cacheEquipos = new Map(equipos.map((e) => [normalizarEquipo(e.nombre), e]));
+  }
+  return cacheEquipos;
+}
+
 async function findOrCreateTeam(prisma: PrismaClient, nombre: string) {
-  const existente = await prisma.team.findFirst({ where: { nombre } });
+  const cache = await obtenerCacheEquipos(prisma);
+  const clave = normalizarEquipo(nombre);
+
+  const existente = cache.get(clave);
   if (existente) return existente;
-  return prisma.team.create({
+
+  const creado = await prisma.team.create({
     data: { nombre, pais: "Desconocido" },
   });
+  cache.set(clave, creado);
+  return creado;
 }
 
 // Quita el desambiguador final de un título de Wikipedia, ej:
