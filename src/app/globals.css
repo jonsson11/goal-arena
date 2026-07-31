@@ -241,34 +241,40 @@
   .launcher-halo-pulso {
     animation: none;
   }
+}
 
-  /* ------------------------------------------------------------
-   Header y Footer -- logo con "kick" al hover, línea de escaneo bajo
-   el header (siempre presente, muy sutil) y foco de estadio recorriendo
-   el borde superior del footer en bucle.
+/* ------------------------------------------------------------
+   Header y Footer -- logo con flip 3D continuo (opción elegida tras
+   comparar 8 variantes en /tmp/logo-opciones.html), línea de escaneo
+   bajo el header (siempre presente, muy sutil) y foco de estadio
+   recorriendo el borde superior del footer en bucle.
    ------------------------------------------------------------ */
 
-@keyframes logo-kick {
-  0% {
-    transform: rotate(0deg) scale(1);
+/* El contenedor necesita su propia perspectiva para que el rotateY se
+   vea como un giro en el espacio (una tarjeta girando), no como un
+   simple aplastamiento horizontal. */
+.logo-flip-wrap {
+  perspective: 600px;
+  display: inline-block;
+}
+
+.logo-flip {
+  animation: logo-flip 5s ease-in-out infinite;
+  transform-style: preserve-3d;
+}
+
+@keyframes logo-flip {
+  0%,
+  40% {
+    transform: rotateY(0deg);
   }
-  35% {
-    transform: rotate(-16deg) scale(1.08);
-  }
-  65% {
-    transform: rotate(8deg) scale(1.04);
+  50%,
+  90% {
+    transform: rotateY(360deg);
   }
   100% {
-    transform: rotate(0deg) scale(1);
+    transform: rotateY(360deg);
   }
-}
-
-.logo-kick {
-  transition: transform 0.2s ease;
-}
-
-.logo-kick:hover {
-  animation: logo-kick 0.5s ease-in-out;
 }
 
 /* Línea inferior del header: en reposo casi invisible, y con un barrido
@@ -300,24 +306,9 @@
   animation: header-scan 6s linear infinite;
 }
 
-@keyframes footer-scan {
-  0% {
-    transform: translateX(-120%);
-  }
-  100% {
-    transform: translateX(320%);
-  }
-}
-
-.footer-scan-line {
-  animation: footer-scan 7s ease-in-out infinite;
-}
-
 @media (prefers-reduced-motion: reduce) {
-  .logo-kick:hover,
-  .header-scan-border::after,
-  .footer-scan-line {
+  .logo-flip,
+  .header-scan-border::after {
     animation: none;
   }
-}
 }

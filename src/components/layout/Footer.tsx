@@ -38,15 +38,7 @@ const ICONO_SOCIAL =
 
 export function Footer() {
   return (
-    <footer className="relative mt-auto overflow-hidden border-t border-border bg-background px-6 py-8">
-      {/* Detalle "extravagante" #1: una lucecita (como un foco de
-          estadio) que recorre el borde superior del footer de vez en
-          cuando, de izquierda a derecha, en bucle. Puramente decorativo
-          (aria-hidden), no interactivo. */}
-      <div aria-hidden className="pointer-events-none absolute inset-x-0 top-0 h-px overflow-hidden">
-        <div className="footer-scan-line h-full w-1/3 bg-gradient-to-r from-transparent via-primary/80 to-transparent" />
-      </div>
-
+    <footer className="relative mt-auto border-t border-border bg-background px-6 py-8">
       <div className="mx-auto flex max-w-4xl flex-col items-center gap-6 sm:flex-row sm:items-start sm:justify-between">
         <div className="flex flex-col items-center gap-2 text-center sm:items-start sm:text-left">
           <span className="text-xs font-medium tracking-wide text-muted-foreground">
