@@ -1,4 +1,4 @@
-// scripts/sync-escudos-equipos.ts
+// scripts/equipos/sync-escudos-equipos.ts
 //
 // Rellena Team.escudo (URL del escudo) para los equipos "elegibles"
 // definidos en scripts/listaEquiposElegibles.ts — los que salen en el
@@ -12,9 +12,9 @@
 //   - si el equipo no tenía externalId, también lo guarda de paso
 //
 // Ejecutar con:
-//   npx tsx scripts/sync-escudos-equipos.ts
-//   npx tsx scripts/sync-escudos-equipos.ts --dry-run       (no escribe nada)
-//   npx tsx scripts/sync-escudos-equipos.ts --solo-fallos   (solo reintenta los de sync-escudos-fallos.txt)
+//   npx tsx scripts/equipos/sync-escudos-equipos.ts
+//   npx tsx scripts/equipos/sync-escudos-equipos.ts --dry-run       (no escribe nada)
+//   npx tsx scripts/equipos/sync-escudos-equipos.ts --solo-fallos   (solo reintenta los de sync-escudos-fallos.txt)
 //
 // Requiere en .env: DATABASE_URL y API_FOOTBALL_KEY.
 // Idempotente: si vuelves a ejecutarlo, solo toca los que sigan sin escudo
@@ -28,7 +28,7 @@ import { PrismaPg } from "@prisma/adapter-pg";
 import * as fs from "fs";
 import * as path from "path";
 import { EQUIPOS_ELEGIBLES } from "./listaEquiposElegibles";
-import { normalizar, normalizarEquipo, RUIDO_CLUB } from "../src/lib/normalizarEquipo";
+import { normalizar, normalizarEquipo, RUIDO_CLUB } from "../../src/lib/normalizacion/normalizarEquipo";
 
 const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL! });
 const prisma = new PrismaClient({ adapter });

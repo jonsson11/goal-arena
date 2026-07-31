@@ -1,8 +1,8 @@
-// scripts/marcarEquiposElegibles.ts
+// scripts/equipos/marcarEquiposElegibles.ts
 //
 // Marca como elegibles para el generador del 3x3 los equipos cuyo
 // nombre coincida EXACTAMENTE (case-insensitive) con esta lista.
-// Ejecutar con: npx tsx scripts/marcarEquiposElegibles.ts
+// Ejecutar con: npx tsx scripts/equipos/marcarEquiposElegibles.ts
 
 import "dotenv/config";
 import { PrismaClient } from "@prisma/client";

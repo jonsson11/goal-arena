@@ -1,10 +1,10 @@
-// scripts/verStintsJugador.ts
+// scripts/jugadores/verStintsJugador.ts
 //
 // Dado el id de un Player, imprime sus etapas (Stint) de forma legible:
 // equipo, país, fechas y si fue su etapa actual (sin endDate).
-// Ejecutar con: npx tsx scripts/verStintsJugador.ts <id>
+// Ejecutar con: npx tsx scripts/jugadores/verStintsJugador.ts <id>
 //
-// Ejemplo: npx tsx scripts/verStintsJugador.ts cms2xgz0x00v7ygduoxethr7f
+// Ejemplo: npx tsx scripts/jugadores/verStintsJugador.ts cms2xgz0x00v7ygduoxethr7f
 
 import "dotenv/config";
 import { PrismaClient } from "@prisma/client";
@@ -22,7 +22,7 @@ async function main() {
   const id = process.argv[2];
 
   if (!id) {
-    console.error("Uso: npx tsx scripts/verStintsJugador.ts <id-del-jugador>");
+    console.error("Uso: npx tsx scripts/jugadores/verStintsJugador.ts <id-del-jugador>");
     process.exit(1);
   }
 

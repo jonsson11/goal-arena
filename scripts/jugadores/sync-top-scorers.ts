@@ -1,5 +1,5 @@
 /**
- * scripts/sync-top-scorers.ts
+ * scripts/jugadores/sync-top-scorers.ts
  *
  * Crea (o actualiza) un Top10Ranking de máximos goleadores de una
  * competición y temporada, listo para jugarse en el minijuego Top 10.
@@ -10,8 +10,8 @@
  *   ARCHIVO Un JSON escrito a mano en data/top10/. Para temporadas que la
  *           API no da, o rankings que no existen como endpoint.
  *
- *   npx tsx scripts/sync-top-scorers.ts --competicion=PD --temporada=2024
- *   npx tsx scripts/sync-top-scorers.ts --archivo=data/top10/PD-2018.json
+ *   npx tsx scripts/jugadores/sync-top-scorers.ts --competicion=PD --temporada=2024
+ *   npx tsx scripts/jugadores/sync-top-scorers.ts --archivo=data/top10/PD-2018.json
  *
  *   --dry-run  enseña lo que haría sin escribir nada. Úsalo siempre antes.
  *
@@ -44,7 +44,7 @@ import { PrismaPg } from '@prisma/adapter-pg'
 import * as dotenv from 'dotenv'
 import * as fs from 'fs'
 import * as path from 'path'
-import { normalizar, normalizarEquipo } from '../src/lib/normalizarEquipo'
+import { normalizar, normalizarEquipo } from '../../src/lib/normalizacion/normalizarEquipo'
 
 dotenv.config({ path: path.resolve(process.cwd(), '.env.local') })
 dotenv.config()

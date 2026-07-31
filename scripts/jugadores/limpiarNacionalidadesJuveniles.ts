@@ -1,14 +1,14 @@
-// scripts/limpiarNacionalidadesJuveniles.ts
+// scripts/jugadores/limpiarNacionalidadesJuveniles.ts
 //
 // Recorre todos los jugadores ya guardados y limpia sufijos de categoría
 // juvenil/olímpica en `nacionalidad` (ej. "Italy U20" -> "Italy"), usando
 // la misma lógica que ahora aplica el sync a los jugadores nuevos.
-// Ejecutar con: npx tsx scripts/limpiarNacionalidadesJuveniles.ts
+// Ejecutar con: npx tsx scripts/jugadores/limpiarNacionalidadesJuveniles.ts
 
 import "dotenv/config";
 import { PrismaClient } from "@prisma/client";
 import { PrismaPg } from "@prisma/adapter-pg";
-import { limpiarNombreSeleccion } from "../src/lib/limpiarNombreSeleccion";
+import { limpiarNombreSeleccion } from "../../src/lib/normalizacion/limpiarNombreSeleccion";
 
 const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL! });
 const prisma = new PrismaClient({ adapter });

@@ -1,17 +1,17 @@
-// scripts/syncSquads.ts
+// scripts/jugadores/syncSquads.ts
 //
 // 1. Busca una liga por nombre en API-Football y sus equipos de esa temporada.
 // 2. Pide la plantilla de cada equipo.
 // 3. Sincroniza cada jugador desde Wikipedia (misma lógica que syncPlayers.ts).
 //
-// Ejecutar con: npx tsx scripts/syncSquads.ts
+// Ejecutar con: npx tsx scripts/jugadores/syncSquads.ts
 //
 // Requiere API_FOOTBALL_KEY en tu .env (gratis en api-sports.io, sin tarjeta)
 
 import "dotenv/config";
 import { PrismaClient } from "@prisma/client";
 import { PrismaPg } from "@prisma/adapter-pg";
-import { syncJugadorDesdeWikipedia } from "../src/lib/wikipediaSync";
+import { syncJugadorDesdeWikipedia } from "../../src/lib/scraping/wikipediaSync";
 
 const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL! });
 const prisma = new PrismaClient({ adapter });

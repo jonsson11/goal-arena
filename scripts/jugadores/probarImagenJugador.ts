@@ -1,16 +1,16 @@
-// scripts/probarImagenJugador.ts
+// scripts/jugadores/probarImagenJugador.ts
 //
 // Prueba puntual: pide la imagen de UN título de Wikipedia y muestra
 // exactamente qué devuelve la API. No toca la BD.
-// Ejecutar con: npx tsx scripts/probarImagenJugador.ts "Titulo Del Jugador"
+// Ejecutar con: npx tsx scripts/jugadores/probarImagenJugador.ts "Titulo Del Jugador"
 
 import "dotenv/config";
-import { obtenerImagenWikipedia } from "../src/lib/wikipediaImagen";
+import { obtenerImagenWikipedia } from "../../src/lib/scraping/wikipediaImagen";
 
 async function main() {
   const titulo = process.argv[2];
   if (!titulo) {
-    console.error('Uso: npx tsx scripts/probarImagenJugador.ts "Titulo Del Jugador"');
+    console.error('Uso: npx tsx scripts/jugadores/probarImagenJugador.ts "Titulo Del Jugador"');
     process.exit(1);
   }
 

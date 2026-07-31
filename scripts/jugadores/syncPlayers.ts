@@ -1,7 +1,7 @@
-// scripts/syncPlayers.ts
+// scripts/jugadores/syncPlayers.ts
 //
 // Sincroniza una lista de jugadores concreta, escrita a mano.
-// Ejecutar con: npx tsx scripts/syncPlayers.ts
+// Ejecutar con: npx tsx scripts/jugadores/syncPlayers.ts
 //
 // Cada entrada de JUGADORES_INICIALES puede ser:
 //   - un string con el nombre  -> búsqueda automática con las 4 estrategias
@@ -24,7 +24,7 @@ import "dotenv/config";
 import { writeFile } from "node:fs/promises";
 import { PrismaClient } from "@prisma/client";
 import { PrismaPg } from "@prisma/adapter-pg";
-import { syncJugadorDesdeWikipedia } from "../src/lib/wikipediaSync";
+import { syncJugadorDesdeWikipedia } from "../../src/lib/scraping/wikipediaSync";
 
 const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL! });
 const prisma = new PrismaClient({ adapter });
@@ -110,14 +110,14 @@ async function main() {
   console.log(`Renombrados (revisar): ${renombrados.length}`);
 
   const lineasFallos = fallos.map((f) => `${f.nombre} — ${f.motivo}`).join("\n");
-  await writeFile("scripts/sync-fallos.txt", lineasFallos, "utf-8");
+  await writeFile("data/jugadores/sync-fallos.txt", lineasFallos, "utf-8");
 
   const lineasRenombrados = renombrados
     .map((r) => `${r.buscado} -> ${r.encontrado}`)
     .join("\n");
-  await writeFile("scripts/sync-renombrados.txt", lineasRenombrados, "utf-8");
+  await writeFile("data/jugadores/sync-renombrados.txt", lineasRenombrados, "utf-8");
 
-  console.log(`\nGuardado: scripts/sync-fallos.txt y scripts/sync-renombrados.txt`);
+  console.log(`\nGuardado: data/jugadores/sync-fallos.txt y data/jugadores/sync-renombrados.txt`);
 }
 
 main().catch((e) => {

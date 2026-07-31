@@ -1,4 +1,4 @@
-// scripts/listaEquiposElegibles.ts
+// scripts/equipos/listaEquiposElegibles.ts
 //
 // Solo datos: la lista de nombres de equipos "elegibles" para el
 // generador del 3x3. Vive en su propio archivo (sin lógica ni conexión

@@ -1,9 +1,9 @@
-// scripts/listarEquipos.ts
+// scripts/equipos/listarEquipos.ts
 //
-// Escribe todos los equipos de la BD a scripts/equipos-listado.txt,
+// Escribe todos los equipos de la BD a data/equipos/equipos-listado.txt,
 // ordenados por número de Stints, para poder copiar los nombres exactos
 // a EQUIPOS_ELEGIBLES en marcarEquiposElegibles.ts sin adivinar.
-// Ejecutar con: npx tsx scripts/listarEquipos.ts
+// Ejecutar con: npx tsx scripts/equipos/listarEquipos.ts
 
 import "dotenv/config";
 import { writeFile } from "node:fs/promises";
@@ -13,7 +13,7 @@ import { PrismaPg } from "@prisma/adapter-pg";
 const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL! });
 const prisma = new PrismaClient({ adapter });
 
-const RUTA_SALIDA = "scripts/equipos-listado.txt";
+const RUTA_SALIDA = "data/equipos/equipos-listado.txt";
 
 async function main() {
   const equipos = await prisma.team.findMany({

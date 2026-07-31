@@ -1,4 +1,4 @@
-// scripts/fusionar-equipos-duplicados.ts
+// scripts/equipos/fusionar-equipos-duplicados.ts
 //
 // Fusiona los grupos de equipos duplicados que detecta
 // detectar-equipos-duplicados.ts (mismo nombre normalizado, ej.
@@ -34,8 +34,8 @@
 //    borrar (para no perder ese dato).
 //
 // Ejecutar con:
-//   npx tsx scripts/fusionar-equipos-duplicados.ts             (dry-run, no escribe nada)
-//   npx tsx scripts/fusionar-equipos-duplicados.ts --aplicar    (aplica los cambios de verdad)
+//   npx tsx scripts/equipos/fusionar-equipos-duplicados.ts             (dry-run, no escribe nada)
+//   npx tsx scripts/equipos/fusionar-equipos-duplicados.ts --aplicar    (aplica los cambios de verdad)
 //
 // Requiere en .env: DATABASE_URL.
 // Recomendado: haz un backup/snapshot de la BD en Supabase antes de
@@ -44,7 +44,7 @@
 import "dotenv/config";
 import { PrismaClient } from "@prisma/client";
 import { PrismaPg } from "@prisma/adapter-pg";
-import { normalizarEquipo } from "../src/lib/normalizarEquipo";
+import { normalizarEquipo } from "../../src/lib/normalizacion/normalizarEquipo";
 
 const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL! });
 const prisma = new PrismaClient({ adapter });

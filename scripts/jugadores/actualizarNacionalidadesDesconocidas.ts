@@ -1,4 +1,4 @@
-// scripts/actualizarNacionalidadesDesconocidas.ts
+// scripts/jugadores/actualizarNacionalidadesDesconocidas.ts
 //
 // Re-sincroniza contra Wikipedia + Wikidata a todos los jugadores que
 // ahora mismo tienen nacionalidad = "Desconocida". Primero intenta la
@@ -7,12 +7,12 @@
 // "Fulano" notable en Wikipedia), reintenta con la búsqueda automática
 // de 4 estrategias, actualizando la MISMA fila por id -- para no acabar
 // con jugadores duplicados.
-// Ejecutar con: npx tsx scripts/actualizarNacionalidadesDesconocidas.ts
+// Ejecutar con: npx tsx scripts/jugadores/actualizarNacionalidadesDesconocidas.ts
 
 import "dotenv/config";
 import { PrismaClient } from "@prisma/client";
 import { PrismaPg } from "@prisma/adapter-pg";
-import { syncJugadorDesdeWikipedia } from "../src/lib/wikipediaSync";
+import { syncJugadorDesdeWikipedia } from "../../src/lib/scraping/wikipediaSync";
 
 const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL! });
 const prisma = new PrismaClient({ adapter });

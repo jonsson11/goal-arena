@@ -1,4 +1,4 @@
-// scripts/detectar-equipos-duplicados.ts
+// scripts/equipos/detectar-equipos-duplicados.ts
 //
 // Agrupa todos los Team por nombre normalizado (misma normalización que
 // findOrCreateTeam en src/lib/wikipediaSync.ts, ver ese archivo para el
@@ -11,14 +11,14 @@
 // Solo LEE, no escribe nada -- seguro de ejecutar en cualquier momento,
 // tantas veces como quieras.
 //
-// Ejecutar con: npx tsx scripts/detectar-equipos-duplicados.ts
+// Ejecutar con: npx tsx scripts/equipos/detectar-equipos-duplicados.ts
 //
 // Requiere en .env: DATABASE_URL.
 
 import "dotenv/config";
 import { PrismaClient } from "@prisma/client";
 import { PrismaPg } from "@prisma/adapter-pg";
-import { normalizarEquipo } from "../src/lib/normalizarEquipo";
+import { normalizarEquipo } from "../../src/lib/normalizacion/normalizarEquipo";
 
 const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL! });
 const prisma = new PrismaClient({ adapter });

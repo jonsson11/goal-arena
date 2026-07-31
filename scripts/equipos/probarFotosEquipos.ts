@@ -1,10 +1,10 @@
-// scripts/probarFotosEquipos.ts
+// scripts/equipos/probarFotosEquipos.ts
 //
 // Prueba puntual: pide la plantilla de UN equipo y el propio equipo,
 // para confirmar si tu plan de API-Football devuelve `photo` (jugador)
 // y `logo` (equipo). No toca la BD. Imprime la respuesta completa, sin
 // asumir su forma, para poder diagnosticar si algo falla.
-// Ejecutar con: npx tsx scripts/probarFotosEquipos.ts <teamId>
+// Ejecutar con: npx tsx scripts/equipos/probarFotosEquipos.ts <teamId>
 
 import "dotenv/config";
 

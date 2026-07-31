@@ -1,18 +1,18 @@
-// scripts/actualizarFotosJugadores.ts
+// scripts/jugadores/actualizarFotosJugadores.ts
 //
 // Rellena `imagenUrl` para los jugadores que ya están en la BD y
 // todavía no la tienen, usando la REST API de resumen de página de
 // Wikipedia (una petición por jugador, con ritmo controlado). A los que
 // salen como página de desambiguación se les re-busca el título
 // correcto y se actualiza su externalId de paso.
-// Ejecutar con: npx tsx scripts/actualizarFotosJugadores.ts
+// Ejecutar con: npx tsx scripts/jugadores/actualizarFotosJugadores.ts
 
 import "dotenv/config";
 import { writeFile } from "node:fs/promises";
 import { PrismaClient } from "@prisma/client";
 import { PrismaPg } from "@prisma/adapter-pg";
-import { obtenerImagenesSecuencial, obtenerImagenWikipedia } from "../src/lib/wikipediaImagen";
-import { resolverTituloWikipedia } from "../src/lib/wikipediaSync";
+import { obtenerImagenesSecuencial, obtenerImagenWikipedia } from "../../src/lib/scraping/wikipediaImagen";
+import { resolverTituloWikipedia } from "../../src/lib/scraping/wikipediaSync";
 
 const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL! });
 const prisma = new PrismaClient({ adapter });
@@ -114,8 +114,8 @@ async function main() {
     ...sinExternalIdValido,
   ].join("\n");
 
-  await writeFile("scripts/fotos-pendientes.txt", lineas, "utf-8");
-  console.log(`\nGuardado: scripts/fotos-pendientes.txt`);
+  await writeFile("data/jugadores/fotos-pendientes.txt", lineas, "utf-8");
+  console.log(`\nGuardado: data/jugadores/fotos-pendientes.txt`);
 
   await prisma.$disconnect();
 }

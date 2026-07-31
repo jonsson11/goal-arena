@@ -1,10 +1,10 @@
-// scripts/buscarLigas.ts
+// scripts/ligas/buscarLigas.ts
 //
 // Consulta a API-Football qué competiciones existen que coincidan con un
 // texto de búsqueda, y para cada una qué temporadas tienes disponibles
 // con tu plan actual. Solo lectura -- no toca la BD ni Wikipedia.
 //
-// Ejecutar con: npx tsx scripts/buscarLigas.ts "champions"
+// Ejecutar con: npx tsx scripts/ligas/buscarLigas.ts "champions"
 // (o cualquier otro texto: "premier", "eredivisie", "copa del rey"...)
 
 import "dotenv/config";
@@ -28,8 +28,8 @@ async function main() {
 
   const busqueda = process.argv[2];
   if (!busqueda) {
-    console.error('Uso: npx tsx scripts/buscarLigas.ts "texto a buscar"');
-    console.error('Ejemplo: npx tsx scripts/buscarLigas.ts "champions"');
+    console.error('Uso: npx tsx scripts/ligas/buscarLigas.ts "texto a buscar"');
+    console.error('Ejemplo: npx tsx scripts/ligas/buscarLigas.ts "champions"');
     process.exit(1);
   }
 

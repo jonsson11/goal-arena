@@ -1,4 +1,4 @@
-// scripts/fetchSquadNames.ts
+// scripts/jugadores/fetchSquadNames.ts
 //
 // Solo habla con API-Football. Busca una liga, sus equipos, y las plantillas.
 // Al final imprime la lista de nombres únicos (tal cual los da la API,
@@ -8,7 +8,7 @@
 // No toca la base de datos ni Wikipedia — así, si algo falla a mitad,
 // no dependes de que el proceso entero termine bien.
 //
-// Ejecutar con: npx tsx scripts/fetchSquadNames.ts
+// Ejecutar con: npx tsx scripts/jugadores/fetchSquadNames.ts
 
 import "dotenv/config";
 import { writeFile } from "node:fs/promises";
@@ -113,7 +113,7 @@ async function main() {
   console.log(`\n${lista.length} jugadores únicos encontrados.\n`);
 
   // Los dejamos también en un fichero, por si el terminal corta la salida
-  const nombreFichero = `scripts/squad-names-${LIGA_NOMBRE.toLowerCase().replace(/\s+/g, "-")}.json`;
+  const nombreFichero = `data/jugadores/squad-names-${LIGA_NOMBRE.toLowerCase().replace(/\s+/g, "-")}.json`;
   await writeFile(nombreFichero, JSON.stringify(lista, null, 2), "utf-8");
   console.log(`Guardado también en: ${nombreFichero}\n`);
 
