@@ -30,14 +30,33 @@ export function normalizar(texto: string): string {
 // Solo siglas y palabras genéricas de forma societaria. Nada que distinga
 // a un club de otro: "atletico" o "sociedad" NO van aquí, o "Atlético
 // Madrid" y "Real Sociedad" acabarían agrupándose como el mismo equipo.
+// "calcio"/"bc"/"stade" son de la misma familia (forma societaria
+// genérica en italiano/francés, no el nombre que distingue al club):
+// "Udinese Calcio", "Atalanta BC", "Stade Rennais" se distinguen por
+// "Udinese"/"Atalanta"/"Rennais", no por el sufijo/prefijo societario.
 export const RUIDO_CLUB = new Set([
   "fc", "cf", "rc", "rcd", "cd", "ud", "sd", "ca", "ac", "as", "sc", "sl",
-  "sad", "club", "de", "del", "futbol", "football",
+  "sad", "club", "de", "del", "futbol", "football", "calcio", "bc", "stade",
 ]);
+
+// Gentilicios/apócopes que SÍ hace falta resolver a mano: no son ruido
+// societario (quitarlos sin más perdería la única palabra que identifica
+// al club), son la traducción/forma corta de la misma palabra en otro
+// idioma o registro. Lista curada porque automatizarlo bien pediría
+// stemming multi-idioma para un puñado de casos reales -- añade aquí
+// cualquier otro que te encuentres (clave = forma larga, valor = forma
+// corta a la que se normaliza).
+const ALIAS_PALABRA: Record<string, string> = {
+  rennais: "rennes", // "Stade Rennais" -> mismo club que "Rennes"
+  internazionale: "inter", // "FC Internazionale Milano" -> "Inter Milan"
+  milano: "milan",
+};
 
 /**
  * "Club Atlético de Madrid" -> "atletico madrid"
  * "Real Madrid CF" -> "real madrid"
+ * "Stade Rennais FC" -> "rennes"
+ * "FC Internazionale Milano" -> "inter milan"
  *
  * Dos nombres que normalizan al mismo valor se consideran el mismo club
  * real a efectos de emparejamiento (búsqueda en APIs externas, detección
@@ -47,5 +66,6 @@ export function normalizarEquipo(nombre: string): string {
   return normalizar(nombre)
     .split(" ")
     .filter((p) => p && !RUIDO_CLUB.has(p))
+    .map((p) => ALIAS_PALABRA[p] ?? p)
     .join(" ");
 }

@@ -1,82 +1,82 @@
-Total de equipos en la BD: 2404
+Total de equipos en la BD: 2400
 
 Stints  País                  Nombre
 ------  --------------------  --------------------------------
-   128  Desconocido           Juventus
-   126  Desconocido           Real Madrid CF
-   125  Desconocido           FC Barcelona
-   123  Desconocido           Chelsea FC
-   120  Desconocido           FC Internazionale Milano
-   113  Desconocido           Milan
-   108  Desconocido           Manchester United
-   100  Desconocido           Bayern Munich
-    90  Desconocido           Club Atlético de Madrid
-    89  Desconocido           Arsenal
-    86  Desconocido           Atalanta BC
-    85  Desconocido           Manchester City FC
-    85  Desconocido           Paris Saint-Germain
-    83  Desconocido           Marseille
-    82  Desconocido           Fiorentina
-    82  Desconocido           Roma
-    79  Desconocido           Tottenham Hotspur
-    76  Desconocido           Monaco
-    73  Desconocido           SL Benfica
-    70  Desconocido           Villarreal
-    70  Desconocido           Liverpool FC
-    69  Desconocido           Borussia Dortmund
-    69  Desconocido           VfB Stuttgart
-    67  Desconocido           Ajax
-    65  Desconocido           Lyon
-    65  Desconocido           Genoa
-    65  Desconocido           Aston Villa FC
-    65  Desconocido           Napoli
-    62  Desconocido           Newcastle United FC
-    62  Desconocido           Sevilla FC
-    62  Desconocido           Bayer Leverkusen
+   129  Italy                 FC Internazionale Milano
+   128  Italy                 Juventus Turin
+   126  Spain                 Real Madrid CF
+   125  Spain                 FC Barcelona
+   123  England               Chelsea FC
+   113  England               AC Milan
+   108  England               Manchester United FC
+   100  Germany                FC Bayern Munich
+    90  Spain                 Club Atlético de Madrid
+    89  England               Arsenal FC
+    87  Italy                 Atalanta BC
+    85  Italy                 Manchester City FC
+    85  France                Paris Saint-Germain
+    83  France                Marseille FC
+    82  Italy                 ACF Fiorentina
+    82  Italy                 AS Roma
+    79  England               Tottenham Hotspur FC
+    76  France                AS Monaco
+    73  Portugal              SL Benfica
+    70  England               Liverpool FC
+    70  Spain                 Villarreal CF
+    69  Germany               Borussia Dortmund
+    69  Germany               VfB Stuttgart
+    67  Netherlands           Ajax 
+    65  France                Olympique de Lyon
+    65  England               Aston Villa FC
+    65  Italy                 Genoa FC
+    65  Italy                 SSC Napoli
+    62  France                Stade Rennais FC
+    62  England               Newcastle United FC
+    62  Germany               Bayer Leverkusen
+    62  Spain                 Sevilla FC
     60  Desconocido           Hellas Verona
-    60  Desconocido           Valencia
+    60  Spain                 Valencia CF
     59  Desconocido           Barcelona B
-    59  Desconocido           Stade Rennais FC
     58  Desconocido           Parma
     57  Desconocido           Southampton
-    56  Desconocido           Udinese Calcio
-    55  Desconocido           Everton
-    55  Desconocido           Real Betis
-    55  Desconocido           Lazio
-    54  Desconocido           West Ham United
-    54  Desconocido           Vfl Wolfsburg
-    54  Desconocido           Lille
-    53  Desconocido           RB Leipzig
+    57  Italy                 Udinese Calcio
+    55  England               Everton FC
+    55  Spain                 Real Betis
+    55  England               SS Lazio
+    54  England               West Ham United FC
+    54  France                Lille OSC
+    54  Germany               VfL Wolfsburg
+    53  Germany               RB Leipzig
     52  Desconocido           Empoli
-    51  Desconocido           Real Sociedad
-    51  Desconocido           Fulham
+    51  Spain                 Real Sociedad
+    51  England               Fulham FC
     50  Desconocido           RC Strasbourg
     50  Desconocido           Wolverhampton Wanderers FC
-    50  Desconocido           Getafe CF
+    50  Spain                 Getafe CF
     48  Desconocido           Bologna
     48  Desconocido           Eintracht Frankfurt
     48  Desconocido           Venezia
     48  Desconocido           Brighton & Hove Albion
     48  Desconocido           Lens
-    48  Desconocido           Crystal Palace
+    48  England               Crystal Palace FC
     47  Desconocido           Leicester City
     47  Desconocido           Torino
-    47  Desconocido           Nice
+    47  France                OG Nice
     47  Desconocido           Nottingham Forest FC
     47  Desconocido           Cagliari
     45  Desconocido           RCD Mallorca
     44  Desconocido           Real Madrid B
     44  Desconocido           RCD Espanyol de Barcelona
-    44  Desconocido           Girona
+    44  Spain                 Girona FC
     44  Portugal              Sporting CP
-    43  Desconocido           TSG Hoffenheim
+    43  Germany               TSG Hoffenheim
     43  Desconocido           Ipswich Town
     42  Desconocido           Sampdoria
-    42  Desconocido           Como
-    42  Desconocido           Borussia Mönchengladbach
+    42  Germany               Borussia Mönchengladbach
+    42  Italy                 Como 1907
     41  Desconocido           Brentford FC
     41  Desconocido           Lecce
-    41  Desconocido           Celta de Vigo
+    41  Spain                 RC Celta de Vigo
     40  Desconocido           Bournemouth
     39  Desconocido           Stade Brestois 29
     39  Desconocido           Saint-Étienne
@@ -87,33 +87,33 @@ Stints  País                  Nombre
     36  Desconocido           Red Bull Salzburg
     36  Desconocido           Auxerre
     35  Desconocido           Leeds United
-    35  Desconocido           Werder Bremen
+    35  Germany               Werder Bremen
     35  Desconocido           Metz
     35  Desconocido           Bayern Munich II
     34  Desconocido           Rayo Vallecano
     34  Desconocido           Toulouse
     33  Desconocido           Deportivo Alavés
     33  Desconocido           SC Freiburg
-    33  Desconocido           Schalke 04
+    33  Germany               Schalke 04
     32  Desconocido           FC Augsburg
     32  Desconocido           Angers
-    32  Desconocido           Athletic Club
-    32  Desconocido           Valladolid
-    32  Desconocido           Feyenoord
+    32  Spain                 Athletic Club
+    32  Spain                 Real Valladolid
+    32  Netherlands           Feyenoord
     31  Desconocido           River Plate
-    31  Desconocido           Galatasaray
+    31  Turkey                Galatasaray
     30  Desconocido           Hamburger SV
     29  Desconocido           Jong Ajax
     29  Desconocido           Watford
     29  Desconocido           Flamengo
-    29  Desconocido           Porto
+    29  Portugal              FC Porto
     29  Desconocido           VfL Bochum
-    29  Desconocido           Celtic
+    29  Scotland              Celtic Glasgow
     28  Desconocido           Le Havre
     28  Desconocido           Montpellier
     28  Desconocido           Club Brugge
     28  Desconocido           Reims
-    28  Desconocido           PSV
+    28  Netherlands           PSV
     27  Desconocido           Anderlecht
     27  Desconocido           São Paulo
     27  Desconocido           Fenerbahçe
@@ -193,7 +193,7 @@ Stints  País                  Nombre
     15  Desconocido           Sochaux
     15  Desconocido           Beşiktaş
     15  Desconocido           Modena
-    15  Desconocido           Rangers
+    15  Scotland              Rangers FC
     14  Desconocido           Botafogo
     14  Desconocido           Espanyol B
     14  Desconocido           Porto B
@@ -299,7 +299,6 @@ Stints  País                  Nombre
      9  Desconocido           Cesena
      9  Desconocido           Standard Liège
      9  Desconocido           SV Sandhausen
-     9  Desconocido           Inter Milan
      8  Desconocido           Defensa y Justicia
      8  Desconocido           Rennes B
      8  Desconocido           Toulouse B
@@ -781,7 +780,6 @@ Stints  País                  Nombre
      3  Desconocido           Al-Duhail
      3  Desconocido           Zenit Saint Petersburg
      3  Desconocido           Guadalajara
-     3  Desconocido           Rennes
      2  Desconocido           Al Ahly
      2  Desconocido           Olhanense
      2  Desconocido           Aurrerá
@@ -2225,8 +2223,6 @@ Stints  País                  Nombre
      1  Desconocido           Vevey
      1  Desconocido           Lebowski
      1  Desconocido           Atlético Catarinense
-     1  Desconocido           Udinese
-     1  Desconocido           Atalanta
      1  Desconocido           Heracles
      0  Desconocido           | clubnumber =
      0  Desconocido           Democrata–SL
