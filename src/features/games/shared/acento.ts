@@ -20,6 +20,16 @@ export type Acento = "primary" | "secondary" | "gold";
 // concatenando variables, Tailwind no la detecta y no genera el CSS, y el
 // color simplemente no se aplica (falla en silencio, sin error).
 
+// Valor hex "en crudo" de cada acento, para sitios donde hace falta un color
+// de verdad en JS/inline style (glows dinámicos, canvas, partículas con color
+// por juego...) en vez de una clase Tailwind. Usado por primera vez en
+// GameLauncher.tsx (halo + partículas + fondo del mockup de captura).
+export const COLOR_HEX_POR_ACENTO: Record<Acento, string> = {
+  primary: "#4ADE9A",
+  secondary: "#1D7A9C",
+  gold: "#D4AF37",
+};
+
 export const TEXTO_POR_ACENTO: Record<Acento, string> = {
   primary: "text-primary",
   secondary: "text-secondary",

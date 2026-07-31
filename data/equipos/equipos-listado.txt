@@ -1,0 +1,2404 @@
+Total de equipos en la BD: 2400
+
+Stints  País                  Nombre
+------  --------------------  --------------------------------
+   129  Italy                 FC Internazionale Milano
+   128  Italy                 Juventus Turin
+   126  Spain                 Real Madrid CF
+   125  Spain                 FC Barcelona
+   123  England               Chelsea FC
+   113  England               AC Milan
+   108  England               Manchester United FC
+   100  Germany                FC Bayern Munich
+    90  Spain                 Club Atlético de Madrid
+    89  England               Arsenal FC
+    87  Italy                 Atalanta BC
+    85  Italy                 Manchester City FC
+    85  France                Paris Saint-Germain
+    83  France                Marseille FC
+    82  Italy                 ACF Fiorentina
+    82  Italy                 AS Roma
+    79  England               Tottenham Hotspur FC
+    76  France                AS Monaco
+    73  Portugal              SL Benfica
+    70  England               Liverpool FC
+    70  Spain                 Villarreal CF
+    69  Germany               Borussia Dortmund
+    69  Germany               VfB Stuttgart
+    67  Netherlands           Ajax 
+    65  France                Olympique de Lyon
+    65  England               Aston Villa FC
+    65  Italy                 Genoa FC
+    65  Italy                 SSC Napoli
+    62  France                Stade Rennais FC
+    62  England               Newcastle United FC
+    62  Germany               Bayer Leverkusen
+    62  Spain                 Sevilla FC
+    60  Desconocido           Hellas Verona
+    60  Spain                 Valencia CF
+    59  Desconocido           Barcelona B
+    58  Desconocido           Parma
+    57  Desconocido           Southampton
+    57  Italy                 Udinese Calcio
+    55  England               Everton FC
+    55  Spain                 Real Betis
+    55  England               SS Lazio
+    54  England               West Ham United FC
+    54  France                Lille OSC
+    54  Germany               VfL Wolfsburg
+    53  Germany               RB Leipzig
+    52  Desconocido           Empoli
+    51  Spain                 Real Sociedad
+    51  England               Fulham FC
+    50  Desconocido           RC Strasbourg
+    50  Desconocido           Wolverhampton Wanderers FC
+    50  Spain                 Getafe CF
+    48  Desconocido           Bologna
+    48  Desconocido           Eintracht Frankfurt
+    48  Desconocido           Venezia
+    48  Desconocido           Brighton & Hove Albion
+    48  Desconocido           Lens
+    48  England               Crystal Palace FC
+    47  Desconocido           Leicester City
+    47  Desconocido           Torino
+    47  France                OG Nice
+    47  Desconocido           Nottingham Forest FC
+    47  Desconocido           Cagliari
+    45  Desconocido           RCD Mallorca
+    44  Desconocido           Real Madrid B
+    44  Desconocido           RCD Espanyol de Barcelona
+    44  Spain                 Girona FC
+    44  Portugal              Sporting CP
+    43  Germany               TSG Hoffenheim
+    43  Desconocido           Ipswich Town
+    42  Desconocido           Sampdoria
+    42  Germany               Borussia Mönchengladbach
+    42  Italy                 Como 1907
+    41  Desconocido           Brentford FC
+    41  Desconocido           Lecce
+    41  Spain                 RC Celta de Vigo
+    40  Desconocido           Bournemouth
+    39  Desconocido           Stade Brestois 29
+    39  Desconocido           Saint-Étienne
+    39  Desconocido           Mainz 05
+    39  Desconocido           Monza
+    38  Desconocido           Union Berlin
+    37  Desconocido           Nantes
+    36  Desconocido           Red Bull Salzburg
+    36  Desconocido           Auxerre
+    35  Desconocido           Leeds United
+    35  Germany               Werder Bremen
+    35  Desconocido           Metz
+    35  Desconocido           Bayern Munich II
+    34  Desconocido           Rayo Vallecano
+    34  Desconocido           Toulouse
+    33  Desconocido           Deportivo Alavés
+    33  Desconocido           SC Freiburg
+    33  Germany               Schalke 04
+    32  Desconocido           FC Augsburg
+    32  Desconocido           Angers
+    32  Spain                 Athletic Club
+    32  Spain                 Real Valladolid
+    32  Netherlands           Feyenoord
+    31  Desconocido           River Plate
+    31  Turkey                Galatasaray
+    30  Desconocido           Hamburger SV
+    29  Desconocido           Jong Ajax
+    29  Desconocido           Watford
+    29  Desconocido           Flamengo
+    29  Portugal              FC Porto
+    29  Desconocido           VfL Bochum
+    29  Scotland              Celtic Glasgow
+    28  Desconocido           Le Havre
+    28  Desconocido           Montpellier
+    28  Desconocido           Club Brugge
+    28  Desconocido           Reims
+    28  Netherlands           PSV
+    27  Desconocido           Anderlecht
+    27  Desconocido           São Paulo
+    27  Desconocido           Fenerbahçe
+    27  Desconocido           West Bromwich Albion
+    27  Desconocido           FC St. Pauli
+    26  Desconocido           CA Osasuna
+    26  Desconocido           Borussia Dortmund II
+    26  Desconocido           Salernitana
+    26  Desconocido           Burnley
+    26  Desconocido           Blackburn Rovers
+    25  Desconocido           Basel
+    25  Desconocido           1. FC Heidenheim
+    24  Desconocido           Hull City
+    23  Desconocido           Benfica B
+    23  Desconocido           Corinthians
+    23  Desconocido           Lyon B
+    23  Desconocido           Brescia
+    22  Desconocido           Las Palmas
+    22  Desconocido           Levante
+    22  Desconocido           Sunderland
+    22  Desconocido           Vasco da Gama
+    22  Desconocido           FC Liefering
+    22  Desconocido           SV Elversberg
+    21  Desconocido           Dinamo Zagreb
+    21  Desconocido           Bordeaux
+    21  Desconocido           Bilbao Athletic
+    21  Desconocido           Granada
+    21  Desconocido           VfB Stuttgart II
+    21  Desconocido           Pescara
+    21  Desconocido           Holstein Kiel
+    20  Desconocido           Real Sociedad B
+    20  Desconocido           Boca Juniors
+    20  Desconocido           Leganés
+    20  Desconocido           Santos
+    20  Desconocido           Hertha BSC
+    20  Desconocido           Coventry City
+    19  Desconocido           Genk
+    19  Desconocido           Villarreal B
+    19  Desconocido           Perugia
+    19  Desconocido           Olympiacos
+    19  Desconocido           Middlesbrough
+    19  Desconocido           Sheffield United
+    19  Desconocido           1. FC Köln
+    19  Desconocido           Frosinone
+    19  Desconocido           US Cremonese
+    19  Desconocido           SC Freiburg II
+    19  Desconocido           Sassuolo
+    18  Desconocido           Copenhagen
+    18  Desconocido           Basconia
+    18  Desconocido           Spezia
+    18  Desconocido           Stoke City
+    18  Desconocido           Elche
+    18  Desconocido           Norwich City
+    18  Desconocido           Preston North End
+    18  Desconocido           Nordsjælland
+    18  Desconocido           TSG Hoffenheim II
+    18  Desconocido           1. FC Kaiserslautern
+    17  Desconocido           Zaragoza
+    17  Desconocido           Mirandés
+    17  Desconocido           Málaga
+    17  Desconocido           Bolton Wanderers
+    17  Desconocido           Atlético Mineiro
+    17  Desconocido           SPAL
+    17  Desconocido           Karlsruher SC
+    16  Desconocido           Braga
+    16  Desconocido           Huesca
+    16  Desconocido           Real Madrid C
+    16  Desconocido           Jong PSV
+    16  Desconocido           Groningen
+    16  Desconocido           Gent
+    16  Desconocido           Barnsley
+    16  Desconocido           Lorient
+    15  Desconocido           Almería
+    15  Desconocido           Valencia B
+    15  Desconocido           Heerenveen
+    15  Desconocido           Juventus Next Gen
+    15  Desconocido           Sochaux
+    15  Desconocido           Beşiktaş
+    15  Desconocido           Modena
+    15  Scotland              Rangers FC
+    14  Desconocido           Botafogo
+    14  Desconocido           Espanyol B
+    14  Desconocido           Porto B
+    14  Desconocido           Fluminense
+    14  Desconocido           Troyes
+    14  Desconocido           AZ
+    14  Desconocido           Clermont
+    14  Desconocido           1. FC Nürnberg
+    14  Desconocido           Vitesse
+    14  Desconocido           Caen
+    14  Desconocido           Hajduk Split
+    13  Desconocido           Sporting CP B
+    13  Desconocido           Celta B
+    13  Desconocido           Birmingham City
+    13  Desconocido           Rennes II
+    13  Desconocido           Betis B
+    13  Desconocido           AFC Bournemouth
+    12  Desconocido           Willem II
+    12  Desconocido           Internacional
+    12  Desconocido           Villarreal C
+    12  Desconocido           Atlético Madrid B
+    12  Desconocido           Eibar
+    12  Desconocido           Young Boys
+    12  Desconocido           Crotone
+    12  Desconocido           Deportivo La Coruña
+    12  Desconocido           Sparta Prague
+    12  Desconocido           Metz B
+    12  Desconocido           Newell's Old Boys
+    12  Desconocido           Wigan Athletic
+    12  Desconocido           Luton Town
+    12  Desconocido           Charleroi
+    12  Desconocido           PSV Eindhoven
+    12  Desconocido           Pisa
+    12  Desconocido           Avellino
+    12  Desconocido           Cercle Brugge
+    12  Desconocido           Ascoli
+    12  Desconocido           Sturm Graz
+    12  Desconocido           Darmstadt 98
+    12  Desconocido           1. FC Köln II
+    12  Desconocido           Greuther Fürth
+    11  Desconocido           Vélez Sarsfield
+    11  Desconocido           Charlton Athletic
+    11  Desconocido           Real Sociedad C
+    11  Desconocido           Cruzeiro
+    11  Desconocido           Panathinaikos
+    11  Desconocido           Dijon
+    11  Desconocido           Lille B
+    11  Desconocido           Sheffield Wednesday
+    11  Desconocido           Bristol Rovers
+    11  Desconocido           Plymouth Argyle
+    11  Desconocido           Juventus U23
+    11  Desconocido           Bastia
+    11  Desconocido           Monaco B
+    11  Desconocido           Schalke 04 II
+    11  Desconocido           Palermo
+    11  Desconocido           Padova
+    11  Desconocido           Valenciennes
+    11  Desconocido           SC Paderborn
+    11  Desconocido           Dynamo Dresden
+    11  Desconocido           Paris FC
+    10  Desconocido           Al-Nassr
+    10  Desconocido           Partizan
+    10  Desconocido           Sevilla B
+    10  Desconocido           Borussia Mönchengladbach II
+    10  Desconocido           Reggina
+    10  Desconocido           Derby County
+    10  Desconocido           Yeovil Town
+    10  Desconocido           Rapid Wien
+    10  Desconocido           Red Star Belgrade
+    10  Desconocido           Twente
+    10  Desconocido           Palmeiras
+    10  Desconocido           Amiens
+    10  Desconocido           Swansea City
+    10  Desconocido           Sint-Truiden
+    10  Desconocido           Millwall
+    10  Desconocido           Bristol City
+    10  Desconocido           Fortuna Düsseldorf
+    10  Desconocido           Paris Saint-Germain B
+    10  Desconocido           Lausanne-Sport
+    10  Desconocido           Bari
+    10  Desconocido           Al-Hilal
+     9  Desconocido           Inter Miami
+     9  Desconocido           Rio Ave
+     9  Desconocido           Sporting Gijón
+     9  Desconocido           Tenerife
+     9  Desconocido           Albacete
+     9  Desconocido           Sparta Rotterdam
+     9  Desconocido           Vicenza
+     9  Desconocido           Midtjylland
+     9  Desconocido           NEC
+     9  Desconocido           Doncaster Rovers
+     9  Desconocido           Werder Bremen II
+     9  Desconocido           Toulouse II
+     9  Desconocido           Shakhtar Donetsk
+     9  Desconocido           Estoril
+     9  Desconocido           Saint-Étienne B
+     9  Desconocido           Burton Albion
+     9  Desconocido           Brøndby
+     9  Desconocido           Nîmes
+     9  Desconocido           Atalanta U23
+     9  Desconocido           St. Gallen
+     9  Desconocido           Spartak Moscow
+     9  Desconocido           Cesena
+     9  Desconocido           Standard Liège
+     9  Desconocido           SV Sandhausen
+     8  Desconocido           Defensa y Justicia
+     8  Desconocido           Rennes B
+     8  Desconocido           Toulouse B
+     8  Desconocido           Le Havre B
+     8  Desconocido           Valladolid B
+     8  Desconocido           Peñarol
+     8  Desconocido           Racing Santander
+     8  Desconocido           Chievo
+     8  Desconocido           Strasbourg B
+     8  Desconocido           Vitória
+     8  Desconocido           Dynamo Kyiv
+     8  Desconocido           Swindon Town
+     8  Desconocido           Laval
+     8  Desconocido           Ajaccio
+     8  Desconocido           Forest Green Rovers
+     8  Desconocido           Huddersfield Town
+     8  Desconocido           Cheltenham Town
+     8  Desconocido           Dinamo Tbilisi
+     8  Desconocido           Queens Park Rangers
+     8  Desconocido           Zulte Waregem
+     8  Desconocido           Hamburger SV II
+     8  Desconocido           FC Augsburg II
+     8  Desconocido           Hibernian
+     8  Desconocido           Chicago Fire
+     8  Desconocido           Nacional
+     8  Desconocido           Nice B
+     8  Desconocido           PAOK
+     8  Desconocido           OH Leuven
+     8  Desconocido           Südtirol
+     8  Desconocido           Juve Stabia
+     8  Desconocido           Feralpisalò
+     8  Desconocido           Go Ahead Eagles
+     8  Desconocido           Carpi
+     8  Desconocido           Nancy
+     8  Desconocido           Grêmio
+     8  Desconocido           Utrecht
+     8  Desconocido           1. FC Kaiserslautern II
+     8  Desconocido           Holstein Kiel II
+     8  Desconocido           Angers B
+     8  Desconocido           Quevilly-Rouen
+     8  Desconocido           Nantes B
+     7  Desconocido           Monterrey
+     7  Desconocido           Osasuna B
+     7  Desconocido           América
+     7  Desconocido           NAC Breda
+     7  Desconocido           Le Mans
+     7  Desconocido           Angers II
+     7  Desconocido           IF Brommapojkarna
+     7  Desconocido           Real Madrid Castilla
+     7  Desconocido           Oxford United
+     7  Desconocido           Rayo Majadahonda
+     7  Desconocido           Estudiantes
+     7  Desconocido           Alcorcón
+     7  Desconocido           Hannover 96
+     7  Desconocido           Rayo Vallecano B
+     7  Desconocido           Royal Antwerp
+     7  Desconocido           Reading
+     7  Desconocido           Istres
+     7  Desconocido           Newport County
+     7  Desconocido           Reims II
+     7  Desconocido           Stockport County
+     7  Desconocido           Fleetwood Town
+     7  Desconocido           Northampton Town
+     7  Desconocido           Aberdeen
+     7  Desconocido           Kilmarnock
+     7  Desconocido           Bradford City
+     7  Desconocido           Portsmouth
+     7  Desconocido           Cardiff City
+     7  Desconocido           Saint-Étienne II
+     7  Desconocido           Lyon II
+     7  Desconocido           Nice II
+     7  Desconocido           VfL Wolfsburg II
+     7  Desconocido           Mouscron
+     7  Desconocido           Reggiana
+     7  Desconocido           Milan Futuro
+     7  Desconocido           Trapani
+     7  Desconocido           Pordenone
+     7  Desconocido           Slovan Bratislava
+     7  Desconocido           Antwerp
+     7  Desconocido           New York City FC
+     7  Desconocido           Legia Warsaw
+     7  Desconocido           1860 Munich
+     7  Desconocido           HamKam
+     7  Desconocido           1. FC Nürnberg II
+     7  Desconocido           Mainz 05 II
+     7  Desconocido           Gil Vicente
+     7  Desconocido           Eintracht Frankfurt II
+     7  Desconocido           SC Verl
+     7  Desconocido           1. FC Magdeburg
+     7  Desconocido           Montpellier B
+     7  Desconocido           Al-Shabab
+     7  Desconocido           Vissel Kobe
+     7  Desconocido           LA Galaxy
+     6  Desconocido           Vitória de Guimarães
+     6  Desconocido           Rosario Central
+     6  Desconocido           Burgos
+     6  Desconocido           Alavés B
+     6  Desconocido           Braga B
+     6  Desconocido           Al-Gharafa
+     6  Desconocido           PEC Zwolle
+     6  Desconocido           Hércules
+     6  Desconocido           Orléans
+     6  Desconocido           Trabzonspor
+     6  Desconocido           Ankaragücü
+     6  Desconocido           Coritiba
+     6  Desconocido           Lugo
+     6  Desconocido           Sochaux II
+     6  Desconocido           Le Havre II
+     6  Desconocido           Cádiz
+     6  Desconocido           Ternana
+     6  Desconocido           CSKA Moscow
+     6  Desconocido           Atlas
+     6  Desconocido           Seraing
+     6  Desconocido           San Lorenzo
+     6  Desconocido           Rodez
+     6  Desconocido           Blackpool
+     6  Desconocido           Châteauroux
+     6  Desconocido           Stevenage
+     6  Desconocido           New York Red Bulls
+     6  Desconocido           AIK
+     6  Desconocido           Lens B
+     6  Desconocido           Argentinos Juniors
+     6  Desconocido           Orlando City
+     6  Desconocido           Talleres
+     6  Desconocido           Excelsior
+     6  Desconocido           Oostende
+     6  Desconocido           Slavia Prague
+     6  Desconocido           Jong AZ
+     6  Desconocido           Westerlo
+     6  Desconocido           Wolfsberger AC
+     6  Desconocido           Austria Wien
+     6  Desconocido           OB
+     6  Desconocido           Union SG
+     6  Desconocido           Hertha BSC II
+     6  Desconocido           Benevento
+     6  Desconocido           Catania
+     6  Desconocido           Ravenna
+     6  Desconocido           Virtus Entella
+     6  Desconocido           Lech Poznań
+     6  Desconocido           Lugano
+     6  Desconocido           Livorno
+     6  Desconocido           Foggia
+     6  Desconocido           1860 Munich II
+     6  Desconocido           İstanbul Başakşehir
+     6  Desconocido           Antalyaspor
+     6  Desconocido           Hansa Rostock
+     6  Desconocido           Eintracht Braunschweig
+     6  Desconocido           Auxerre B
+     6  Desconocido           Malmö FF
+     6  Desconocido           Arminia Bielefeld
+     6  Desconocido           FC St. Pauli II
+     6  Desconocido           Tours
+     6  Desconocido           Grenoble
+     6  Desconocido           Los Angeles FC
+     6  Desconocido           New York Cosmos
+     6  Desconocido           Al Sadd
+     6  Desconocido           Al-Ahli
+     5  Desconocido           Monaco II
+     5  Desconocido           Dinamo Zagreb II
+     5  Desconocido           Bordeaux II
+     5  Desconocido           Racing Club
+     5  Desconocido           Racing Ferrol
+     5  Desconocido           Getafe B
+     5  Desconocido           Famalicão
+     5  Desconocido           Reims B
+     5  Desconocido           Logroñés
+     5  Desconocido           Luzern
+     5  Desconocido           Ponferradina
+     5  Desconocido           Córdoba
+     5  Desconocido           Málaga B
+     5  Desconocido           Guaraní
+     5  Desconocido           Girona B
+     5  Desconocido           Yokohama F. Marinos
+     5  Desconocido           Vålerenga
+     5  Desconocido           Exeter City
+     5  Desconocido           Ponte Preta
+     5  Desconocido           Novara
+     5  Desconocido           Leyton Orient
+     5  Desconocido           Sion
+     5  Desconocido           Troyes II
+     5  Desconocido           Sport Recife
+     5  Desconocido           Milton Keynes Dons
+     5  Desconocido           Châteauroux II
+     5  Desconocido           Hartlepool United
+     5  Desconocido           Lincoln City
+     5  Desconocido           Mansfield Town
+     5  Desconocido           Lorient B
+     5  Desconocido           Motherwell
+     5  Desconocido           Esbjerg fB
+     5  Desconocido           Wycombe Wanderers
+     5  Desconocido           Strømsgodset
+     5  Desconocido           Volendam
+     5  Desconocido           Boulogne
+     5  Desconocido           Al-Ittihad
+     5  Desconocido           Eupen
+     5  Desconocido           FC Ingolstadt
+     5  Desconocido           Kidderminster Harriers
+     5  Desconocido           Lucchese
+     5  Desconocido           1. FC Saarbrücken
+     5  Desconocido           Boavista
+     5  Desconocido           Al-Rayyan
+     5  Desconocido           Triestina
+     5  Desconocido           Pro Vercelli
+     5  Desconocido           Dinamo București
+     5  Desconocido           Caen II
+     5  Desconocido           Carrarese
+     5  Desconocido           AGF
+     5  Desconocido           Górnik Zabrze
+     5  Desconocido           LASK
+     5  Desconocido           Potenza
+     5  Desconocido           Legia Warsaw II
+     5  Desconocido           SønderjyskE
+     5  Desconocido           Toronto FC
+     5  Desconocido           Heracles Almelo
+     5  Desconocido           Inter Milan U23
+     5  Desconocido           Rijeka
+     5  Desconocido           Valenciennes B
+     5  Desconocido           Jahn Regensburg
+     5  Desconocido           Shimizu S-Pulse
+     5  Desconocido           RSCA Futures
+     5  Desconocido           VfL Osnabrück
+     5  Desconocido           SV Wehen Wiesbaden
+     5  Desconocido           Caen B
+     5  Desconocido           Juventude
+     5  Desconocido           Brest B
+     5  Desconocido           Al-Arabi
+     5  Desconocido           Estudiantes LP
+     4  Desconocido           Barcelona C
+     4  Desconocido           Vitória de Guimarães B
+     4  Desconocido           Beira-Mar
+     4  Desconocido           Levante B
+     4  Desconocido           Real Unión
+     4  Desconocido           Gimnàstic
+     4  Desconocido           Las Palmas B
+     4  Desconocido           Sevilla C
+     4  Desconocido           IFK Göteborg
+     4  Desconocido           Rubin Kazan
+     4  Desconocido           Numancia
+     4  Desconocido           Atlético Nacional
+     4  Desconocido           Pachuca
+     4  Desconocido           Cartagena
+     4  Desconocido           Platense
+     4  Desconocido           Lokomotiva Zagreb
+     4  Desconocido           União Leiria
+     4  Desconocido           Fuenlabrada
+     4  Desconocido           Extremadura
+     4  Desconocido           Red Bull Bragantino
+     4  Desconocido           Avranches
+     4  Desconocido           New England Revolution
+     4  Desconocido           AEK Athens
+     4  Desconocido           ADO Den Haag
+     4  Desconocido           Walsall
+     4  Desconocido           Cambridge United
+     4  Desconocido           Athletico Paranaense
+     4  Desconocido           Scunthorpe United
+     4  Desconocido           Sagan Tosu
+     4  Desconocido           Heart of Midlothian
+     4  Desconocido           Fehérvár
+     4  Desconocido           Hampton & Richmond Borough
+     4  Desconocido           Oldham Athletic
+     4  Desconocido           Grasshoppers
+     4  Desconocido           St Mirren
+     4  Desconocido           TSV Hartberg
+     4  Desconocido           Crawley Town
+     4  Desconocido           Rotherham United
+     4  Desconocido           Accrington Stanley
+     4  Desconocido           Lille II
+     4  Desconocido           Peterborough United
+     4  Desconocido           Portimonense
+     4  Desconocido           Rochdale
+     4  Desconocido           Esbjerg
+     4  Desconocido           Notts County
+     4  Desconocido           RKC Waalwijk
+     4  Desconocido           Dynamo Moscow
+     4  Desconocido           Karlsruher SC II
+     4  Desconocido           Shrewsbury Town
+     4  Desconocido           Hamilton Academical
+     4  Desconocido           Bordeaux B
+     4  Desconocido           Cittadella
+     4  Desconocido           Paris Saint-Germain II
+     4  Desconocido           Olbia
+     4  Desconocido           Banfield
+     4  Desconocido           Cosenza
+     4  Desconocido           Siena
+     4  Desconocido           Virtus Francavilla
+     4  Desconocido           Catanzaro
+     4  Desconocido           Mantova
+     4  Desconocido           Fortuna Düsseldorf II
+     4  Desconocido           Mechelen
+     4  Desconocido           Laval B
+     4  Desconocido           Marseille B
+     4  Desconocido           Latina
+     4  Desconocido           Lokomotiv Moscow
+     4  Desconocido           Nancy B
+     4  Desconocido           Verona
+     4  Desconocido           Zürich
+     4  Desconocido           Çaykur Rizespor
+     4  Desconocido           Al Ain
+     4  Desconocido           Guingamp
+     4  Desconocido           Huracán
+     4  Desconocido           Estrela da Amadora
+     4  Desconocido           Annecy
+     4  Desconocido           CSKA Sofia
+     4  Desconocido           Kashiwa Reysol
+     4  Desconocido           Strasbourg II
+     4  Desconocido           Bayer Leverkusen II
+     4  Desconocido           Hannover 96 II
+     4  Desconocido           Stafford Rangers
+     4  Desconocido           Servette
+     4  Desconocido           Clermont B
+     4  Desconocido           Lens II
+     4  Desconocido           Independiente
+     4  Desconocido           Marseille II
+     4  Desconocido           Al-Qadsiah
+     4  Desconocido           Red Star
+     4  Desconocido           Martigues
+     4  Desconocido           Al Nasr
+     4  Desconocido           Tigres UANL
+     4  Desconocido           Guangzhou Evergrande
+     4  Desconocido           Qatar SC
+     4  Desconocido           Colo-Colo
+     4  Desconocido           Adana Demirspor
+     4  Desconocido           Athletic Bilbao
+     3  Desconocido           Danubio
+     3  Desconocido           Brest II
+     3  Desconocido           Atlanta United
+     3  Desconocido           Athletic Bilbao B
+     3  Desconocido           Sabadell
+     3  Desconocido           Amorebieta
+     3  Desconocido           Barakaldo
+     3  Desconocido           Sant Andreu
+     3  Desconocido           Teleoptik
+     3  Desconocido           Recreativo
+     3  Desconocido           Deportivo B
+     3  Desconocido           UCAM Murcia
+     3  Desconocido           América de Cali
+     3  Desconocido           Columbus Crew
+     3  Desconocido           Cornellà
+     3  Desconocido           Cruz Azul
+     3  Desconocido           Győr
+     3  Desconocido           APOEL
+     3  Desconocido           Alcobendas
+     3  Desconocido           Murcia
+     3  Desconocido           Mallorca B
+     3  Desconocido           FC Tokyo
+     3  Desconocido           Inter Zaprešić
+     3  Desconocido           Žilina
+     3  Desconocido           Belenenses
+     3  Desconocido           Real Murcia
+     3  Desconocido           Bath City
+     3  Desconocido           Salgaocar
+     3  Desconocido           Deportivo A Coruña
+     3  Desconocido           América Mineiro
+     3  Desconocido           ASA
+     3  Desconocido           Democrata GV-MG
+     3  Desconocido           Chapecoense
+     3  Desconocido           Figueirense
+     3  Desconocido           Botafogo-SP
+     3  Desconocido           Admira Wacker
+     3  Desconocido           Hammarby IF
+     3  Desconocido           Club NXT
+     3  Desconocido           Dunkerque
+     3  Desconocido           Welling United
+     3  Desconocido           Chesterfield
+     3  Desconocido           AFC Wimbledon
+     3  Desconocido           Southend United
+     3  Desconocido           Colchester United
+     3  Desconocido           Grafičar Beograd
+     3  Desconocido           Bursaspor
+     3  Desconocido           Marítimo
+     3  Desconocido           Peralada-Girona B
+     3  Desconocido           HJK
+     3  Desconocido           Göztepe
+     3  Desconocido           Cork City
+     3  Desconocido           Avaí
+     3  Desconocido           Independiente del Valle
+     3  Desconocido           Lyngby
+     3  Desconocido           Salford City
+     3  Desconocido           Carlisle United
+     3  Desconocido           RWD Molenbeek
+     3  Desconocido           Eastleigh
+     3  Desconocido           Dundee United
+     3  Desconocido           Ross County
+     3  Desconocido           Slovan Liberec
+     3  Desconocido           Dukla Prague
+     3  Desconocido           PAS Giannina
+     3  Desconocido           Bromley
+     3  Desconocido           Molde
+     3  Desconocido           Anorthosis
+     3  Desconocido           FC Ingolstadt II
+     3  Desconocido           Kawasaki Frontale
+     3  Desconocido           IF Elfsborg
+     3  Desconocido           RB Leipzig II
+     3  Desconocido           Crewe Alexandra
+     3  Desconocido           De Graafschap
+     3  Desconocido           Universidad Católica
+     3  Desconocido           Cambuur
+     3  Desconocido           Västerås SK
+     3  Desconocido           Weston-super-Mare
+     3  Desconocido           OFI
+     3  Desconocido           Kortrijk
+     3  Desconocido           Neuchâtel Xamax
+     3  Desconocido           Savona
+     3  Desconocido           Vitória Setúbal
+     3  Desconocido           León
+     3  Desconocido           Alessandria
+     3  Desconocido           SV Ried
+     3  Desconocido           Vojvodina
+     3  Desconocido           Torpedo Kutaisi
+     3  Desconocido           Ludogorets Razgrad
+     3  Desconocido           Djurgårdens IF
+     3  Desconocido           Melbourne City
+     3  Desconocido           Polonia Warsaw
+     3  Desconocido           UNAM
+     3  Desconocido           Aris Limassol
+     3  Desconocido           Pavarolo
+     3  Desconocido           Piacenza
+     3  Desconocido           Deportivo Cali
+     3  Desconocido           Emmen
+     3  Desconocido           Bahia
+     3  Desconocido           Dordrecht
+     3  Desconocido           Hajduk Split II
+     3  Desconocido           FC Basel II
+     3  Desconocido           Kasımpaşa
+     3  Desconocido           Zrinjski Mostar
+     3  Desconocido           Domžale
+     3  Desconocido           Chiasso
+     3  Desconocido           Brommapojkarna
+     3  Desconocido           Bassano Virtus
+     3  Desconocido           Stabæk
+     3  Desconocido           Rostov
+     3  Desconocido           Viktoria Köln
+     3  Desconocido           Lech Poznań II
+     3  Desconocido           Arsenal Tula
+     3  Desconocido           Mjällby AIF
+     3  Desconocido           Dunajská Streda
+     3  Desconocido           Istra 1961
+     3  Desconocido           Vancouver Whitecaps FC
+     3  Desconocido           Júbilo Iwata
+     3  Desconocido           Atlético Junior
+     3  Desconocido           Greuther Fürth II
+     3  Desconocido           JEF United Chiba
+     3  Desconocido           AaB
+     3  Desconocido           Wehen Wiesbaden
+     3  Desconocido           Chemnitzer FC
+     3  Desconocido           Energie Cottbus
+     3  Desconocido           Kashima Antlers
+     3  Desconocido           Alès
+     3  Desconocido           FC Wil
+     3  Desconocido           Preußen Münster
+     3  Desconocido           Würzburger Kickers
+     3  Desconocido           Austria Wien II
+     3  Desconocido           Lokomotiva
+     3  Desconocido           Montpellier II
+     3  Desconocido           VfL Bochum II
+     3  Desconocido           SV Mattersburg
+     3  Desconocido           Osijek
+     3  Desconocido           Eskişehirspor
+     3  Desconocido           SV Sandhausen II
+     3  Desconocido           Halmstads BK
+     3  Desconocido           Stuttgarter Kickers
+     3  Desconocido           Tokyo Verdy
+     3  Desconocido           Pau
+     3  Desconocido           Gazélec Ajaccio
+     3  Desconocido           Colorado Rapids
+     3  Desconocido           Ajaccio B
+     3  Desconocido           Cuiabá
+     3  Desconocido           Épinal
+     3  Desconocido           Metz II
+     3  Desconocido           Feirense
+     3  Desconocido           Montreal Impact
+     3  Desconocido           Shanghai Shenhua
+     3  Desconocido           Mumbai City
+     3  Desconocido           Real Zaragoza
+     3  Desconocido           Los Angeles Aztecs
+     3  Desconocido           Al-Shamal
+     3  Desconocido           Millonarios
+     3  Desconocido           San Jose Earthquakes
+     3  Desconocido           Al-Duhail
+     3  Desconocido           Zenit Saint Petersburg
+     3  Desconocido           Guadalajara
+     2  Desconocido           Al Ahly
+     2  Desconocido           Olhanense
+     2  Desconocido           Aurrerá
+     2  Desconocido           San Ignacio
+     2  Desconocido           Granada B
+     2  Desconocido           Tijuana
+     2  Desconocido           Marbella
+     2  Desconocido           Pobla Mafumet
+     2  Desconocido           Las Palmas C
+     2  Desconocido           Johor Darul Ta'zim
+     2  Desconocido           Logroñés B
+     2  Desconocido           Zürich II
+     2  Desconocido           Luzern II
+     2  Desconocido           Guijuelo
+     2  Desconocido           Córdoba B
+     2  Desconocido           Compostela
+     2  Desconocido           Lleida Esportiu
+     2  Desconocido           Dnipro
+     2  Desconocido           Oviedo
+     2  Desconocido           Atlético Huila
+     2  Desconocido           Hospitalet
+     2  Desconocido           Colón
+     2  Desconocido           Sportivo Luqueño
+     2  Desconocido           Hércules B
+     2  Desconocido           Leganés B
+     2  Desconocido           Linares
+     2  Desconocido           Gillingham
+     2  Desconocido           Puskás Akadémia II
+     2  Desconocido           Grótta
+     2  Desconocido           Atlético Madrid C
+     2  Desconocido           Cieza
+     2  Desconocido           Murcia B
+     2  Desconocido           FC Tokyo U-23
+     2  Desconocido           Truro City
+     2  Desconocido           Churchill Brothers
+     2  Desconocido           RSC Internacional
+     2  Desconocido           Primeiro de Agosto
+     2  Desconocido           Kabuscorp
+     2  Desconocido           Sagrada Esperança
+     2  Desconocido           Ipatinga
+     2  Desconocido           Tombense
+     2  Desconocido           Avranches B
+     2  Desconocido           Comercial-MS
+     2  Desconocido           São Bento
+     2  Desconocido           Curicó Unido
+     2  Desconocido           Monte Azul
+     2  Desconocido           Guaratinguetá
+     2  Desconocido           America-RJ
+     2  Desconocido           Adelaide United
+     2  Desconocido           Racing B
+     2  Desconocido           Rosenborg
+     2  Desconocido           Bodø/Glimt
+     2  Desconocido           Sigma
+     2  Desconocido           Minnesota United
+     2  Desconocido           Sochaux B
+     2  Desconocido           Sint-Truidense
+     2  Desconocido           Tigre
+     2  Desconocido           Fénix
+     2  Desconocido           Guingamp B
+     2  Desconocido           Aldershot Town
+     2  Desconocido           York City
+     2  Desconocido           Bury
+     2  Desconocido           Warrington Town
+     2  Desconocido           Queen's Park
+     2  Desconocido           Darlington
+     2  Desconocido           Galway United
+     2  Desconocido           Gangwon FC
+     2  Desconocido           Čukarički
+     2  Desconocido           Morecambe
+     2  Desconocido           New York Red Bulls II
+     2  Desconocido           Inverness Caledonian Thistle
+     2  Desconocido           Clyde
+     2  Desconocido           Vale of Clyde
+     2  Desconocido           Puskás Akadémia
+     2  Desconocido           Csákvár
+     2  Desconocido           FC Halifax Town
+     2  Desconocido           Jong Twente
+     2  Desconocido           Hemel Hempstead Town
+     2  Desconocido           Marítimo B
+     2  Desconocido           Zbrojovka Brno
+     2  Desconocido           Brann
+     2  Desconocido           FC Cincinnati
+     2  Desconocido           Alloa Athletic
+     2  Desconocido           Solihull Moors
+     2  Desconocido           Rustavi
+     2  Desconocido           Locomotive Tbilisi
+     2  Desconocido           Urawa Red Diamonds
+     2  Desconocido           Tranmere Rovers
+     2  Desconocido           MSV Duisburg
+     2  Desconocido           Lorient II
+     2  Desconocido           Braintree Town
+     2  Desconocido           Weymouth
+     2  Desconocido           | caps4 =
+     2  Desconocido           QPR
+     2  Desconocido           Dunfermline Athletic
+     2  Desconocido           Dundee
+     2  Desconocido           Viborg FF
+     2  Desconocido           Pardubice
+     2  Desconocido           Djurgården
+     2  Desconocido           Hereford United
+     2  Desconocido           Havant & Waterlooville
+     2  Desconocido           Neom
+     2  Desconocido           Beerschot
+     2  Desconocido           Ashton United
+     2  Desconocido           Dartford
+     2  Desconocido           Red Bull Brasil
+     2  Desconocido           Quilmes
+     2  Desconocido           Airdrieonians
+     2  Desconocido           Sarpsborg 08
+     2  Desconocido           Start
+     2  Desconocido           Gozzano
+     2  Desconocido           Al-Ettifaq
+     2  Desconocido           Dnipro-1
+     2  Desconocido           Tamworth
+     2  Desconocido           Grays Athletic
+     2  Desconocido           Dagenham & Redbridge
+     2  Desconocido           Barnet
+     2  Desconocido           Lierse
+     2  Desconocido           FSV Frankfurt
+     2  Desconocido           Shabab Al Ahli
+     2  Desconocido           Renate
+     2  Desconocido           Atromitos
+     2  Desconocido           Voždovac
+     2  Desconocido           Hatayspor
+     2  Desconocido           Bellaria Igea
+     2  Desconocido           Pogoń Szczecin
+     2  Desconocido           TSC
+     2  Desconocido           Treviso
+     2  Desconocido           Pro Patria
+     2  Desconocido           Pontedera
+     2  Desconocido           Barreirense
+     2  Desconocido           Envigado
+     2  Desconocido           Montevideo Wanderers
+     2  Desconocido           Monopoli
+     2  Desconocido           Beauvais
+     2  Desconocido           Maccabi Petah Tikva
+     2  Desconocido           Taranto
+     2  Desconocido           RNK Split
+     2  Desconocido           Lanciano
+     2  Desconocido           AS Trenčín
+     2  Desconocido           Arezzo
+     2  Desconocido           Lecco
+     2  Desconocido           Pizzighettone
+     2  Desconocido           Montevarchi
+     2  Desconocido           Créteil
+     2  Desconocido           Brisbane Roar
+     2  Desconocido           Helsingør
+     2  Desconocido           Al Jazira
+     2  Desconocido           Stade Malien
+     2  Desconocido           Legnago
+     2  Desconocido           Ludogorets Razgrad II
+     2  Desconocido           OH Leuven U23
+     2  Desconocido           Górnik Zabrze II
+     2  Desconocido           Rapid București
+     2  Desconocido           Port Vale
+     2  Desconocido           Viking
+     2  Desconocido           Admira Wacker II
+     2  Desconocido           Thun
+     2  Desconocido           Virton
+     2  Desconocido           SL16 FC
+     2  Desconocido           Grosseto
+     2  Desconocido           Almere City
+     2  Desconocido           Leixões
+     2  Desconocido           Instituto
+     2  Desconocido           Vasalund
+     2  Desconocido           Gubbio
+     2  Desconocido           Vasalunds IF
+     2  Desconocido           Åtvidabergs FF
+     2  Desconocido           Académica
+     2  Desconocido           Tuzlaspor
+     2  Desconocido           Barranquilla
+     2  Desconocido           AVS
+     2  Desconocido           Metalurh Donetsk
+     2  Desconocido           Inter Milan Under-23
+     2  Desconocido           Sporting Kansas City
+     2  Desconocido           Raków Częstochowa
+     2  Desconocido           Rieti
+     2  Desconocido           Sylvia
+     2  Desconocido           Varbergs BoIS
+     2  Desconocido           Inter Miami II
+     2  Desconocido           Fredericia
+     2  Desconocido           Zagłębie Lubin
+     2  Desconocido           Ayr United
+     2  Desconocido           Maccabi Netanya
+     2  Desconocido           Hertha Zehlendorf
+     2  Desconocido           Radnički Niš
+     2  Desconocido           Hrvatski Dragovoljac
+     2  Desconocido           Andorra
+     2  Desconocido           Carl Zeiss Jena
+     2  Desconocido           Erzgebirge Aue
+     2  Desconocido           Örebro SK
+     2  Desconocido           Örgryte IS
+     2  Desconocido           Sivasspor
+     2  Desconocido           Whitecaps FC 2
+     2  Desconocido           Nagoya Grampus
+     2  Desconocido           Spartak Subotica
+     2  Desconocido           Novi Pazar
+     2  Desconocido           Rapid Wien II
+     2  Desconocido           Ventforet Kofu
+     2  Desconocido           Tokushima Vortis
+     2  Desconocido           Waldhof Mannheim
+     2  Desconocido           Floridsdorfer AC
+     2  Desconocido           Telstar
+     2  Desconocido           Vitesse II
+     2  Desconocido           Desna Chernihiv
+     2  Desconocido           Garforth Town
+     2  Desconocido           Maidstone United
+     2  Desconocido           Machida Zelvia
+     2  Desconocido           Ulsan Hyundai
+     2  Desconocido           Eintracht Braunschweig II
+     2  Desconocido           TSV Havelse
+     2  Desconocido           Paradou AC
+     2  Desconocido           Opava
+     2  Desconocido           Viktoria Plzeň
+     2  Desconocido           Arminia Bielefeld II
+     2  Desconocido           Hallescher FC
+     2  Desconocido           Gamba Osaka
+     2  Desconocido           Veria
+     2  Desconocido           Kapfenberger SV II
+     2  Desconocido           Kapfenberger SV
+     2  Desconocido           MYPA
+     2  Desconocido           Atlético Paranaense
+     2  Desconocido           SSV Ulm
+     2  Desconocido           FC Astoria Walldorf
+     2  Desconocido           Levadiakos
+     2  Desconocido           Kaiserslautern
+     2  Desconocido           Konyaspor
+     2  Desconocido           SSV Reutlingen
+     2  Desconocido           Újpest
+     2  Desconocido           AC Horsens
+     2  Desconocido           Tours B
+     2  Desconocido           Radnički Beograd
+     2  Desconocido           Lamia
+     2  Desconocido           Znicz Pruszków
+     2  Desconocido           Jong Volendam
+     2  Desconocido           Viktoria Berlin
+     2  Desconocido           US Concarneau
+     2  Desconocido           SGV Freiberg
+     2  Desconocido           Panionios
+     2  Desconocido           Troyes B
+     2  Desconocido           Bastia B
+     2  Desconocido           Eindhoven
+     2  Desconocido           Bayonne
+     2  Desconocido           Krasnodar
+     2  Desconocido           Jeanne d'Arc
+     2  Desconocido           Jablonec
+     2  Desconocido           FC Dallas
+     2  Desconocido           Deportivo Maldonado
+     2  Desconocido           Ceará
+     2  Desconocido           Evian
+     2  Desconocido           Rodez II
+     2  Desconocido           Quevilly-Rouen B
+     2  Desconocido           Persib Bandung
+     2  Desconocido           Le Mans II
+     2  Desconocido           Kalmar FF
+     2  Desconocido           Yverdon-Sport
+     2  Desconocido           Cerro
+     2  Desconocido           Dinamo Batumi
+     2  Desconocido           Génération Foot
+     2  Desconocido           Yangon United
+     2  Desconocido           Khimki
+     2  Desconocido           Fortaleza
+     2  Desconocido           Tersana
+     2  Desconocido           Scarborough
+     2  Desconocido           Chester City
+     2  Desconocido           Metropolitanos FC
+     2  Desconocido           Móstoles
+     2  Desconocido           Columbus Crew 2
+     2  Desconocido           Pafos
+     2  Desconocido           Nantwich Town
+     2  Desconocido           Kidsgrove Athletic
+     2  Desconocido           Leek Town
+     2  Desconocido           Cerezo Osaka
+     2  Desconocido           Toulon
+     2  Desconocido           Mineros de Guayana
+     2  Desconocido           Young Boys U21
+     2  Desconocido           Al-Raed
+     2  Desconocido           Budućnost Podgorica
+     2  Desconocido           AEL Limassol
+     2  Desconocido           Arouca
+     2  Desconocido           Rotor Volgograd
+     2  Desconocido           Mogi Mirim
+     2  Desconocido           Anzhi Makhachkala
+     2  Desconocido           Delhi Dynamos
+     2  Desconocido           Noroeste
+     2  Desconocido           Hebei China Fortune
+     2  Desconocido           Fort Lauderdale Strikers
+     2  Desconocido           Chennaiyin
+     2  Desconocido           Cannes
+     2  Desconocido           Sporting Gijón B
+     2  Desconocido           Melbourne Victory
+     2  Desconocido           Seattle Sounders
+     2  Desconocido           D.C. United
+     2  Desconocido           Alverca
+     2  Desconocido           Salamanca
+     2  Desconocido           Kitchee
+     2  Desconocido           San Diego Sockers
+     2  Desconocido           Högaborgs BK
+     2  Desconocido           Helsingborgs IF
+     2  Desconocido           Dynamo-2 Kyiv
+     2  Desconocido           Independiente Medellín
+     2  Desconocido           Tampa Bay Mutiny
+     2  Desconocido           Beveren
+     2  Desconocido           Lahti
+     2  Desconocido           Gaziantepspor
+     2  Desconocido           Shanghai Port
+     2  Desconocido           Jiangsu Suning
+     2  Desconocido           Aris
+     2  Desconocido           AGOVV
+     2  Desconocido           Kongsvinger
+     2  Desconocido           Shanghai SIPG
+     2  Desconocido           Gençlerbirliği
+     2  Desconocido           Torque
+     2  Desconocido           Kuban Krasnodar
+     2  Desconocido           Espanyol
+     2  Desconocido           Celta
+     2  Desconocido           Lommel United
+     2  Desconocido           Tom Tomsk
+     2  Desconocido           Betis
+     1  Desconocido           Sevilla Atlético
+     1  Desconocido           Rentistas
+     1  Desconocido           Boston River
+     1  Desconocido           Valencia Mestalla
+     1  Desconocido           Olimpija Ljubljana
+     1  Desconocido           Beasain
+     1  Desconocido           Bermeo
+     1  Desconocido           Ariznabarra
+     1  Desconocido           Rabotnichki
+     1  Desconocido           Cádiz B
+     1  Desconocido           Tondela
+     1  Desconocido           Cabecense
+     1  Desconocido           Lavagnese
+     1  Desconocido           Navalcarnero
+     1  Desconocido           Coruxo
+     1  Desconocido           Poitiers
+     1  Desconocido           Tenerife B
+     1  Desconocido           Las Palmas Atlético
+     1  Desconocido           Sogndal
+     1  Desconocido           Lillestrøm
+     1  Desconocido           Antoniano
+     1  Desconocido           Ávila
+     1  Desconocido           Badajoz
+     1  Desconocido           Porriño Industrial
+     1  Desconocido           Sant Julià de Vilatorta
+     1  Desconocido           Defensor
+     1  Desconocido           Zorya Luhansk
+     1  Desconocido           Albacete B
+     1  Desconocido           Caravaca
+     1  Desconocido           Pasaia
+     1  Desconocido           Badalona
+     1  Desconocido           Gerena
+     1  Desconocido           Junior
+     1  Desconocido           Castellón
+     1  Desconocido           Deportivo Pereira
+     1  Desconocido           Manresa
+     1  Desconocido           Rubio Ñu
+     1  Desconocido           Cerro Porteño
+     1  Desconocido           Sol de América
+     1  Desconocido           Deportes La Serena
+     1  Desconocido           Veraguas United
+     1  Desconocido           SA Bulo Bulo
+     1  Desconocido           Paysandu
+     1  Desconocido           Recreativo B
+     1  Desconocido           Trival Valderas B
+     1  Desconocido           Trival Valderas
+     1  Desconocido           Zaragoza B
+     1  Desconocido           Munkach Mukachevo
+     1  Desconocido           Kisvárda U19
+     1  Desconocido           Gyirmót
+     1  Desconocido           Deportivo La Guaira
+     1  Desconocido           Órdenes
+     1  Desconocido           Iruña
+     1  Desconocido           Figueres
+     1  Desconocido           Olot
+     1  Desconocido           Pozoblanco
+     1  Desconocido           Bella Vista
+     1  Desconocido           HNK Gorica
+     1  Desconocido           Dubnica
+     1  Desconocido           Sestao River
+     1  Desconocido           Žilina B
+     1  Desconocido           Elche B
+     1  Desconocido           Gombe United
+     1  Desconocido           South Melbourne FC
+     1  Desconocido           Al-Nasr (Salalah)
+     1  Desconocido           F.C. Matera
+     1  Desconocido           FC Baulmes
+     1  Desconocido           SR Delémont
+     1  Desconocido           Melbourne Knights
+     1  Desconocido           Betanzos
+     1  Desconocido           Conquense
+     1  Desconocido           Las Rozas
+     1  Desconocido           Rayo B
+     1  Desconocido           Zamora
+     1  Desconocido           Almería B
+     1  Desconocido           Jaén
+     1  Desconocido           Buriram United
+     1  Desconocido           Toledo
+     1  Desconocido           Sporting Atlético
+     1  Desconocido           Surkhon Termez
+     1  Desconocido           AGMK
+     1  Desconocido           Salcete
+     1  Desconocido           Atlético Morelia
+     1  Desconocido           San Pedro Seahawks
+     1  Desconocido           Vasco
+     1  Desconocido           Tupi
+     1  Desconocido           Petro Luanda
+     1  Desconocido           Recreativo da Caála
+     1  Desconocido           Al-Riyadh
+     1  Desconocido           Terrassa
+     1  Desconocido           Botafogo-PB
+     1  Desconocido           Goiás
+     1  Desconocido           Monte Claros-MG
+     1  Desconocido           Poções-MG
+     1  Desconocido           Tombense-MG
+     1  Desconocido           Passense
+     1  Desconocido           Uberlândia
+     1  Desconocido           Guarani Futebol Clube
+     1  Desconocido           Guanambi
+     1  Desconocido           Tombense Futebol Clube
+     1  Desconocido           Laudio
+     1  Desconocido           Unión Española
+     1  Desconocido           Santiago Morning
+     1  Desconocido           Aviación
+     1  Desconocido           Huachipato
+     1  Desconocido           Unión San Felipe
+     1  Desconocido           Soinca Bata
+     1  Desconocido           Colchagua
+     1  Desconocido           Varese
+     1  Desconocido           Portuguesa
+     1  Desconocido           ABC
+     1  Desconocido           CSA
+     1  Desconocido           Ituano
+     1  Desconocido           Maringá
+     1  Desconocido           Confiança
+     1  Desconocido           Madrid CFF
+     1  Desconocido           SV Neulengbach
+     1  Desconocido           Botucatu
+     1  Desconocido           Foz Cataratas
+     1  Desconocido           Ferroviária
+     1  Desconocido           Orlando Pride
+     1  Desconocido           Rosenborg 2
+     1  Desconocido           Manhattan SC
+     1  Desconocido           NY Pancyprian-Freedoms
+     1  Desconocido           Minnesota United 2
+     1  Desconocido           San Antonio FC
+     1  Desconocido           Dijon II
+     1  Desconocido           IK Frej
+     1  Desconocido           Hammarby TFF
+     1  Desconocido           Aurrerá Vitoria
+     1  Desconocido           Tonnerre d'Abomey
+     1  Desconocido           Coton Sport
+     1  Desconocido           Agde
+     1  Desconocido           Betis San Isidro
+     1  Desconocido           Atlético Tucumán
+     1  Desconocido           Unión La Calera
+     1  Desconocido           O'Higgins
+     1  Desconocido           Young Reds Antwerp
+     1  Desconocido           Vitesse Arnhem
+     1  Desconocido           Team Bury
+     1  Desconocido           Bury Town
+     1  Desconocido           Harrow Borough
+     1  Desconocido           Worksop Town
+     1  Desconocido           MFK Skalica
+     1  Desconocido           Chorley
+     1  Desconocido           Audax
+     1  Desconocido           Daejeon KHNP
+     1  Desconocido           Busan Transportation Corp.
+     1  Desconocido           Fujian Smart Hero
+     1  Desconocido           Chainat Hornbill
+     1  Desconocido           Goyang Hi FC
+     1  Desconocido           Pocheon Citizen FC
+     1  Desconocido           Gwangju FC
+     1  Desconocido           Laval II
+     1  Desconocido           IMT
+     1  Desconocido           New England Revolution II
+     1  Desconocido           Nuneaton Town
+     1  Desconocido           Petershill
+     1  Desconocido           Albion Rovers
+     1  Desconocido           Cumbernauld United
+     1  Desconocido           Šamorín
+     1  Desconocido           Poole Town
+     1  Desconocido           Wimborne Town
+     1  Desconocido           Alcorcón B
+     1  Desconocido           Asker
+     1  Desconocido           Al-Khaleej
+     1  Desconocido           Desportivo Brasil
+     1  Desconocido           Woking
+     1  Desconocido           Bergen Nord
+     1  Desconocido           Åsane
+     1  Desconocido           Gran Peña
+     1  Desconocido           Valmiera
+     1  Desconocido           CM Bordj El Kiffan
+     1  Desconocido           IRB Sougueur
+     1  Desconocido           IB Khémis El Khechna
+     1  Desconocido           MC Alger
+     1  Desconocido           Al Khor
+     1  Desconocido           Shonan Bellmare
+     1  Desconocido           Vejle Boldklub
+     1  Desconocido           Maccabi Tel Aviv
+     1  Desconocido           Beitar Tel Aviv Bat Yam
+     1  Desconocido           Mervue United
+     1  Desconocido           Southport
+     1  Desconocido           Strømsgodset 3
+     1  Desconocido           Strømsgodset 2
+     1  Desconocido           Wimbledon
+     1  Desconocido           Alfreton Town
+     1  Desconocido           Maine Road
+     1  Desconocido           Deinze
+     1  Desconocido           União Tires
+     1  Desconocido           Olímpico Montijo
+     1  Desconocido           Hyde United
+     1  Desconocido           La Louvière
+     1  Desconocido           Macclesfield Town
+     1  Desconocido           Qarabağ
+     1  Desconocido           Piast Chęciny
+     1  Desconocido           Bertamiráns
+     1  Desconocido           Harrogate Town
+     1  Desconocido           Gloucester City
+     1  Desconocido           Vyškov
+     1  Desconocido           Fontanafredda
+     1  Desconocido           Belgrano
+     1  Desconocido           Sabah
+     1  Desconocido           Nürnberg
+     1  Desconocido           Wycombe
+     1  Desconocido           Viktoria Žižkov
+     1  Desconocido           Chaves
+     1  Desconocido           Vila Nova
+     1  Desconocido           Energetik-BGU
+     1  Desconocido           Ericeirense
+     1  Desconocido           Bryne 2
+     1  Desconocido           Bryne
+     1  Desconocido           Molde 2
+     1  Desconocido           Wadi Degla
+     1  Desconocido           Desportiva Capixaba
+     1  Desconocido           Highworth Town
+     1  Desconocido           Anderlecht II
+     1  Desconocido           Oriental
+     1  Desconocido           Machico
+     1  Desconocido           Radomiak Radom
+     1  Desconocido           Arenteiro
+     1  Desconocido           Pontevedra
+     1  Desconocido           Olympiacos B
+     1  Desconocido           Steve Biko
+     1  Desconocido           Grimsby Town
+     1  Desconocido           Águilas Doradas
+     1  Desconocido           Broomhill
+     1  Desconocido           J.League U-22
+     1  Desconocido           Boreham Wood
+     1  Desconocido           Lillestrøm II
+     1  Desconocido           Dulwich Hamlet
+     1  Desconocido           Holmesdale
+     1  Desconocido           Bradford (Park Avenue)
+     1  Desconocido           Majestic FC
+     1  Desconocido           Kettering Town
+     1  Desconocido           King's Lynn Town
+     1  Desconocido           Corby Town
+     1  Desconocido           Hereford
+     1  Desconocido           Woodford Town
+     1  Desconocido           Barra Mansa
+     1  Desconocido           Madureira
+     1  Desconocido           Barrow
+     1  Desconocido           Lausanne-Sport II
+     1  Desconocido           Cambridge
+     1  Desconocido           Hamilton Wanderers
+     1  Desconocido           Waikato
+     1  Desconocido           Rinascita Refugees
+     1  Desconocido           Yate Town
+     1  Desconocido           Chippenham Town
+     1  Desconocido           Cultural Leonesa
+     1  Desconocido           Fermana
+     1  Desconocido           Jong Vitesse
+     1  Desconocido           Arles-Avignon B
+     1  Desconocido           Arles-Avignon
+     1  Desconocido           Vejle
+     1  Desconocido           Montecchio Maggiore
+     1  Desconocido           Delta Porto Tolle
+     1  Desconocido           Giacomense
+     1  Desconocido           Jura Sud
+     1  Desconocido           USV Hercules
+     1  Desconocido           DHSC
+     1  Desconocido           TOP Oss
+     1  Desconocido           Fortuna Sittard
+     1  Desconocido           Pogoń Szczecin II
+     1  Desconocido           Nocerina
+     1  Desconocido           Milazzo
+     1  Desconocido           LDU Quito
+     1  Desconocido           San Lazzaro
+     1  Desconocido           Radnički Kragujevac
+     1  Desconocido           Laçi
+     1  Desconocido           Deportivo Pasto
+     1  Desconocido           Santa Fe
+     1  Desconocido           Montijo
+     1  Desconocido           Ovarense
+     1  Desconocido           Alcochetense
+     1  Desconocido           Vastese
+     1  Desconocido           GSD Nuova Tor Tre Teste
+     1  Desconocido           Cerignola
+     1  Desconocido           Trento
+     1  Desconocido           Giugliano
+     1  Desconocido           Altay
+     1  Desconocido           Hartford Athletic
+     1  Desconocido           Atletico Lusaka
+     1  Desconocido           Lechia Gdańsk
+     1  Desconocido           Cuneo
+     1  Desconocido           Matera
+     1  Desconocido           Pro Sesto
+     1  Desconocido           Pro Piacenza
+     1  Desconocido           Rimini
+     1  Desconocido           Atenas
+     1  Desconocido           Drenica
+     1  Desconocido           Partizani
+     1  Desconocido           Náutico
+     1  Desconocido           Loreto
+     1  Desconocido           Sangiustese
+     1  Desconocido           Capivariano
+     1  Desconocido           Atletico Torino
+     1  Desconocido           Viterbese Castrense
+     1  Desconocido           Jong Sparta Rotterdam
+     1  Desconocido           ASO Missira                  |caps1 =    |goals1 =
+     1  Desconocido           Sturm Graz II
+     1  Desconocido           Perth Glory
+     1  Desconocido           Wilmington Hammerheads
+     1  Desconocido           Estrela V.N.
+     1  Desconocido           Honka II
+     1  Desconocido           Honka
+     1  Desconocido           Chemik Bydgoszcz
+     1  Desconocido           Wda Świecie
+     1  Desconocido           Stomil Olsztyn
+     1  Desconocido           Waasland-Beveren
+     1  Desconocido           Stal Rzeszów
+     1  Desconocido           Wisła Kraków
+     1  Desconocido           SL 16 FC
+     1  Desconocido           WSG Tirol
+     1  Desconocido           GKS Katowice
+     1  Desconocido           Diambars
+     1  Desconocido           Mura
+     1  Desconocido           Salisbury City
+     1  Desconocido           Sonora
+     1  Desconocido           Lyn
+     1  Desconocido           Burgos B
+     1  Desconocido           Liguria
+     1  Desconocido           Thun U21
+     1  Desconocido           LASK II
+     1  Desconocido           Pro Italia
+     1  Desconocido           Viareggio
+     1  Desconocido           Dinamo II București
+     1  Desconocido           Academica Argeș
+     1  Desconocido           Berceni
+     1  Desconocido           CFR Cluj
+     1  Desconocido           Concordia Chiajna
+     1  Desconocido           Politehnica Iași
+     1  Desconocido           AFC Câmpulung Muscel
+     1  Desconocido           Albissola
+     1  Desconocido           Karacabeyspor
+     1  Desconocido           İstanbulspor
+     1  Desconocido           Saluzzo
+     1  Desconocido           Verbania
+     1  Desconocido           Budućnost
+     1  Desconocido           Rozwój Katowice
+     1  Desconocido           Patriotas
+     1  Desconocido           Sporting Genzano
+     1  Desconocido           Campobasso
+     1  Desconocido           San Marino
+     1  Desconocido           Montichiari
+     1  Desconocido           Brindisi
+     1  Desconocido           Recanatese
+     1  Desconocido           Picerno
+     1  Desconocido           Neftçi
+     1  Desconocido           Shenzhen Peng City
+     1  Desconocido           Itabuna
+     1  Desconocido           Fatih Karagümrük
+     1  Desconocido           Nola
+     1  Desconocido           Cherkaskyi Dnipro
+     1  Desconocido           Zaria Bălți
+     1  Desconocido           Reus FCR
+     1  Desconocido           Reus
+     1  Desconocido           Covilhã
+     1  Desconocido           A.E. Kifisia
+     1  Desconocido           GKS Jastrzębie
+     1  Desconocido           APD Vigor
+     1  Desconocido           Sassari Torres
+     1  Desconocido           Tempio
+     1  Desconocido           Brescello
+     1  Desconocido           Fasano
+     1  Desconocido           Cisco Roma
+     1  Desconocido           Gallipoli
+     1  Desconocido           Portogruaro
+     1  Desconocido           ASD Liventina
+     1  Desconocido           EuroMarosticense
+     1  Desconocido           Seregno
+     1  Desconocido           Poggibonsi
+     1  Desconocido           Isola Liri
+     1  Desconocido           Ribeirão
+     1  Desconocido           Zeta
+     1  Desconocido           DAC Dunajská Streda
+     1  Desconocido           Ruch Radzionków
+     1  Desconocido           Prato
+     1  Desconocido           Gefle IF
+     1  Desconocido           Sandvikens IF
+     1  Desconocido           Skövde AIK
+     1  Desconocido           Ranheim
+     1  Desconocido           Sandnes Ulf
+     1  Desconocido           Sparta Prague B
+     1  Desconocido           Jong Groningen
+     1  Desconocido           Internazionale
+     1  Desconocido           Ribadesella
+     1  Desconocido           Real Oviedo Vetusta
+     1  Desconocido           Real Oviedo
+     1  Desconocido           Mérida
+     1  Desconocido           Sertanense
+     1  Desconocido           Horta
+     1  Desconocido           2 Korriku
+     1  Desconocido           Prishtina
+     1  Desconocido           Løten
+     1  Desconocido           Ankaraspor
+     1  Desconocido           NFA Kaunas
+     1  Desconocido           Atmosfera
+     1  Desconocido           Zemun
+     1  Desconocido           Oadby Town
+     1  Desconocido           Ilkeston
+     1  Desconocido           Virtus Lanciano
+     1  Desconocido           B68 Toftir
+     1  Desconocido           Águilas
+     1  Desconocido           Chojniczanka Chojnice
+     1  Desconocido           Wisła Płock
+     1  Desconocido           Rodange 91
+     1  Desconocido           Akritas Chlorakas
+     1  Desconocido           Degerfors
+     1  Desconocido           Scafatese Calcio
+     1  Desconocido           Raith Rovers
+     1  Desconocido           Llaneros EF
+     1  Desconocido           Universidad Central
+     1  Desconocido           Atlético Bucaramanga
+     1  Desconocido           Malmö
+     1  Desconocido           Mjällby
+     1  Desconocido           Wolfsburg
+     1  Desconocido           Ripensia Timișoara
+     1  Desconocido           FC Winterthur II
+     1  Desconocido           FC Winterthur
+     1  Desconocido           Club Africain
+     1  Desconocido           ES Métlaoui
+     1  Desconocido           CS Sfaxien
+     1  Desconocido           Espérance de Tunis
+     1  Desconocido           Remo Stars
+     1  Desconocido           Pyunik
+     1  Desconocido           Grasshoppers II
+     1  Desconocido           Malcantone Agno
+     1  Desconocido           Biaschesi
+     1  Desconocido           IFK Norrköping
+     1  Desconocido           Casertana
+     1  Desconocido           Borgo a Buggiano
+     1  Desconocido           Pergolettese
+     1  Desconocido           LR Vicenza
+     1  Desconocido           Sangiuliano
+     1  Desconocido           Sonnenhof Großaspach
+     1  Desconocido           Rudeš
+     1  Desconocido           Sporting Kansas City II
+     1  Desconocido           Boulogne B
+     1  Desconocido           Cerceda
+     1  Desconocido           Sammaurese
+     1  Desconocido           VVV-Venlo
+     1  Desconocido           Śląsk Wrocław
+     1  Desconocido           ACR Messina
+     1  Desconocido           Mladá Boleslav
+     1  Desconocido           Slavia Prague B
+     1  Desconocido           Teplice
+     1  Desconocido           Rot-Weiß Erfurt
+     1  Desconocido           FSV Zwickau
+     1  Desconocido           Minatori
+     1  Desconocido           Bashkimi Koretin
+     1  Desconocido           Malisheva
+     1  Desconocido           Ballkani
+     1  Desconocido           Legnago Salus
+     1  Desconocido           Lanús
+     1  Desconocido           Urbetevere                     | caps1 =    | goals1 =
+     1  Desconocido           Atletico Vescovio      | caps2 =    | goals2 =
+     1  Desconocido           Norrköping
+     1  Desconocido           Norrby
+     1  Desconocido           Landskrona BoIS
+     1  Desconocido           Chacarita Juniors
+     1  Desconocido           Jaguar Gdańsk
+     1  Desconocido           Zagłębie Lubin II
+     1  Desconocido           Gavorrano
+     1  Desconocido           Montceau
+     1  Desconocido           Louhans-Cuiseaux
+     1  Desconocido           Chelmsford City
+     1  Desconocido           Felgueiras
+     1  Desconocido           Cracovia
+     1  Desconocido           Nkwazi
+     1  Desconocido           ZESCO United
+     1  Desconocido           IS Halmia
+     1  Desconocido           AFC Eskilstuna
+     1  Desconocido           Admira Wacker Amateure
+     1  Desconocido           Orijent
+     1  Desconocido           Celta Vigo B
+     1  Desconocido           SS Reyes
+     1  Desconocido           Asteras Tripolis
+     1  Desconocido           Volos
+     1  Desconocido           Fano
+     1  Desconocido           CSKA Sofia II
+     1  Desconocido           Rabotnički
+     1  Desconocido           Auda
+     1  Desconocido           RFS
+     1  Desconocido           Robur Siena
+     1  Desconocido           CS Pétange
+     1  Desconocido           Gyeongju KHNP
+     1  Desconocido           Jeonbuk Hyundai Motors
+     1  Desconocido           Beijing Guoan
+     1  Desconocido           Slaven Belupo
+     1  Desconocido           Smederevo 1924
+     1  Desconocido           Železničar Pančevo
+     1  Desconocido           Radnik Surdulica
+     1  Desconocido           Sarajevo
+     1  Desconocido           Bonner SC
+     1  Desconocido           Erzgebirge Aue II
+     1  Desconocido           Ococias Kyoto
+     1  Desconocido           Gainare Tottori
+     1  Desconocido           Kagura Shimane
+     1  Desconocido           FC Gifu
+     1  Desconocido           VfB Oldenburg
+     1  Desconocido           Ruch Chorzów II
+     1  Desconocido           Gaswerk/Straßenbahn
+     1  Desconocido           SV Schwechat
+     1  Desconocido           FC Lustenau 07
+     1  Desconocido           FC Pasching
+     1  Desconocido           LASK Linz II
+     1  Desconocido           LASK Linz
+     1  Desconocido           FC Ingolstadt 04 II
+     1  Desconocido           PAOK B
+     1  Desconocido           Lommel
+     1  Desconocido           ES Sétif
+     1  Desconocido           SpVgg Unterhaching II
+     1  Desconocido           SV Heimstetten
+     1  Desconocido           Wacker Burghausen II
+     1  Desconocido           Wacker Burghausen
+     1  Desconocido           Nõmme United
+     1  Desconocido           Viktoria Aschaffenburg
+     1  Desconocido           Wehen Wiesbaden II
+     1  Desconocido           SV Grödig
+     1  Desconocido           Jagiellonia Białystok II
+     1  Desconocido           Jagiellonia Białystok
+     1  Desconocido           Brabrand
+     1  Desconocido           1. FC Magdeburg II
+     1  Desconocido           SC Pfarrwerfen
+     1  Desconocido           TSV St. Johann
+     1  Desconocido           Basel U21
+     1  Desconocido           Alemannia Aachen
+     1  Desconocido           Rheindorf Altach
+     1  Desconocido           Guiseley
+     1  Desconocido           Sutton United
+     1  Desconocido           Billericay Town
+     1  Desconocido           Sandareds IF
+     1  Desconocido           BK Olympic
+     1  Desconocido           Degerfors IF
+     1  Desconocido           1899 Hoffenheim II
+     1  Desconocido           1899 Hoffenheim
+     1  Desconocido           Energie Cottbus II
+     1  Desconocido           Enskede IK
+     1  Desconocido           Jerv
+     1  Desconocido           Gefle
+     1  Desconocido           Aarau II
+     1  Desconocido           Aarau
+     1  Desconocido           Suwon Samsung Bluewings
+     1  Desconocido           Sangju Sangmu
+     1  Desconocido           Jeonbuk Hyundai
+     1  Desconocido           Incheon United
+     1  Desconocido           Ratchaburi Mitr Phol
+     1  Desconocido           Chungnam Asan FC
+     1  Desconocido           Muangthong United
+     1  Desconocido           Austria Klagenfurt
+     1  Desconocido           Paris FC II
+     1  Desconocido           South Leeds
+     1  Desconocido           Académico de Viseu
+     1  Desconocido           Bílovec
+     1  Desconocido           Hlučín
+     1  Desconocido           Amiens II
+     1  Desconocido           Viktoria Plzeň B
+     1  Desconocido           Liptovský Mikuláš
+     1  Desconocido           SV Gaflenz
+     1  Desconocido           Young Violets
+     1  Desconocido           Salitas
+     1  Desconocido           US Ouagadougou
+     1  Desconocido           Bohemians 1905
+     1  Desconocido           Eintracht Trier II
+     1  Desconocido           Eintracht Trier
+     1  Desconocido           Rot-Weiss Essen
+     1  Desconocido           Schwarz-Weiß Essen
+     1  Desconocido           Junak Sinj
+     1  Desconocido           Šibenik
+     1  Desconocido           SC Paderborn II
+     1  Desconocido           Vataniakos
+     1  Desconocido           Pierikos
+     1  Desconocido           TSG Backnang
+     1  Desconocido           TSG Backnang II
+     1  Desconocido           RCF Paris
+     1  Desconocido           L'Entente
+     1  Desconocido           Jong Utrecht
+     1  Desconocido           Jersey Express
+     1  Desconocido           SV Meppen
+     1  Desconocido           Metropolitano
+     1  Desconocido           Santo André
+     1  Desconocido           Randers
+     1  Desconocido           SKN St. Pölten
+     1  Desconocido           IFK Värnamo
+     1  Desconocido           Hoffenheim II
+     1  Desconocido           Panathinaikos B
+     1  Desconocido           Willem II Tilburg
+     1  Desconocido           JFV Bad Hersfeld                            | caps1 =  30 | goals1 = 9
+     1  Desconocido           SV Steinbach                                | caps2 =  31 | goals2 = 22
+     1  Desconocido           Kaiserslautern II
+     1  Desconocido           Doxa Katokopias
+     1  Desconocido           BB Erzurumspor
+     1  Desconocido           Akhisarspor
+     1  Desconocido           Sreenidi Deccan
+     1  Desconocido           1. FSV Mainz 05
+     1  Desconocido           Naftaš Ivanić
+     1  Desconocido           Atlantas
+     1  Desconocido           Uskok
+     1  Desconocido           Jadran KS
+     1  Desconocido           SC Verl II
+     1  Desconocido           TSV Sasel
+     1  Desconocido           FC Stadlau
+     1  Desconocido           Ried
+     1  Desconocido           Fremad Amager
+     1  Desconocido           Dinamo-2 Tbilisi
+     1  Desconocido           Samtredia
+     1  Desconocido           Mezőkövesd
+     1  Desconocido           Dubrava
+     1  Desconocido           MTK Budapest
+     1  Desconocido           Chievo Verona
+     1  Desconocido           Royal Antwerp II
+     1  Desconocido           Paniliakos
+     1  Desconocido           Brussels
+     1  Desconocido           Silkeborg IF
+     1  Desconocido           Falkenbergs FF
+     1  Desconocido           IK Sirius
+     1  Desconocido           SV Mattersburg II
+     1  Desconocido           Karmiotissa
+     1  Desconocido           Chania
+     1  Desconocido           Aves
+     1  Desconocido           Frankston Pines
+     1  Desconocido           Piast Gliwice
+     1  Desconocido           Kyoto Sanga
+     1  Desconocido           Jönköpings Södra IF
+     1  Desconocido           Clevedon Town
+     1  Desconocido           Hungerford Town
+     1  Desconocido           Helmond Sport
+     1  Desconocido           Melbourne City NPL
+     1  Desconocido           Sandecja Nowy Sącz
+     1  Desconocido           Varaždin
+     1  Desconocido           Arenas Club de Getxo
+     1  Desconocido           Club Deportivo Euzkadi
+     1  Desconocido           Real Club España
+     1  Desconocido           Triglav Kranj
+     1  Desconocido           Rukh Lviv
+     1  Desconocido           Celje
+     1  Desconocido           FC Homburg
+     1  Desconocido           Maribor
+     1  Desconocido           Sasco Tbilisi
+     1  Desconocido           Dila Gori
+     1  Desconocido           SG Wattenscheid 09
+     1  Desconocido           Fortuna Köln
+     1  Desconocido           RWDM
+     1  Desconocido           VfB Eppingen
+     1  Desconocido           VfB Eppingen II
+     1  Desconocido           VfR Garching
+     1  Desconocido           Dornbirn 1913
+     1  Desconocido           Dinamo
+     1  Desconocido           Ilisiakos
+     1  Desconocido           Skënderbeu
+     1  Desconocido           Kukësi
+     1  Desconocido           Wormatia Worms
+     1  Desconocido           FSV 08 Bissingen
+     1  Desconocido           FSV Hollenbach
+     1  Desconocido           SV Wehen Wiesbaden II
+     1  Desconocido           VfR Aalen
+     1  Desconocido           Racing CH
+     1  Desconocido           Club Sportif Saint-Louis
+     1  Desconocido           Paris FC B
+     1  Desconocido           Amiens B
+     1  Desconocido           US Quevilly
+     1  Desconocido           FC Mantois
+     1  Desconocido           Agen
+     1  Desconocido           Marmande
+     1  Desconocido           Le Puy
+     1  Desconocido           Sète
+     1  Desconocido           Al-Fateh
+     1  Desconocido           Altınordu
+     1  Desconocido           Eyüpspor
+     1  Desconocido           Ümraniyespor
+     1  Desconocido           Wuhan Zall
+     1  Desconocido           Gent II
+     1  Desconocido           Dakar UC
+     1  Desconocido           Elazığspor
+     1  Desconocido           Riga
+     1  Desconocido           Vysočina Jihlava
+     1  Desconocido           České Budějovice
+     1  Desconocido           North Texas SC
+     1  Desconocido           FUS Rabat
+     1  Desconocido           Miami Dade FC
+     1  Desconocido           Botev Plovdiv II
+     1  Desconocido           Botev Plovdiv
+     1  Desconocido           Londrina
+     1  Desconocido           Niort
+     1  Desconocido           Aurillac Arpajon
+     1  Desconocido           Nîmes B
+     1  Desconocido           River
+     1  Desconocido           Alanyaspor
+     1  Desconocido           AS Cherbourg
+     1  Desconocido           Shkupi
+     1  Desconocido           Nantes II
+     1  Desconocido           Zamalek
+     1  Desconocido           El Dakhleya
+     1  Desconocido           Tanta
+     1  Desconocido           El Gaish
+     1  Desconocido           Smouha
+     1  Desconocido           Future
+     1  Desconocido           ASPV Strasbourg
+     1  Desconocido           Chantilly
+     1  Desconocido           Vannes
+     1  Desconocido           Ergotelis
+     1  Desconocido           JMG Academy
+     1  Desconocido           CO de Bamako
+     1  Desconocido           Real Bamako
+     1  Desconocido           Fakel Chervonograd
+     1  Desconocido           Barito Putera
+     1  Desconocido           Onez Createur
+     1  Desconocido           Persija Jakarta
+     1  Desconocido           Aigle Noir
+     1  Desconocido           Yeni Malatyaspor
+     1  Desconocido           Royal Excelsior Virton
+     1  Desconocido           Skene IF
+     1  Desconocido           Almudévar
+     1  Desconocido           Huesca B
+     1  Desconocido           Wrexham
+     1  Desconocido           Krasnodar-2
+     1  Desconocido           Busan Transportation Corporation
+     1  Desconocido           Gangneung City
+     1  Desconocido           Chuncheon FC
+     1  Desconocido           Servette II
+     1  Desconocido           Deltras
+     1  Desconocido           Sriracha
+     1  Desconocido           Chanthaburi
+     1  Desconocido           Magwe
+     1  Desconocido           Global Cebu
+     1  Desconocido           Haiphong
+     1  Desconocido           Persikab Bandung
+     1  Desconocido           Sheikh Russel KC
+     1  Desconocido           Chemelil Sugar
+     1  Desconocido           Free State Stars
+     1  Desconocido           AFC Ann Arbor
+     1  Desconocido           Real Monarchs
+     1  Desconocido           Stade d'Abidjan
+     1  Desconocido           BSK Bijelo Brdo
+     1  Desconocido           Mixto
+     1  Desconocido           Rondonópolis
+     1  Desconocido           Rio Verde
+     1  Desconocido           Sorriso
+     1  Desconocido           Luverdense
+     1  Desconocido           Rio Claro
+     1  Desconocido           Albirex Niigata
+     1  Desconocido           Novorizontino
+     1  Desconocido           Sport
+     1  Desconocido           CRB
+     1  Desconocido           Remo
+     1  Desconocido           Grasshopper
+     1  Desconocido           Hapoel Haifa
+     1  Desconocido           Gamba Osaka U23
+     1  Desconocido           Juniors OÖ
+     1  Desconocido           Pau B
+     1  Desconocido           Châteaubriant
+     1  Desconocido           Clermont II
+     1  Desconocido           Orléans B
+     1  Desconocido           Al-Salmiya SC
+     1  Desconocido           Stuttgarter Kickers II
+     1  Desconocido           Unión Santa Fe
+     1  Desconocido           Libertad
+     1  Desconocido           Kristianstad
+     1  Desconocido           Altrincham
+     1  Desconocido           Margate
+     1  Desconocido           Forfar Athletic
+     1  Desconocido           Stevenage Borough
+     1  Desconocido           Goole
+     1  Desconocido           ItalChacao
+     1  Desconocido           La Piedad
+     1  Desconocido           Bachilleres                      | caps4  = 11 | goals4  = 3
+     1  Desconocido           Maracaibo
+     1  Desconocido           Deportivo Italia
+     1  Desconocido           Real Esppor
+     1  Desconocido           Deportivo Táchira
+     1  Desconocido           Atlético Venezuela
+     1  Desconocido           Atlántico FC
+     1  Desconocido           Cacereño
+     1  Desconocido           Alcalá
+     1  Desconocido           Kozara Gradiška
+     1  Desconocido           Mladost Lučani
+     1  Desconocido           Shakhtyor Soligorsk
+     1  Desconocido           Akhmat Grozny
+     1  Desconocido           Avranches II
+     1  Desconocido           FC Futura
+     1  Desconocido           Los Angeles Blues
+     1  Desconocido           Toronto III
+     1  Desconocido           Toronto II
+     1  Desconocido           Racing de Córdoba
+     1  Desconocido           Stal Mielec
+     1  Desconocido           Vire
+     1  Desconocido           Bastia II
+     1  Desconocido           Valenciennes II
+     1  Desconocido           Poiré-sur-Vie
+     1  Desconocido           Poiré-sur-Vie II
+     1  Desconocido           Luçon
+     1  Desconocido           Sintrense
+     1  Desconocido           Benfica Castelo Branco
+     1  Desconocido           Bourg-Péronnas
+     1  Desconocido           Dakar Sacré-Cœur
+     1  Desconocido           Auxerre II
+     1  Desconocido           Abha
+     1  Desconocido           Lausanne-Sport U21
+     1  Desconocido           US Avranches
+     1  Desconocido           Palestino
+     1  Desconocido           Rouen
+     1  Desconocido           AJ Auxerre
+     1  Desconocido           Guangdong Mingtu
+     1  Desconocido           Meizhou Hakka
+     1  Desconocido           Francs Borains
+     1  Desconocido           Mafra
+     1  Desconocido           Lokomotiv Plovdiv
+     1  Desconocido           FC United Zürich
+     1  Desconocido           Hednesford Town
+     1  Desconocido           New Mills
+     1  Desconocido           Witton Albion
+     1  Desconocido           Trafford
+     1  Desconocido           Clitheroe
+     1  Desconocido           B-SAD
+     1  Desconocido           Cerezo Osaka U-23
+     1  Desconocido           Foresta Suceava
+     1  Desconocido           Chicó de Guayana
+     1  Desconocido           Boyacá Chicó
+     1  Desconocido           LALA
+     1  Desconocido           Angostura FC
+     1  Desconocido           Iwate Grulla Morioka
+     1  Desconocido           Vegalta Sendai
+     1  Desconocido           Roasso Kumamoto
+     1  Desconocido           SC Sagamihara
+     1  Desconocido           Hayabusa Eleven
+     1  Desconocido           Simba SC
+     1  Desconocido           TP Mazembe
+     1  Desconocido           Torquay United
+     1  Desconocido           Petrolul
+     1  Desconocido           Kolkheti 1913
+     1  Desconocido           Damac
+     1  Desconocido           Umm Salal
+     1  Desconocido           Al-Batin
+     1  Desconocido           Mulhouse
+     1  Desconocido           Al-Taraji
+     1  Desconocido           Kom
+     1  Desconocido           Rudar Pljevlja
+     1  Desconocido           Nancy II
+     1  Desconocido           Grazer AK
+     1  Desconocido           Florgrade
+     1  Desconocido           Pandurii
+     1  Desconocido           Omonia
+     1  Desconocido           1º Agosto
+     1  Desconocido           Bruk-Bet Termalica
+     1  Desconocido           FU Narbonne
+     1  Desconocido           Béziers
+     1  Desconocido           Imolese
+     1  Desconocido           OFK Beograd
+     1  Desconocido           Concarneau
+     1  Desconocido           Stade Briochin
+     1  Desconocido           Újpest II
+     1  Desconocido           Vác
+     1  Desconocido           St Johnstone
+     1  Desconocido           Khor Fakkan
+     1  Desconocido           WAFA
+     1  Desconocido           Wolfsberger AC II
+     1  Desconocido           Wellington Phoenix Reserves
+     1  Desconocido           Lower Hutt
+     1  Desconocido           Wellington Phoenix
+     1  Desconocido           TPS
+     1  Desconocido           ÅIFK
+     1  Desconocido           Fabril
+     1  Desconocido           Volta Redonda
+     1  Desconocido           Poblense
+     1  Desconocido           Serrano
+     1  Desconocido           Sacrofano<ref>{{Cite web | title=Una leggenda in periferia: quando Garrincha giocò nel Sacrofano {{!}} Goal.com Italia | url=https://www.goal.com/it/notizie/leggenda-periferia-garrincha-sacrofano/1iy3dw5ig642mzsgzephv09il | access-date=2026-03-21 | website=www.goal.com}}</ref><ref>{{cite web | url=https://www.corriere.it/sport/20_dicembre_26/garrincha-sacrofano-quando-dio-calcio-scese-giocare-gli-umani-periferia-e01d0966-4457-11eb-850e-8c688b971ab0.shtml | title=Garrincha a Sacrofano, quando il dio del calcio scese a giocare con gli umani in periferia | date=26 December 2020 }}</ref>
+     1  Desconocido           Olaria
+     1  Desconocido           Santa Cruz
+     1  Desconocido           Bunyodkor
+     1  Desconocido           São Caetano
+     1  Desconocido           Miami FC
+     1  Desconocido           Querétaro
+     1  Desconocido           União São João
+     1  Desconocido           Toros Neza
+     1  Desconocido           Kaizer Chiefs
+     1  Desconocido           Portuguesa (VEN)
+     1  Desconocido           Fast Clube
+     1  Desconocido           Jorge Wilstermann
+     1  Desconocido           9 de Octubre
+     1  Desconocido           Tianjin Tianhai
+     1  Desconocido           Sarmiento
+     1  Desconocido           First Vienna
+     1  Desconocido           St. Pölten
+     1  Desconocido           Kremser SC
+     1  Desconocido           Fernández Vial
+     1  Desconocido           Pelita Jaya
+     1  Desconocido           1861 Nördlingen
+     1  Desconocido           MetroStars
+     1  Desconocido           1. FC Herzogenaurach
+     1  Desconocido           Orange County Blue Star
+     1  Desconocido           Chemnitzer FC II
+     1  Desconocido           FC 08 Homburg
+     1  Desconocido           HSV Barmbek-Uhlenhorst
+     1  Desconocido           Kickers Offenbach
+     1  Desconocido           Sydney FC
+     1  Desconocido           Al Ahli Dubai
+     1  Desconocido           Nuorese
+     1  Desconocido           Torres
+     1  Desconocido           AlbinoLeffe
+     1  Desconocido           Messina
+     1  Desconocido           Tor di Quinto
+     1  Desconocido           Marsala
+     1  Desconocido           Fiorenzuola
+     1  Desconocido           Lodigiani
+     1  Desconocido           Baniyas
+     1  Desconocido           Pune City
+     1  Desconocido           US Marocaine
+     1  Desconocido           Racing Paris
+     1  Desconocido           INF Vichy
+     1  Desconocido           JS Saint-Pierroise
+     1  Desconocido           US Lège-Cap-Ferret
+     1  Desconocido           Emirates
+     1  Desconocido           Celaya
+     1  Desconocido           Dorados
+     1  Desconocido           Western Sydney Wanderers
+     1  Desconocido           Waterford
+     1  Desconocido           Newcastle KB United
+     1  Desconocido           Perth Azzurri
+     1  Desconocido           Blacktown City
+     1  Desconocido           San Antonio Thunder
+     1  Desconocido           Herning Fremad
+     1  Desconocido           Eastern
+     1  Desconocido           Carolina Lightnin'
+     1  Desconocido           Gansu Tianma
+     1  Desconocido           Boston United
+     1  Desconocido           Royton Town
+     1  Desconocido           Washington Diplomats
+     1  Desconocido           HFC Haarlem
+     1  Desconocido           Noordwijk
+     1  Desconocido           Den Bosch
+     1  Desconocido           FC Zwolle
+     1  Desconocido           Sporting Lourenço Marques
+     1  Desconocido           Boston Minutemen
+     1  Desconocido           Toronto Metros-Croatia
+     1  Desconocido           Las Vegas Quicksilvers
+     1  Desconocido           União de Tomar
+     1  Desconocido           New Jersey Americans
+     1  Desconocido           Buffalo Stallions
+     1  Desconocido           Fafe
+     1  Desconocido           Salgueiros
+     1  Desconocido           Santa Clara
+     1  Desconocido           Operário
+     1  Desconocido           Angrense
+     1  Desconocido           Micaelense
+     1  Desconocido           São Roque
+     1  Desconocido           Wanderers
+     1  Desconocido           Budapest Honvéd
+     1  Desconocido           Jewish Guild
+     1  Desconocido           Dunstable Town
+     1  Desconocido           Cork Celtic
+     1  Desconocido           Sea Bee
+     1  Desconocido           Hong Kong Rangers
+     1  Desconocido           Brisbane Lions
+     1  Desconocido           Tobermore United
+     1  Desconocido           Young Survivors
+     1  Desconocido           Bong Range United
+     1  Desconocido           Mighty Barrolle
+     1  Desconocido           Invincible Eleven
+     1  Desconocido           Africa Sports
+     1  Desconocido           Tonnerre Yaoundé
+     1  Desconocido           Phoenix Rising
+     1  Desconocido           Sabail
+     1  Desconocido           Bellmare Hiratsuka
+     1  Desconocido           Kyoto Purple Sanga
+     1  Desconocido           Cobh Ramblers
+     1  Desconocido           KB
+     1  Desconocido           Gladsaxe-Hero
+     1  Desconocido           Hvidovre
+     1  Desconocido           Råå IF
+     1  Desconocido           Halmstad
+     1  Desconocido           FC Yuri Gagarin
+     1  Desconocido           Hebros Harmanli
+     1  Desconocido           Škoda Plzeň
+     1  Desconocido           Borussia Neunkirchen
+     1  Desconocido           Durgapur Vox Champions
+     1  Desconocido           Yokohama FC
+     1  Desconocido           FC Constanța
+     1  Desconocido           Sportul Studențesc
+     1  Desconocido           Steaua București
+     1  Desconocido           Unión Magdalena
+     1  Desconocido           Real Valladolid
+     1  Desconocido           Miami Fusion
+     1  Desconocido           Cobresal
+     1  Desconocido           Cobreandino
+     1  Desconocido           Qingdao Huanghai
+     1  Desconocido           Tallinna Kalev Juunior
+     1  Desconocido           Reipas
+     1  Desconocido           Kerala Blasters
+     1  Desconocido           Brandsen
+     1  Desconocido           Estudiantes Río Cuarto
+     1  Desconocido           es
+     1  Desconocido           Leça
+     1  Desconocido           Chmel Blšany
+     1  Desconocido           Marathón
+     1  Desconocido           Tigres
+     1  Desconocido           Parrillas One
+     1  Desconocido           Miami United
+     1  Desconocido           España Industrial
+     1  Desconocido           Pumas UNAM
+     1  Desconocido           Atlante
+     1  Desconocido           Stahl Linz
+     1  Desconocido           Dallas Burn
+     1  Desconocido           Atlético Celaya
+     1  Desconocido           California Surf
+     1  Desconocido           Goa
+     1  Desconocido           ASEC Mimosas
+     1  Desconocido           Al-Mokawloon
+     1  Desconocido           Delta Warsaw
+     1  Desconocido           Znicz Pruszków II
+     1  Desconocido           Lanceros Boyacá
+     1  Desconocido           Quimper
+     1  Desconocido           Penafiel
+     1  Desconocido           Cobreloa
+     1  Desconocido           Consadole Sapporo
+     1  Desconocido           Panserraikos
+     1  Desconocido           Joinville
+     1  Desconocido           Shandong Luneng
+     1  Desconocido           Dalian Professional
+     1  Desconocido           RSC Hamsik Academy
+     1  Desconocido           Atlético Dallas
+     1  Desconocido           Caracas
+     1  Desconocido           CF Montréal
+     1  Desconocido           Cavese
+     1  Desconocido           Eendracht Aalst
+     1  Desconocido           Charlotte FC
+     1  Desconocido           Pão de Açúcar
+     1  Desconocido           Vilnius
+     1  Desconocido           ŁKS Łódź
+     1  Desconocido           Bragantino
+     1  Desconocido           Coimbra
+     1  Desconocido           Nordstern Basel
+     1  Desconocido           AS Frenzi
+     1  Desconocido           Roeselare
+     1  Desconocido           Næsby
+     1  Desconocido           HB Køge
+     1  Desconocido           Olímpia
+     1  Desconocido           Fernandópolis
+     1  Desconocido           Inter de Lages
+     1  Desconocido           Mirassol
+     1  Desconocido           Taubaté
+     1  Desconocido           Barretos
+     1  Desconocido           EC São Bernardo
+     1  Desconocido           Boa Esporte
+     1  Desconocido           São Bernardo FC
+     1  Desconocido           Água Santa
+     1  Desconocido           Hødd
+     1  Desconocido           Sion B
+     1  Desconocido           Västerås IK
+     1  Desconocido           Mazatlán
+     1  Desconocido           Chicago Fire II
+     1  Desconocido           CFZ
+     1  Desconocido           Duque de Caxias
+     1  Desconocido           Bangu
+     1  Desconocido           Sioni Bolnisi
+     1  Desconocido           FC Amirani
+     1  Desconocido           Yeni Altındağ Belediyespor
+     1  Desconocido           Liria Prizren
+     1  Desconocido           Teuta
+     1  Desconocido           Besa Kavajë
+     1  Desconocido           Giresunspor
+     1  Desconocido           Aktobe
+     1  Desconocido           Grêmio Barueri
+     1  Desconocido           Santa Ana
+     1  Desconocido           Sambonifacese
+     1  Desconocido           Fátima
+     1  Desconocido           Wydad AC
+     1  Desconocido           UJA Alfortville
+     1  Desconocido           Sepahan
+     1  Desconocido           Sakaryaspor
+     1  Desconocido           Pegaso B | caps1 = | goals1 =
+     1  Desconocido           Galáctico Pegaso
+     1  Desconocido           Socuéllamos
+     1  Desconocido           Al-Wakrah
+     1  Desconocido           Universidad de Chile
+     1  Desconocido           Petržalka
+     1  Desconocido           Spartak Trnava
+     1  Desconocido           Dynamo České Budějovice
+     1  Desconocido           Venados
+     1  Desconocido           Lobos BUAP
+     1  Desconocido           Trindade
+     1  Desconocido           Grêmio Anápolis
+     1  Desconocido           Stalybridge Celtic
+     1  Desconocido           Dynamo Stavropol
+     1  Desconocido           Rotor-2 Volgograd
+     1  Desconocido           Ural Yekaterinburg
+     1  Desconocido           Ararat Moscow
+     1  Desconocido           Znamya Noginsk
+     1  Desconocido           İzmirspor
+     1  Desconocido           Concordia Basel
+     1  Desconocido           Bellinzona
+     1  Desconocido           Marsonia
+     1  Desconocido           NK Zagreb
+     1  Desconocido           Krylia Sovetov-SOK
+     1  Desconocido           Al-Ittifaq
+     1  Desconocido           Lumezzane
+     1  Desconocido           AEL
+     1  Desconocido           Kavala
+     1  Desconocido           Jong Sparta
+     1  Desconocido           Dijon B
+     1  Desconocido           Dalian Yifang
+     1  Desconocido           Alavés
+     1  Desconocido           San Isidro
+     1  Desconocido           Dalian Aerbin
+     1  Desconocido           El Jaish
+     1  Desconocido           İstanbul BB
+     1  Desconocido           Debrecen
+     1  Desconocido           Tianjin Quanjian
+     1  Desconocido           Liberty Professionals
+     1  Desconocido           Kayserispor
+     1  Desconocido           NorthEast United
+     1  Desconocido           Legon Cities
+     1  Desconocido           Emelec
+     1  Desconocido           Krasava ENY Ypsonas
+     1  Desconocido           Akron Tolyatti
+     1  Desconocido           Køge
+     1  Desconocido           SV Türk Gücü München
+     1  Desconocido           Kuşadasıspor
+     1  Desconocido           Samsunspor
+     1  Desconocido           MKE Ankaragücü
+     1  Desconocido           ASC Diaraf
+     1  Desconocido           Vevey
+     1  Desconocido           Lebowski
+     1  Desconocido           Atlético Catarinense
+     1  Desconocido           Heracles
+     0  Desconocido           | clubnumber =
+     0  Desconocido           Democrata–SL
+     0  Desconocido           Operário–MS
+     0  Desconocido           Desportiva Ferroviária
+     0  Desconocido           São José
+     0  Desconocido           | youthyears1 =
+     0  Desconocido           | youthyears1   = | youthclubs1 =
+     0  Desconocido           Grêmio Catanduvense
+     0  Desconocido           Paraná
+     0  Desconocido           Busan IPark
+     0  Desconocido           Jaraguá
+     0  Desconocido           Goianésia
+     0  Desconocido           UAT
+     0  Desconocido           Boston Breakers
+     0  Desconocido           | years1 = 1993–1994
+     0  Desconocido           Nordsjælland U19
+     0  Desconocido           Steadfast
+     0  Desconocido           Dreams
+     0  Desconocido           | youthyears1 = {{0|0000}}–1998
+     0  Desconocido           Vllaznia
+     0  Desconocido           Vllaznia B
+     0  Desconocido           Egnatia
+     0  Desconocido           Timor-Leste
+     0  Desconocido           Tuttocuoio
+     0  Desconocido           Giana Erminio
+     0  Desconocido           Genoa U20
+     0  Desconocido           Gimnasia LP
+     0  Desconocido           Ponte San Pietro
+     0  Desconocido           Tritium
+     0  Desconocido           Virtus Verona
+     0  Desconocido           Midfielder
+     0  Desconocido           Perth Glory NPL
+     0  Desconocido           Chrobry Głogów
+     0  Desconocido           Pistoiese
+     0  Desconocido           Real de Banjul
+     0  Desconocido           Pohronie
+     0  Desconocido           FSV Frankfurt II
+     0  Desconocido           | youthyears1 = 1997–1999
+     0  Desconocido           Türkgücü München
+     0  Desconocido           St. Gallen B
+     0  Desconocido           Roda JC
+     0  Desconocido           Austria Lustenau
+     0  Desconocido           SpVgg Greuther Fürth II
+     0  Desconocido           SpVgg Greuther Fürth
+     0  Desconocido           SC Paderborn 07
+     0  Desconocido           SpVgg Unterhaching
+     0  Desconocido           SV Rödinghausen
+     0  Desconocido           VfB Lübeck
+     0  Desconocido           Skive IK
+     0  Desconocido           Lyngby BK
+     0  Desconocido           Sandefjord
+     0  Desconocido           KFC Uerdingen
+     0  Desconocido           Viborg
+     0  Desconocido           ZFC Meuselwitz
+     0  Desconocido           | clubnumber = 3
+     0  Desconocido           Heidenheim
+     0  Desconocido           Union Saint-Gilloise
+     0  Desconocido           Rotenburger SV
+     0  Desconocido           Würzburger Kickers II
+     0  Desconocido           Atlético Baleares
+     0  Desconocido           Hansa Rostock II
+     0  Desconocido           Mazur Karczew
+     0  Desconocido           Górnik Łęczna
+     0  Desconocido           Paide Linnameeskond
+     0  Desconocido           SCR Altach
+     0  Desconocido           Jonsereds IF
+     0  Desconocido           Sävedalens IF
+     0  Desconocido           FC Versailles 78
+     0  Desconocido           FK Marila Příbram
+     0  Desconocido           FK SIAD Most
+     0  Desconocido           FK Mladá Boleslav
+     0  Desconocido           JS Kairouan
+     0  Desconocido           Stade Tunisien
+     0  Desconocido           Boulogne II
+     0  Desconocido           Athlético Marseille
+     0  Desconocido           Villefranche
+     0  Desconocido           Evian II
+     0  Desconocido           | youthyears1         = {{0|000}}?–1996
+     0  Desconocido           Farul Constanța
+     0  Desconocido           | youthyears1 = 1988–1991
+     0  Desconocido           | youthyears1 = 1981
+     0  Desconocido           Brazil
+     0  Desconocido           | youthyears1 = 1958–1962
+     0  Desconocido           | youthyears1 = 1996–2002
+     0  Desconocido           | youthyears1 = 1990
+     0  Desconocido           Barcelona U19
+     0  Desconocido           | youthyears1 = 1987–1989
+     0  Desconocido           Ourense
+     0  Desconocido           | youthyears1 = 1971–1979
+     0  Desconocido           | youthyears1 = 1983–1988
+     0  Desconocido           | youthyears1 = 1989–1995
+     0  Desconocido           Forward
+     0  Desconocido           Germany
+     0  Desconocido           | youthyears1 = {{0|0000}}–1974
+     0  Desconocido           | youthyears1 = 1983–1985
+     0  Desconocido           Uzbekistan
+     0  Desconocido           | youthyears1 = 1991–1995
+     0  Desconocido           Dubai United
+     0  Desconocido           | youthyears1 = 1980–1983
+     0  Desconocido           | youthyears1 = 1992–1994
+     0  Desconocido           | youthyears1 = 1972–1977
+     0  Desconocido           | youthyears1        = 1990–1991 |youthclubs1 = Officine Meccaniche Frignanesi
+     0  Desconocido           | youthyears1 = 1981–1982
+     0  Desconocido           | youthyears1 = 1983–1989
+     0  Desconocido           | youthyears1 = 1984–1986
+     0  Desconocido           | youthyears1 = 1976–1978
+     0  Desconocido           Slough Town
+     0  Desconocido           Beaconsfield SYCOB
+     0  Desconocido           Northwood
+     0  Desconocido           Aylesbury United
+     0  Desconocido           Maidenhead United
+     0  Desconocido           Kingstonian
+     0  Desconocido           Walton Casuals
+     0  Desconocido           Burnham
+     0  Desconocido           Eton Wick
+     0  Desconocido           | youthyears1 = 1977–1984
+     0  Desconocido           | youthyears1 = 1983–1993
+     0  Desconocido           | youthyears1 = 1969–1978
+     0  Desconocido           | youthyears1 = 1989–1990
+     0  Desconocido           Gulf United
+     0  Desconocido           | youthyears1 = 1991–1999
+     0  Desconocido           Vélez
+     0  Desconocido           | youthyears1 = 1981–1984
+     0  Desconocido           | youthyears1 = 1989–1998
+     0  Desconocido           | youthyears1 = 1992–1995
+     0  Desconocido           | youthyears1 = 1988–1989
+     0  Desconocido           Marine
+     0  Desconocido           | youthyears1 = 1970–1971
+     0  Desconocido           | youthyears1 = 1981–1986
+     0  Desconocido           Esteghlal Tehran
+     0  Desconocido           | youthyears1 = 1980–1985
+     0  Desconocido           | youthyears1 = {{0|0000}}–1973
+     0  Desconocido           | youthyears1 = 1988–1999
+     0  Desconocido           | youthyears1 = 1987–1993
+     0  Desconocido           | youthyears1 = 1983–1984
+     0  Desconocido           Centre-back
+     0  Desconocido           | youthyears1 = 1978–1987
+     0  Desconocido           | youthyears1 = 1990–1991
+     0  Desconocido           | youthyears1 = 1999
+     0  Desconocido           Rockmount
+     0  Desconocido           | youthyears1 = 1971–1973
+     0  Desconocido           Høje-Gladsaxe
+     0  Desconocido           | youthyears1 = 1977–1988
+     0  Desconocido           | youthyears1 = 1982–1994
+     0  Desconocido           | youthyears1 = 1976–1981
+     0  Desconocido           | youthyears1        = 1986–1988 |youthclubs1 = ČKD Kompresory Prague
+     0  Desconocido           Japan
+     0  Desconocido           | youthyears1 = 1986–1993
+     0  Desconocido           | youthyears1 = 1991–1998
+     0  Desconocido           Argentina
+     0  Desconocido           Portugal
+     0  Desconocido           | youthyears1 = 1991–1997
+     0  Desconocido           Mexico
+     0  Desconocido           | youthyears1 = 1995–2001
+     0  Desconocido           | youthyears1 = 1992–1997
+     0  Desconocido           | youthyears1 = 1980–1989
+     0  Desconocido           Slovakia
+     0  Desconocido           | youthyears1 = 2002–2005
+     0  Desconocido           | youthyears1 = 1996–1998
+     0  Desconocido           Bayern Munich U17
+     0  Desconocido           | youthyears1 = 2007–2009
+     0  Desconocido           Sonseca
+     0  Desconocido           Rodina-2 Moscow
+     0  Desconocido           Striker
+     0  Desconocido           | youthyears1 = 1990–1998
+     0  Desconocido           | youthyears1 = 1992–1996
+     0  Desconocido           | youthyears1 = |youthclubs1 = Rosenhøj BK
+     0  Desconocido           | youthyears1 = 1995–1999
+     0  Desconocido           | youthyears1 = 1994–2002
+     0  Desconocido           Kelme
+     0  Desconocido           | youthyears1 = 1995–1997
+     0  Desconocido           | youthyears1 = 1993–1998 | youthclubs1 = US Fontenay-sous-Bois
+     0  Desconocido           | youthclubs1 = Ludwigshafener SC
+     0  Desconocido           | youthyears1 = 1984–1985
+     0  Desconocido           | youthyears1 = {{0|0000}}–1989
+     0  Desconocido           | youthyears1 = 1995–1997 | youthclubs1 = Villa Rosa
+     0  Desconocido           Antiguoko
+     0  Desconocido           Txantrea

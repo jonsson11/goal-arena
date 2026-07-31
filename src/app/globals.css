@@ -199,3 +199,116 @@
     animation: none;
   }
 }
+
+/* ------------------------------------------------------------
+   GameLauncher -- pantalla intermedia antes de cada minijuego.
+   Entrada escalonada de los bloques de texto/imagen + halo que
+   "respira" alrededor de la captura de pantalla.
+   ------------------------------------------------------------ */
+
+@keyframes launcher-entrada {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.launcher-entrada {
+  animation: launcher-entrada 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation-delay: var(--retraso, 0s);
+}
+
+@keyframes launcher-halo-pulso {
+  0%,
+  100% {
+    box-shadow: 0 0 40px -10px var(--glow-color, rgba(74, 222, 154, 0.4));
+  }
+  50% {
+    box-shadow: 0 0 70px -6px var(--glow-color, rgba(74, 222, 154, 0.7));
+  }
+}
+
+.launcher-halo-pulso {
+  animation: launcher-halo-pulso 3.2s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .launcher-entrada,
+  .launcher-halo-pulso {
+    animation: none;
+  }
+}
+
+/* ------------------------------------------------------------
+   Header y Footer -- logo con flip 3D continuo (opción elegida tras
+   comparar 8 variantes en /tmp/logo-opciones.html), línea de escaneo
+   bajo el header (siempre presente, muy sutil) y foco de estadio
+   recorriendo el borde superior del footer en bucle.
+   ------------------------------------------------------------ */
+
+/* El contenedor necesita su propia perspectiva para que el rotateY se
+   vea como un giro en el espacio (una tarjeta girando), no como un
+   simple aplastamiento horizontal. */
+.logo-flip-wrap {
+  perspective: 600px;
+  display: inline-block;
+}
+
+.logo-flip {
+  animation: logo-flip 5s ease-in-out infinite;
+  transform-style: preserve-3d;
+}
+
+@keyframes logo-flip {
+  0%,
+  40% {
+    transform: rotateY(0deg);
+  }
+  50%,
+  90% {
+    transform: rotateY(360deg);
+  }
+  100% {
+    transform: rotateY(360deg);
+  }
+}
+
+/* Línea inferior del header: en reposo casi invisible, y con un barrido
+   de brillo constante y muy lento -- un detalle que solo se nota si te
+   fijas, no algo que distraiga leyendo la página. */
+@keyframes header-scan {
+  0% {
+    background-position: -60% 0;
+  }
+  100% {
+    background-position: 160% 0;
+  }
+}
+
+.header-scan-border {
+  position: relative;
+}
+
+.header-scan-border::after {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  bottom: -1px;
+  height: 1px;
+  pointer-events: none;
+  background-image: linear-gradient(90deg, transparent, rgba(74, 222, 154, 0.9), transparent);
+  background-repeat: no-repeat;
+  background-size: 40% 100%;
+  animation: header-scan 6s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .logo-flip,
+  .header-scan-border::after {
+    animation: none;
+  }
+}

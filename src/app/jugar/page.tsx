@@ -1,6 +1,5 @@
 import { JUEGOS } from "@/features/games/shared/juegos";
 import { JuegoCromo } from "@/features/games/shared/JuegoCromo";
-import { JuegoTicker } from "@/features/games/shared/JuegoTicker";
 
 // Posiciones fijas (no aleatorias -- Math.random() no es válido en un
 // Server Component, y tampoco hace falta: unas pocas partículas quietas ya
@@ -25,8 +24,6 @@ export default function JugarPage() {
           style={{ left: p.left, animationDelay: p.delay }}
         />
       ))}
-
-      <JuegoTicker />
 
       <div className="relative z-10 mx-auto flex max-w-3xl flex-col items-center gap-2 px-6 py-12">
         <h1

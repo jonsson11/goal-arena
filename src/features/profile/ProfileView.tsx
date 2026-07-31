@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Link from "next/link";
 import { useAuth } from "@/features/auth/AuthContext";
+import { AuthGate } from "@/features/auth/AuthGate";
 import { GameButton } from "@/features/games/shared/GameButton";
 import { EditProfileDialog } from "./EditProfileDialog";
 import { FriendsCarousel } from "./FriendsCarousel";
@@ -25,17 +25,13 @@ export function ProfileView() {
 
   if (!usuario) {
     return (
-      <div className="flex min-h-[50vh] flex-col items-center justify-center gap-4 px-6 text-center">
-        <p className="text-lg font-semibold text-foreground">
-          Debes iniciar sesión para ver tu perfil.
-        </p>
-        <Link
-          href="/login"
-          className="rounded-md bg-primary px-6 py-2 font-semibold text-primary-foreground transition-opacity hover:opacity-90"
-        >
-          Iniciar sesión
-        </Link>
-      </div>
+      <AuthGate
+        icono="🏆"
+        titulo="Sigue tu progreso"
+        descripcion="Crea una cuenta o inicia sesión para guardar tu nivel, tus rachas y tus logros, y comparar tus estadísticas con las de tus amigos."
+        redirectTras="/perfil"
+        aspectos={["📈 Nivel y XP", "🎖️ Logros desbloqueables", "📊 Historial de partidas"]}
+      />
     );
   }
 

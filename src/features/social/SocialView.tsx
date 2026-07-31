@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { useAuth } from "@/features/auth/AuthContext";
+import { AuthGate } from "@/features/auth/AuthGate";
 import { GameButton } from "@/features/games/shared/GameButton";
 import type { Amigo, SolicitudAmistad } from "./type";
 
@@ -26,6 +28,7 @@ function AvatarChico({ amigo }: { amigo: Pick<Amigo, "avatar" | "avatarTipo" | "
 }
 
 export function SocialView() {
+  const { usuario } = useAuth();
   const [pestana, setPestana] = useState<Pestana>("amigos");
   const [amigos, setAmigos] = useState<Amigo[]>([]);
   const [solicitudes, setSolicitudes] = useState<SolicitudAmistad[]>([]);
@@ -48,8 +51,24 @@ export function SocialView() {
   }
 
   useEffect(() => {
+    // Sin sesión no tiene sentido pedir /api/amigos (devolvería 401) --
+    // se muestra la pantalla de "necesitas cuenta" (AuthGate más abajo)
+    // en su lugar y no se lanza ningún fetch.
+    if (!usuario) return;
     cargarAmigos();
-  }, []);
+  }, [usuario]);
+
+  if (!usuario) {
+    return (
+      <AuthGate
+        icono="🤝"
+        titulo="¿Quieres jugar con amigos?"
+        descripcion="Crea una cuenta o inicia sesión para añadir amigos, ver quién está conectado y competir en la sección Social."
+        redirectTras="/social"
+        aspectos={["👥 Lista de amigos", "🟢 Quién está conectado", "🔔 Solicitudes de amistad"]}
+      />
+    );
+  }
 
   async function handleEnviarSolicitud() {
     const nombre = nombreBuscado.trim();

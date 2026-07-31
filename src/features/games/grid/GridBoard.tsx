@@ -12,6 +12,14 @@ import { celdasValidasParaJugador, cumpleAmbasCondiciones } from "./logic";
 
 const DEBUG_HABILITADO = process.env.NODE_ENV !== "production";
 
+// El botoncito por casilla que revela las soluciones (CeldaDebug, más abajo)
+// se deshabilita aquí a propósito -- no se borra el mecanismo porque
+// `solucionesDebug` es justo el dato que hará falta para la futura función
+// de "mostrar todas las respuestas correctas" al terminar la partida (tras
+// ver un anuncio). De momento solo se apaga la UI que lo muestra por
+// casilla mientras se juega.
+const MOSTRAR_BOTON_SOLUCIONES_CELDA = false;
+
 type ResultadoCelda = { total: number; nombres: string[]; truncado: boolean };
 
 function segundosTranscurridos(inicio: number): number {
@@ -160,7 +168,7 @@ function nombreParaCasilla(nombreCompleto: string): string {
 
 // Cabecera de fila/columna: escudo del equipo o bandera de la selección
 // encima del nombre, en vez de solo texto. Si el equipo todavía no tiene
-// escudo guardado (ver scripts/sync-escudos-equipos.ts), cae al texto
+// escudo guardado (ver scripts/equipos/sync-escudos-equipos.ts), cae al texto
 // solo, igual que antes.
 function EncabezadoCondicion({ condicion }: { condicion: Condicion }) {
   const codigoPais = condicion.tipo === "nacionalidad" ? obtenerCodigoPais(condicion.valor) : null;
@@ -443,7 +451,7 @@ export function GridBoard() {
                     }}
                   />
 
-                  {DEBUG_HABILITADO && celda.jugador === null && (
+                  {MOSTRAR_BOTON_SOLUCIONES_CELDA && DEBUG_HABILITADO && celda.jugador === null && (
                     <CeldaDebug
                       datos={solucionesDebug[clave]}
                       abierta={celdaDebugAbierta === clave}

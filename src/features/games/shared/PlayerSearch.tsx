@@ -5,7 +5,7 @@ import { useCallback, useMemo, useRef, useState } from "react";
 import { Search, X, Loader2 } from "lucide-react";
 import type { Jugador } from "./types";
 import { obtenerCodigoPais } from "./banderas";
-import { normalizarTexto } from "@/lib/normalizarTexto";
+import { normalizarTexto } from "@/lib/normalizacion/normalizarTexto";
 
 interface PlayerSearchProps {
   players?: Jugador[];
