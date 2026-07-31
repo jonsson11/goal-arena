@@ -1,60 +1,60 @@
 {
-  "competicion": "WC",
-  "temporada": "2018",
+  "competicion": "EC",
+  "temporada": "2004",
   "metrica": "GOLES",
-  "titulo": "Máximos goleadores de FIFA World Cup 2018",
-  "descripcion": "TOP 10 goleadores en el Mundial 2018.",
+  "titulo": "Máximos goleadores de Eurocopa 2004",
+  "descripcion": "TOP 10 goleadores en la Eurocopa 2004.",
   "entradas": [
     {
-      "nombre": "Harry Kane",
-      "valor": 6,
+      "nombre": "Milan Baroš",
+      "valor": 5,
+      "equipo": "Czech Republic"
+    },
+    {
+      "nombre": "Ruud van Nistelrooy",
+      "valor": 4,
+      "equipo": "Netherlands"
+    },
+    {
+      "nombre": "Wayne Rooney",
+      "valor": 4,
       "equipo": "England"
-    },
-    {
-      "nombre": "Antoine Griezmann",
-      "valor": 4,
-      "equipo": "France"
-    },
-    {
-      "nombre": "Kylian Mbappé",
-      "valor": 4,
-      "equipo": "France"
     },
 
     {
-      "nombre": "Romelu Lukaku",
-      "valor": 4,
-      "equipo": "Belgium"
+      "nombre": "Angelos Charisteas",
+      "valor":3,
+      "equipo": "Greece"
     },
     {
-      "nombre": "Denis Cheryshev",
-      "valor": 4,
-      "equipo": "Russia"
+      "nombre": "Frank Lampard",
+      "valor": 3,
+      "equipo": "England"
     },
     {
-      "nombre": "Cristiano Ronaldo",
-      "valor": 4,
+      "nombre": "Zinedine Zidane",
+      "valor": 3,
+      "equipo": "France"
+    },
+    {
+      "nombre": "Henrik Larsson",
+      "valor": 3,
+      "equipo": "Sweden"
+    },
+    {
+      "nombre": "Jon Dahl Tomasson",
+      "valor": 3,
+      "equipo": "Denmark"
+    },
+    {
+      "nombre": "Antonio Cassano",
+      "valor": 2,
+      "equipo": "Italy"
+    },
+    {
+      "nombre": "Rui Costa",
+      "valor": 2,
       "equipo": "Portugal"
-    },
-    {
-      "nombre": "Ivan Perišić",
-      "valor": 3,
-      "equipo": "Croatia"
-    },
-    {
-      "nombre": "Mario Mandžukić",
-      "valor": 3,
-      "equipo": "Croatia"
-    },
-    {
-      "nombre": "Eden Hazard",
-      "valor": 3,
-      "equipo": "Belgium"
-    },
-    {
-      "nombre": "Artem Dzyuba",
-      "valor": 3,
-      "equipo": "Russia"
     }
   ]
 }
