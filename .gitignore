@@ -39,3 +39,7 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# supabase CLI (config/versiones locales de la máquina de cada uno --
+# nunca debería subirse, solo generaba ruido y confusión de repo)
+supabase/.temp
