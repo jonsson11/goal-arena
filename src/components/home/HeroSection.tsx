@@ -10,7 +10,7 @@ export function HeroSection() {
   return (
     <section className="flex flex-col items-center gap-6 px-6 py-20 text-center">
       <Image
-        src="/logo-header.jpg"
+        src="/LOGO ARENA-ConLetra.png"
         alt="Goal Arena"
         width={340}
         height={104}
