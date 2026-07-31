@@ -34,6 +34,10 @@ type EntradaJugador = string | { nombre: string; url: string };
 //
 //  { nombre: "", url: "" },
 const JUGADORES_INICIALES: EntradaJugador[] = [
+  "Aritz Aduriz",
+  "Iker Muniain",
+  "Bas Dost",
+  "Martín Montoya"
   ];
 
 // Deriva el externalId ("wiki:Titulo Con Espacios") a partir de una URL
