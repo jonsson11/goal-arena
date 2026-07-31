@@ -1,14 +1,21 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
-import { useRouter } from "next/navigation";
+import { Suspense, useState, type FormEvent } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { useAuth } from "@/features/auth/AuthContext";
 import { GameButton } from "@/features/games/shared/GameButton";
 
-export default function RegisterPage() {
+// Mismo mecanismo que en login/page.tsx: si se llegó aquí como
+// /register?redirect=/jugar (porque alguien sin sesión intentó jugar),
+// al registrarse se le manda directo ahí en vez de al perfil de siempre.
+const DESTINO_POR_DEFECTO = "/perfil";
+
+function RegisterForm() {
   const { registrar } = useAuth();
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const destino = searchParams.get("redirect") || DESTINO_POR_DEFECTO;
   const [nombre, setNombre] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -25,8 +32,11 @@ export default function RegisterPage() {
       setError(resultado.error);
       return;
     }
-    router.push("/perfil");
+    router.push(destino);
   }
+
+  const hrefLogin =
+    destino === DESTINO_POR_DEFECTO ? "/login" : `/login?redirect=${encodeURIComponent(destino)}`;
 
   return (
     <div className="flex min-h-[70vh] items-center justify-center px-6">
@@ -88,11 +98,19 @@ export default function RegisterPage() {
 
         <p className="text-center text-sm text-muted-foreground">
           ¿Ya tienes cuenta?{" "}
-          <Link href="/login" className="font-semibold text-primary hover:underline">
+          <Link href={hrefLogin} className="font-semibold text-primary hover:underline">
             Inicia sesión
           </Link>
         </p>
       </form>
     </div>
+  );
+}
+
+export default function RegisterPage() {
+  return (
+    <Suspense fallback={null}>
+      <RegisterForm />
+    </Suspense>
   );
 }

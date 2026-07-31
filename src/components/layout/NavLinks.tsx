@@ -7,6 +7,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
+import { useIrAJugar } from "@/features/auth/useIrAJugar";
 
 const ENLACES = [
   { href: "/", label: "Inicio" },
@@ -29,6 +30,7 @@ type Indicador = { left: number; width: number };
 
 export function NavLinks({ className, mostrarIndicador = true }: NavLinksProps) {
   const pathname = usePathname();
+  const alClicarJugar = useIrAJugar();
   const contenedorRef = useRef<HTMLDivElement>(null);
   const refsEnlaces = useRef<Array<HTMLAnchorElement | null>>([]);
   const [indicador, setIndicador] = useState<Indicador | null>(null);
@@ -87,6 +89,10 @@ export function NavLinks({ className, mostrarIndicador = true }: NavLinksProps) 
           }}
           onMouseEnter={() => mostrarIndicador && moverIndicadorA(i)}
           onMouseLeave={alSalirDelLink}
+          // Solo el link "Jugar" necesita el gate de sesión (ver
+          // useIrAJugar.ts): sin cuenta, en vez de entrar a /jugar te
+          // manda a /login?redirect=/jugar.
+          onClick={enlace.href === "/jugar" ? alClicarJugar : undefined}
           className={`transition-colors hover:text-primary ${i === indiceActivo ? "text-primary" : ""}`}
         >
           {enlace.label}

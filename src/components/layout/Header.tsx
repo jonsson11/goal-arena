@@ -50,7 +50,8 @@ export default function Header() {
             width={160}
             height={36}
             priority
-            className="logo-flip h-9 w-auto"
+            className="logo-flip h-9"
+            style={{ width: "auto" }}
           />
         </span>
       </Link>
@@ -60,22 +61,26 @@ export default function Header() {
         <NavLinks className="flex gap-6 text-sm font-semibold uppercase tracking-wide text-foreground" />
       </div>
 
-      <div className="hidden flex-1 justify-end md:flex">
+      {/* Cuenta (login o avatar) + hamburguesa agrupados a la derecha.
+          Antes la cuenta solo aparecía en escritorio y en móvil quedaba
+          escondida dentro del desplegable -- ahora se ve siempre,
+          también en móvil, a la izquierda del botón de hamburguesa. */}
+      <div className="flex flex-1 items-center justify-end gap-3">
         <AccountMenu />
-      </div>
 
-      <button
-        className="flex-none text-2xl text-foreground md:hidden"
-        onClick={() => setOpen(!open)}
-        aria-label={open ? "Cerrar menú" : "Abrir menú"}
-      >
-        <span
-          className="inline-block transition-transform duration-300"
-          style={{ transform: open ? "rotate(90deg)" : "rotate(0deg)" }}
+        <button
+          className="flex-none text-2xl text-foreground md:hidden"
+          onClick={() => setOpen(!open)}
+          aria-label={open ? "Cerrar menú" : "Abrir menú"}
         >
-          {open ? "✕" : "☰"}
-        </span>
-      </button>
+          <span
+            className="inline-block transition-transform duration-300"
+            style={{ transform: open ? "rotate(90deg)" : "rotate(0deg)" }}
+          >
+            {open ? "✕" : "☰"}
+          </span>
+        </button>
+      </div>
 
       {open && (
         <div className="animate-in fade-in slide-in-from-top-2 absolute left-0 top-full w-full border-t border-border bg-card/95 backdrop-blur-md duration-200 md:hidden">
@@ -83,9 +88,6 @@ export default function Header() {
             mostrarIndicador={false}
             className="flex flex-col gap-4 p-6 text-sm font-semibold uppercase tracking-wide text-card-foreground"
           />
-          <div className="border-t border-border p-6">
-            <AccountMenu />
-          </div>
         </div>
       )}
     </header>

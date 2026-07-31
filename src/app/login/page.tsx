@@ -1,14 +1,22 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
-import { useRouter } from "next/navigation";
+import { Suspense, useState, type FormEvent } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { useAuth } from "@/features/auth/AuthContext";
 import { GameButton } from "@/features/games/shared/GameButton";
 
-export default function LoginPage() {
+// Ruta a la que ir tras loguearse. Si alguien llega aquí porque intentó
+// entrar a jugar sin sesión (ver NavLinks.tsx / HeroSection.tsx), llega
+// como /login?redirect=/jugar y, al loguearse, se le manda directo ahí
+// en vez de al perfil de siempre.
+const DESTINO_POR_DEFECTO = "/perfil";
+
+function LoginForm() {
   const { login } = useAuth();
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const destino = searchParams.get("redirect") || DESTINO_POR_DEFECTO;
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -24,8 +32,11 @@ export default function LoginPage() {
       setError(resultado.error);
       return;
     }
-    router.push("/perfil");
+    router.push(destino);
   }
+
+  const hrefRegistro =
+    destino === DESTINO_POR_DEFECTO ? "/register" : `/register?redirect=${encodeURIComponent(destino)}`;
 
   return (
     <div className="flex min-h-[70vh] items-center justify-center px-6">
@@ -75,11 +86,19 @@ export default function LoginPage() {
 
         <p className="text-center text-sm text-muted-foreground">
           ¿No tienes cuenta?{" "}
-          <Link href="/register" className="font-semibold text-primary hover:underline">
+          <Link href={hrefRegistro} className="font-semibold text-primary hover:underline">
             Regístrate
           </Link>
         </p>
       </form>
     </div>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={null}>
+      <LoginForm />
+    </Suspense>
   );
 }

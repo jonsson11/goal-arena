@@ -1,7 +1,12 @@
+"use client";
+
 import Link from "next/link";
 import Image from "next/image";
+import { useIrAJugar } from "@/features/auth/useIrAJugar";
 
 export function HeroSection() {
+  const alClicarJugar = useIrAJugar();
+
   return (
     <section className="flex flex-col items-center gap-6 px-6 py-20 text-center">
       <Image
@@ -25,6 +30,7 @@ export function HeroSection() {
 
       <Link
         href="/jugar"
+        onClick={alClicarJugar}
         className="mt-2 rounded-lg bg-primary px-8 py-4 text-lg font-bold text-primary-foreground shadow-[0_0_30px_-6px_rgba(74,222,154,0.6)] transition-transform duration-200 hover:scale-105"
       >
         Jugar ahora
