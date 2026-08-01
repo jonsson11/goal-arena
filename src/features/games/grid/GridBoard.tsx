@@ -241,6 +241,80 @@ function CasillaGrid({
   );
 }
 
+// Texto (no popup) con las respuestas correctas de las 9 casillas, para
+// desplegar dentro del propio cartel de resultado. Reusa el mismo
+// endpoint/formato que antes alimentaba el popup de soluciones por
+// casilla en modo debug (ver ResultadoCelda más arriba), solo que ahora se
+// listan las 9 de golpe como texto plano en vez de una por una en un popup.
+function TextoRespuestasCorrectas({
+  tablero,
+  datos,
+  cargando,
+}: {
+  tablero: Tablero;
+  datos: Record<string, ResultadoCelda> | null;
+  cargando: boolean;
+}) {
+  if (cargando || !datos) {
+    return <p className="text-sm text-muted-foreground">Cargando respuestas...</p>;
+  }
+
+  // Las casillas ya acertadas no se listan -- solo interesan las que se
+  // quedaron vacías al rendirse. Si no queda ninguna vacía (tablero
+  // completado), se avisa de eso en vez de mostrar un cuadro en blanco.
+  const filasConPendientes = tablero.condicionesFila
+    .map((condFila, fila) => ({
+      fila,
+      condFila,
+      columnasPendientes: [0, 1, 2].filter(
+        (columna) => obtenerCeldaEstatica(tablero, fila, columna)?.jugador == null
+      ),
+    }))
+    .filter((f) => f.columnasPendientes.length > 0);
+
+  if (filasConPendientes.length === 0) {
+    return <p className="text-sm text-muted-foreground">Completaste las 9 casillas, no queda ninguna pendiente.</p>;
+  }
+
+  return (
+    <div className="max-h-72 w-full space-y-3 overflow-y-auto rounded-lg border border-border bg-background/60 p-3 text-left">
+      {filasConPendientes.map(({ fila, condFila, columnasPendientes }) => (
+        <div key={fila} className="space-y-1.5">
+          {columnasPendientes.map((columna) => {
+            const condColumna = tablero.condicionesColumna[columna];
+            const clave = `${fila}-${columna}`;
+            const celda = datos[clave];
+
+            return (
+              <div key={columna} className="text-sm">
+                <p className="font-semibold text-foreground">
+                  {condFila.valor} · {condColumna.valor}
+                </p>
+                {celda ? (
+                  celda.nombres.length === 0 ? (
+                    <p className="text-muted-foreground">Sin soluciones registradas.</p>
+                  ) : (
+                    <p className="text-muted-foreground">
+                      {celda.nombres.join(", ")}
+                      {celda.truncado ? "…" : ""}
+                    </p>
+                  )
+                ) : (
+                  <p className="text-muted-foreground">Sin datos.</p>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function obtenerCeldaEstatica(tablero: Tablero, fila: number, columna: number): Celda | undefined {
+  return tablero.celdas.find((c) => c.fila === fila && c.columna === columna);
+}
+
 export function GridBoard() {
   const [tablero, setTablero] = useState<Tablero | null>(null);
   const [cargando, setCargando] = useState(true);
@@ -257,6 +331,14 @@ export function GridBoard() {
 
   const [solucionesDebug, setSolucionesDebug] = useState<Record<string, ResultadoCelda>>({});
   const [celdaDebugAbierta, setCeldaDebugAbierta] = useState<string | null>(null);
+
+  // Respuestas correctas al terminar la partida (victoria o rendición) --
+  // se piden bajo demanda (solo al pulsar el botón, no siempre) y se
+  // guardan en caché aquí para no repetir la petición si se pliega y se
+  // vuelve a desplegar el texto.
+  const [respuestasCorrectas, setRespuestasCorrectas] = useState<Record<string, ResultadoCelda> | null>(null);
+  const [cargandoRespuestas, setCargandoRespuestas] = useState(false);
+  const [mostrandoRespuestas, setMostrandoRespuestas] = useState(false);
 
   const cargaIdRef = useRef(0);
 
@@ -286,6 +368,9 @@ export function GridBoard() {
     setPopupAbierto(false);
     setSolucionesDebug({});
     setCeldaDebugAbierta(null);
+    setRespuestasCorrectas(null);
+    setCargandoRespuestas(false);
+    setMostrandoRespuestas(false);
 
     try {
       const res = await fetch("/api/tablero/generar");
@@ -401,6 +486,25 @@ export function GridBoard() {
     setPopupAbierto(true);
   }
 
+  // Alterna el texto de respuestas correctas dentro del propio cartel de
+  // resultado. Solo pide los datos al servidor la primera vez que se
+  // despliega -- si ya se pidieron, plegar y volver a desplegar reutiliza
+  // lo que ya hay en `respuestasCorrectas`.
+  async function alternarRespuestasCorrectas() {
+    if (mostrandoRespuestas) {
+      setMostrandoRespuestas(false);
+      return;
+    }
+
+    setMostrandoRespuestas(true);
+    if (!respuestasCorrectas && tablero) {
+      setCargandoRespuestas(true);
+      const datos = await contarSolucionesTodasLasCeldas(tablero);
+      setRespuestasCorrectas(datos);
+      setCargandoRespuestas(false);
+    }
+  }
+
   if (cargando) {
     return (
       <div className="flex flex-col items-center gap-4 p-6">
@@ -478,6 +582,10 @@ export function GridBoard() {
         </GameButton>
       </div>
 
+      <GameButton variant="secondary" onClick={cargarTablero}>
+        Regenerar tablero
+      </GameButton>
+
       {mensaje && !resultado && <p className="text-sm text-muted-foreground">{mensaje}</p>}
 
       {resultado && (
@@ -500,6 +608,17 @@ export function GridBoard() {
             )
           }
           onJugarDeNuevo={cargarTablero}
+          respuestasCorrectas={{
+            mostrando: mostrandoRespuestas,
+            onToggle: alternarRespuestasCorrectas,
+            contenido: (
+              <TextoRespuestasCorrectas
+                tablero={tablero}
+                datos={respuestasCorrectas}
+                cargando={cargandoRespuestas}
+              />
+            ),
+          }}
         />
       )}
     </div>

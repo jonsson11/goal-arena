@@ -3,12 +3,26 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { NavLinks } from "./NavLinks";
 import { AccountMenu } from "./AccountMenu";
 
 export default function Header() {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const pathname = usePathname();
+
+  // Cierra el menú móvil solo cuando la ruta cambia de verdad (no al
+  // montar) -- así abrir el menú justo después de cargar la página no lo
+  // cierra de golpe. Cubre tanto un click normal en un link (cambia la
+  // ruta al momento) como el guard de "Jugar" sin sesión, que redirige a
+  // /login: en ambos casos pathname cambia y el menú se cierra solo, en
+  // vez de quedarse abierto tapando la pantalla hasta que alguien lo
+  // cierre a mano.
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setOpen(false);
+  }, [pathname]);
 
   // Sticky con "glass": mientras estás arriba del todo, fondo sólido
   // normal; en cuanto empiezas a bajar, pasa a semitransparente +

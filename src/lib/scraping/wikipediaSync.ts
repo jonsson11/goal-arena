@@ -267,7 +267,7 @@ function extraerEtapas(wikitext: string): StintCrudo[] {
   for (let i = 1; i <= 25; i++) {
     const yearsRaw = getField(infobox, `years${i}`);
     const clubsRaw = getField(infobox, `clubs${i}`);
-    if (!yearsRaw && !clubsRaw) break;
+    if (!yearsRaw && !clubsRaw) continue;
 
     const caps = parseInt(getField(infobox, `caps${i}`) ?? "", 10) || 0;
     const goals = parseInt(getField(infobox, `goals${i}`) ?? "", 10) || 0;

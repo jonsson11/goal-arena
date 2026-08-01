@@ -12,6 +12,17 @@ import { GameButton } from "./GameButton";
 
 type ResultadoJuego = "exito" | "fracaso";
 
+// Opcional -- solo lo pasa el 3x3 por ahora. El botón despliega/pliega
+// `contenido` DENTRO de este mismo cartel (a diferencia del viejo popup de
+// soluciones por casilla que había en modo debug, que abría uno encima de
+// otro). Los demás juegos (Higher/Lower, Top10) simplemente no pasan esta
+// prop y el botón no aparece.
+type RespuestasCorrectasProps = {
+  mostrando: boolean;
+  onToggle: () => void;
+  contenido: ReactNode;
+};
+
 type GameResultDialogProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -19,6 +30,7 @@ type GameResultDialogProps = {
   titulo: string;
   descripcion: ReactNode;
   onJugarDeNuevo: () => void;
+  respuestasCorrectas?: RespuestasCorrectasProps;
 };
 
 export function GameResultDialog({
@@ -28,6 +40,7 @@ export function GameResultDialog({
   titulo,
   descripcion,
   onJugarDeNuevo,
+  respuestasCorrectas,
 }: GameResultDialogProps) {
   const esExito = resultado === "exito";
 
@@ -57,6 +70,15 @@ export function GameResultDialog({
             {descripcion}
           </DialogDescription>
         </DialogHeader>
+
+        {respuestasCorrectas && (
+          <div className="flex w-full flex-col items-center gap-2">
+            <GameButton variant="secondary" onClick={respuestasCorrectas.onToggle} className="w-full">
+              {respuestasCorrectas.mostrando ? "Ocultar respuestas correctas" : "Mostrar respuestas correctas"}
+            </GameButton>
+            {respuestasCorrectas.mostrando && respuestasCorrectas.contenido}
+          </div>
+        )}
 
         <GameButton onClick={onJugarDeNuevo} className="mt-2">
           Volver a jugar

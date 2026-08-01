@@ -50,12 +50,21 @@ export function JuegoCromo({ juego, icono }: { juego: JuegoSinIcono; icono: Reac
       }`}
     >
       <div
-        className={`relative h-full w-full transition-transform duration-500 [transform-style:preserve-3d] ${
+        className={`relative h-full w-full transition-transform duration-500 [transform-style:preserve-3d] [-webkit-transform-style:preserve-3d] ${
           girado ? "[transform:rotateY(180deg)]" : ""
         }`}
       >
-        {/* Cara frontal */}
-        <div className="cromo-brillo absolute inset-0 flex flex-col items-center justify-center gap-2.5 rounded-[22px] border border-border bg-gradient-to-br from-card to-background p-5 text-center [backface-visibility:hidden]">
+        {/* Cara frontal.
+            Los dos [backface-visibility:hidden] / [-webkit-backface-visibility:hidden]
+            (aquí y en la cara trasera, más abajo) son necesarios A LA VEZ: en
+            Chrome/Android basta con la propiedad estándar, pero Safari/iOS (y
+            algunos WebView de Android) solo respetan el prefijo -webkit-. Si
+            falta cualquiera de los dos, en esos navegadores las dos caras
+            quedan visibles superpuestas y "en espejo" a mitad de giro -- que es
+            justo el bug de "el texto también se voltea y no desaparece" en
+            móvil.
+        */}
+        <div className="cromo-brillo absolute inset-0 flex flex-col items-center justify-center gap-2.5 rounded-[22px] border border-border bg-gradient-to-br from-card to-background p-5 text-center [backface-visibility:hidden] [-webkit-backface-visibility:hidden]">
           {juego.etiqueta && (
             <span
               className={`absolute left-3.5 top-3.5 rounded-full border px-2 py-0.5 text-[9px] font-extrabold uppercase tracking-wider ${ETIQUETA_ESTILO[juego.etiqueta]}`}
@@ -77,7 +86,7 @@ export function JuegoCromo({ juego, icono }: { juego: JuegoSinIcono; icono: Reac
 
         {/* Cara trasera */}
         <div
-          className={`absolute inset-0 flex [transform:rotateY(180deg)] flex-col items-center justify-center gap-2.5 rounded-[22px] border border-border bg-gradient-to-br p-5 text-center [backface-visibility:hidden] ${DEGRADADO_FONDO_POR_ACENTO[juego.acento]}`}
+          className={`absolute inset-0 flex [transform:rotateY(180deg)] flex-col items-center justify-center gap-2.5 rounded-[22px] border border-border bg-gradient-to-br p-5 text-center [backface-visibility:hidden] [-webkit-backface-visibility:hidden] ${DEGRADADO_FONDO_POR_ACENTO[juego.acento]}`}
         >
           <div className={`flex h-14 w-14 items-center justify-center rounded-2xl ${ICONO_FONDO_POR_ACENTO[juego.acento]}`}>
             {icono}
