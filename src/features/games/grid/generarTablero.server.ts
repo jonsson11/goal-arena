@@ -11,25 +11,38 @@ const LADO = 3;
 const MIN_JUGADORES_EQUIPO_FILA = 5;
 const MIN_JUGADORES_NACIONALIDAD = 3;
 
+// Cuántos clubes "grandes" (los de más plantilla histórica registrada)
+// entran en el pool de fácil, tanto para filas como para columnas de tipo
+// equipo. Un club con mucha plantilla acumulada tiene, casi por
+// definición, mucho más solape de jugadores con otros clubes grandes y con
+// las nacionalidades más comunes -- así que restringir el pool a estos
+// hace que el umbral de MIN_SOLUCIONES_POR_DIFICULTAD.facil se cumpla de
+// forma natural, en vez de depender de acertar un número muy alto que siga
+// funcionando con cualquier club, grande o pequeño, del catálogo entero.
+const TOP_CLUBES_GRANDES_FACIL = 30;
+
 // Mínimo de jugadores válidos (soluciones posibles) que debe tener CADA una
 // de las 9 casillas del tablero, para cada dificultad. "dificil" mantiene
 // el comportamiento original: solo se exige que exista al menos una
 // solución por casilla.
 //
-// HISTORIAL (para no repetir el mismo error): se probó primero con
-// facil=10 exigiendo además 2 columnas de país obligatorias, y luego con 1
-// columna de país obligatoria. Ambas versiones fallaban o degeneraban en la
-// práctica -- con los datos reales, forzar una nacionalidad a tener muchos
-// jugadores en varios clubes a la vez colapsaba las combinaciones posibles
-// a un puñado fijo (siempre los mismos 3-4 clubes "galácticos" con la
-// misma nacionalidad muy poblada, tipo Brasil). Se quitó esa exigencia por
-// completo: facil usa el mismo mecanismo que medio (que sí es fiable),
-// solo que con un umbral más alto. 8 es un paso prudente desde el 5 de
-// medio (que ya está probado que funciona) -- si en el juego real se nota
-// poco diferenciado de medio, o si empieza a fallar/tardar mucho al
-// generar, este es el número a bajar (o a subir, si sobra margen).
+// HISTORIAL (para no repetir el mismo error):
+// 1) facil=10 exigiendo además 2 columnas de país obligatorias -- colapsaba
+//    las combinaciones a un puñado fijo (Brasil + los mismos 3-4 clubes
+//    "galácticos"). Se quitó la exigencia de país por completo.
+// 2) facil=8 sin exigencia de país, pero probando entre TODOS los clubes
+//    elegibles (igual que medio) -- seguía fallando "bastante frecuente"
+//    con los datos reales: exigir 8+ jugadores en común en las 9 casillas
+//    a la vez es una condición dura de cumplir cuando el pool incluye
+//    también clubes pequeños con pocos años de historial.
+// Solución actual: en vez de seguir subiendo el umbral a ciegas, fácil
+// restringe el pool de clubes candidatos (ver MIN_JUGADORES_EQUIPO_FILA
+// más abajo) a los que tienen más plantilla histórica registrada -- esos
+// clubes tienen mucho más solape de jugadores entre sí casi por
+// definición, así que el umbral se cumple solo, sin depender de acertar
+// un número exacto.
 const MIN_SOLUCIONES_POR_DIFICULTAD: Record<Dificultad, number> = {
-  facil: 8,
+  facil: 6,
   medio: 5,
   dificil: 1,
 };
@@ -134,13 +147,31 @@ function columnasValidasPara(
 // Lo único que cambia entre niveles es minSoluciones y el presupuesto de
 // intentos -- deliberadamente simple, después de que una versión con más
 // lógica (forzar columnas de país) demostrara ser frágil con datos reales.
+// Para fácil, restringe la lista de equipos elegibles (ya filtrada por
+// MIN_JUGADORES_EQUIPO_FILA) a los TOP_CLUBES_GRANDES_FACIL con más
+// plantilla histórica registrada. Para medio/dificil no se toca nada --
+// devuelve la lista completa, exactamente igual que antes de este cambio.
+function equiposCandidatosPara(
+  dificultad: Dificultad,
+  equiposBase: string[],
+  indice: Indice
+): string[] {
+  if (dificultad !== "facil") return equiposBase;
+
+  return [...equiposBase]
+    .sort((a, b) => indice.jugadoresPorEquipo.get(b)!.size - indice.jugadoresPorEquipo.get(a)!.size)
+    .slice(0, TOP_CLUBES_GRANDES_FACIL);
+}
+
 function generarCombinacion(indice: Indice, dificultad: Dificultad): { filas: string[]; columnas: Candidata[] } | null {
   const minSoluciones = MIN_SOLUCIONES_POR_DIFICULTAD[dificultad];
 
-  const clubesCandidatosFila = [...indice.jugadoresPorEquipo.entries()]
+  const equiposElegiblesBase = [...indice.jugadoresPorEquipo.entries()]
     .filter(([equipo]) => indice.equiposElegibles.has(equipo))
     .filter(([, jugadores]) => jugadores.size >= MIN_JUGADORES_EQUIPO_FILA)
     .map(([equipo]) => equipo);
+
+  const clubesCandidatosFila = equiposCandidatosPara(dificultad, equiposElegiblesBase, indice);
 
   if (clubesCandidatosFila.length < LADO) return null;
 
@@ -148,10 +179,12 @@ function generarCombinacion(indice: Indice, dificultad: Dificultad): { filas: st
     .filter(([, total]) => total >= MIN_JUGADORES_NACIONALIDAD)
     .map(([nacionalidad]) => nacionalidad);
 
+  // Las columnas de tipo "equipo" salen del MISMO pool restringido que las
+  // filas en fácil -- así cualquier club que aparezca en el tablero (fila o
+  // columna) es uno "grande", garantizando el solape que hace cumplir
+  // minSoluciones sin depender de un umbral muy ajustado.
   const poolColumnas: Candidata[] = [
-    ...[...indice.jugadoresPorEquipo.keys()]
-      .filter((equipo) => indice.equiposElegibles.has(equipo))
-      .map((valor) => ({ tipo: "equipo", valor }) as Candidata),
+    ...clubesCandidatosFila.map((valor) => ({ tipo: "equipo", valor }) as Candidata),
     ...nacionalidadesCandidatas.map((valor) => ({ tipo: "nacionalidad", valor }) as Candidata),
   ];
 

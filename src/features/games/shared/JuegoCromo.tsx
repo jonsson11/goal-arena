@@ -45,7 +45,10 @@ export function JuegoCromo({ juego, icono }: { juego: JuegoSinIcono; icono: Reac
           setGirado((g) => !g);
         }
       }}
-      className={`h-[300px] cursor-pointer rounded-[26px] p-1.5 transition-shadow duration-300 [perspective:1200px] ${
+      // touch-manipulation: se salta el retraso táctil de doble-tap-zoom
+      // del navegador, que es lo que hacía falta tocar varias veces (y a
+      // veces mover el dedo) para que la tarjeta girara en móvil.
+      className={`h-[300px] touch-manipulation cursor-pointer rounded-[26px] p-1.5 transition-shadow duration-300 [perspective:1200px] ${
         girado ? HALO_ACTIVO_POR_ACENTO[juego.acento] : HALO_POR_ACENTO[juego.acento]
       }`}
     >
@@ -64,7 +67,17 @@ export function JuegoCromo({ juego, icono }: { juego: JuegoSinIcono; icono: Reac
             justo el bug de "el texto también se voltea y no desaparece" en
             móvil.
         */}
-        <div className="cromo-brillo absolute inset-0 flex flex-col items-center justify-center gap-2.5 rounded-[22px] border border-border bg-gradient-to-br from-card to-background p-5 text-center [backface-visibility:hidden] [-webkit-backface-visibility:hidden]">
+        {/* pointer-events-none cuando está girada: en algunos navegadores
+            móviles (sobre todo Android/WebView) el hit-testing de toques no
+            respeta backface-visibility:hidden con la misma fidelidad que el
+            pintado visual -- la cara "invisible" seguía pudiendo capturar el
+            toque, así que había que tocar dos veces (una que caía en la cara
+            oculta y no hacía nada, otra que ya sí llegaba a la visible). */}
+        <div
+          className={`cromo-brillo absolute inset-0 flex flex-col items-center justify-center gap-2.5 rounded-[22px] border border-border bg-gradient-to-br from-card to-background p-5 text-center [backface-visibility:hidden] [-webkit-backface-visibility:hidden] ${
+            girado ? "pointer-events-none" : ""
+          }`}
+        >
           {juego.etiqueta && (
             <span
               className={`absolute left-3.5 top-3.5 rounded-full border px-2 py-0.5 text-[9px] font-extrabold uppercase tracking-wider ${ETIQUETA_ESTILO[juego.etiqueta]}`}
@@ -86,7 +99,9 @@ export function JuegoCromo({ juego, icono }: { juego: JuegoSinIcono; icono: Reac
 
         {/* Cara trasera */}
         <div
-          className={`absolute inset-0 flex [transform:rotateY(180deg)] flex-col items-center justify-center gap-2.5 rounded-[22px] border border-border bg-gradient-to-br p-5 text-center [backface-visibility:hidden] [-webkit-backface-visibility:hidden] ${DEGRADADO_FONDO_POR_ACENTO[juego.acento]}`}
+          className={`absolute inset-0 flex [transform:rotateY(180deg)] flex-col items-center justify-center gap-2.5 rounded-[22px] border border-border bg-gradient-to-br p-5 text-center [backface-visibility:hidden] [-webkit-backface-visibility:hidden] ${DEGRADADO_FONDO_POR_ACENTO[juego.acento]} ${
+            girado ? "" : "pointer-events-none"
+          }`}
         >
           <div className={`flex h-14 w-14 items-center justify-center rounded-2xl ${ICONO_FONDO_POR_ACENTO[juego.acento]}`}>
             {icono}
@@ -98,7 +113,7 @@ export function JuegoCromo({ juego, icono }: { juego: JuegoSinIcono; icono: Reac
           <Link
             href={juego.href}
             onClick={(e) => e.stopPropagation()}
-            className="mt-1 rounded-full bg-primary px-5 py-2 text-xs font-extrabold text-primary-foreground transition-opacity hover:opacity-90"
+            className="mt-1 touch-manipulation rounded-full bg-primary px-5 py-2 text-xs font-extrabold text-primary-foreground transition-opacity hover:opacity-90"
           >
             Jugar ▸
           </Link>

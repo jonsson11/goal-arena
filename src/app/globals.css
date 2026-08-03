@@ -244,6 +244,41 @@
 }
 
 /* ------------------------------------------------------------
+   GameResultDialog -- cartel de victoria/derrota al terminar una
+   partida. El icono (trofeo/bandera) entra con un ligero "rebote" en
+   vez de solo desvanecerse, para que el resultado se note con más
+   fuerza que el resto del cartel (que sí usa el fundido normal de
+   .launcher-entrada).
+   ------------------------------------------------------------ */
+
+@keyframes resultado-icono-entrada {
+  0% {
+    opacity: 0;
+    transform: scale(0.4) rotate(-12deg);
+  }
+  60% {
+    opacity: 1;
+    transform: scale(1.12) rotate(4deg);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+  }
+}
+
+.resultado-icono-entrada {
+  animation:
+    resultado-icono-entrada 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) both,
+    launcher-halo-pulso 3.2s ease-in-out 0.6s infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .resultado-icono-entrada {
+    animation: none;
+  }
+}
+
+/* ------------------------------------------------------------
    Header y Footer -- logo con flip 3D continuo (opción elegida tras
    comparar 8 variantes en /tmp/logo-opciones.html), línea de escaneo
    bajo el header (siempre presente, muy sutil) y foco de estadio

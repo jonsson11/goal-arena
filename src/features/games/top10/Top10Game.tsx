@@ -246,7 +246,19 @@ export function Top10Game() {
     <div className="flex flex-col items-center gap-6 p-6">
       <h1 className="text-center text-2xl font-bold text-foreground">{ranking.titulo}</h1>
 
-      <div className="grid w-full max-w-2xl grid-flow-col grid-cols-2 grid-rows-5 gap-3">
+      {/* En móvil, una sola columna a lo ancho completo (grid-cols-1, sin
+          grid-flow-col): antes, con 2 columnas forzadas siempre, cada
+          tarjeta tenía la mitad del ancho disponible para nombre + valor +
+          bandera, y NombreAbreviable acababa recortando nombres ya
+          abreviados a un par de letras ("J.A..."). Además, con
+          grid-flow-col + grid-rows-5 el orden visual era 1-5 en la columna
+          izquierda y 6-10 en la derecha, lo que hacía fácil confundir, p.
+          ej., el 6 con el 7 (uno arriba-derecha, otro no visualmente
+          contiguo al 5). En una sola columna el orden 1..10 va de arriba a
+          abajo tal cual, sin ambigüedad. A partir de sm: se recupera el
+          layout de 2 columnas de siempre, que en pantallas más anchas sí
+          tiene hueco de sobra. */}
+      <div className="grid w-full max-w-2xl grid-cols-1 gap-2.5 sm:grid-flow-col sm:grid-cols-2 sm:grid-rows-5 sm:gap-3">
         {ranking.respuestas.map((entrada, i) => {
           const posicion = i + 1;
           const acertado = estaAcertado(entrada);
@@ -256,12 +268,12 @@ export function Top10Game() {
           return (
             <div
               key={i}
-              className={`isolate flex items-center gap-2 rounded-md border px-4 py-3 transition-all duration-300 sm:px-5 sm:py-4 ${estilo.fila} ${
+              className={`isolate flex items-center gap-2.5 rounded-md border px-4 py-3 transition-all duration-300 sm:px-5 sm:py-4 ${estilo.fila} ${
                 acertado ? "animate-in zoom-in-95 fade-in slide-in-from-left-1 duration-300" : ""
               }`}
             >
               <span
-                className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-xs font-bold sm:h-7 sm:w-7 sm:text-sm ${estilo.badge}`}
+                className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-sm font-bold sm:h-7 sm:w-7 sm:text-sm ${estilo.badge}`}
               >
                 {posicion}
               </span>
@@ -269,15 +281,18 @@ export function Top10Game() {
                   hasta ilegible cuando el nombre es largo, NombreAbreviable
                   mide con ResizeObserver el hueco real que le queda al
                   nombre (ya descontados badge/valor/bandera) y decide si
-                  cabe entero o hay que abreviarlo ("F. Valverde"). */}
+                  cabe entero o hay que abreviarlo ("F. Valverde"). Con el
+                  ancho completo en móvil (ver comentario del grid arriba),
+                  este hueco real es mucho mayor y el nombre entero cabe casi
+                  siempre. */}
               {acertado ? (
                 <NombreAbreviable
                   nombre={entrada.nombre}
-                  className={`flex-1 text-left font-semibold text-base sm:text-xl ${estilo.nombre}`}
+                  className={`flex-1 text-left font-semibold text-lg sm:text-xl ${estilo.nombre}`}
                 />
               ) : (
                 <span
-                  className={`min-w-0 flex-1 truncate text-left font-semibold text-sm sm:text-base ${estilo.nombre}`}
+                  className={`min-w-0 flex-1 truncate text-left font-semibold text-base sm:text-base ${estilo.nombre}`}
                 >
                   ???
                 </span>
@@ -291,7 +306,7 @@ export function Top10Game() {
               )}
               <span className="flex shrink-0 items-center justify-end">
                 {codigoPais && (
-                  <span className={`fi fi-${codigoPais} h-3.75 w-5 rounded-sm sm:h-6 sm:w-9`} />
+                  <span className={`fi fi-${codigoPais} h-4.5 w-6 rounded-sm sm:h-6 sm:w-9`} />
                 )}
               </span>
             </div>
