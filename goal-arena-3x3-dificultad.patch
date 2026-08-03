@@ -1,0 +1,483 @@
+diff --git a/src/app/api/tablero/generar/route.ts b/src/app/api/tablero/generar/route.ts
+index 6c29b0e..4797f07 100644
+--- a/src/app/api/tablero/generar/route.ts
++++ b/src/app/api/tablero/generar/route.ts
+@@ -1,12 +1,22 @@
+ // src/app/api/tablero/generar/route.ts
+ import { NextResponse } from "next/server";
+ import { generarTableroDesdeBD } from "@/features/games/grid/generarTablero.server";
++import type { Dificultad } from "@/features/games/shared/types";
+ 
+ export const dynamic = "force-dynamic";
+ 
+-export async function GET() {
++const DIFICULTADES_VALIDAS: Dificultad[] = ["facil", "medio", "dificil"];
++
++function parsearDificultad(valor: string | null): Dificultad {
++  return DIFICULTADES_VALIDAS.includes(valor as Dificultad) ? (valor as Dificultad) : "dificil";
++}
++
++export async function GET(request: Request) {
+   try {
+-    const tablero = await generarTableroDesdeBD();
++    const { searchParams } = new URL(request.url);
++    const dificultad = parsearDificultad(searchParams.get("dificultad"));
++
++    const tablero = await generarTableroDesdeBD(dificultad);
+     return NextResponse.json(tablero);
+   } catch (err) {
+     console.error("GET /api/tablero/generar: fallo al generar tablero", err);
+diff --git a/src/app/jugar/grid/page.tsx b/src/app/jugar/grid/page.tsx
+index 962a984..a2c915f 100644
+--- a/src/app/jugar/grid/page.tsx
++++ b/src/app/jugar/grid/page.tsx
+@@ -5,36 +5,38 @@ import { PlayerRequestBox } from "@/features/games/shared/PlayerRequestBox";
+ 
+ export default function GridPage() {
+   return (
+-    <GameLauncher href="/jugar/grid">
+-      <div className="flex flex-col items-center gap-8 px-4 pb-12 pt-8 sm:px-6">
+-        <header className="relative flex flex-col items-center gap-3 text-center">
+-          <div
+-            aria-hidden
+-            className="pointer-events-none absolute left-1/2 top-1/2 h-40 w-72 -translate-x-1/2 -translate-y-1/2 animate-pulse rounded-full bg-primary/20 blur-3xl motion-reduce:animate-none"
+-          />
++    <GameLauncher href="/jugar/grid" dificultades>
++      {(dificultad) => (
++        <div className="flex flex-col items-center gap-8 px-4 pb-12 pt-8 sm:px-6">
++          <header className="relative flex flex-col items-center gap-3 text-center">
++            <div
++              aria-hidden
++              className="pointer-events-none absolute left-1/2 top-1/2 h-40 w-72 -translate-x-1/2 -translate-y-1/2 animate-pulse rounded-full bg-primary/20 blur-3xl motion-reduce:animate-none"
++            />
+ 
+-          <span className="relative rounded-full border border-primary/40 bg-primary/10 px-3 py-1 text-[11px] font-bold uppercase tracking-widest text-primary">
+-            Beta
+-          </span>
++            <span className="relative rounded-full border border-primary/40 bg-primary/10 px-3 py-1 text-[11px] font-bold uppercase tracking-widest text-primary">
++              Beta
++            </span>
+ 
+-          <h1 className="text-shimmer relative bg-gradient-to-r from-primary via-secondary to-primary bg-clip-text font-heading text-4xl font-extrabold tracking-tight text-transparent sm:text-5xl">
+-            3X3 GRID
+-          </h1>
++            <h1 className="text-shimmer relative bg-gradient-to-r from-primary via-secondary to-primary bg-clip-text font-heading text-4xl font-extrabold tracking-tight text-transparent sm:text-5xl">
++              3X3 GRID
++            </h1>
+ 
+-          <p className="relative max-w-md text-sm leading-relaxed text-muted-foreground sm:text-base">
+-            Este modo está en fase beta. Si echas en falta a algún jugador, cuéntanoslo con la
+-            cajita de aquí al lado — nos ayuda muchísimo a completar la base de datos.
+-          </p>
+-        </header>
++            <p className="relative max-w-md text-sm leading-relaxed text-muted-foreground sm:text-base">
++              Este modo está en fase beta. Si echas en falta a algún jugador, cuéntanoslo con la
++              cajita de aquí al lado — nos ayuda muchísimo a completar la base de datos.
++            </p>
++          </header>
+ 
+-        <div className="flex w-full max-w-4xl flex-col items-center gap-6 lg:flex-row lg:items-start lg:justify-center">
+-          <div className="w-full max-w-md rounded-2xl border border-primary/40 bg-card shadow-[0_0_40px_-8px_rgba(74,222,154,0.35)]">
+-            <GridBoard />
+-          </div>
++          <div className="flex w-full max-w-4xl flex-col items-center gap-6 lg:flex-row lg:items-start lg:justify-center">
++            <div className="w-full max-w-md rounded-2xl border border-primary/40 bg-card shadow-[0_0_40px_-8px_rgba(74,222,154,0.35)]">
++              <GridBoard dificultad={dificultad} />
++            </div>
+ 
+-          <PlayerRequestBox className="w-full max-w-md lg:w-72 lg:shrink-0" />
++            <PlayerRequestBox className="w-full max-w-md lg:w-72 lg:shrink-0" />
++          </div>
+         </div>
+-      </div>
++      )}
+     </GameLauncher>
+   );
+-}
+\ No newline at end of file
++}
+diff --git a/src/features/games/grid/GridBoard.tsx b/src/features/games/grid/GridBoard.tsx
+index 8097abf..7a8f628 100644
+--- a/src/features/games/grid/GridBoard.tsx
++++ b/src/features/games/grid/GridBoard.tsx
+@@ -2,7 +2,7 @@
+ "use client";
+ 
+ import { useEffect, useState, useRef } from "react";
+-import type { Jugador } from "@/features/games/shared/types";
++import type { Jugador, Dificultad } from "@/features/games/shared/types";
+ import { GameResultDialog } from "@/features/games/shared/GameResultDialog";
+ import { GameButton } from "@/features/games/shared/GameButton";
+ import { PlayerSearch } from "@/features/games/shared/PlayerSearch";
+@@ -10,6 +10,12 @@ import { obtenerCodigoPais } from "@/features/games/shared/banderas";
+ import type { Tablero, Celda, Condicion } from "./type";
+ import { celdasValidasParaJugador, cumpleAmbasCondiciones } from "./logic";
+ 
++const ETIQUETA_DIFICULTAD: Record<Dificultad, string> = {
++  facil: "Fácil",
++  medio: "Medio",
++  dificil: "Difícil",
++};
++
+ const DEBUG_HABILITADO = process.env.NODE_ENV !== "production";
+ 
+ // El botoncito por casilla que revela las soluciones (CeldaDebug, más abajo)
+@@ -315,7 +321,7 @@ function obtenerCeldaEstatica(tablero: Tablero, fila: number, columna: number):
+   return tablero.celdas.find((c) => c.fila === fila && c.columna === columna);
+ }
+ 
+-export function GridBoard() {
++export function GridBoard({ dificultad }: { dificultad: Dificultad }) {
+   const [tablero, setTablero] = useState<Tablero | null>(null);
+   const [cargando, setCargando] = useState(true);
+   const [errorCarga, setErrorCarga] = useState<string | null>(null);
+@@ -343,8 +349,13 @@ export function GridBoard() {
+   const cargaIdRef = useRef(0);
+ 
+ 
++  // `dificultad` no cambia tras el montaje (GameLauncher desmonta el
++  // selector en cuanto se elige una y monta GridBoard ya con la elegida
++  // fijada), así que no hace falta re-suscribirse a sus cambios -- mismo
++  // razonamiento que ya llevaba este efecto con el array vacío.
+   useEffect(() => {
+     cargarTablero();
++    // eslint-disable-next-line react-hooks/exhaustive-deps
+   }, []);
+ 
+   // cargaIdRef descarta resultados de peticiones obsoletas -- mismo patrón
+@@ -373,7 +384,7 @@ export function GridBoard() {
+     setMostrandoRespuestas(false);
+ 
+     try {
+-      const res = await fetch("/api/tablero/generar");
++      const res = await fetch(`/api/tablero/generar?dificultad=${dificultad}`);
+       if (!res.ok) {
+         const data = await res.json().catch(() => null);
+         throw new Error(data?.error ?? "No se pudo generar el tablero.");
+@@ -582,9 +593,14 @@ export function GridBoard() {
+         </GameButton>
+       </div>
+ 
+-      <GameButton variant="secondary" onClick={cargarTablero}>
+-        Regenerar tablero
+-      </GameButton>
++      <div className="flex items-center gap-3">
++        <GameButton variant="secondary" onClick={cargarTablero}>
++          Regenerar tablero
++        </GameButton>
++        <span className="rounded-full border border-border bg-card px-3 py-1 text-xs font-medium text-muted-foreground">
++          Nivel: {ETIQUETA_DIFICULTAD[dificultad]}
++        </span>
++      </div>
+ 
+       {mensaje && !resultado && <p className="text-sm text-muted-foreground">{mensaje}</p>}
+ 
+diff --git a/src/features/games/grid/generarTablero.server.ts b/src/features/games/grid/generarTablero.server.ts
+index 023c4bc..242e1aa 100644
+--- a/src/features/games/grid/generarTablero.server.ts
++++ b/src/features/games/grid/generarTablero.server.ts
+@@ -3,7 +3,8 @@
+ // SOLO SERVIDOR. No importar desde componentes "use client".
+ 
+ import type { Condicion, Tablero, Celda } from "./type";
+-import { construirIndice, interseccionNoVacia, type Indice } from "./indiceEquipos.server";
++import type { Dificultad } from "@/features/games/shared/types";
++import { construirIndice, contarSolucionesCelda, type Indice } from "./indiceEquipos.server";
+ 
+ const LADO = 3;
+ const INTENTOS_CON_DIVERSIDAD = 60;
+@@ -12,6 +13,26 @@ const INTENTOS_FALLBACK = 20;
+ const MIN_JUGADORES_EQUIPO_FILA = 5;
+ const MIN_JUGADORES_NACIONALIDAD = 3;
+ 
++// Mínimo de jugadores válidos (soluciones posibles) que debe tener CADA una
++// de las 9 casillas del tablero para poder considerarse de ese nivel.
++// "dificil" mantiene el comportamiento original: solo se exige que exista
++// al menos una solución por casilla, nada más.
++//
++// Son valores de partida, no un compromiso cerrado -- si con los datos
++// actuales "facil" falla en generar tableros muy a menudo, bajar este
++// número aquí es el primer sitio donde tocar.
++const MIN_SOLUCIONES_POR_DIFICULTAD: Record<Dificultad, number> = {
++  facil: 10,
++  medio: 5,
++  dificil: 1,
++};
++
++const NOMBRE_DIFICULTAD: Record<Dificultad, string> = {
++  facil: "Fácil",
++  medio: "Medio",
++  dificil: "Difícil",
++};
++
+ function barajar<T>(items: T[]): T[] {
+   const copia = [...items];
+   for (let i = copia.length - 1; i > 0; i--) {
+@@ -23,14 +44,22 @@ function barajar<T>(items: T[]): T[] {
+ 
+ type Candidata = { tipo: "equipo"; valor: string } | { tipo: "nacionalidad"; valor: string };
+ 
+-function esValidaContraFila(candidata: Candidata, equipoFila: string, indice: Indice): boolean {
+-  if (candidata.tipo === "equipo") {
+-    const jugadoresFila = indice.jugadoresPorEquipo.get(equipoFila);
+-    const jugadoresColumna = indice.jugadoresPorEquipo.get(candidata.valor);
+-    if (!jugadoresFila || !jugadoresColumna) return false;
+-    return interseccionNoVacia(jugadoresFila, jugadoresColumna);
+-  }
+-  return indice.nacionalidadesPorEquipo.get(equipoFila)?.has(candidata.valor) ?? false;
++function condicionDeCandidata(candidata: Candidata): Condicion {
++  return { tipo: candidata.tipo, valor: candidata.valor };
++}
++
++// Reutiliza el mismo conteo de soluciones que ya usa el endpoint de debug
++// (contar-soluciones), así hay una única fuente de verdad para "cuántas
++// respuestas posibles tiene esta casilla". minSoluciones=1 equivale
++// exactamente al comportamiento anterior (solo exigir que exista alguna).
++function celdaCumpleMinimo(
++  equipoFila: string,
++  candidata: Candidata,
++  minSoluciones: number,
++  indice: Indice
++): boolean {
++  const condicionFila: Condicion = { tipo: "equipo", valor: equipoFila };
++  return contarSolucionesCelda(condicionFila, condicionDeCandidata(candidata), indice) >= minSoluciones;
+ }
+ 
+ function elegirFilasDiversificadas(clubesCandidatosFila: string[], indice: Indice): string[] {
+@@ -61,10 +90,15 @@ function elegirFilasDiversificadas(clubesCandidatosFila: string[], indice: Indic
+   return filas;
+ }
+ 
+-function columnasValidasPara(filas: string[], poolColumnas: Candidata[], indice: Indice): Candidata[] {
++function columnasValidasPara(
++  filas: string[],
++  poolColumnas: Candidata[],
++  minSoluciones: number,
++  indice: Indice
++): Candidata[] {
+   return barajar(poolColumnas).filter((candidata) => {
+     if (candidata.tipo === "equipo" && filas.includes(candidata.valor)) return false;
+-    return filas.every((equipoFila) => esValidaContraFila(candidata, equipoFila, indice));
++    return filas.every((equipoFila) => celdaCumpleMinimo(equipoFila, candidata, minSoluciones, indice));
+   });
+ }
+ 
+@@ -72,7 +106,10 @@ function columnasValidasPara(filas: string[], poolColumnas: Candidata[], indice:
+ // BD) pueden entrar en el pool de filas/columnas de tipo "equipo". Las
+ // nacionalidades no pasan por este filtro -- siguen "todas elegibles",
+ // como se decidió.
+-function generarCombinacion(indice: Indice): { filas: string[]; columnas: Candidata[] } | null {
++function generarCombinacion(
++  indice: Indice,
++  minSoluciones: number
++): { filas: string[]; columnas: Candidata[] } | null {
+   const clubesCandidatosFila = [...indice.jugadoresPorEquipo.entries()]
+     .filter(([equipo]) => indice.equiposElegibles.has(equipo))
+     .filter(([, jugadores]) => jugadores.size >= MIN_JUGADORES_EQUIPO_FILA)
+@@ -93,13 +130,13 @@ function generarCombinacion(indice: Indice): { filas: string[]; columnas: Candid
+ 
+   for (let i = 0; i < INTENTOS_CON_DIVERSIDAD; i++) {
+     const filas = elegirFilasDiversificadas(clubesCandidatosFila, indice);
+-    const columnas = columnasValidasPara(filas, poolColumnas, indice);
++    const columnas = columnasValidasPara(filas, poolColumnas, minSoluciones, indice);
+     if (columnas.length >= LADO) return { filas, columnas: columnas.slice(0, LADO) };
+   }
+ 
+   for (let i = 0; i < INTENTOS_FALLBACK; i++) {
+     const filas = barajar(clubesCandidatosFila).slice(0, LADO);
+-    const columnas = columnasValidasPara(filas, poolColumnas, indice);
++    const columnas = columnasValidasPara(filas, poolColumnas, minSoluciones, indice);
+     if (columnas.length >= LADO) return { filas, columnas: columnas.slice(0, LADO) };
+   }
+ 
+@@ -116,14 +153,17 @@ function celdasVacias(): Celda[] {
+   return celdas;
+ }
+ 
+-export async function generarTableroDesdeBD(): Promise<Tablero> {
++export async function generarTableroDesdeBD(dificultad: Dificultad = "dificil"): Promise<Tablero> {
+   const indice = await construirIndice();
+-  const combinacion = generarCombinacion(indice);
++  const minSoluciones = MIN_SOLUCIONES_POR_DIFICULTAD[dificultad];
++  const combinacion = generarCombinacion(indice, minSoluciones);
+ 
+   if (!combinacion) {
+-    throw new Error(
+-      "No se ha podido generar un tablero solucionable con los datos actuales. Sincroniza más jugadores/equipos e inténtalo de nuevo."
+-    );
++    const mensaje =
++      dificultad === "dificil"
++        ? "No se ha podido generar un tablero solucionable con los datos actuales. Sincroniza más jugadores/equipos e inténtalo de nuevo."
++        : `No se ha podido generar un tablero de nivel ${NOMBRE_DIFICULTAD[dificultad]} con los datos actuales -- hacen falta más jugadores en la base de datos para garantizar ${minSoluciones}+ respuestas posibles en cada casilla. Prueba con otro nivel o inténtalo de nuevo en unos días.`;
++    throw new Error(mensaje);
+   }
+ 
+   const condicionesFila = combinacion.filas.map(
+diff --git a/src/features/games/grid/indiceEquipos.server.ts b/src/features/games/grid/indiceEquipos.server.ts
+index 4e2d512..a0f5a48 100644
+--- a/src/features/games/grid/indiceEquipos.server.ts
++++ b/src/features/games/grid/indiceEquipos.server.ts
+@@ -109,20 +109,38 @@ export type ResultadoCelda = {
+   truncado: boolean;
+ };
+ 
+-export function listarSolucionesCelda(
+-  condicionFila: Condicion,
+-  condicionColumna: Condicion,
+-  indice: Indice
+-): ResultadoCelda {
++function idsSolucionCelda(condicionFila: Condicion, condicionColumna: Condicion, indice: Indice): string[] {
+   const setFila = setDeCondicion(condicionFila, indice);
+   const setColumna = setDeCondicion(condicionColumna, indice);
+-  if (!setFila || !setColumna) return { total: 0, nombres: [], truncado: false };
++  if (!setFila || !setColumna) return [];
+ 
+   const [pequeno, grande] = setFila.size <= setColumna.size ? [setFila, setColumna] : [setColumna, setFila];
+   const idsCoincidentes: string[] = [];
+   for (const id of pequeno) {
+     if (grande.has(id)) idsCoincidentes.push(id);
+   }
++  return idsCoincidentes;
++}
++
++// Versión ligera de listarSolucionesCelda que solo cuenta -- no construye
++// ni ordena la lista de nombres. Pensada para llamarse muchas veces seguidas
++// (p. ej. al generar un tablero comprobando el mínimo de soluciones por
++// casilla para cada dificultad), donde el coste de ordenar nombres en cada
++// intento sería innecesario.
++export function contarSolucionesCelda(
++  condicionFila: Condicion,
++  condicionColumna: Condicion,
++  indice: Indice
++): number {
++  return idsSolucionCelda(condicionFila, condicionColumna, indice).length;
++}
++
++export function listarSolucionesCelda(
++  condicionFila: Condicion,
++  condicionColumna: Condicion,
++  indice: Indice
++): ResultadoCelda {
++  const idsCoincidentes = idsSolucionCelda(condicionFila, condicionColumna, indice);
+ 
+   const nombres = idsCoincidentes
+     .map((id) => indice.nombresPorJugador.get(id) ?? "(sin nombre)")
+diff --git a/src/features/games/shared/GameLauncher.tsx b/src/features/games/shared/GameLauncher.tsx
+index b8bba6c..5a899a7 100644
+--- a/src/features/games/shared/GameLauncher.tsx
++++ b/src/features/games/shared/GameLauncher.tsx
+@@ -6,12 +6,24 @@ import Link from "next/link";
+ import { JUEGOS } from "./juegos";
+ import { GameButton } from "./GameButton";
+ import { COLOR_HEX_POR_ACENTO } from "./acento";
++import type { Dificultad } from "./types";
+ 
+ type GameLauncherProps = {
+   href: string;
+-  children: ReactNode;
++  // Cuando `dificultades` es true, `children` debe ser una función que
++  // recibe la dificultad elegida (para poder pasársela, p. ej., al
++  // componente del tablero). Cuando es false (o se omite), `children` es
++  // el nodo de siempre y se muestra el único botón "Empezar partida".
++  children: ReactNode | ((dificultad: Dificultad) => ReactNode);
++  dificultades?: boolean;
+ };
+ 
++const OPCIONES_DIFICULTAD: { valor: Dificultad; etiqueta: string; pista: string }[] = [
++  { valor: "facil", etiqueta: "Fácil", pista: "Casillas con muchas respuestas posibles" },
++  { valor: "medio", etiqueta: "Medio", pista: "Casillas con varias respuestas posibles" },
++  { valor: "dificil", etiqueta: "Difícil", pista: "Como el 3x3 de siempre" },
++];
++
+ // Partículas de fondo -- mismas posiciones fijas que en /jugar (Math.random()
+ // no vale en Server Component; aquí tampoco hace falta, unas pocas quietas
+ // ya dan el efecto). Aquí se tiñen del acento del juego en vez de ir
+@@ -32,13 +44,14 @@ function conRetraso(segundos: number, extra: CSSProperties = {}): CSSProperties
+   return { ["--retraso" as string]: `${segundos}s`, ...extra } as CSSProperties;
+ }
+ 
+-export function GameLauncher({ href, children }: GameLauncherProps) {
++export function GameLauncher({ href, children, dificultades = false }: GameLauncherProps) {
+   const [empezado, setEmpezado] = useState(false);
++  const [dificultad, setDificultad] = useState<Dificultad>("dificil");
+   const juego = JUEGOS.find((j) => j.href === href)!;
+   const { Icono, nombre, categoria, descripcion, acento, imagen, reto, stats } = juego;
+ 
+   if (empezado) {
+-    return <>{children}</>;
++    return <>{typeof children === "function" ? children(dificultad) : children}</>;
+   }
+ 
+   const colorAcento = COLOR_HEX_POR_ACENTO[acento];
+@@ -136,15 +149,49 @@ export function GameLauncher({ href, children }: GameLauncherProps) {
+             ))}
+           </div>
+ 
++          {dificultades ? (
++            <SelectorDificultad
++              onElegir={(elegida) => {
++                setDificultad(elegida);
++                setEmpezado(true);
++              }}
++            />
++          ) : (
++            <GameButton
++              onClick={() => setEmpezado(true)}
++              className="launcher-entrada mt-2 w-full py-4 font-heading text-lg font-bold tracking-wide sm:w-auto sm:px-12"
++              style={conRetraso(0.44)}
++            >
++              Empezar partida ▸
++            </GameButton>
++          )}
++        </div>
++      </div>
++    </div>
++  );
++}
++
++// Selector de nivel para juegos que lo necesiten (de momento, solo el
++// 3x3). Reemplaza al botón único "Empezar partida" cuando `dificultades`
++// está activado en <GameLauncher>.
++function SelectorDificultad({ onElegir }: { onElegir: (dificultad: Dificultad) => void }) {
++  return (
++    <div
++      className="launcher-entrada mt-2 flex w-full flex-col gap-3 sm:w-auto sm:flex-row"
++      style={conRetraso(0.44)}
++    >
++      {OPCIONES_DIFICULTAD.map(({ valor, etiqueta, pista }) => (
++        <div key={valor} className="flex flex-col items-center gap-1.5 text-center sm:items-start sm:text-left">
+           <GameButton
+-            onClick={() => setEmpezado(true)}
+-            className="launcher-entrada mt-2 w-full py-4 font-heading text-lg font-bold tracking-wide sm:w-auto sm:px-12"
+-            style={conRetraso(0.44)}
++            variant={valor === "dificil" ? "primary" : "secondary"}
++            onClick={() => onElegir(valor)}
++            className="w-full py-3 font-heading text-base font-bold tracking-wide sm:w-40"
+           >
+-            Empezar partida ▸
++            {etiqueta}
+           </GameButton>
++          <span className="max-w-[10rem] text-xs leading-snug text-muted-foreground">{pista}</span>
+         </div>
+-      </div>
++      ))}
+     </div>
+   );
+ }
+diff --git a/src/features/games/shared/types.ts b/src/features/games/shared/types.ts
+index 2e91f70..a9de4f4 100644
+--- a/src/features/games/shared/types.ts
++++ b/src/features/games/shared/types.ts
+@@ -4,6 +4,12 @@ export type Equipo = {
+   escudo: string;
+ };
+ 
++// Nivel de dificultad del 3x3 (y, a futuro, de cualquier otro minijuego que
++// quiera reutilizar el mismo selector). "dificil" es el comportamiento
++// original del juego -- sin ningún mínimo de respuestas posibles por
++// casilla, solo se exige que exista al menos una.
++export type Dificultad = "facil" | "medio" | "dificil";
++
+ export type Jugador = {
+   nombre: string;
+   fechaNacimiento: string;

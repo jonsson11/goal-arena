@@ -2,13 +2,19 @@
 "use client";
 
 import { useEffect, useState, useRef } from "react";
-import type { Jugador } from "@/features/games/shared/types";
+import type { Jugador, Dificultad } from "@/features/games/shared/types";
 import { GameResultDialog } from "@/features/games/shared/GameResultDialog";
 import { GameButton } from "@/features/games/shared/GameButton";
 import { PlayerSearch } from "@/features/games/shared/PlayerSearch";
 import { obtenerCodigoPais } from "@/features/games/shared/banderas";
 import type { Tablero, Celda, Condicion } from "./type";
 import { celdasValidasParaJugador, cumpleAmbasCondiciones } from "./logic";
+
+const ETIQUETA_DIFICULTAD: Record<Dificultad, string> = {
+  facil: "Fácil",
+  medio: "Medio",
+  dificil: "Difícil",
+};
 
 const DEBUG_HABILITADO = process.env.NODE_ENV !== "production";
 
@@ -315,7 +321,7 @@ function obtenerCeldaEstatica(tablero: Tablero, fila: number, columna: number): 
   return tablero.celdas.find((c) => c.fila === fila && c.columna === columna);
 }
 
-export function GridBoard() {
+export function GridBoard({ dificultad }: { dificultad: Dificultad }) {
   const [tablero, setTablero] = useState<Tablero | null>(null);
   const [cargando, setCargando] = useState(true);
   const [errorCarga, setErrorCarga] = useState<string | null>(null);
@@ -343,8 +349,13 @@ export function GridBoard() {
   const cargaIdRef = useRef(0);
 
 
+  // `dificultad` no cambia tras el montaje (GameLauncher desmonta el
+  // selector en cuanto se elige una y monta GridBoard ya con la elegida
+  // fijada), así que no hace falta re-suscribirse a sus cambios -- mismo
+  // razonamiento que ya llevaba este efecto con el array vacío.
   useEffect(() => {
     cargarTablero();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // cargaIdRef descarta resultados de peticiones obsoletas -- mismo patrón
@@ -373,7 +384,7 @@ export function GridBoard() {
     setMostrandoRespuestas(false);
 
     try {
-      const res = await fetch("/api/tablero/generar");
+      const res = await fetch(`/api/tablero/generar?dificultad=${dificultad}`);
       if (!res.ok) {
         const data = await res.json().catch(() => null);
         throw new Error(data?.error ?? "No se pudo generar el tablero.");
@@ -582,9 +593,14 @@ export function GridBoard() {
         </GameButton>
       </div>
 
-      <GameButton variant="secondary" onClick={cargarTablero}>
-        Regenerar tablero
-      </GameButton>
+      <div className="flex items-center gap-3">
+        <GameButton variant="secondary" onClick={cargarTablero}>
+          Regenerar tablero
+        </GameButton>
+        <span className="rounded-full border border-border bg-card px-3 py-1 text-xs font-medium text-muted-foreground">
+          Nivel: {ETIQUETA_DIFICULTAD[dificultad]}
+        </span>
+      </div>
 
       {mensaje && !resultado && <p className="text-sm text-muted-foreground">{mensaje}</p>}
 

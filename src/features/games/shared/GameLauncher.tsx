@@ -6,10 +6,33 @@ import Link from "next/link";
 import { JUEGOS } from "./juegos";
 import { GameButton } from "./GameButton";
 import { COLOR_HEX_POR_ACENTO } from "./acento";
+import type { Dificultad } from "./types";
 
 type GameLauncherProps = {
   href: string;
-  children: ReactNode;
+  // Cuando `dificultades` es true, `children` debe ser una función que
+  // recibe la dificultad elegida (para poder pasársela, p. ej., al
+  // componente del tablero). Cuando es false (o se omite), `children` es
+  // el nodo de siempre y se muestra el único botón "Empezar partida".
+  children: ReactNode | ((dificultad: Dificultad) => ReactNode);
+  dificultades?: boolean;
+};
+
+const OPCIONES_DIFICULTAD: { valor: Dificultad; etiqueta: string; pista: string }[] = [
+  { valor: "facil", etiqueta: "Fácil", pista: "Conocimiento básico." },
+  { valor: "medio", etiqueta: "Medio", pista: "Sabes de la redonda." },
+  { valor: "dificil", etiqueta: "Difícil", pista: "Experto nivel elxokas." },
+];
+
+// Un tono por nivel (semáforo: verde/ámbar/rojo) en vez de reutilizar el
+// acento del juego -- aquí el color comunica dificultad, no marca. Se
+// aplican por inline style (no por clase Tailwind) para que ganen siempre
+// a los estilos por defecto de <GameButton>, sin depender del orden en que
+// Tailwind vuelque las clases en el CSS final.
+const ESTILO_POR_DIFICULTAD: Record<Dificultad, { fondo: string; texto: string }> = {
+  facil: { fondo: "#4ADE9A", texto: "#0B1220" },
+  medio: { fondo: "#E8A93D", texto: "#241300" },
+  dificil: { fondo: "#E0524F", texto: "#FFFFFF" },
 };
 
 // Partículas de fondo -- mismas posiciones fijas que en /jugar (Math.random()
@@ -32,13 +55,14 @@ function conRetraso(segundos: number, extra: CSSProperties = {}): CSSProperties 
   return { ["--retraso" as string]: `${segundos}s`, ...extra } as CSSProperties;
 }
 
-export function GameLauncher({ href, children }: GameLauncherProps) {
+export function GameLauncher({ href, children, dificultades = false }: GameLauncherProps) {
   const [empezado, setEmpezado] = useState(false);
+  const [dificultad, setDificultad] = useState<Dificultad>("dificil");
   const juego = JUEGOS.find((j) => j.href === href)!;
   const { Icono, nombre, categoria, descripcion, acento, imagen, reto, stats } = juego;
 
   if (empezado) {
-    return <>{children}</>;
+    return <>{typeof children === "function" ? children(dificultad) : children}</>;
   }
 
   const colorAcento = COLOR_HEX_POR_ACENTO[acento];
@@ -136,15 +160,56 @@ export function GameLauncher({ href, children }: GameLauncherProps) {
             ))}
           </div>
 
-          <GameButton
-            onClick={() => setEmpezado(true)}
-            className="launcher-entrada mt-2 w-full py-4 font-heading text-lg font-bold tracking-wide sm:w-auto sm:px-12"
-            style={conRetraso(0.44)}
-          >
-            Empezar partida ▸
-          </GameButton>
+          {dificultades ? (
+            <SelectorDificultad
+              onElegir={(elegida) => {
+                setDificultad(elegida);
+                setEmpezado(true);
+              }}
+            />
+          ) : (
+            <GameButton
+              onClick={() => setEmpezado(true)}
+              className="launcher-entrada mt-2 w-full py-4 font-heading text-lg font-bold tracking-wide sm:w-auto sm:px-12"
+              style={conRetraso(0.44)}
+            >
+              Empezar partida ▸
+            </GameButton>
+          )}
         </div>
       </div>
+    </div>
+  );
+}
+
+// Selector de nivel para juegos que lo necesiten (de momento, solo el
+// 3x3). Reemplaza al botón único "Empezar partida" cuando `dificultades`
+// está activado en <GameLauncher>.
+function SelectorDificultad({ onElegir }: { onElegir: (dificultad: Dificultad) => void }) {
+  return (
+    <div
+      // Siempre en fila, también en móvil (a petición expresa) -- lo que
+      // cambia entre breakpoints es el tamaño de cada botón, no el layout.
+      className="launcher-entrada mt-2 flex w-full flex-row justify-center gap-2 sm:w-auto sm:justify-start sm:gap-3"
+      style={conRetraso(0.44)}
+    >
+      {OPCIONES_DIFICULTAD.map(({ valor, etiqueta, pista }) => (
+        <div
+          key={valor}
+          className="flex flex-1 flex-col items-center gap-1 text-center sm:flex-none sm:items-start sm:text-left"
+        >
+          <GameButton
+            onClick={() => onElegir(valor)}
+            className="w-full px-1 py-2 font-heading text-xs font-bold tracking-wide sm:w-40 sm:px-4 sm:py-3 sm:text-base"
+            style={{ backgroundColor: ESTILO_POR_DIFICULTAD[valor].fondo, color: ESTILO_POR_DIFICULTAD[valor].texto }}
+          >
+            {etiqueta}
+          </GameButton>
+          <span className="max-w-[6.5rem] text-[10px] leading-snug text-muted-foreground sm:max-w-[10rem] sm:text-xs">
+            {pista}
+          </span>
+        </div>
+      ))}
     </div>
   );
 }

@@ -109,20 +109,38 @@ export type ResultadoCelda = {
   truncado: boolean;
 };
 
-export function listarSolucionesCelda(
-  condicionFila: Condicion,
-  condicionColumna: Condicion,
-  indice: Indice
-): ResultadoCelda {
+function idsSolucionCelda(condicionFila: Condicion, condicionColumna: Condicion, indice: Indice): string[] {
   const setFila = setDeCondicion(condicionFila, indice);
   const setColumna = setDeCondicion(condicionColumna, indice);
-  if (!setFila || !setColumna) return { total: 0, nombres: [], truncado: false };
+  if (!setFila || !setColumna) return [];
 
   const [pequeno, grande] = setFila.size <= setColumna.size ? [setFila, setColumna] : [setColumna, setFila];
   const idsCoincidentes: string[] = [];
   for (const id of pequeno) {
     if (grande.has(id)) idsCoincidentes.push(id);
   }
+  return idsCoincidentes;
+}
+
+// Versión ligera de listarSolucionesCelda que solo cuenta -- no construye
+// ni ordena la lista de nombres. Pensada para llamarse muchas veces seguidas
+// (p. ej. al generar un tablero comprobando el mínimo de soluciones por
+// casilla para cada dificultad), donde el coste de ordenar nombres en cada
+// intento sería innecesario.
+export function contarSolucionesCelda(
+  condicionFila: Condicion,
+  condicionColumna: Condicion,
+  indice: Indice
+): number {
+  return idsSolucionCelda(condicionFila, condicionColumna, indice).length;
+}
+
+export function listarSolucionesCelda(
+  condicionFila: Condicion,
+  condicionColumna: Condicion,
+  indice: Indice
+): ResultadoCelda {
+  const idsCoincidentes = idsSolucionCelda(condicionFila, condicionColumna, indice);
 
   const nombres = idsCoincidentes
     .map((id) => indice.nombresPorJugador.get(id) ?? "(sin nombre)")
