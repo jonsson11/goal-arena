@@ -3,7 +3,7 @@
 
 import { useEffect, useState } from "react";
 import { useAuth } from "@/features/auth/AuthContext";
-import type { RespuestaPartida } from "@/lib/experiencia";
+import { BONUS_DIARIO_EXP, type RespuestaPartida } from "@/lib/experiencia";
 
 // Tiempos de la secuencia de animación, en ms desde que se monta. Solo se
 // usan si hubo subida de nivel -- sin subida es un solo tramo (ver abajo).
@@ -79,7 +79,7 @@ export function ExperienciaGanada({ respuesta }: { respuesta: RespuestaPartida |
 
   if (!respuesta || !usuario) return null;
 
-  const { expBase, bonusDiario, expGanada } = respuesta;
+  const { bonusTiempoPct, bonusDiario, expGanada } = respuesta;
 
   return (
     <div className="launcher-entrada relative z-10 flex w-full flex-col gap-2.5 rounded-xl border border-primary/25 bg-background/40 p-4">
@@ -138,9 +138,14 @@ export function ExperienciaGanada({ respuesta }: { respuesta: RespuestaPartida |
         }`}
       >
         <span className="text-sm font-bold text-primary">+{expGanada} EXP</span>
+        {bonusTiempoPct > 0 && (
+          <span className="rounded-full bg-[var(--secondary)]/15 px-2 py-0.5 text-xs font-bold text-[var(--secondary)]">
+            ⚡ +{bonusTiempoPct}% rapidez
+          </span>
+        )}
         {bonusDiario && (
           <span className="rounded-full bg-[var(--gold)]/15 px-2 py-0.5 text-xs font-bold text-[var(--gold)]">
-            🔥 +{expGanada - expBase} bono diario
+            🔥 +{BONUS_DIARIO_EXP} bono diario
           </span>
         )}
       </div>

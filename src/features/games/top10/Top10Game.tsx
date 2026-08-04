@@ -233,10 +233,13 @@ export function Top10Game() {
     setMensaje(`¡${encontrada.nombre} correcto!`);
 
     if (nuevosAcertados.length === ranking.respuestas.length) {
+      // Una sola llamada, reusada para el marcador y para el registro --
+      // igual que en GridBoard, para que no puedan desincronizarse.
+      const segundos = segundosTranscurridos(horaInicio);
       setMensaje("");
-      setTiempoFinal(segundosTranscurridos(horaInicio));
+      setTiempoFinal(segundos);
       setPopupAbierto(true);
-      registrarPartida("TOP10", null, "victoria").then(setExperiencia);
+      registrarPartida("TOP10", null, "victoria", segundos).then(setExperiencia);
     }
   }
 

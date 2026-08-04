@@ -21,13 +21,17 @@ export function useRegistrarPartida() {
     async (
       juego: "GRID" | "TOP10",
       modo: string | null,
-      resultado: "victoria" | "derrota"
+      resultado: "victoria" | "derrota",
+      /** Segundos que tardó la partida -- solo importa en victoria (bonus
+       * por rapidez, ver src/lib/experiencia.ts), pero se manda siempre
+       * igual para no bifurcar la firma; en derrota el servidor ni lo mira. */
+      segundos = 0
     ): Promise<RespuestaPartida | null> => {
       try {
         const res = await fetch("/api/partidas", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ juego, modo, resultado }),
+          body: JSON.stringify({ juego, modo, resultado, segundos }),
         });
         if (!res.ok) return null;
 

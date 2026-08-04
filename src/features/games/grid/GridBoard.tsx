@@ -541,11 +541,16 @@ export function GridBoard({ dificultad }: { dificultad: Dificultad }) {
 
     const todasLlenas = celdasFinales.every((c) => c.jugador !== null);
     if (todasLlenas) {
+      // Se calcula una sola vez y se reusa -- llamar dos veces a
+      // segundosTranscurridos() (una para el marcador, otra para el
+      // registro) podría dar dos valores ligeramente distintos y
+      // desincronizar lo que se ve del tiempo real que se registra.
+      const segundos = segundosTranscurridos(horaInicio);
       setMensaje("");
-      setTiempoFinal(segundosTranscurridos(horaInicio));
+      setTiempoFinal(segundos);
       setResultado("completado");
       setPopupAbierto(true);
-      registrarPartida("GRID", dificultad, "victoria").then(setExperiencia);
+      registrarPartida("GRID", dificultad, "victoria", segundos).then(setExperiencia);
     }
   }
 

@@ -1,23 +1,26 @@
 // src/app/api/partidas/route.ts
 //
-// POST { juego, modo?, resultado } -> registra una partida terminada
-// (victoria o derrota) del usuario con sesión activa, le suma la EXP que
-// corresponda (0 en derrota) y devuelve el "antes" y "después" de su
-// nivel para que el cliente pueda animar la barra en el cartel de
+// POST { juego, modo?, resultado, segundos? } -> registra una partida
+// terminada (victoria o derrota) del usuario con sesión activa, le suma la
+// EXP que corresponda (0 en derrota) y devuelve el "antes" y "después" de
+// su nivel para que el cliente pueda animar la barra en el cartel de
 // resultado (ver ExperienciaGanada.tsx).
 //
 // Solo victorias dan EXP. La primera victoria del día (cualquier modo)
-// suma además el bonus diario -- ver src/lib/experiencia.ts.
+// suma además el bonus diario, y completar rápido suma un % extra sobre la
+// base según el modo -- `segundos` (tiempo que tardó la partida) es lo que
+// hace falta para ese cálculo. Todo el reparto vive en
+// calcularExperienciaVictoria() (src/lib/experiencia.ts), aquí solo se
+// llama y se persiste el resultado.
 
 import { NextResponse } from "next/server";
 import { crearClienteSupabaseServidor } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
 import {
   esCombinacionValida,
-  expBasePorVictoria,
   estaDisponibleBonusDiario,
+  calcularExperienciaVictoria,
   aplicarExperiencia,
-  BONUS_DIARIO_EXP,
   type JuegoPartida,
 } from "@/lib/experiencia";
 
@@ -25,6 +28,12 @@ type Body = {
   juego?: string;
   modo?: string | null;
   resultado?: "victoria" | "derrota";
+  /** Segundos que tardó la partida, para el bonus por rapidez. Opcional y
+   * sin validar más allá de "es un número" -- lo manda el cliente, así que
+   * no es un dato de confianza; si viene mal o no viene, simplemente no
+   * hay bonus por tiempo (ver bonusPorcentajePorTiempo), no se rechaza la
+   * partida entera por esto. */
+  segundos?: number;
 };
 
 export async function POST(request: Request) {
@@ -47,6 +56,7 @@ export async function POST(request: Request) {
   const juego = body.juego ?? "";
   const modo = body.modo ?? null;
   const resultado = body.resultado;
+  const segundos = body.segundos;
 
   if (resultado !== "victoria" && resultado !== "derrota") {
     return NextResponse.json({ error: "Falta o es inválido el resultado." }, { status: 400 });
@@ -79,9 +89,10 @@ export async function POST(request: Request) {
     if (!actual) throw new Error("Usuario no encontrado.");
 
     const esVictoria = resultado === "victoria";
-    const expBase = esVictoria ? expBasePorVictoria(juego as JuegoPartida, modo) : 0;
-    const bonusDiario = esVictoria && estaDisponibleBonusDiario(actual.ultimoBonusDiario, ahora);
-    const expGanada = expBase + (bonusDiario ? BONUS_DIARIO_EXP : 0);
+    const bonusDiarioDisponible = esVictoria && estaDisponibleBonusDiario(actual.ultimoBonusDiario, ahora);
+    const { expBase, bonusTiempoPct, expTiempoExtra, bonusDiario, expGanada } = esVictoria
+      ? calcularExperienciaVictoria(juego as JuegoPartida, modo, segundos ?? 0, bonusDiarioDisponible)
+      : { expBase: 0, bonusTiempoPct: 0, expTiempoExtra: 0, bonusDiario: false, expGanada: 0 };
 
     const estadoAntes = {
       nivel: actual.nivel,
@@ -118,7 +129,7 @@ export async function POST(request: Request) {
       },
     });
 
-    return { estadoAntes, estadoDespues, expBase, bonusDiario, expGanada };
+    return { estadoAntes, estadoDespues, expBase, bonusTiempoPct, expTiempoExtra, bonusDiario, expGanada };
   });
 
   return NextResponse.json(resultadoFinal);
