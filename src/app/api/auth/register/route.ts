@@ -8,6 +8,7 @@
 import { NextResponse } from "next/server";
 import { crearClienteSupabaseServidor } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
+import { validarNombreUsuario } from "@/lib/moderacionNombre";
 
 /** Traduce los mensajes de error de Supabase Auth (en inglés) a algo legible. */
 function traducirErrorAuth(mensaje: string): string {
@@ -40,6 +41,11 @@ export async function POST(request: Request) {
   }
   if (password.length < 6) {
     return NextResponse.json({ error: "La contraseña debe tener al menos 6 caracteres." }, { status: 400 });
+  }
+
+  const validacionNombre = validarNombreUsuario(nombre);
+  if (!validacionNombre.valido) {
+    return NextResponse.json({ error: validacionNombre.error }, { status: 400 });
   }
 
   // Se comprueba ANTES de crear la cuenta en Supabase Auth -- si lo
