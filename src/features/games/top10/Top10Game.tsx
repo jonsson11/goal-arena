@@ -280,30 +280,40 @@ export function Top10Game() {
               {/* Pegado al número, no centrado. En vez de encoger la letra
                   hasta ilegible cuando el nombre es largo, NombreAbreviable
                   mide con ResizeObserver el hueco real que le queda al
-                  nombre (ya descontados badge/valor/bandera) y decide si
-                  cabe entero o hay que abreviarlo ("F. Valverde"). Con el
-                  ancho completo en móvil (ver comentario del grid arriba),
-                  este hueco real es mucho mayor y el nombre entero cabe casi
-                  siempre. */}
-              {acertado ? (
-                <NombreAbreviable
-                  nombre={entrada.nombre}
-                  className={`flex-1 text-left font-semibold text-lg sm:text-xl ${estilo.nombre}`}
-                />
-              ) : (
-                <span
-                  className={`min-w-0 flex-1 truncate text-left font-semibold text-base sm:text-base ${estilo.nombre}`}
-                >
-                  ???
-                </span>
-              )}
-              {acertado && (
-                <span
-                  className={`shrink-0 animate-in fade-in zoom-in duration-300 text-sm font-bold sm:text-base ${estilo.nombre}`}
-                >
-                  ({entrada.valor})
-                </span>
-              )}
+                  nombre (ya descontados badge/bandera) y decide si cabe
+                  entero o hay que abreviarlo ("F. Valverde"). Con el ancho
+                  completo en móvil (ver comentario del grid arriba), este
+                  hueco real es mucho mayor y el nombre entero cabe casi
+                  siempre.
+
+                  El valor (goles, edad...) va DEBAJO del nombre, en
+                  pequeño, no pegado a su derecha -- con valores cortos
+                  ("46") cabía bien en línea, pero con textos largos como
+                  una edad formateada ("40 años, 4 meses y 17 días") ese
+                  hueco fijo (shrink-0) se comía todo el ancho y dejaba el
+                  nombre sin sitio donde pintarse. Así siempre hay hueco de
+                  sobra para el nombre, sea cual sea el valor. */}
+              <div className="flex min-w-0 flex-1 flex-col justify-center gap-0.5">
+                {acertado ? (
+                  <NombreAbreviable
+                    nombre={entrada.nombre}
+                    className={`text-left font-semibold text-lg sm:text-xl ${estilo.nombre}`}
+                  />
+                ) : (
+                  <span
+                    className={`min-w-0 truncate text-left font-semibold text-base sm:text-base ${estilo.nombre}`}
+                  >
+                    ???
+                  </span>
+                )}
+                {acertado && (
+                  <span
+                    className={`animate-in fade-in truncate text-left text-xs font-medium opacity-80 duration-300 sm:text-sm ${estilo.nombre}`}
+                  >
+                    {entrada.valorTexto ?? entrada.valor}
+                  </span>
+                )}
+              </div>
               <span className="flex shrink-0 items-center justify-end">
                 {codigoPais && (
                   <span className={`fi fi-${codigoPais} h-4.5 w-6 rounded-sm sm:h-6 sm:w-9`} />
@@ -326,6 +336,10 @@ export function Top10Game() {
           Rendirse
         </GameButton>
       </div>
+
+      <GameButton variant="secondary" onClick={cargarRanking}>
+        Cambiar Top10
+      </GameButton>
 
       <p className="text-sm text-muted-foreground">
         {acertados.length}/{total} acertados

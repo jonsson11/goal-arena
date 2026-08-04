@@ -12,8 +12,13 @@ export function HeroSection() {
       <Image
         src="/LOGO ARENA-ConLetra.png"
         alt="Goal Arena"
+        // Mismo archivo que en el Header (1000x300px reales, ratio 10:3).
+        // 340x104 no respetaba esa proporción exacta -- ver el comentario
+        // largo en Header.tsx para el porqué. Aquí no se veía el aviso
+        // en consola porque esta imagen solo aparece en "/", pero el
+        // desajuste era el mismo; 340x102 sí es 10:3 exacto.
         width={340}
-        height={104}
+        height={102}
         priority
         className="h-auto w-56 sm:w-72"
       />

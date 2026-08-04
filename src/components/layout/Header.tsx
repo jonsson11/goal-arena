@@ -61,11 +61,23 @@ export default function Header() {
           <Image
             src="/LOGO ARENA-ConLetra.png"
             alt="Goal Arena"
-            width={160}
+            // El archivo real (public/LOGO ARENA-ConLetra.png) mide
+            // 1000x300px -- ratio 10:3. El aviso de Next.js no salía por
+            // combinar clase + style (eso es justo el patrón que ellos
+            // recomiendan); salía porque width/height aquí NO respetaban
+            // esa proporción real (160x36 = ratio ~4.44, no 3.33). Next
+            // compara el tamaño ya renderizado contra estos números, y al
+            // no coincidir la proporción, el eje libre ("auto") acababa
+            // renderizando distinto de su prop mientras el eje fijo sí
+            // coincidía -- de ahí "uno modificado, el otro no". Con
+            // 120x36 (proporción real) ambos ejes cuadran y el aviso
+            // desaparece. Si cambias el logo por uno con otra proporción,
+            // recalcula width = height * (ancho_real / alto_real).
+            width={120}
             height={36}
             priority
-            className="logo-flip h-9"
-            style={{ width: "auto" }}
+            className="logo-flip"
+            style={{ height: "2.25rem", width: "auto" }}
           />
         </span>
       </Link>

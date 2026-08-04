@@ -15,6 +15,15 @@
  *
  *   --dry-run  enseña lo que haría sin escribir nada. Úsalo siempre antes.
  *
+ * ── MÉTRICA ─────────────────────────────────────────────────────────
+ *   Solo con --archivo: añade "metrica": "EDAD" al JSON (por defecto es
+ *   "GOLES", compatible con todos los archivos ya existentes) y pon el
+ *   "valor" de cada entrada como { "anios": 40, "meses": 4, "dias": 17 }
+ *   en vez de un número -- útil para rankings tipo "goleadores más
+ *   veteranos", donde el dato no es un número simple. Ver plantilla en
+ *   data/top10/plantilla-edad.json. Con EDAD no se toca PlayerStat (esa
+ *   tabla es solo goles/asistencias por temporada, no aplica aquí).
+ *
  * ── QUÉ ESCRIBE ─────────────────────────────────────────────────────
  *   Competition   upsert por `codigo` ("PD"). API y archivo convergen aquí.
  *   PlayerStat    una fila por jugador con sus goles en esa temporada.
@@ -75,6 +84,8 @@ interface Entrada {
   nombre: string
   externalId?: string
   goles: number
+  /** Texto formateado a mostrar en vez de `goles` (ej. edad "40 años, 4 meses y 17 días"). */
+  valorTexto?: string
   equipo?: string
 }
 
@@ -86,7 +97,38 @@ interface Fuente {
   titulo: string
   descripcion?: string
   origen: Top10Fuente
+  // Casi siempre GOLES (lo único que soportaba la API). Los JSON manuales
+  // pueden declarar otra con "metrica" -- ver desdeArchivo().
+  metrica: Top10Metrica
   entradas: Entrada[]
+}
+
+/** Desglose de edad tal cual se escribe a mano en el JSON. */
+interface EdadJson {
+  anios: number
+  meses?: number
+  dias?: number
+}
+
+function esEdadJson(v: unknown): v is EdadJson {
+  return typeof v === 'object' && v !== null && typeof (v as EdadJson).anios === 'number'
+}
+
+function formatearEdad(e: EdadJson): string {
+  const partes: string[] = [`${e.anios} ${e.anios === 1 ? 'año' : 'años'}`]
+  if (e.meses) partes.push(`${e.meses} ${e.meses === 1 ? 'mes' : 'meses'}`)
+  if (e.dias) partes.push(`${e.dias} ${e.dias === 1 ? 'día' : 'días'}`)
+  if (partes.length === 1) return partes[0]
+  return `${partes.slice(0, -1).join(', ')} y ${partes[partes.length - 1]}`
+}
+
+// Solo para tener ALGÚN número en Top10Entry.valor (el campo es Float y
+// no admite null) -- el orden real de la tabla lo decide la posición de
+// la entrada en el array del JSON, no este número, así que basta con que
+// sea razonablemente comparable (más años = número más alto). No se usa
+// para nada más: lo que se enseña en pantalla es `valorTexto`.
+function edadANumeroOrdenable(e: EdadJson): number {
+  return e.anios * 365 + (e.meses ?? 0) * 30 + (e.dias ?? 0)
 }
 
 /** Lo que devuelve la API por cada goleador */
@@ -100,7 +142,9 @@ interface ApiScorer {
 interface EntradaJson {
   nombre: string
   externalId?: string | number
-  valor?: number
+  // Número de siempre (goles, asistencias...) o, si `metrica` del archivo
+  // es "EDAD", un objeto { anios, meses, dias } -- ver formatearEdad().
+  valor?: number | EdadJson
   goles?: number
   equipo?: string
 }
@@ -148,6 +192,7 @@ async function desdeApi(codigo: string, anio: number): Promise<Fuente> {
     temporada,
     titulo: `Máximos goleadores de ${d.competition.name} ${temporada}`,
     origen: Top10Fuente.API,
+    metrica: Top10Metrica.GOLES,
     entradas: d.scorers.map((s: ApiScorer) => ({
       nombre: s.player.name,
       externalId: String(s.player.id),
@@ -167,12 +212,33 @@ function desdeArchivo(ruta: string): Fuente {
       ? temporadaTexto(datos.temporada, unica)
       : String(datos.temporada)
 
-  const entradas: Entrada[] = datos.entradas.map((e: EntradaJson) => ({
-    nombre: String(e.nombre).trim(),
-    externalId: e.externalId ? String(e.externalId) : undefined,
-    goles: Number(e.valor ?? e.goles),
-    equipo: e.equipo?.trim() || undefined,
-  }))
+  // Por defecto GOLES (compatible con todos los JSON que ya existían, que
+  // no declaraban "metrica"). Escribe "metrica": "EDAD" en el JSON y pon
+  // el "valor" de cada entrada como { "anios": 40, "meses": 4, "dias": 17 }
+  // para un ranking tipo "goleadores más veteranos" -- se muestra
+  // formateado ("40 años, 4 meses y 17 días") en vez de un número pelado.
+  const metrica: Top10Metrica =
+    typeof datos.metrica === 'string' && datos.metrica.toUpperCase() in Top10Metrica
+      ? (datos.metrica.toUpperCase() as Top10Metrica)
+      : Top10Metrica.GOLES
+
+  const entradas: Entrada[] = datos.entradas.map((e: EntradaJson) => {
+    if (esEdadJson(e.valor)) {
+      return {
+        nombre: String(e.nombre).trim(),
+        externalId: e.externalId ? String(e.externalId) : undefined,
+        goles: edadANumeroOrdenable(e.valor),
+        valorTexto: formatearEdad(e.valor),
+        equipo: e.equipo?.trim() || undefined,
+      }
+    }
+    return {
+      nombre: String(e.nombre).trim(),
+      externalId: e.externalId ? String(e.externalId) : undefined,
+      goles: Number(e.valor ?? e.goles),
+      equipo: e.equipo?.trim() || undefined,
+    }
+  })
 
   if (entradas.some((e) => !e.nombre)) throw new Error('Hay entradas sin nombre en el JSON.')
 
@@ -183,6 +249,7 @@ function desdeArchivo(ruta: string): Fuente {
     titulo: datos.titulo?.trim() || `Máximos goleadores de ${nombreCompeticion} ${temporada}`,
     descripcion: datos.descripcion,
     origen: Top10Fuente.MANUAL,
+    metrica,
     entradas,
   }
 }
@@ -213,9 +280,8 @@ async function main() {
 
   console.log(`\n${fuente.titulo}   [${fuente.origen}]\n`)
   fuente.entradas.forEach((e, i) => {
-    console.log(
-      `  ${String(i + 1).padStart(2)}. ${e.nombre.padEnd(26)} ${String(e.goles).padStart(3)} goles   ${e.equipo ?? ''}`
-    )
+    const valorMostrado = e.valorTexto ?? `${e.goles} goles`
+    console.log(`  ${String(i + 1).padStart(2)}. ${e.nombre.padEnd(26)} ${valorMostrado.padEnd(24)} ${e.equipo ?? ''}`)
   })
 
   // --- Jugadores: se indexan por externalId y por nombre/alias normalizados ---
@@ -321,32 +387,38 @@ const sinEquipo = SELECCIONES.has(fuente.codigo)
     },
   })
 
-  for (const r of resueltos) {
-    const teamId = buscarEquipo(r.entrada.equipo)
-    await prisma.playerStat.upsert({
-      where: {
-        playerId_competitionId_temporada: {
+  // PlayerStat es la tabla de "goles/asistencias por temporada" -- solo
+  // tiene sentido tocarla cuando el ranking de verdad es de GOLES. Para
+  // otras métricas (ej. EDAD) `r.entrada.goles` no es un dato real de la
+  // temporada, así que ni se escribe ahí.
+  if (fuente.metrica === Top10Metrica.GOLES) {
+    for (const r of resueltos) {
+      const teamId = buscarEquipo(r.entrada.equipo)
+      await prisma.playerStat.upsert({
+        where: {
+          playerId_competitionId_temporada: {
+            playerId: r.playerId,
+            competitionId: competition.id,
+            temporada: fuente.temporada,
+          },
+        },
+        update: { goles: r.entrada.goles, teamId },
+        create: {
           playerId: r.playerId,
           competitionId: competition.id,
           temporada: fuente.temporada,
+          goles: r.entrada.goles,
+          teamId,
         },
-      },
-      update: { goles: r.entrada.goles, teamId },
-        create: {
-        playerId: r.playerId,
-        competitionId: competition.id,
-        temporada: fuente.temporada,
-        goles: r.entrada.goles,
-        teamId,
-      },
-    })
+      })
+    }
   }
 
   const existente = await prisma.top10Ranking.findFirst({
     where: {
       competitionId: competition.id,
       temporada: fuente.temporada,
-      metrica: Top10Metrica.GOLES,
+      metrica: fuente.metrica,
     },
     select: { id: true },
   })
@@ -365,7 +437,7 @@ const sinEquipo = SELECCIONES.has(fuente.codigo)
           ...datos,
           competitionId: competition.id,
           temporada: fuente.temporada,
-          metrica: Top10Metrica.GOLES,
+          metrica: fuente.metrica,
         },
       })
 
@@ -376,6 +448,7 @@ const sinEquipo = SELECCIONES.has(fuente.codigo)
       posicion: r.posicion,
       playerId: r.playerId,
       valor: r.entrada.goles,
+      valorTexto: r.entrada.valorTexto ?? null,
       equipoTexto: r.entrada.equipo ?? null,
     })),
   })

@@ -1,0 +1,59 @@
+{
+  "competicion": "PD",
+  "temporada": "All time",
+  "metrica": "EDAD",
+  "titulo": "Goleadores más veteranos en LaLiga.",
+  "descripcion": "Goleadores más veteranos en LaLiga.",
+  "entradas": [
+    {
+      "nombre": "Donato",
+      "valor": { "anios": 40, "meses": 4, "dias": 17 },
+      "equipo": "Spain"
+    },
+    {
+      "nombre": "Jorge Molina",
+      "valor": { "anios": 40, "meses": 0, "dias": 15 },
+      "equipo": "Spain"
+    },
+    {
+      "nombre": "César Rodríguez",
+      "valor": { "anios": 39, "meses": 9, "dias": 4 },
+      "equipo": "Spain"
+    },
+    {
+      "nombre": "Alfredo di Stéfano",
+      "valor": { "anios": 39, "meses": 7, "dias": 16 },
+      "equipo": "Spain"
+    },
+    {
+      "nombre": "Joaquín",
+      "valor": { "anios": 39, "meses": 7, "dias": 15 },
+      "equipo": "Spain"
+    },
+    {
+      "nombre": "Cristhian Stuani",
+      "valor": { "anios": 39, "meses": 7, "dias": 2 },
+      "equipo": "Uruguay"
+    },
+    {
+      "nombre": "Luka Modrić",
+      "valor": { "anios": 39, "meses": 5, "dias": 14 },
+      "equipo": "Croatia"
+    },
+    {
+      "nombre": "José Araquistain",
+      "valor": { "anios": 38, "meses": 11, "dias": 12 },
+      "equipo": "Spain"
+    },
+    {
+      "nombre": "Jesús Navas",
+      "valor": { "anios": 38, "meses": 9, "dias": 24 },
+      "equipo": "Spain"
+    },
+    {
+      "nombre": "Iago Aspas",
+      "valor": { "anios": 38, "meses": 9, "dias": 1 },
+      "equipo": "Spain"
+    }
+  ]
+}

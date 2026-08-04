@@ -199,6 +199,7 @@ enum Top10Metrica {
   ASISTENCIAS
   PARTIDOS
   VALOR_MERCADO
+  EDAD
 }
 
 // Rankings precalculados para Top10, ya vengan de la API o escritos a mano
@@ -244,8 +245,20 @@ model Top10Entry {
   playerId  String
 
   // El dato que justifica la posición: 46 goles, 21 asistencias, 180.5 M€...
-  // Float en vez de Int para que valga también para valorDeMercado.
+  // Float en vez de Int para que valga también para valorDeMercado. Ojo:
+  // el orden real de la tabla lo decide la POSICIÓN de cada entrada en el
+  // JSON de origen (ver scripts/jugadores/syncTopScorers.ts), no este
+  // número -- así que para métricas que no son un número simple (EDAD)
+  // esto puede quedar como un valor auxiliar sin más pretensión que
+  // rellenar el campo; lo que se enseña en pantalla es `valorTexto` si
+  // existe.
   valor     Float        @default(0)
+
+  // Texto formateado para mostrar en vez de `valor` cuando
+  // un número plano no basta -- ej. "40 años, 4 meses y 17 días" para un
+  // Top10 de "goleadores más veteranos". Null = se enseña `valor` tal
+  // cual (comportamiento de siempre, ej. "(46)" goles).
+  valorTexto String?
 
   // Con qué equipo consiguió ese registro. Texto plano a propósito: el
   // equipo histórico puede no existir como Team, y aquí solo se muestra.
