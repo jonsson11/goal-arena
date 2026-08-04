@@ -1,60 +1,19 @@
 {
-  "competicion": "LL",
-  "temporada": "All time",
-  "metrica": "DINERO",
-  "titulo": "Fichajes más caros del Sevilla FC (M €)",
-  "descripcion": "Fichajes más caros del Sevilla FC",
+  "competicion": "MINUTOS-ARSENAL-2526",
+  "temporada": "2025-26",
+  "metrica": "MINUTOS",
+  "titulo": "Jugadores con más minutos del Arsenal 25/26",
+  "descripcion": "Jugadores con más minutos del Arsenal 25/26",
   "entradas": [
-    {
-      "nombre": "Jules Koundé",
-      "valor": "35M€",
-      "equipo": "France"
-    },
-    {
-      "nombre": "Rony Lopes",
-      "valor": "25M€",
-      "equipo": "Portugal"
-    },
-    {
-      "nombre": "Luis Muriel",
-      "valor": "24.5M€",
-      "equipo": "Colombia"
-    },
-
-    {
-      "nombre": "Suso",
-      "valor": "21.7M€",
-      "equipo": "Spain"
-    },
-    {
-      "nombre": "Quincy Promes",
-      "valor": "21M€",
-      "equipo": "Netherlands"
-    },
-    {
-      "nombre": "Youssef En-Nesyri",
-      "valor": "20M€",
-      "equipo": "Morocco"
-    },
-    {
-      "nombre": "Joaquín Correa",
-      "valor": "18.2M€",
-      "equipo": "Argentina"
-    },
-    {
-      "nombre": "Mu'nas Dabbur",
-      "valor": "17M€",
-      "equipo": "Israel"
-    },
-    {
-      "nombre": "Franco Vázquez",
-      "valor": "16.8M€",
-      "equipo": "Argentina"
-    },
-    {
-      "nombre": "Rafa Mir",
-      "valor": "16M€",
-      "equipo": "Spain"
-    }
+    { "nombre": "David Raya", "valor": "4980'", "equipo": "Spain" },
+    { "nombre": "William Saliba", "valor": "4466'", "equipo": "France" },
+    { "nombre": "Declan Rice", "valor": "4128'", "equipo": "England" },
+    { "nombre": "Thomas Partey", "valor": "3946'", "equipo": "Ghana" },
+    { "nombre": "Jurriën Timber", "valor": "3680'", "equipo": "Netherlands" },
+    { "nombre": "Gabriel Martinelli", "valor": "3564'", "equipo": "Brazil" },
+    { "nombre": "Gabriel Magalhaes", "valor": "3500'", "equipo": "Brazil" },
+    { "nombre": "Leandro Trossard", "valor": "3455'", "equipo": "Belgium" },
+    { "nombre": "Martin Ødegaard", "valor": "3447'", "equipo": "Norway" },
+    { "nombre": "Kai Havertz", "valor": "2809'", "equipo": "Germany" }
   ]
 }

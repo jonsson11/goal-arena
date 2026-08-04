@@ -100,6 +100,10 @@ interface Fuente {
   // Casi siempre GOLES (lo único que soportaba la API). Los JSON manuales
   // pueden declarar otra con "metrica" -- ver desdeArchivo().
   metrica: Top10Metrica
+  // Nombre del club si este ranking es "de un club" (ej. traspasos del
+  // Real Madrid) en vez de "de una competición entera". Se resuelve a un
+  // Team real más abajo, igual que el equipo de cada entrada.
+  club?: string
   entradas: Entrada[]
 }
 
@@ -258,6 +262,9 @@ function desdeArchivo(ruta: string): Fuente {
     descripcion: datos.descripcion,
     origen: Top10Fuente.MANUAL,
     metrica,
+    // Campo opcional nuevo en el JSON: "club": "Real Madrid CF". Si no
+    // está, el ranking sigue siendo "de competición" como siempre.
+    club: typeof datos.club === 'string' ? datos.club.trim() : undefined,
     entradas,
   }
 }
@@ -274,6 +281,9 @@ async function main() {
   const archivo = arg('archivo')
   const codigo = arg('competicion')?.toUpperCase()
   const anio = Number(arg('temporada'))
+  // --club="Real Madrid CF" por CLI tiene prioridad sobre el "club" del
+  // JSON, si por lo que sea se pasan los dos a la vez.
+  const clubCli = arg('club')
 
   if (!archivo && (!codigo || !anio)) {
     throw new Error(
@@ -285,8 +295,9 @@ async function main() {
   }
 
   const fuente = archivo ? desdeArchivo(archivo) : await desdeApi(codigo!, anio)
+  if (clubCli) fuente.club = clubCli
 
-  console.log(`\n${fuente.titulo}   [${fuente.origen}]\n`)
+  console.log(`\n${fuente.titulo}   [${fuente.origen}]${fuente.club ? `  (club: ${fuente.club})` : ''}\n`)
   fuente.entradas.forEach((e, i) => {
     const valorMostrado = e.valorTexto ?? `${e.goles} goles`
     console.log(`  ${String(i + 1).padStart(2)}. ${e.nombre.padEnd(26)} ${valorMostrado.padEnd(24)} ${e.equipo ?? ''}`)
@@ -376,6 +387,24 @@ const sinEquipo = SELECCIONES.has(fuente.codigo)
     console.warn('')
   }
 
+  // --- Club del ranking (si aplica): a diferencia del equipo de cada
+  // entrada, este SÍ tiene que resolver a un Team real -- es la clave
+  // que distingue este ranking de otros de la misma competición/temporada/
+  // métrica, así que si no se encuentra, se aborta en vez de avisar y
+  // seguir (evita crear "el ranking del club X" sin enlazar de verdad a X).
+  let clubId: string | null = null
+  if (fuente.club) {
+    clubId = buscarEquipo(fuente.club)
+    if (!clubId) {
+      const sug = sugerirEquipos(fuente.club)
+      console.error(`\nABORTADO: el club "${fuente.club}" no se encontró como Team.`)
+      if (sug.length) console.error(`¿Es alguno de estos? ${sug.join(' | ')}`)
+      console.error('Corrige el nombre, o da de alta el equipo si de verdad no existe todavía.\n')
+      process.exitCode = 1
+      return
+    }
+  }
+
   if (dryRun) {
     console.log('\nDRY RUN: no se ha escrito nada. Quita --dry-run para guardar.')
     return
@@ -427,6 +456,7 @@ const sinEquipo = SELECCIONES.has(fuente.codigo)
       competitionId: competition.id,
       temporada: fuente.temporada,
       metrica: fuente.metrica,
+      clubId,
     },
     select: { id: true },
   })
@@ -446,6 +476,7 @@ const sinEquipo = SELECCIONES.has(fuente.codigo)
           competitionId: competition.id,
           temporada: fuente.temporada,
           metrica: fuente.metrica,
+          clubId,
         },
       })
 

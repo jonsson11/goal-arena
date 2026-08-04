@@ -154,6 +154,12 @@ model Team {
   playerStats    PlayerStat[]
   gridCeldas     Player[]      @relation("EquipoActual")
 
+  // Top10 "de club" (ej. "Mayores traspasos del Real Madrid CF"), no
+  // confundir con Top10Entry.equipoTexto -- eso es el equipo con el que
+  // un jugador consiguió su registro, esto es DE QUÉ CLUB es el ranking
+  // entero. Ver Top10Ranking.clubId más abajo.
+  top10RankingsClub Top10Ranking[] @relation("Top10RankingClub")
+
   @@index([nombre])
   @@index([elegibleParaGrid])
 }
@@ -261,6 +267,15 @@ model Top10Ranking {
   temporada     String?                     // mismo formato que PlayerStat: "2012-13"
   metrica       Top10Metrica @default(GOLES)
 
+  // Para rankings "de un club" (ej. "Mayores traspasos del Real Madrid CF"),
+  // en vez de "de una competición entera". Null = ranking de competición,
+  // comportamiento de siempre. Relación real a Team (no texto plano como
+  // Top10Entry.equipoTexto) porque el club del ranking siempre existe como
+  // Team de verdad -- si algún día hiciera falta un club que no está en la
+  // BD, se da de alta como Team igual que cualquier otro.
+  club          Team?        @relation("Top10RankingClub", fields: [clubId], references: [id])
+  clubId        String?
+
   totalEntradas Int          @default(10)   // por si algún ranking es Top 5 o Top 20
   activo        Boolean      @default(true) // retirar un ranking sin borrarlo
   fuente        Top10Fuente  @default(API)  // de dónde salieron los datos
@@ -271,9 +286,13 @@ model Top10Ranking {
 
   // Evita duplicar el mismo ranking al reejecutar el script.
   // Ojo: en Postgres los NULL no colisionan entre sí, así que dos rankings
-  // sin competición o sin temporada sí pueden coexistir. Es intencionado.
-  @@unique([competitionId, temporada, metrica])
+  // sin competición, sin temporada o sin club sí pueden coexistir. Es
+  // intencionado -- así un Top10 "de competición" (clubId null) y varios
+  // Top10 "de club" (cada uno con su clubId) pueden compartir la misma
+  // competición/temporada/métrica sin chocar entre sí.
+  @@unique([competitionId, temporada, metrica, clubId])
   @@index([activo])
+  @@index([clubId])
 }
 
 enum Top10Fuente {
