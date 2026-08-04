@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useAuth } from "@/features/auth/AuthContext";
 import { AuthGate } from "@/features/auth/AuthGate";
 import { GameButton } from "@/features/games/shared/GameButton";
-import { useSolicitudesPendientes } from "@/features/social/SolicitudesContext";
+import { useSolicitudesPendientes } from "./SolicitudesContext";
 import type { Amigo, SolicitudAmistad } from "./type";
 
 type Pestana = "amigos" | "solicitudes";
@@ -37,7 +37,6 @@ export function SocialView() {
   const [cargando, setCargando] = useState(true);
   const [nombreBuscado, setNombreBuscado] = useState("");
   const [mensaje, setMensaje] = useState("");
-  const [error, setError] = useState("");
   const [enviando, setEnviando] = useState(false);
 
   async function cargarAmigos() {
@@ -82,7 +81,6 @@ export function SocialView() {
 
     setEnviando(true);
     setMensaje("");
-    setError("");
     try {
       const res = await fetch("/api/amigos", {
         method: "POST",
@@ -91,7 +89,7 @@ export function SocialView() {
       });
       const datos = await res.json();
       if (!res.ok) {
-        setError(`Error: ${datos.error as string}`);
+        setMensaje(datos.error as string);
         return;
       }
       setMensaje(
@@ -175,7 +173,6 @@ export function SocialView() {
             {enviando ? "Enviando..." : "Añadir"}
           </GameButton>
         </div>
-        {error && <p className="text-xs font-semibold text-destructive">{error}</p>}
         {mensaje && <p className="text-xs text-primary">{mensaje}</p>}
       </div>
 

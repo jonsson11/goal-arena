@@ -1,10 +1,13 @@
 nombre,nacionalidad,equipos_top5,paises_top5,total_etapas_top5,algun_equipo_elegible
+Aaron Cresswell,England,West Ham United FC,Inglaterra,1,sí
+Aaron Lennon,England,Tottenham Hotspur FC; Everton FC,Inglaterra,3,sí
 Aaron Martin,Spain,Crystal Palace FC,Inglaterra,1,sí
 Aaron Ramsdale,England,Arsenal FC; Newcastle United FC,Inglaterra,2,sí
 Aaron Wan-Bissaka,England,Crystal Palace FC; Manchester United FC; West Ham United FC,Inglaterra,3,sí
 Abde Ezzalzouli,Morocco,FC Barcelona; Real Betis,España,2,sí
 Abdel Abqar,Morocco,Getafe CF,España,1,sí
 Abdelhamid Aït Boudlal,Morocco,Stade Rennais FC,Francia,1,sí
+Abdoulaye Doucouré,France,Stade Rennais FC; Everton FC,Francia; Inglaterra,2,sí
 Abdukodir Khusanov,Uzbekistan,Manchester City FC,Italia,1,sí
 Abel Ruiz,Spain,FC Barcelona; Girona FC,España,2,sí
 Achraf Hakimi,Morocco,Real Madrid CF; Borussia Dortmund; FC Internazionale Milano; Paris Saint-Germain,España; Alemania; Italia; Francia,4,sí
@@ -23,11 +26,17 @@ Aïssa Mandi,Algeria,Real Betis; Villarreal CF; Lille OSC,España; Francia,3,sí
 Aitor Paredes,Spain,Athletic Club,España,1,sí
 Aitor Ruibal,Spain,Real Betis,España,1,sí
 Akor Adams,Nigeria,Sevilla FC,España,1,sí
+Alain Giresse,France,Marseille FC,Francia,1,sí
+Alan Hansen,Scotland,Liverpool FC,Inglaterra,1,sí
 Alan Shearer,England,Newcastle United FC,Inglaterra,1,sí
+Alassane Pléa,France,Borussia Mönchengladbach,Alemania,1,sí
 Albert Guðmundsson,Iceland,Genoa FC; ACF Fiorentina,Italia,3,sí
+Alberto Bueno,Spain,Real Madrid CF,España,1,sí
 Alberto Moleiro,Spain,Villarreal CF,España,1,sí
+Aldo Serena,Italy,Juventus,Italia,1,sí
 Aleix Febas,Spain,RC Celta de Vigo,España,1,sí
 Aleix García,Spain,Manchester City FC; Villarreal CF; Girona FC; Bayer Leverkusen,Italia; España; Alemania,5,sí
+Aleix Vidal,Spain,Sevilla FC; FC Barcelona,España,3,sí
 Alejandro Balde,Spain,FC Barcelona,España,1,sí
 Alejandro Francés,Spain,Girona FC,España,1,sí
 Alejandro Garnacho,Argentina,Manchester United FC; Chelsea FC; Aston Villa FC,Inglaterra,3,sí
@@ -38,13 +47,16 @@ Aleksandar Stanković,Serbia,FC Internazionale Milano,Italia,2,sí
 Aleksander Buksa,Poland,Genoa FC,Italia,1,sí
 Aleksandr Golovin,Russia,AS Monaco,Francia,1,sí
 Alemão,Brazil,Club Atlético de Madrid; SSC Napoli; Atalanta BC,España; Italia,3,sí
+Alen Bokšić,Croatia,Marseille FC; Juventus,Francia; Italia,2,sí
 Alessandro Bastoni,Italy,Atalanta BC; FC Internazionale Milano,Italia,3,sí
 Alessandro Buongiorno,Italy,SSC Napoli,Italia,1,sí
+Alessandro Costacurta,Italy,AC Milan,Inglaterra,1,sí
 Alessandro Del Piero,Italy,Juventus,Italia,1,sí
 Alessandro Nesta,Italy,SS Lazio; AC Milan,Inglaterra,2,sí
 Alessandro Rinaldi,Italy,AS Roma; Atalanta BC,Italia,2,sí
 Alessandro Zanoli,Italy,SSC Napoli; Genoa FC; Udinese Calcio,Italia,4,sí
 Alessio Romagnoli,Italy,AS Roma; AC Milan; SS Lazio,Italia; Inglaterra,3,sí
+Alessio Tacchinardi,Italy,Atalanta BC; Juventus; Villarreal CF,Italia; España,3,sí
 Alex,Brazil,Chelsea FC; Paris Saint-Germain; AC Milan,Inglaterra; Francia,3,sí
 Álex Baena,Spain,Villarreal CF; Girona FC; Club Atlético de Madrid,España,3,sí
 Álex Berenguer,Spain,Athletic Club,España,1,sí
@@ -63,12 +75,14 @@ Alexander Meyer,Germany,VfB Stuttgart; Borussia Dortmund,Alemania,2,sí
 Alexander Prass,Austria,TSG Hoffenheim,Alemania,1,sí
 Alexander Schlager,Austria,RB Leipzig,Alemania,1,sí
 Alexander Sørloth,Norway,Crystal Palace FC; RB Leipzig; Real Sociedad; Villarreal CF; Club Atlético de Madrid,Inglaterra; Alemania; España,5,sí
+Alexander Zickler,Germany,FC Bayern Munich,Alemania,1,sí
 Alexandre Lacazette,France,Olympique de Lyon; Arsenal FC,Francia; Inglaterra,3,sí
-Alexandre Pato,Brazil,AC Milan; Villarreal CF; Chelsea FC,Inglaterra; España,3,sí
+Alexandre Pato,Brazil,AC Milan; Chelsea FC; Villarreal CF,Inglaterra; España,3,sí
 Alexis Mac Allister,Argentina,Liverpool FC,Inglaterra,1,sí
 Alexis Saelemaekers,Belgium,AC Milan; AS Roma,Inglaterra; Italia,3,sí
 Alexis Sánchez,Chile,Udinese Calcio; FC Barcelona; Arsenal FC; Manchester United FC; FC Internazionale Milano; Marseille FC; Sevilla FC,Italia; España; Inglaterra; Francia,10,sí
 Alfonso Pedraza,Spain,Villarreal CF; Real Betis; SS Lazio,España; Inglaterra,3,sí
+Alfred Duncan,Ghana,FC Internazionale Milano,Italia,1,sí
 Alfredo Di Stéfano,Argentina,Real Madrid CF,España,1,sí
 Alin Kumer Čelik,Slovenia,Genoa FC,Italia,1,sí
 Alisson Becker,Brazil,AS Roma; Liverpool FC,Italia; Inglaterra,2,sí
@@ -83,6 +97,7 @@ Altay Bayindir,Turkey,Manchester United FC,Inglaterra,1,sí
 Álvaro Fernández,Spain,Sevilla FC,España,1,sí
 Álvaro Fidalgo,Spain,Real Madrid CF; Real Betis,España,2,sí
 Álvaro Morata,Spain,Real Madrid CF; Juventus; Chelsea FC; Club Atlético de Madrid; AC Milan; Como 1907,España; Italia; Inglaterra,10,sí
+Álvaro Negredo,Spain,Real Madrid CF; Sevilla FC; Manchester City FC; Valencia CF,España; Italia,5,sí
 Álvaro Núñez,Spain,RC Celta de Vigo,España,1,sí
 Álvaro Odriozola,Spain,Real Sociedad; Real Madrid CF; FC Bayern Munich; ACF Fiorentina,España; Alemania; Italia,5,sí
 Álvaro Rodríguez,Uruguay,Real Madrid CF; Getafe CF,España,2,sí
@@ -101,15 +116,21 @@ Amir Rrahmani,Kosovo,SSC Napoli,Italia,1,sí
 Anastasios Douvikas,Greece,RC Celta de Vigo; Como 1907,España; Italia,2,sí
 Ander Barrenetxea,Spain,Real Sociedad,España,1,sí
 Andoni Gorosabel,Spain,Real Sociedad; Athletic Club,España,2,sí
+Andoni Zubizarreta,Spain,FC Barcelona; Valencia CF,España,2,sí
 András Schäfer,Hungary,Genoa FC,Italia,1,sí
 André Gomes,Portugal,Valencia CF; FC Barcelona; Everton FC,España; Inglaterra,5,sí
 André Schürrle,Germany,Bayer Leverkusen; Chelsea FC; VfL Wolfsburg; Borussia Dortmund; Fulham FC,Alemania; Inglaterra,5,sí
+André-Pierre Gignac,France,Marseille FC,Francia,1,sí
+Andrea Belotti,Italy,AS Roma,Italia,1,sí
 Andrea Cambiaso,Italy,Genoa FC; Juventus,Italia,2,sí
 Andrea Colpani,Italy,Atalanta BC; ACF Fiorentina,Italia,2,sí
+Andrea Consigli,Italy,Atalanta BC,Italia,1,sí
+Andrea Masiello,Italy,Juventus; Genoa FC; Atalanta BC,Italia,4,sí
 Andrea Petagna,Italy,AC Milan; Atalanta BC; SSC Napoli,Inglaterra; Italia,3,sí
 Andrea Pirlo,Italy,FC Internazionale Milano; AC Milan; Juventus,Italia; Inglaterra,3,sí
 Andreas Brehme,Germany,FC Bayern Munich; FC Internazionale Milano,Alemania; Italia,2,sí
 Andreas Christensen,Denmark,Chelsea FC; Borussia Mönchengladbach; FC Barcelona,Inglaterra; Alemania; España,3,sí
+Andreas Möller,Germany,Borussia Dortmund; Juventus; Schalke 04,Alemania; Italia,4,sí
 Andreas Skov Olsen,Denmark,VfL Wolfsburg,Alemania,1,sí
 Andrei Rațiu,Romania,Villarreal CF,España,1,sí
 Andrej Kramarić,Croatia,TSG Hoffenheim,Alemania,2,sí
@@ -121,6 +142,7 @@ Andrija Maksimović,Serbia,RB Leipzig,Alemania,1,sí
 Andriy Lunin,Ukraine,Real Madrid CF; Real Valladolid,España,2,sí
 Andriy Shevchenko,Ukraine,AC Milan; Chelsea FC,Inglaterra,3,sí
 Andriy Yarmolenko,Ukraine,Borussia Dortmund; West Ham United FC,Alemania; Inglaterra,2,sí
+Andy Cole,England,Arsenal FC; Fulham FC; Newcastle United FC; Manchester United FC; Manchester City FC,Inglaterra; Italia,6,sí
 Andy Robertson,Scotland,Liverpool FC; Tottenham Hotspur FC,Inglaterra,2,sí
 Ange Lago,Ivory Coast,Marseille FC,Francia,1,sí
 Ange-Yoan Bonny,Ivory Coast,FC Internazionale Milano,Italia,1,sí
@@ -129,13 +151,17 @@ Ange-Yoan Bonny,Ivory Coast,FC Internazionale Milano,Italia,1,sí
 Angel Gomes,England,Manchester United FC; Lille OSC; Marseille FC,Inglaterra; Francia,3,sí
 Ángel Ortiz,Spain,Real Betis,España,1,sí
 Angeliño,Spain,Manchester City FC; Girona FC; RB Leipzig; TSG Hoffenheim; AS Roma,Italia; España; Alemania,8,sí
+Angelo Di Livio,Italy,AS Roma; Juventus,Italia,2,sí
+Angelo Peruzzi,Italy,AS Roma; Juventus; FC Internazionale Milano,Italia,3,sí
 Angelo Stiller,Germany,FC Bayern Munich; TSG Hoffenheim; VfB Stuttgart,Alemania,3,sí
 Angelos Charisteas,Greece,Werder Bremen; Bayer Leverkusen; Schalke 04,Alemania,3,sí
 Ansgar Knauff,Germany,Borussia Dortmund,Alemania,1,sí
 Ansu Fati,Spain,FC Barcelona; AS Monaco,España; Francia,3,sí
+Ante Rebić,Croatia,RB Leipzig; AC Milan,Alemania; Inglaterra,3,sí
 Anthony Elanga,Sweden,Manchester United FC; Newcastle United FC,Inglaterra,2,sí
 Anthony Gordon,England,Everton FC; Newcastle United FC; FC Barcelona,Inglaterra; España,3,sí
 Anthony Lopes,Portugal,Olympique de Lyon,Francia,1,sí
+Anthony Réveillère,France,Stade Rennais FC; Valencia CF,Francia; España,2,sí
 Anthony Rouault,France,VfB Stuttgart; Stade Rennais FC,Alemania; Francia,3,sí
 Antoine Bernède,France,Paris Saint-Germain,Francia,1,sí
 Antoine Griezmann,France,Real Sociedad; Club Atlético de Madrid; FC Barcelona,España,5,sí
@@ -144,7 +170,10 @@ Antoine Semenyo,Ghana,Manchester City FC,Italia,1,sí
 Antonee Robinson,United States,Everton FC; Fulham FC,Inglaterra,2,sí
 Antonín Kinský,Czech Republic,Tottenham Hotspur FC,Inglaterra,1,sí
 Antonio Blanco,Spain,Real Madrid CF,España,1,sí
+Antonio Candreva,Italy,Udinese Calcio; Juventus; FC Internazionale Milano,Italia,3,sí
 Antonio Cassano,Italy,AS Roma; Real Madrid CF; AC Milan; FC Internazionale Milano,Italia; España; Inglaterra,4,sí
+Antonio Conte,Italy,Juventus,Italia,1,sí
+Antonio Di Natale,Italy,Udinese Calcio,Italia,1,sí
 Antonio Nusa,Norway,RB Leipzig,Alemania,1,sí
 Antonio Rüdiger,Germany,VfB Stuttgart; AS Roma; Chelsea FC; Real Madrid CF,Alemania; Italia; Inglaterra; España,5,sí
 Antonio Vergara,Italy,SSC Napoli,Italia,1,sí
@@ -174,10 +203,13 @@ Arthur Theate,Belgium,Stade Rennais FC,Francia,1,sí
 Arturo Vidal,Chile,Bayer Leverkusen; Juventus; FC Bayern Munich; FC Barcelona; FC Internazionale Milano,Alemania; Italia; España,5,sí
 Asamoah Gyan,Ghana,Udinese Calcio; Stade Rennais FC,Italia; Francia,2,sí
 Ashley Cole,England,Arsenal FC; Crystal Palace FC; Chelsea FC; AS Roma,Inglaterra; Italia,4,sí
+Ashley Williams,Wales,Everton FC,Inglaterra,1,sí
+Ashley Young,England,Aston Villa FC; Manchester United FC; FC Internazionale Milano; Everton FC,Inglaterra; Italia,5,sí
 Asier Illarramendi,Spain,Real Sociedad; Real Madrid CF,España,3,sí
 Asmir Begović,Canada,Chelsea FC; AC Milan; Everton FC,Inglaterra,4,sí
 Assane Diao,Senegal,Real Betis; Como 1907,España; Italia,2,sí
 Atakan Karazor,Turkey,VfB Stuttgart,Alemania,1,sí
+Attilio Lombardo,Italy,Juventus; Crystal Palace FC,Italia; Inglaterra,2,sí
 Aurélien Tchouaméni,France,AS Monaco; Real Madrid CF,Francia; España,2,sí
 Ayden Heaven,England,Arsenal FC; Manchester United FC,Inglaterra,2,sí
 Aymeric Laporte,France,Athletic Club; Manchester City FC,España; Italia,3,sí
@@ -190,10 +222,13 @@ Bafodé Diakité,France,Lille OSC,Francia,1,sí
 Bartol Franjić,Croatia,VfL Wolfsburg,Alemania,1,sí
 Bas Dost,Netherlands,VfL Wolfsburg,Alemania,1,sí
 Başar Önal,Turkey,Lille OSC,Francia,1,sí
+Bastian Oczipka,Germany,Bayer Leverkusen; Schalke 04,Alemania,2,sí
 Bastian Schweinsteiger,Germany,FC Bayern Munich; Manchester United FC,Alemania; Inglaterra,2,sí
 Bebeto,Brazil,Sevilla FC,España,1,sí
 Ben Chilwell,England,Chelsea FC; Crystal Palace FC,Inglaterra,2,sí
 Ben Davies,Wales,Tottenham Hotspur FC,Inglaterra,1,sí
+Ben Foster,England,Manchester United FC,Inglaterra,1,sí
+Ben Mee,England,Manchester City FC,Italia,1,sí
 Ben White,England,Arsenal FC,Inglaterra,1,sí
 Beñat Prados,Spain,Athletic Club,España,1,sí
 Beñat Turrientes,Spain,Real Sociedad,España,1,sí
@@ -201,9 +236,12 @@ Benjamin André,France,Stade Rennais FC; Lille OSC,Francia,2,sí
 Benjamin Henrichs,Germany,Bayer Leverkusen; AS Monaco; RB Leipzig,Alemania; Francia,4,sí
 Benjamin Lecomte,France,AS Monaco; Club Atlético de Madrid; Fulham FC,Francia; España; Inglaterra,3,sí
 Benjamin Šeško,Slovenia,RB Leipzig; Manchester United FC,Alemania; Inglaterra,2,sí
+Benjamin Stambouli,France,Tottenham Hotspur FC; Paris Saint-Germain; Schalke 04,Inglaterra; Francia; Alemania,3,sí
 Benoît Badiashile,France,AS Monaco; Chelsea FC,Francia; Inglaterra,2,sí
 Berat Djimsiti,Albania,Atalanta BC,Italia,1,sí
 Berke Özer,Turkey,Lille OSC,Francia,1,sí
+Bernard Genghini,France,AS Monaco; Marseille FC,Francia,2,sí
+Bernard Lama,France,Paris Saint-Germain; West Ham United FC; Stade Rennais FC,Francia; Inglaterra,4,sí
 Bernardo,Brazil,RB Leipzig; TSG Hoffenheim,Alemania,2,sí
 Bernardo Silva,Portugal,AS Monaco; Manchester City FC; Real Madrid CF,Francia; Italia; España,4,sí
 Bernd Leno,Germany,Bayer Leverkusen; Arsenal FC; Fulham FC,Alemania; Inglaterra,4,sí
@@ -222,6 +260,7 @@ Borja Valero,Spain,Villarreal CF; ACF Fiorentina; FC Internazionale Milano,Espa�
 Borna Sosa,Croatia,VfB Stuttgart; Crystal Palace FC,Alemania; Inglaterra,2,sí
 Boulaye Dia,Senegal,Villarreal CF; SS Lazio,España; Inglaterra,2,sí
 Bouna Sarr,Senegal,Marseille FC; FC Bayern Munich,Francia; Alemania,2,sí
+Brad Friedel,United States,Liverpool FC; Aston Villa FC; Tottenham Hotspur FC,Inglaterra,3,sí
 Bradley Barcola,France,Olympique de Lyon; Paris Saint-Germain,Francia,2,sí
 Brahim Díaz,Morocco,Manchester City FC; Real Madrid CF; AC Milan,Italia; España; Inglaterra,3,sí
 Brando Bailey-Joseph,England,Arsenal FC,Inglaterra,1,sí
@@ -232,11 +271,13 @@ Branimir Mlačić,Croatia,Udinese Calcio,Italia,1,sí
 Breel Embolo,Switzerland,Schalke 04; Borussia Mönchengladbach; AS Monaco; Stade Rennais FC,Alemania; Francia,4,sí
 Brennan Johnson,England,Tottenham Hotspur FC; Crystal Palace FC,Inglaterra,2,sí
 Brian Madjo,Luxembourg,Aston Villa FC,Inglaterra,1,sí
+Brian McClair,Scotland,Manchester United FC,Inglaterra,1,sí
 Brice Samba,France,Marseille FC; Stade Rennais FC,Francia,2,sí
 Brooke Norton-Cuffy,England,Arsenal FC; Genoa FC,Inglaterra; Italia,2,sí
 Bruma,Portugal,Real Sociedad; RB Leipzig,España; Alemania,2,sí
 Bruno Fernandes,Portugal,Udinese Calcio; Manchester United FC,Italia; Inglaterra,2,sí
 Bruno Guimarães,Brazil,Olympique de Lyon; Newcastle United FC,Francia; Inglaterra,2,sí
+Bruno Soriano,Spain,Villarreal CF,España,1,sí
 Bryan Cristante,Italy,AC Milan; Atalanta BC; AS Roma,Inglaterra; Italia,5,sí
 Bryan Gil,Spain,Sevilla FC; Tottenham Hotspur FC; Valencia CF; Girona FC,España; Inglaterra,6,sí
 Bryan Mbeumo,France,Manchester United FC,Inglaterra,1,sí
@@ -265,6 +306,8 @@ Carlos Tevez,Argentina,West Ham United FC; Manchester United FC; Manchester City
 Carlos Valderrama,Colombia,Real Valladolid,España,1,sí
 Carlos Vela,Mexico,RC Celta de Vigo; Arsenal FC; Real Sociedad,España; Inglaterra,4,sí
 Carney Chukwuemeka,Austria,Aston Villa FC; Chelsea FC; Borussia Dortmund,Inglaterra; Alemania,4,sí
+Carsten Jancker,Germany,FC Bayern Munich; Udinese Calcio,Alemania; Italia,2,sí
+Casemiro,Brazil,Real Madrid CF; Manchester United FC,España; Inglaterra,3,sí
 Castello Lukeba,France,Olympique de Lyon; RB Leipzig,Francia; Alemania,2,sí
 Cedric Itten,Switzerland,Werder Bremen,Alemania,1,sí
 César Azpilicueta,Spain,Marseille FC; Chelsea FC; Club Atlético de Madrid; Sevilla FC,Francia; Inglaterra; España,4,sí
@@ -274,11 +317,15 @@ Cesc Fàbregas,Spain,Arsenal FC; FC Barcelona; Chelsea FC; AS Monaco; Como 1907,
 Chadi Riad,Morocco,FC Barcelona; Real Betis; Crystal Palace FC,España; Inglaterra,3,sí
 Chancel Mbemba,Democratic Republic of the Congo,Newcastle United FC,Inglaterra,1,sí
 Charles De Ketelaere,Belgium,AC Milan; Atalanta BC,Inglaterra; Italia,3,sí
+Charlie Adam,Scotland,Liverpool FC,Inglaterra,1,sí
 Charlie Gray,England,Manchester City FC,Italia,1,sí
 Cheikh Niasse,Senegal,Lille OSC,Francia,1,sí
+Cheikhou Kouyaté,Senegal,West Ham United FC; Crystal Palace FC,Inglaterra,2,sí
+Chendo,Spain,Real Madrid CF,España,1,sí
 Cher Ndour,Italy,Paris Saint-Germain; ACF Fiorentina,Francia; Italia,2,sí
 Chidera Ejuke,Nigeria,Sevilla FC,España,1,sí
 Chris Führich,Germany,VfB Stuttgart,Alemania,1,sí
+Chris Waddle,England,Newcastle United FC; Tottenham Hotspur FC; Marseille FC,Inglaterra; Francia,3,sí
 Chris Wood,New Zealand,Newcastle United FC,Inglaterra,1,sí
 Chrislain Matsima,France,AS Monaco,Francia,1,sí
 Christian Eriksen,Denmark,Tottenham Hotspur FC; FC Internazionale Milano; Manchester United FC; VfL Wolfsburg,Inglaterra; Italia; Alemania,4,sí
@@ -288,12 +335,17 @@ Christian Kofane,Cameroon,Bayer Leverkusen,Alemania,1,sí
 Christian Pulisic,United States,Borussia Dortmund; Chelsea FC; AC Milan,Alemania; Inglaterra,3,sí
 Christian Vieri,Italy,Atalanta BC; Juventus; Club Atlético de Madrid; SS Lazio; FC Internazionale Milano; AC Milan; AS Monaco; ACF Fiorentina,Italia; España; Inglaterra; Francia,10,sí
 Christoph Baumgartner,Austria,TSG Hoffenheim; RB Leipzig,Alemania,2,sí
+Christoph Kramer,Germany,Bayer Leverkusen; Borussia Mönchengladbach,Alemania,3,sí
 Christopher Nkunku,France,Paris Saint-Germain; RB Leipzig; Chelsea FC; AC Milan,Francia; Alemania; Inglaterra,4,sí
 Christos Mandas,Greece,SS Lazio,Inglaterra,1,sí
 Chuba Akpom,England,Arsenal FC; Lille OSC,Inglaterra; Francia,2,sí
+Ciro Ferrara,Italy,Juventus,Italia,1,sí
+Ciro Immobile,Italy,Juventus; Genoa FC; Borussia Dortmund; Sevilla FC,Italia; Alemania; España,5,sí
 CJ Egan-Riley,England,Manchester City FC; Marseille FC,Italia; Francia,2,sí
 Clarence Seedorf,Netherlands,Real Madrid CF; FC Internazionale Milano; AC Milan,España; Italia; Inglaterra,3,sí
 Claude Makélélé,France,Marseille FC; RC Celta de Vigo; Real Madrid CF; Chelsea FC; Paris Saint-Germain,Francia; España; Inglaterra,5,sí
+Cláudio Caçapa,Brazil,Newcastle United FC,Inglaterra,1,sí
+Claudio Pizarro,Peru,Werder Bremen; FC Bayern Munich; Chelsea FC,Alemania; Inglaterra,8,sí
 Cleiton,Brazil,VfL Wolfsburg,Alemania,1,sí
 Clément Lenglet,France,Sevilla FC; FC Barcelona; Tottenham Hotspur FC; Aston Villa FC; Club Atlético de Madrid,España; Inglaterra,6,sí
 Clinton Mata,Angola,Olympique de Lyon,Francia,1,sí
@@ -303,8 +355,11 @@ Conor Gallagher,England,Chelsea FC; Crystal Palace FC; Club Atlético de Madrid;
 Conrad Harder,Denmark,RB Leipzig,Alemania,1,sí
 Corentin Tolisso,France,Olympique de Lyon; FC Bayern Munich,Francia; Alemania,3,sí
 Costinha,Portugal,AS Monaco; Club Atlético de Madrid; Atalanta BC,Francia; España; Italia,3,sí
+Craig Dawson,England,West Ham United FC,Inglaterra,2,sí
+Cris,Brazil,Bayer Leverkusen,Alemania,1,sí
 Cristhian Mosquera,Spain,Valencia CF; Arsenal FC,España; Inglaterra,2,sí
 Cristhian Stuani,Uruguay,Girona FC,España,1,sí
+Cristian Chivu,Romania,AS Roma; FC Internazionale Milano,Italia,2,sí
 Cristian Romero,Argentina,Genoa FC; Juventus; Atalanta BC; Tottenham Hotspur FC,Italia; Inglaterra,7,sí
 Cristiano Biraghi,Italy,FC Internazionale Milano; ACF Fiorentina,Italia,5,sí
 Cristiano Ronaldo,Portugal,Manchester United FC; Real Madrid CF; Juventus,Inglaterra; España; Italia,4,sí
@@ -313,16 +368,19 @@ Cucho Hernández,Colombia,Getafe CF; Real Betis,España,2,sí
 Curtis Jones,England,Liverpool FC,Inglaterra,1,sí
 Cyle Larin,Canada,Real Valladolid,España,2,sí
 Daichi Kamada,Japan,SS Lazio; Crystal Palace FC,Inglaterra,2,sí
-Daley Blind,Netherlands,Manchester United FC; Girona FC; FC Bayern Munich,Inglaterra; España; Alemania,3,sí
+Daley Blind,Netherlands,Manchester United FC; FC Bayern Munich; Girona FC,Inglaterra; Alemania; España,3,sí
 Dan Burn,England,Fulham FC; Newcastle United FC,Inglaterra,2,sí
 Dan Ndoye,Switzerland,OG Nice,Francia,1,sí
 Dan-Axel Zagadou,France,Borussia Dortmund; VfB Stuttgart,Alemania,2,sí
 Dane Scarlett,England,Tottenham Hotspur FC,Inglaterra,1,sí
 Dani Alves,Brazil,Sevilla FC; FC Barcelona; Juventus; Paris Saint-Germain,España; Italia; Francia,5,sí
 Dani Carvajal,Spain,Bayer Leverkusen; Real Madrid CF,Alemania; España,2,sí
+Dani Güiza,Spain,Getafe CF,España,2,sí
 Dani Olmo,Spain,RB Leipzig; FC Barcelona,Alemania; España,2,sí
+Dani Parejo,Spain,Real Madrid CF; Getafe CF; Valencia CF; Villarreal CF,España,4,sí
 Dani Raba,Spain,Villarreal CF; Valencia CF,España,2,sí
 Daniel Batz,Germany,Borussia Mönchengladbach,Alemania,1,sí
+Daniel Carriço,Portugal,Sevilla FC,España,2,sí
 Daniel Maldini,Italy,AC Milan; Atalanta BC; SS Lazio,Inglaterra; Italia,3,sí
 Daniel Muñoz,Colombia,Crystal Palace FC,Inglaterra,1,sí
 Daniel Passarella,Argentina,ACF Fiorentina; FC Internazionale Milano,Italia,2,sí
@@ -331,16 +389,21 @@ Daniel Svensson,Sweden,Borussia Dortmund,Alemania,2,sí
 Daniel Vivian,Spain,Athletic Club,España,1,sí
 Daniele De Rossi,Italy,AS Roma,Italia,1,sí
 Daniele Ghilardi,Italy,AS Roma,Italia,2,sí
+Daniele Massaro,Italy,AC Milan; AS Roma,Inglaterra; Italia,2,sí
 Daniele Padelli,Italy,Como 1907; Liverpool FC; Udinese Calcio; FC Internazionale Milano,Italia; Inglaterra,6,sí
 Danilho Doekhi,Netherlands,SS Lazio,Inglaterra,1,sí
 Danilo Cataldi,Italy,SS Lazio; Genoa FC; ACF Fiorentina,Inglaterra; Italia,3,sí
 Danny da Costa,Germany,Bayer Leverkusen,Alemania,2,sí
+Danny Murphy,England,Liverpool FC; Tottenham Hotspur FC; Fulham FC,Inglaterra,3,sí
 Danny Welbeck,England,Manchester United FC; Arsenal FC,Inglaterra,2,sí
 Dante,Brazil,Lille OSC; Borussia Mönchengladbach; FC Bayern Munich; VfL Wolfsburg; OG Nice,Francia; Alemania,5,sí
 Dany Mota,Portugal,Juventus,Italia,1,sí
 Dário Essugo,Portugal,Chelsea FC,Inglaterra,1,sí
 Dariusz Stalmach,Poland,Werder Bremen,Alemania,1,sí
+Darren Bent,England,Tottenham Hotspur FC; Aston Villa FC; Fulham FC,Inglaterra,3,sí
+David Abraham,Argentina,Getafe CF,España,1,sí
 David Alaba,Austria,FC Bayern Munich; TSG Hoffenheim; Real Madrid CF,Alemania; España,3,sí
+David Batty,England,Newcastle United FC,Inglaterra,1,sí
 David Beckham,England,Manchester United FC; Real Madrid CF; AC Milan; Paris Saint-Germain,Inglaterra; España; Francia,5,sí
 David Button,England,Tottenham Hotspur FC; Fulham FC,Inglaterra,2,sí
 David de Gea,Spain,Club Atlético de Madrid; Manchester United FC; ACF Fiorentina,España; Inglaterra; Italia,3,sí
@@ -353,10 +416,12 @@ David Ospina,Colombia,Arsenal FC,Inglaterra,1,sí
 David Puczka,Austria,Genoa FC,Italia,1,sí
 David Raum,Germany,TSG Hoffenheim; RB Leipzig,Alemania,2,sí
 David Raya,Spain,Arsenal FC,Inglaterra,2,sí
+David Seaman,England,Arsenal FC; Manchester City FC,Inglaterra; Italia,2,sí
 David Silva,Spain,Valencia CF; RC Celta de Vigo; Manchester City FC; Real Sociedad,España; Italia,4,sí
 David Soria,Spain,Sevilla FC; Getafe CF,España,2,sí
 David Trezeguet,France,AS Monaco; Juventus,Francia; Italia,2,sí
 David Villa,Spain,Valencia CF; FC Barcelona; Club Atlético de Madrid,España,3,sí
+David Zurutuza,Spain,Real Sociedad,España,1,sí
 Davide Bartesaghi,Italy,AC Milan,Inglaterra,1,sí
 Davide Frattesi,Italy,FC Internazionale Milano,Italia,2,sí
 Davide Zappacosta,Italy,Atalanta BC; Chelsea FC; AS Roma; Genoa FC,Italia; Inglaterra,6,sí
@@ -368,10 +433,12 @@ Dean Huijsen,Netherlands,Juventus; AS Roma; Real Madrid CF,Italia; España,3,sí
 Declan Rice,England,West Ham United FC; Arsenal FC,Inglaterra,2,sí
 Deco,Portugal,FC Barcelona; Chelsea FC,España; Inglaterra,2,sí
 Dejan Stanković,Serbia,SS Lazio; FC Internazionale Milano,Inglaterra; Italia,2,sí
+Demetrio Albertini,Italy,AC Milan; Club Atlético de Madrid; Atalanta BC; FC Barcelona,Inglaterra; España; Italia,4,sí
 Denis Cheryshev,Russia,Real Madrid CF; Sevilla FC; Villarreal CF; Valencia CF,España,7,sí
-Denis Suárez,Spain,Manchester City FC; Sevilla FC; Villarreal CF; FC Barcelona; RC Celta de Vigo; Arsenal FC,Italia; España; Inglaterra,7,sí
+Denis Irwin,Ireland,Manchester United FC,Inglaterra,1,sí
+Denis Suárez,Spain,Manchester City FC; Sevilla FC; Villarreal CF; FC Barcelona; Arsenal FC; RC Celta de Vigo,Italia; España; Inglaterra,7,sí
 Denis Vavro,Slovakia,SS Lazio; VfL Wolfsburg,Inglaterra; Alemania,3,sí
-Denis Zakaria,Switzerland,Borussia Mönchengladbach; Juventus; Chelsea FC; AS Monaco,Alemania; Italia; Inglaterra; Francia,4,sí
+Denis Zakaria,Switzerland,Borussia Mönchengladbach; Chelsea FC; Juventus; AS Monaco,Alemania; Inglaterra; Italia; Francia,4,sí
 Deniz Undav,Germany,VfB Stuttgart,Alemania,2,sí
 Dennis Bergkamp,Netherlands,FC Internazionale Milano; Arsenal FC,Italia; Inglaterra,2,sí
 Denzel Dumfries,Netherlands,FC Internazionale Milano; Real Madrid CF,Italia; España,2,sí
@@ -381,19 +448,25 @@ Désiré Doué,France,Stade Rennais FC; Paris Saint-Germain,Francia,2,sí
 Destiny Udogie,Italy,Udinese Calcio; Tottenham Hotspur FC,Italia; Inglaterra,4,sí
 Devis Vásquez,Colombia,AC Milan; AS Roma,Inglaterra; Italia,2,sí
 Devyne Rensch,Netherlands,AS Roma,Italia,1,sí
+Diafra Sakho,Senegal,West Ham United FC; Stade Rennais FC,Inglaterra; Francia,2,sí
 Dida,Brazil,AC Milan,Inglaterra,1,sí
 Didier Drogba,Ivory Coast,Marseille FC; Chelsea FC,Francia; Inglaterra,3,sí
+Diego Alves,Brazil,Valencia CF,España,1,sí
+Diego Benaglio,Switzerland,VfB Stuttgart; VfL Wolfsburg; AS Monaco,Alemania; Francia,3,sí
 Diego Conde,Spain,Club Atlético de Madrid; Getafe CF; Villarreal CF; Real Betis,España,4,sí
 Diego Costa,Spain,Club Atlético de Madrid; RC Celta de Vigo; Real Valladolid; Chelsea FC,España; Inglaterra,6,sí
 Diego Forlán,Uruguay,Manchester United FC; Villarreal CF; Club Atlético de Madrid; FC Internazionale Milano,Inglaterra; España; Italia,4,sí
 Diego Godín,Uruguay,Villarreal CF; Club Atlético de Madrid; FC Internazionale Milano,España; Italia,3,sí
 Diego Llorente,Spain,Real Madrid CF; Real Sociedad; AS Roma; Real Betis,España; Italia,4,sí
 Diego Maradona,Argentina,FC Barcelona; SSC Napoli; Sevilla FC,España; Italia,3,sí
-Diego Moreira,Portugal,Chelsea FC; Olympique de Lyon,Inglaterra; Francia,2,sí
+Diego Moreira,Portugal,Olympique de Lyon; Chelsea FC,Francia; Inglaterra,2,sí
 Diego Simeone,Argentina,Sevilla FC; Club Atlético de Madrid; FC Internazionale Milano; SS Lazio,España; Italia; Inglaterra,5,sí
+Diego Tristán,Spain,West Ham United FC,Inglaterra,1,sí
+Dietmar Hamann,Germany,FC Bayern Munich; Newcastle United FC; Liverpool FC; Manchester City FC,Alemania; Inglaterra; Italia,4,sí
 Dimitar Berbatov,Bulgaria,Bayer Leverkusen; Tottenham Hotspur FC; Manchester United FC; Fulham FC; AS Monaco,Alemania; Inglaterra; Francia,5,sí
 Dimitri Foulquier,France,Stade Rennais FC; Getafe CF; Valencia CF,Francia; España,3,sí
 Dimitri Payet,France,Lille OSC; Marseille FC; West Ham United FC,Francia; Inglaterra,4,sí
+Dino Zoff,Italy,Udinese Calcio; Juventus,Italia,2,sí
 Diogo Dalot,Portugal,Manchester United FC; AC Milan,Inglaterra,2,sí
 Divine Mukasa,England,Manchester City FC,Italia,1,sí
 Djed Spence,England,Tottenham Hotspur FC; Stade Rennais FC; Genoa FC,Inglaterra; Francia; Italia,3,sí
@@ -402,18 +475,23 @@ Djibril Sow,Switzerland,Borussia Mönchengladbach; Sevilla FC,Alemania; España,
 Dodi Lukébakio,Democratic Republic of the Congo,VfL Wolfsburg; Sevilla FC,Alemania; España,2,sí
 Dodô,Brazil,AS Roma,Italia,1,sí
 Domagoj Bradarić,Croatia,Lille OSC,Francia,1,sí
+Domenico Berardi,Italy,Juventus,Italia,1,sí
 Dominic Calvert-Lewin,England,Everton FC,Inglaterra,1,sí
 Dominic Solanke,England,Chelsea FC; Liverpool FC; Tottenham Hotspur FC,Inglaterra,3,sí
 Dominic Vavassori,Italy,Atalanta BC,Italia,1,sí
 Dominik Greif,Slovakia,Olympique de Lyon,Francia,1,sí
 Dominik Szoboszlai,Hungary,RB Leipzig; Liverpool FC,Alemania; Inglaterra,2,sí
+Dominique Rocheteau,France,Paris Saint-Germain,Francia,1,sí
+Donato,Brazil,Club Atlético de Madrid,España,1,sí
 Donny van de Beek,Netherlands,Manchester United FC; Everton FC; Girona FC,Inglaterra; España,3,sí
 Donyell Malen,Netherlands,Borussia Dortmund; Aston Villa FC; AS Roma,Alemania; Inglaterra; Italia,4,sí
 Đorđe Petrović,Serbia,Chelsea FC,Inglaterra,1,sí
 Douglas Costa,Brazil,FC Bayern Munich; Juventus,Alemania; Italia,4,sí
 Douglas Luiz,Brazil,Manchester City FC; Girona FC; Aston Villa FC; Juventus,Italia; España; Inglaterra,5,sí
 Dries Mertens,Belgium,SSC Napoli,Italia,1,sí
+Duncan Ferguson,Scotland,Everton FC; Newcastle United FC,Inglaterra,4,sí
 Dunga,Brazil,ACF Fiorentina; VfB Stuttgart,Italia; Alemania,2,sí
+Dušan Basta,Serbia,Udinese Calcio,Italia,1,sí
 Dušan Vlahović,Serbia,ACF Fiorentina; Juventus,Italia,2,sí
 Duván Zapata,Colombia,SSC Napoli; Udinese Calcio; Atalanta BC,Italia,4,sí
 Dwight McNeil,England,Everton FC,Inglaterra,1,sí
@@ -422,7 +500,7 @@ Eberechi Eze,England,Crystal Palace FC; Arsenal FC,Inglaterra,2,sí
 Eden Hazard,Belgium,Lille OSC; Chelsea FC; Real Madrid CF,Francia; Inglaterra; España,3,sí
 Éder Militão,Brazil,Real Madrid CF,España,1,sí
 Ederson,Brazil,Manchester City FC,Italia,1,sí
-Edgar Davids,Netherlands,AC Milan; Juventus; FC Barcelona; FC Internazionale Milano; Tottenham Hotspur FC; Crystal Palace FC,Inglaterra; Italia; España,6,sí
+Edgar Davids,Netherlands,AC Milan; Juventus; FC Internazionale Milano; FC Barcelona; Tottenham Hotspur FC; Crystal Palace FC,Inglaterra; Italia; España,6,sí
 Edinson Cavani,Uruguay,SSC Napoli; Paris Saint-Germain; Manchester United FC; Valencia CF,Italia; Francia; Inglaterra; España,4,sí
 Edmond Tapsoba,Burkina Faso,Bayer Leverkusen,Alemania,1,sí
 Edoardo Goldaniga,Italy,Genoa FC; Como 1907,Italia,2,sí
@@ -442,10 +520,12 @@ Elisha Owusu,Ghana,Olympique de Lyon,Francia,1,sí
 Elliot Anderson,Scotland,Newcastle United FC; Manchester City FC,Inglaterra; Italia,2,sí
 Elvis Rexhbeçaj,Kosovo,VfL Wolfsburg,Alemania,2,sí
 Eman Košpo,Bosnia and Herzegovina,ACF Fiorentina,Italia,1,sí
+Emanuele Giaccherini,Italy,Juventus,Italia,1,sí
 Emerson,Brazil,Bayer Leverkusen; AS Roma; Juventus; Real Madrid CF; AC Milan,Alemania; Italia; España; Inglaterra,5,sí
 Emil Bohinen,Norway,Genoa FC,Italia,2,sí
 Emil Forsberg,Sweden,RB Leipzig,Alemania,1,sí
 Emil Holm,Sweden,Atalanta BC; Juventus,Italia,2,sí
+Emile Heskey,England,Liverpool FC; Aston Villa FC,Inglaterra,2,sí
 Emile Smith Rowe,England,Arsenal FC; RB Leipzig; Fulham FC,Inglaterra; Alemania,3,sí
 Emiliano Buendía,Spain,Getafe CF; Aston Villa FC; Bayer Leverkusen,España; Inglaterra; Alemania,3,sí
 Emiliano Martínez,Argentina,Arsenal FC; Getafe CF; Aston Villa FC,Inglaterra; España,3,sí
@@ -469,9 +549,12 @@ Eric García,Spain,Manchester City FC; FC Barcelona; Girona FC,Italia; España,3
 Erling Haaland,Norway,Borussia Dortmund; Manchester City FC,Alemania; Italia,2,sí
 Ermedin Demirović,Bosnia and Herzegovina,VfB Stuttgart,Alemania,1,sí
 Ernest Nuamah,Ghana,Olympique de Lyon,Francia,2,sí
+Esteban Cambiasso,Argentina,Real Madrid CF; FC Internazionale Milano,España; Italia,2,sí
+Esteban Granero,Spain,Getafe CF; Real Madrid CF; Real Sociedad,España,5,sí
 Esteban Lepaul,France,Stade Rennais FC,Francia,1,sí
 Ethan Mbappé,France,Paris Saint-Germain; Lille OSC,Francia,2,sí
 Ethan Nwaneri,England,Arsenal FC; Marseille FC,Inglaterra; Francia,2,sí
+Étienne Capoue,France,Tottenham Hotspur FC; Villarreal CF,Inglaterra; España,2,sí
 Evan Ndicka,Ivory Coast,AS Roma,Italia,1,sí
 Evann Guessand,France,OG Nice; Aston Villa FC; Crystal Palace FC,Francia; Inglaterra,3,sí
 Éver Banega,Argentina,Valencia CF; Club Atlético de Madrid; Sevilla FC; FC Internazionale Milano,España; Italia,5,sí
@@ -485,12 +568,16 @@ Fabian Rieder,Switzerland,Stade Rennais FC; VfB Stuttgart,Francia; Alemania,2,s�
 Fabián Ruiz,Spain,Real Betis; SSC Napoli; Paris Saint-Germain,España; Italia; Francia,3,sí
 Fabiano Parisi,Italy,ACF Fiorentina,Italia,1,sí
 Fabien Barthez,France,Marseille FC; AS Monaco; Manchester United FC,Francia; Inglaterra,5,sí
+Fabien Lemoine,France,Stade Rennais FC,Francia,1,sí
 Fabinho,Brazil,AS Monaco; Real Madrid CF; Liverpool FC,Francia; España; Inglaterra,4,sí
+Fabio Borini,Italy,Chelsea FC; AS Roma; Liverpool FC; AC Milan,Inglaterra; Italia,6,sí
 Fabio Cannavaro,Italy,SSC Napoli; FC Internazionale Milano; Juventus; Real Madrid CF,Italia; España,5,sí
 Fabio Chiarodia,Italy,Werder Bremen; Borussia Mönchengladbach,Alemania,2,sí
 Fábio Coentrão,Portugal,Real Madrid CF; AS Monaco,España; Francia,2,sí
 Fabio Miretti,Italy,Juventus; Genoa FC,Italia,2,sí
+Fabio Quagliarella,Italy,Udinese Calcio; Juventus,Italia,2,sí
 Fábio Silva,Portugal,Borussia Dortmund,Alemania,1,sí
+Fabrizio Ravanelli,Italy,Juventus; Marseille FC,Italia; Francia,2,sí
 Facundo Medina,Argentina,Marseille FC,Francia,2,sí
 Federico Bernardeschi,Italy,ACF Fiorentina; Juventus,Italia,2,sí
 Federico Bonazzoli,Italy,FC Internazionale Milano,Italia,2,sí
@@ -498,6 +585,8 @@ Federico Cassa,Italy,Atalanta BC,Italia,1,sí
 Federico Chiesa,Italy,ACF Fiorentina; Juventus; Liverpool FC,Italia; Inglaterra,4,sí
 Federico Dimarco,Italy,FC Internazionale Milano,Italia,2,sí
 Federico Gatti,Italy,Juventus,Italia,1,sí
+Federico Marchetti,Italy,Genoa FC,Italia,1,sí
+Federico Peluso,Italy,Atalanta BC; Juventus,Italia,2,sí
 Federico Valverde,Uruguay,Real Madrid CF,España,1,sí
 Felipe Chávez,Peru,FC Bayern Munich,Alemania,1,sí
 Felipe Santana,Brazil,Borussia Dortmund; Schalke 04,Alemania,2,sí
@@ -526,18 +615,21 @@ Finn Azaz,Ireland,Aston Villa FC,Inglaterra,1,sí
 Finn Jeltsch,Germany,VfB Stuttgart,Alemania,1,sí
 Fisayo Dele-Bashiru,Nigeria,SS Lazio,Inglaterra,2,sí
 Fisnik Asllani,Kosovo,TSG Hoffenheim,Alemania,1,sí
+Flavien Tait,France,Stade Rennais FC,Francia,1,sí
 Flavio Bianchi,Italy,Genoa FC,Italia,1,sí
 Flávio Nazinho,Portugal,AS Monaco,Francia,1,sí
+Florent Malouda,France,Chelsea FC,Inglaterra,1,sí
 Florian Lejeune,France,Villarreal CF; Girona FC; Manchester City FC; Newcastle United FC,España; Italia; Inglaterra,5,sí
 Florian Micheler,Austria,TSG Hoffenheim,Alemania,1,sí
 Florian Müller,Germany,VfB Stuttgart,Alemania,1,sí
 Florian Neuhaus,Germany,Borussia Mönchengladbach,Alemania,1,sí
-Florian Thauvin,France,Lille OSC; Marseille FC; Newcastle United FC; Udinese Calcio,Francia; Inglaterra; Italia,6,sí
+Florian Thauvin,France,Marseille FC; Lille OSC; Newcastle United FC; Udinese Calcio,Francia; Inglaterra; Italia,6,sí
 Florian Wirtz,Germany,Bayer Leverkusen; Liverpool FC,Alemania; Inglaterra,2,sí
 Flynn Downes,England,West Ham United FC,Inglaterra,1,sí
 Folarin Balogun,England,Arsenal FC; AS Monaco,Inglaterra; Francia,2,sí
 Fran Beltrán,Spain,RC Celta de Vigo; Girona FC,España,2,sí
 Fran García ,Spain,Real Madrid CF; Real Betis,España,3,sí
+Fran González,Spain,Real Madrid CF; Sevilla FC,España,2,sí
 Fran Pérez ,Spain,Valencia CF,España,1,sí
 Fran Vieites,Spain,Real Betis,España,1,sí
 Francesco Totti,Italy,AS Roma,Italia,1,sí
@@ -563,6 +655,7 @@ Frédéric Guilbert,France,Aston Villa FC,Inglaterra,1,sí
 Frederik Rønnow,Denmark,Schalke 04,Alemania,1,sí
 Frenkie de Jong,Netherlands,FC Barcelona,España,1,sí
 Gabi,Spain,Club Atlético de Madrid; Getafe CF,España,3,sí
+Gabriel Agbonlahor,England,Aston Villa FC,Inglaterra,1,sí
 Gabriel Batistuta,Argentina,ACF Fiorentina; AS Roma; FC Internazionale Milano,Italia,3,sí
 Gabriel Heinze,Argentina,Real Valladolid; Paris Saint-Germain; Manchester United FC; Real Madrid CF; Marseille FC; AS Roma,España; Francia; Inglaterra; Italia,6,sí
 Gabriel Jesus,Brazil,Manchester City FC; Arsenal FC,Italia; Inglaterra,2,sí
@@ -574,21 +667,28 @@ Gaël Lafont,France,Marseille FC; Genoa FC,Francia; Italia,2,sí
 Gaëtan Perrin,France,Olympique de Lyon; Lille OSC,Francia,2,sí
 Gaetano Oristanio,Italy,FC Internazionale Milano,Italia,1,sí
 Gareth Bale,Wales,Tottenham Hotspur FC; Real Madrid CF,Inglaterra; España,3,sí
+Gareth Barry,England,Aston Villa FC; Manchester City FC; Everton FC,Inglaterra; Italia,4,sí
+Gareth Southgate,England,Crystal Palace FC; Aston Villa FC,Inglaterra,2,sí
 Gary Lineker,England,Everton FC; FC Barcelona; Tottenham Hotspur FC,Inglaterra; España,3,sí
 Gary Neville,England,Manchester United FC,Inglaterra,1,sí
+Gary Pallister,England,Manchester United FC,Inglaterra,1,sí
+Gary Speed,Wales,Everton FC; Newcastle United FC,Inglaterra,2,sí
 Gautier Lloris,France,OG Nice,Francia,1,sí
+Gavi,Spain,FC Barcelona,España,1,sí
 Gavi ,Spain,FC Barcelona,España,1,sí
 Gennaro Gattuso,Italy,AC Milan,Inglaterra,1,sí
 Geoffrey Kondogbia,France,Sevilla FC; AS Monaco; FC Internazionale Milano; Valencia CF; Club Atlético de Madrid; Marseille FC,España; Francia; Italia,7,sí
 George Best,Northern Ireland,Manchester United FC; Fulham FC,Inglaterra,2,sí
 George Hemmings,England,Aston Villa FC,Inglaterra,1,sí
-George Weah,Liberia,AS Monaco; Paris Saint-Germain; AC Milan; Marseille FC; Manchester City FC; Chelsea FC,Francia; Inglaterra; Italia,6,sí
+George Weah,Liberia,AS Monaco; Paris Saint-Germain; AC Milan; Chelsea FC; Manchester City FC; Marseille FC,Francia; Inglaterra; Italia,6,sí
 Georges Mikautadze,Georgia,Olympique de Lyon; Villarreal CF,Francia; España,2,sí
 Georginio Rutter,France,Stade Rennais FC; TSG Hoffenheim,Francia; Alemania,2,sí
+Gerard Deulofeu,Spain,FC Barcelona; Everton FC; Sevilla FC; AC Milan; Udinese Calcio,España; Inglaterra; Italia,8,sí
 Gerard Martín,Spain,FC Barcelona,España,1,sí
 Gerard Moreno,Spain,Villarreal CF,España,2,sí
 Gerard Piqué,Spain,Manchester United FC; FC Barcelona,Inglaterra; España,2,sí
 Gerd Müller,Germany,FC Bayern Munich,Alemania,1,sí
+Germán Denis,Argentina,Udinese Calcio; Atalanta BC,Italia,3,sí
 Gerónimo Rulli,Argentina,Real Sociedad; Manchester City FC; Villarreal CF; Marseille FC,España; Italia; Francia,6,sí
 Gervinho,Ivory Coast,Lille OSC; Arsenal FC; AS Roma,Francia; Inglaterra; Italia,3,sí
 Gheorghe Hagi,Romania,Real Madrid CF; FC Barcelona,España,2,sí
@@ -596,7 +696,9 @@ Giacomo Raspadori,Italy,SSC Napoli; Club Atlético de Madrid; Atalanta BC,Italia
 Gianfranco Zola,Italy,SSC Napoli; Chelsea FC,Italia; Inglaterra,2,sí
 Gianluca Gaetano,Italy,SSC Napoli; Atalanta BC,Italia,2,sí
 Gianluca Mancini,Italy,Atalanta BC; AS Roma,Italia,3,sí
+Gianluca Pessotto,Italy,Juventus,Italia,1,sí
 Gianluca Scamacca,Italy,Genoa FC; West Ham United FC; Atalanta BC,Italia; Inglaterra,3,sí
+Gianluca Vialli,Italy,Juventus; Chelsea FC,Italia; Inglaterra,2,sí
 Gianluca Zambrotta,Italy,Como 1907; Juventus; FC Barcelona; AC Milan,Italia; España; Inglaterra,4,sí
 Gianluigi Buffon,Italy,Juventus; Paris Saint-Germain,Italia; Francia,3,sí
 Gianluigi Donnarumma,Italy,AC Milan; Paris Saint-Germain; Manchester City FC,Inglaterra; Francia; Italia,3,sí
@@ -605,6 +707,7 @@ Giorgi Mamardashvili,Georgia,Valencia CF; Liverpool FC,España; Inglaterra,2,sí
 Giorgio Chiellini,Italy,AS Roma; ACF Fiorentina; Juventus,Italia,3,sí
 Giorgio Scalvini,Italy,Atalanta BC,Italia,1,sí
 Giovane,Brazil,SSC Napoli,Italia,1,sí
+Giovane Élber,Brazil,AC Milan; VfB Stuttgart; FC Bayern Munich; Borussia Mönchengladbach,Inglaterra; Alemania,4,sí
 Giovani Lo Celso,Argentina,Paris Saint-Germain; Real Betis; Tottenham Hotspur FC,Francia; España; Inglaterra,5,sí
 Giovanni Di Lorenzo,Italy,SSC Napoli,Italia,1,sí
 Giovanni Fabbian,Italy,FC Internazionale Milano; ACF Fiorentina,Italia,3,sí
@@ -612,17 +715,28 @@ Giovanni Reyna,United States,Borussia Dortmund; Borussia Mönchengladbach,Aleman
 Giovanni Simeone,Argentina,Genoa FC; ACF Fiorentina; SSC Napoli,Italia,4,sí
 Giuliano Simeone,Argentina,Club Atlético de Madrid,España,1,sí
 Giuseppe Ambrosino,Italy,Como 1907; SSC Napoli,Italia,2,sí
+Giuseppe Bergomi,Italy,FC Internazionale Milano,Italia,1,sí
+Giuseppe Meazza,Italy,FC Internazionale Milano; AC Milan; Juventus; Atalanta BC,Italia; Inglaterra,5,sí
 Gleison Bremer,Brazil,Juventus,Italia,1,sí
 Glen Kamara,Finland,Arsenal FC; Stade Rennais FC,Inglaterra; Francia,2,sí
+Glenn Whelan,Ireland,Manchester City FC; Aston Villa FC,Italia; Inglaterra,2,sí
 Godwill Kukonki,England,Manchester United FC,Inglaterra,1,sí
-Gonçalo Guedes,Portugal,Valencia CF; Paris Saint-Germain; Villarreal CF; Real Sociedad,España; Francia,5,sí
+Gökhan Inler,Switzerland,Udinese Calcio,Italia,1,sí
+Gonçalo Guedes,Portugal,Paris Saint-Germain; Valencia CF; Villarreal CF; Real Sociedad,Francia; España,5,sí
 Gonçalo Oliveira,Portugal,Stade Rennais FC,Francia,1,sí
 Gonçalo Ramos,Portugal,Paris Saint-Germain; AC Milan,Francia; Inglaterra,3,sí
+Gonzalo Castro,Germany,Bayer Leverkusen; Borussia Dortmund; VfB Stuttgart,Alemania,3,sí
 Gonzalo García ,Spain,Real Madrid CF,España,1,sí
 Gonzalo Higuaín,Argentina,Real Madrid CF; SSC Napoli; Juventus; AC Milan; Chelsea FC,España; Italia; Inglaterra,5,sí
+Gordon Strachan,Scotland,Manchester United FC,Inglaterra,1,sí
 Gorka Guruzeta,Spain,Athletic Club,España,2,sí
+Gorka Iraizoz,Spain,Girona FC,España,1,sí
+Graeme Souness,Scotland,Tottenham Hotspur FC; Liverpool FC,Inglaterra,2,sí
+Grant Holt,United Kingdom,Aston Villa FC,Inglaterra,1,sí
 Grant-Leon Ranos,Armenia,Borussia Mönchengladbach,Alemania,1,sí
+Grégoire Defrel,France,AS Roma,Italia,2,sí
 Gregor Kobel,Switzerland,TSG Hoffenheim; VfB Stuttgart; Borussia Dortmund,Alemania,4,sí
+Grégory Coupet,France,Club Atlético de Madrid; Paris Saint-Germain,España; Francia,2,sí
 Gregory van der Wiel,Netherlands,Paris Saint-Germain,Francia,1,sí
 Grigoris Kastanos,Cyprus,Juventus,Italia,1,sí
 Grischa Prömel,Germany,TSG Hoffenheim; VfB Stuttgart,Alemania,2,sí
@@ -631,6 +745,7 @@ Guglielmo Vicario,Italy,Udinese Calcio; Tottenham Hotspur FC,Italia; Inglaterra,
 Guido Della Rovere,Italy,FC Bayern Munich,Alemania,1,sí
 Guido Rodríguez,Argentina,Real Betis; West Ham United FC; Valencia CF,España; Inglaterra,3,sí
 Gustav Isaksen,Denmark,SS Lazio,Inglaterra,1,sí
+Gylfi Sigurðsson,Iceland,TSG Hoffenheim; Tottenham Hotspur FC; Everton FC,Alemania; Inglaterra,3,sí
 Hakan Çalhanoğlu,Turkey,Bayer Leverkusen; AC Milan; FC Internazionale Milano,Alemania; Inglaterra; Italia,3,sí
 Hakan Yakin,Switzerland,Paris Saint-Germain; VfB Stuttgart,Francia; Alemania,2,sí
 Hamed Traorè,Ivory Coast,SSC Napoli; Marseille FC; Genoa FC,Italia; Francia,4,sí
@@ -639,9 +754,11 @@ Hans Nicolussi Caviglia,Italy,Juventus; ACF Fiorentina,Italia,2,sí
 Harrison Armstrong,England,Everton FC,Inglaterra,1,sí
 Harrison Reed,England,Fulham FC,Inglaterra,2,sí
 Harry Kane,England,Tottenham Hotspur FC; FC Bayern Munich,Inglaterra; Alemania,2,sí
+Harry Kewell,Australia,Liverpool FC,Inglaterra,1,sí
 Harry Maguire,England,Manchester United FC,Inglaterra,1,sí
 Harry Winks,England,Tottenham Hotspur FC,Inglaterra,1,sí
 Harvey Barnes,England,Newcastle United FC,Inglaterra,1,sí
+Hasan Salihamidžić,Bosnia and Herzegovina,FC Bayern Munich; Juventus; VfL Wolfsburg,Alemania; Italia,3,sí
 Hassane Kamara,Ivory Coast,OG Nice; Udinese Calcio,Francia; Italia,2,sí
 Hauke Wahl,Germany,VfL Wolfsburg,Alemania,1,sí
 Hayden Hackney,England,Everton FC,Inglaterra,1,sí
@@ -651,13 +768,16 @@ Henrick Do Marcolino,France,Stade Rennais FC,Francia,1,sí
 Henrik Larsson,Sweden,FC Barcelona; Manchester United FC,España; Inglaterra,2,sí
 Henrikh Mkhitaryan,Armenia,Borussia Dortmund; Manchester United FC; Arsenal FC; AS Roma; FC Internazionale Milano,Alemania; Inglaterra; Italia,6,sí
 Hernán Crespo,Argentina,SS Lazio; FC Internazionale Milano; Chelsea FC; AC Milan; Genoa FC,Inglaterra; Italia,7,sí
+Hernanes,Brazil,FC Internazionale Milano; Juventus,Italia,2,sí
 Heung-min Son ,South Korea,Bayer Leverkusen; Tottenham Hotspur FC,Alemania; Inglaterra,2,sí
+Heurelho Gomes,Brazil,Tottenham Hotspur FC,Inglaterra,1,sí
 Hicham Boudaoui,Algeria,OG Nice,Francia,1,sí
 Hidetoshi Nakata,Japan,AS Roma; ACF Fiorentina,Italia,2,sí
 Himad Abdelli,Algeria,Marseille FC,Francia,1,sí
 Hiroki Itō,Japan,VfB Stuttgart; FC Bayern Munich,Alemania,3,sí
 Hristo Stoichkov,Bulgaria,FC Barcelona,España,2,sí
 Hugo Bolin,Sweden,Borussia Mönchengladbach,Alemania,2,sí
+Hugo Campagnaro,Argentina,FC Internazionale Milano,Italia,1,sí
 Hugo Cuenca,Paraguay,AC Milan; Genoa FC,Inglaterra; Italia,2,sí
 Hugo Duro,Spain,Getafe CF; Real Madrid CF; Valencia CF,España,4,sí
 Hugo Ekitike,France,Paris Saint-Germain; Liverpool FC,Francia; Inglaterra,3,sí
@@ -668,6 +788,8 @@ Hugo Sotelo,Spain,RC Celta de Vigo,España,1,sí
 Hwang Hee-chan,South Korea,RB Leipzig,Alemania,1,sí
 Iago Aspas,Spain,RC Celta de Vigo; Liverpool FC; Sevilla FC,España; Inglaterra,4,sí
 Ian Maatsen,Netherlands,Chelsea FC; Borussia Dortmund; Aston Villa FC,Inglaterra; Alemania,3,sí
+Ian Rush,Wales,Liverpool FC; Juventus; Newcastle United FC,Inglaterra; Italia,5,sí
+Ian Wright,England,Crystal Palace FC; Arsenal FC; West Ham United FC,Inglaterra,3,sí
 Ibai Aguirre,Spain,Real Sociedad,España,1,sí
 Ibrahim Maza,Algeria,Bayer Leverkusen,Alemania,1,sí
 Ibrahim Mbaye,France,Paris Saint-Germain,Francia,1,sí
@@ -682,11 +804,12 @@ Igor Julio,Brazil,ACF Fiorentina; West Ham United FC,Italia; Inglaterra,3,sí
 Igor Paixão,Brazil,Marseille FC,Francia,1,sí
 Iker Casillas,Spain,Real Madrid CF,España,1,sí
 Iker Losada,Spain,RC Celta de Vigo; Real Betis,España,3,sí
-Ilaix Moriba,Guinea,Valencia CF; RB Leipzig; FC Barcelona; RC Celta de Vigo; Getafe CF,España; Alemania,6,sí
+Ilaix Moriba,Guinea,FC Barcelona; RB Leipzig; Valencia CF; RC Celta de Vigo; Getafe CF,España; Alemania,6,sí
 Iliman Ndiaye,Senegal,Marseille FC; Everton FC,Francia; Inglaterra,2,sí
 İlkay Gündoğan,Germany,Borussia Dortmund; Manchester City FC; FC Barcelona,Alemania; Italia; España,4,sí
 Illan Meslier,France,Arsenal FC,Inglaterra,1,sí
 Illia Zabarnyi,Ukraine,Paris Saint-Germain,Francia,1,sí
+Imanol Agirretxe,Spain,Real Sociedad,España,1,sí
 Iñaki Williams,Spain,Athletic Club,España,1,sí
 Iñigo Martínez,Spain,Real Sociedad; Athletic Club; FC Barcelona,España,3,sí
 Iñigo Ruiz de Galarreta,Spain,Athletic Club,España,2,sí
@@ -705,6 +828,7 @@ Issa Diop,France,West Ham United FC; Fulham FC,Inglaterra,2,sí
 Issa Soumaré,Senegal,Stade Rennais FC,Francia,1,sí
 Issiaka Kamate,France,FC Internazionale Milano,Italia,1,sí
 Iván Alejo,Spain,Getafe CF; Real Valladolid,España,2,sí
+Iván Córdoba,Colombia,FC Internazionale Milano,Italia,1,sí
 Iván Corralejo,Spain,Real Betis,España,1,sí
 Iván Fresneda,Spain,Real Valladolid,España,1,sí
 Ivan Ilić,Serbia,Manchester City FC,Italia,1,sí
@@ -722,11 +846,12 @@ Jack Moorhouse,Ireland,Manchester United FC,Inglaterra,1,sí
 Jack Porter,United Kingdom,Arsenal FC,Inglaterra,1,sí
 Jacob Murphy,England,Newcastle United FC,Inglaterra,1,sí
 Jacob Ramsey,England,Aston Villa FC; Newcastle United FC,Inglaterra,2,sí
-Jacobo Ramón,Spain,Real Madrid CF; Como 1907,España; Italia,2,sí
+Jacobo Ramón,Spain,Como 1907; Real Madrid CF,Italia; España,2,sí
 Jacopo Fazzini,Italy,ACF Fiorentina,Italia,1,sí
 Jacopo Sardo,Italy,AC Milan,Inglaterra,1,sí
 Jaden Dixon,England,Arsenal FC,Inglaterra,1,sí
 Jaden Philogene,England,Aston Villa FC,Inglaterra,2,sí
+Jadon Sancho,England,Borussia Dortmund; Manchester United FC; Chelsea FC; Aston Villa FC,Alemania; Inglaterra,5,sí
 Jaime Mata,Spain,Girona FC; Real Valladolid; Getafe CF,España,3,sí
 Jairzinho,Brazil,Marseille FC,Francia,1,sí
 Jake Gray,United Kingdom,Crystal Palace FC,Inglaterra,1,sí
@@ -759,7 +884,10 @@ Jarell Quansah,England,Liverpool FC; Bayer Leverkusen,Inglaterra; Alemania,2,sí
 Jari Litmanen,Finland,FC Barcelona; Liverpool FC; Fulham FC,España; Inglaterra,3,sí
 Jarrad Branthwaite,England,Everton FC,Inglaterra,1,sí
 Jarrod Bowen,England,West Ham United FC,Inglaterra,1,sí
+Jason Puncheon,England,Crystal Palace FC,Inglaterra,2,sí
 Jasper Cillessen,Netherlands,FC Barcelona; Valencia CF,España,2,sí
+Jaume Costa,Spain,Villarreal CF; Valencia CF,España,2,sí
+Javi Fuego,Spain,Valencia CF; Villarreal CF,España,2,sí
 Javi Galán,Spain,RC Celta de Vigo; Club Atlético de Madrid; Real Sociedad,España,4,sí
 Javi Guerra,Spain,Valencia CF,España,1,sí
 Javier Chicharito,Mexico,Manchester United FC; Real Madrid CF; Bayer Leverkusen; West Ham United FC; Sevilla FC,Inglaterra; España; Alemania,5,sí
@@ -771,6 +899,8 @@ Javier Zanetti,Argentina,FC Internazionale Milano,Italia,1,sí
 Jay-Jay Okocha,Nigeria,Paris Saint-Germain,Francia,1,sí
 Jayden Addai,Netherlands,Como 1907,Italia,1,sí
 Jean Butez,France,Lille OSC; Como 1907,Francia; Italia,2,sí
+Jean Michaël Seri,Ivory Coast,Fulham FC,Inglaterra,1,sí
+Jean Tigana,France,Marseille FC,Francia,1,sí
 Jean-Clair Todibo,France,FC Barcelona; Schalke 04; OG Nice; West Ham United FC,España; Alemania; Francia; Inglaterra,6,sí
 Jean-Philippe Mateta,France,Olympique de Lyon; Crystal Palace FC,Francia; Inglaterra,3,sí
 Jean-Pierre Papin,France,Marseille FC; AC Milan; FC Bayern Munich,Francia; Inglaterra; Alemania,3,sí
@@ -779,14 +909,17 @@ Jeff Ekhator,Italy,Genoa FC; Juventus,Italia,2,sí
 Jefferson Lerma,Colombia,Crystal Palace FC,Inglaterra,1,sí
 Jeffrey de Lange,Netherlands,Marseille FC,Francia,1,sí
 Jens Castrop,South Korea,Borussia Mönchengladbach,Alemania,1,sí
+Jens Jeremies,Germany,FC Bayern Munich,Alemania,1,sí
 Jens Odgaard,Denmark,FC Internazionale Milano,Italia,1,sí
 Jens Stage,Denmark,Werder Bremen,Alemania,1,sí
 Jeong Woo-yeong,South Korea,FC Bayern Munich; VfB Stuttgart,Alemania,2,sí
 Jérémie Boga,Ivory Coast,Chelsea FC; Stade Rennais FC; Atalanta BC; OG Nice; Juventus,Inglaterra; Francia; Italia,7,sí
 Jeremie Frimpong,Netherlands,Bayer Leverkusen; Liverpool FC,Alemania; Inglaterra,2,sí
 Jeremy Arévalo,Ecuador,VfB Stuttgart,Alemania,1,sí
+Jérémy Clément,France,Paris Saint-Germain,Francia,1,sí
 Jérémy Doku,Belgium,Stade Rennais FC; Manchester City FC,Francia; Italia,2,sí
 Jérémy Jacquet,France,Stade Rennais FC; Liverpool FC,Francia; Inglaterra,2,sí
+Jermain Defoe,England,West Ham United FC; Tottenham Hotspur FC,Inglaterra,4,sí
 Jérôme Boateng,Germany,Manchester City FC; FC Bayern Munich; Olympique de Lyon,Italia; Alemania; Francia,3,sí
 Jesé,Spain,Real Madrid CF; Paris Saint-Germain; Real Betis,España; Francia,3,sí
 Jesper Karlström,Sweden,Udinese Calcio,Italia,1,sí
@@ -797,19 +930,22 @@ Jesús Vázquez,Spain,Valencia CF,España,1,sí
 Jhon Durán,Colombia,Aston Villa FC,Inglaterra,1,sí
 Joachim Andersen,Denmark,Olympique de Lyon; Fulham FC; Crystal Palace FC,Francia; Inglaterra,4,sí
 Joakim Mæhle,Denmark,Atalanta BC; VfL Wolfsburg,Italia; Alemania,2,sí
+Joan Capdevila,Spain,Club Atlético de Madrid; Villarreal CF,España,2,sí
 Joan Garcia,Spain,FC Barcelona,España,1,sí
 Joan Jordán,Spain,Real Valladolid; Sevilla FC,España,2,sí
-João Cancelo,Portugal,Valencia CF; FC Internazionale Milano; Juventus; Manchester City FC; FC Barcelona; FC Bayern Munich,España; Italia; Alemania,8,sí
+João Cancelo,Portugal,Valencia CF; FC Internazionale Milano; Juventus; Manchester City FC; FC Bayern Munich; FC Barcelona,España; Italia; Alemania,8,sí
 João Félix,Portugal,Club Atlético de Madrid; Chelsea FC; FC Barcelona; AC Milan,España; Inglaterra,5,sí
 João Ferreira,Portugal,Udinese Calcio,Italia,1,sí
 João Gomes,Brazil,Aston Villa FC,Inglaterra,1,sí
 João Mário,Portugal,FC Internazionale Milano; West Ham United FC,Italia; Inglaterra,2,sí
 João Neves,Portugal,Paris Saint-Germain,Francia,1,sí
 João Pedro,Brazil,Chelsea FC,Inglaterra,1,sí
+Joaquín,Spain,Valencia CF,España,1,sí
 Jobe Bellingham,England,Borussia Dortmund,Alemania,1,sí
 Joe Gomez,England,Liverpool FC,Inglaterra,1,sí
 Joe Scally,United States,Borussia Mönchengladbach,Alemania,1,sí
 Joe Willock,England,Arsenal FC; Newcastle United FC,Inglaterra,3,sí
+Joël Bats,France,Paris Saint-Germain,Francia,1,sí
 Joel Roca,Spain,Girona FC,España,1,sí
 Joelinton,Brazil,TSG Hoffenheim; Newcastle United FC,Alemania; Inglaterra,2,sí
 Jofre Torrents,Spain,FC Barcelona,España,1,sí
@@ -818,6 +954,8 @@ Johan Cruyff,Netherlands,FC Barcelona,España,1,sí
 Johan Manzambi,Switzerland,Aston Villa FC,Inglaterra,1,sí
 Johan Vásquez,Mexico,Genoa FC,Italia,2,sí
 Johann Lepenant,France,Olympique de Lyon,Francia,1,sí
+John Arne Riise,Norway,AS Monaco; Liverpool FC; AS Roma; Fulham FC,Francia; Inglaterra; Italia,4,sí
+John Barnes,England,Liverpool FC; Newcastle United FC,Inglaterra,2,sí
 John McGinn,Scotland,Aston Villa FC,Inglaterra,1,sí
 John Terry,England,Chelsea FC; Aston Villa FC,Inglaterra,2,sí
 John Yeboah,Ecuador,VfL Wolfsburg,Alemania,1,sí
@@ -836,19 +974,23 @@ Jonathan Clauss,France,Marseille FC; OG Nice,Francia,2,sí
 Jonathan David,Canada,Lille OSC; Juventus,Francia; Italia,2,sí
 Jonathan Rowe,England,Marseille FC,Francia,2,sí
 Jonathan Tah,Germany,Bayer Leverkusen; FC Bayern Munich,Alemania,2,sí
+Jonathan Viera,Spain,Valencia CF,España,1,sí
 Jonny Evans,Northern Ireland,Manchester United FC,Inglaterra,2,sí
 Jonny Otto,Spain,RC Celta de Vigo; Club Atlético de Madrid,España,2,sí
 Jordan Henderson,England,Liverpool FC,Inglaterra,1,sí
 Jordan Pickford,England,Everton FC,Inglaterra,1,sí
 Jordan Teze,Netherlands,AS Monaco,Francia,1,sí
+Jordan Veretout,France,Aston Villa FC; AS Roma; Marseille FC,Inglaterra; Italia; Francia,4,sí
 Jordan Zemura,Zimbabwe,Udinese Calcio,Italia,1,sí
 Jordi Alba,Spain,Valencia CF; FC Barcelona,España,2,sí
 Jorge Cuenca,Spain,FC Barcelona; Villarreal CF; Getafe CF; Fulham FC,España; Inglaterra,4,sí
 Jorge de Frutos,Spain,Real Valladolid,España,1,sí
+Jorge Molina,Spain,Getafe CF,España,1,sí
 Jørgen Strand Larsen,Norway,RC Celta de Vigo; Crystal Palace FC,España; Inglaterra,2,sí
 Jorginho,Italy,SSC Napoli; Chelsea FC; Arsenal FC,Italia; Inglaterra,3,sí
 Jorrel Hato,Netherlands,Chelsea FC,Inglaterra,1,sí
 José Ángel Carmona,Spain,Sevilla FC; Getafe CF,España,2,sí
+José Antonio Camacho,Spain,Real Madrid CF,España,1,sí
 José Callejón,Spain,Real Madrid CF; SSC Napoli; ACF Fiorentina,España; Italia,3,sí
 José Gayà,Spain,Valencia CF,España,1,sí
 José María Giménez,Uruguay,Club Atlético de Madrid,España,1,sí
@@ -859,12 +1001,14 @@ Josha Vagnoman,Germany,VfB Stuttgart,Alemania,1,sí
 Joshua Kimmich,Germany,RB Leipzig; FC Bayern Munich,Alemania,2,sí
 Joshua King,Norway,Manchester United FC; Borussia Mönchengladbach; Everton FC,Inglaterra; Alemania,3,sí
 Joshua Zirkzee,Netherlands,FC Bayern Munich; Manchester United FC,Alemania; Inglaterra,2,sí
+Josip Iličić,Slovenia,Atalanta BC,Italia,1,sí
 Josip Stanišić,Croatia,FC Bayern Munich; Bayer Leverkusen,Alemania,2,sí
 Joško Gvardiol,Croatia,RB Leipzig; Manchester City FC,Alemania; Italia,2,sí
 Jovan Milošević,Serbia,VfB Stuttgart; Werder Bremen,Alemania,2,sí
 Juan Cabal,Colombia,Juventus,Italia,1,sí
+Juan Carlos Valerón,Spain,Club Atlético de Madrid,España,1,sí
 Juan Cruz,Spain,Real Betis,España,1,sí
-Juan Cuadrado,Colombia,Udinese Calcio; ACF Fiorentina; Chelsea FC; Juventus; FC Internazionale Milano; Atalanta BC,Italia; Inglaterra,7,sí
+Juan Cuadrado,Colombia,Udinese Calcio; ACF Fiorentina; Juventus; Chelsea FC; FC Internazionale Milano; Atalanta BC,Italia; Inglaterra,7,sí
 Juan Iglesias,Spain,Getafe CF; Sevilla FC,España,2,sí
 Juan Mata,Spain,Valencia CF; Chelsea FC; Manchester United FC,España; Inglaterra,3,sí
 Juan Miranda,Spain,FC Barcelona; Schalke 04; Real Betis,España; Alemania,4,sí
@@ -874,34 +1018,42 @@ Juan Sebastián Verón,Argentina,SS Lazio; Manchester United FC; Chelsea FC; FC 
 Juanfran Torres,Spain,Real Madrid CF; Club Atlético de Madrid,España,2,sí
 Juanlu Sánchez,Spain,Sevilla FC,España,1,sí
 Juanmi,Spain,Real Sociedad; Real Betis; Getafe CF,España,4,sí
-Juanmi Latasa,Spain,Getafe CF; Real Madrid CF; Real Valladolid,España,3,sí
+Juanmi Latasa,Spain,Real Madrid CF; Getafe CF; Real Valladolid,España,3,sí
 Jude Bellingham,England,Borussia Dortmund; Real Madrid CF,Alemania; España,2,sí
 Jules Koundé,France,Sevilla FC; FC Barcelona,España,2,sí
 Julián Alvarez,Argentina,Manchester City FC; Club Atlético de Madrid,Italia; España,2,sí
+Julian Brandt,Germany,Bayer Leverkusen; Borussia Dortmund,Alemania,2,sí
 Julian Draxler,Germany,Schalke 04; VfL Wolfsburg; Paris Saint-Germain,Alemania; Francia,3,sí
 Julián Malatini,Argentina,Werder Bremen,Alemania,1,sí
 Julian Ryerson,Norway,Borussia Dortmund,Alemania,1,sí
+Julián Speroni,Argentina,Crystal Palace FC,Inglaterra,1,sí
 Julien Duranville,Belgium,Borussia Dortmund; Olympique de Lyon,Alemania; Francia,2,sí
 Júlio César,Brazil,Real Valladolid; Real Madrid CF; AC Milan; Real Sociedad,España; Inglaterra,5,sí
+Julio Salinas,Spain,Club Atlético de Madrid; FC Barcelona,España,2,sí
 Juninho Pernambucano,Brazil,Olympique de Lyon,Francia,1,sí
 Junior Firpo,Spain,Real Betis; FC Barcelona,España,3,sí
+Jupp Heynckes,Germany,Borussia Mönchengladbach,Alemania,2,sí
 Jurgen Ekkelenkamp,Netherlands,Udinese Calcio,Italia,1,sí
 Jürgen Klinsmann,Germany,VfB Stuttgart; FC Internazionale Milano; AS Monaco; Tottenham Hotspur FC; FC Bayern Munich,Alemania; Italia; Francia; Inglaterra,6,sí
+Jürgen Kohler,Germany,FC Bayern Munich; Juventus; Borussia Dortmund,Alemania; Italia,3,sí
 Jurriën Timber,Netherlands,Arsenal FC,Inglaterra,1,sí
+Jussi Jääskeläinen,Finland,West Ham United FC,Inglaterra,1,sí
 Just Fontaine,France,OG Nice,Francia,1,sí
 Justin Bijlow,Netherlands,Genoa FC,Italia,1,sí
 Justin Devenny,Northern Ireland,Crystal Palace FC,Inglaterra,1,sí
 Justin Kluivert,Netherlands,AS Roma; RB Leipzig; OG Nice; Valencia CF,Italia; Alemania; Francia; España,4,sí
-Justin Njinmah,Germany,Werder Bremen; Borussia Dortmund,Alemania,2,sí
+Justin Njinmah,Germany,Borussia Dortmund; Werder Bremen,Alemania,2,sí
 Kai Havertz,Germany,Bayer Leverkusen; Chelsea FC; Arsenal FC,Alemania; Inglaterra,3,sí
 Kaká,Brazil,AC Milan; Real Madrid CF,Inglaterra; España,3,sí
 Kalidou Koulibaly,Senegal,SSC Napoli; Chelsea FC,Italia; Inglaterra,2,sí
 Kamaldeen Sulemana,Ghana,Stade Rennais FC; Atalanta BC,Francia; Italia,2,sí
 Kamil Grabara,Poland,Liverpool FC; VfL Wolfsburg,Inglaterra; Alemania,2,sí
 Karim Adeyemi,Germany,Borussia Dortmund; FC Barcelona,Alemania; España,2,sí
+Karim Bellarabi,Germany,Bayer Leverkusen,Alemania,1,sí
 Karim Benzema,France,Olympique de Lyon; Real Madrid CF,Francia; España,2,sí
 Karl Darlow,Wales,Newcastle United FC; Manchester United FC,Inglaterra,2,sí
 Karl Hein,Estonia,Arsenal FC; Real Valladolid; Werder Bremen,Inglaterra; España; Alemania,4,sí
+Karl-Heinz Riedle,Germany,Werder Bremen; Borussia Dortmund; Liverpool FC; Fulham FC,Alemania; Inglaterra,4,sí
 Karl-Heinz Rummenigge,Germany,FC Bayern Munich; FC Internazionale Milano,Alemania; Italia,2,sí
 Keinan Davis,England,Aston Villa FC; Udinese Calcio,Inglaterra; Italia,2,sí
 Keita Baldé,Senegal,SS Lazio; AS Monaco; FC Internazionale Milano,Inglaterra; Francia; Italia,3,sí
@@ -911,16 +1063,22 @@ Kenneth Taylor,Netherlands,SS Lazio,Inglaterra,1,sí
 Kenny Dalglish,Scotland,Liverpool FC,Inglaterra,1,sí
 Kenny Tete,Netherlands,Olympique de Lyon; Fulham FC,Francia; Inglaterra,2,sí
 Kento Shiogai,Japan,VfL Wolfsburg,Alemania,1,sí
-Kepa Arrizabalaga,Spain,Athletic Club; Real Valladolid; Chelsea FC; Real Madrid CF; Arsenal FC,España; Inglaterra,5,sí
+Kepa Arrizabalaga,Spain,Real Valladolid; Athletic Club; Chelsea FC; Real Madrid CF; Arsenal FC,España; Inglaterra,5,sí
 Kevin,Brazil,Fulham FC,Inglaterra,1,sí
 Kevin Carlos,Spain,OG Nice,Francia,1,sí
 Kevin Danso,Austria,Tottenham Hotspur FC,Inglaterra,2,sí
-Kevin De Bruyne,Belgium,Werder Bremen; Chelsea FC; VfL Wolfsburg; Manchester City FC; SSC Napoli,Alemania; Inglaterra; Italia,5,sí
+Kevin De Bruyne,Belgium,Chelsea FC; Werder Bremen; VfL Wolfsburg; Manchester City FC; SSC Napoli,Inglaterra; Alemania; Italia,5,sí
 Kevin Diks,Indonesia,ACF Fiorentina; Borussia Mönchengladbach,Italia; Alemania,2,sí
+Kevin Gameiro,France,Paris Saint-Germain; Sevilla FC; Club Atlético de Madrid; Valencia CF,Francia; España,4,sí
+Kevin Großkreutz,Germany,Borussia Dortmund; VfB Stuttgart,Alemania,2,sí
+Kevin Keegan,England,Liverpool FC; Newcastle United FC,Inglaterra,2,sí
+Kevin Mirallas,Belgium,Everton FC,Inglaterra,1,sí
 Kevin Stöger,Austria,VfB Stuttgart; Borussia Mönchengladbach,Alemania,2,sí
 Kevin Strootman,Netherlands,AS Roma; Marseille FC; Genoa FC,Italia; Francia,5,sí
+Kevin Volland,Germany,TSG Hoffenheim; Bayer Leverkusen; AS Monaco,Alemania; Francia,3,sí
 Khéphren Thuram,France,AS Monaco; OG Nice; Juventus,Francia; Italia,3,sí
 Khvicha Kvaratskhelia,Georgia,SSC Napoli; Paris Saint-Germain,Italia; Francia,2,sí
+Ki Sung-yueng,South Korea,Newcastle United FC,Inglaterra,1,sí
 Kieran Morrison,United Kingdom,Liverpool FC,Inglaterra,1,sí
 Kieran Trippier,England,Manchester City FC; Tottenham Hotspur FC; Club Atlético de Madrid; Newcastle United FC,Italia; Inglaterra; España,4,sí
 Kiernan Dewsbury-Hall,England,Chelsea FC; Everton FC,Inglaterra,2,sí
@@ -931,6 +1089,7 @@ Kiko Femenía,Spain,Villarreal CF; Getafe CF,España,2,sí
 Kim Min-jae,South Korea,SSC Napoli; FC Bayern Munich,Italia; Alemania,2,sí
 Kingsley Coman,France,Paris Saint-Germain; Juventus; FC Bayern Munich,Francia; Italia; Alemania,4,sí
 Klaas-Jan Huntelaar,Netherlands,Real Madrid CF; Schalke 04,España; Alemania,3,sí
+Klaus Fischer,Germany,Schalke 04,Alemania,1,sí
 Kobbie Mainoo,England,Manchester United FC,Inglaterra,1,sí
 Koke,Spain,Club Atlético de Madrid,España,1,sí
 Kolo Touré,Ivory Coast,Arsenal FC; Manchester City FC; Liverpool FC,Inglaterra; Italia,3,sí
@@ -939,6 +1098,7 @@ Konrad Laimer,Austria,RB Leipzig; FC Bayern Munich,Alemania,2,sí
 Konstantinos Koulierakis,Greece,VfL Wolfsburg,Alemania,1,sí
 Konstantinos Mavropanos,Greece,Arsenal FC; VfB Stuttgart; West Ham United FC,Inglaterra; Alemania,4,sí
 Kurt Zouma,France,Chelsea FC; Everton FC; West Ham United FC,Inglaterra,3,sí
+Kwadwo Asamoah,Ghana,Udinese Calcio; Juventus; FC Internazionale Milano,Italia,3,sí
 Kyle Walker-Peters,England,Tottenham Hotspur FC; West Ham United FC,Inglaterra,2,sí
 Kylian Mbappé,France,AS Monaco; Paris Saint-Germain; Real Madrid CF,Francia; España,4,sí
 Ladislav Krejčí,Czech Republic,Girona FC,España,1,sí
@@ -947,6 +1107,8 @@ Lamine Camara,Senegal,AS Monaco,Francia,1,sí
 Lamine Yamal,Spain,FC Barcelona,España,1,sí
 Landon Donovan,United States,Bayer Leverkusen; FC Bayern Munich; Everton FC,Alemania; Inglaterra,4,sí
 Lars Bender,Germany,Bayer Leverkusen,Alemania,1,sí
+Lars Ricken,Germany,Borussia Dortmund,Alemania,1,sí
+Lars Stindl,Germany,Borussia Mönchengladbach,Alemania,1,sí
 Lassana Diarra,France,Chelsea FC; Arsenal FC; Real Madrid CF; Marseille FC; Paris Saint-Germain,Inglaterra; España; Francia,5,sí
 Laurent Abergel,France,Marseille FC; OG Nice,Francia,2,sí
 Laurent Blanc,France,SSC Napoli; FC Barcelona; Marseille FC; FC Internazionale Milano; Manchester United FC,Italia; España; Francia; Inglaterra,5,sí
@@ -954,6 +1116,9 @@ Lautaro Martínez,Argentina,FC Internazionale Milano,Italia,1,sí
 Lazar Samardžić,Serbia,RB Leipzig; Udinese Calcio; Atalanta BC,Alemania; Italia,4,sí
 Leandro Cabrera,Uruguay,Club Atlético de Madrid; Getafe CF,España,3,sí
 Leandro Trossard,Belgium,Arsenal FC,Inglaterra,1,sí
+Ledley King,England,Tottenham Hotspur FC,Inglaterra,1,sí
+Lee Dixon,England,Arsenal FC,Inglaterra,1,sí
+Leighton Baines,England,Everton FC,Inglaterra,1,sí
 Lennard Maloney,United States,Borussia Dortmund,Alemania,1,sí
 Lennart Karl,Germany,FC Bayern Munich,Alemania,1,sí
 Leny Yoro,France,Lille OSC; Manchester United FC,Francia; Inglaterra,2,sí
@@ -962,10 +1127,14 @@ Leo Østigård,Norway,SSC Napoli; Genoa FC; Stade Rennais FC; TSG Hoffenheim,Ita
 Leo Shahar,United Kingdom,Newcastle United FC,Inglaterra,1,sí
 Leon Avdullahu,Kosovo,TSG Hoffenheim,Alemania,1,sí
 Leon Bailey,Jamaica,Bayer Leverkusen; Aston Villa FC; AS Roma,Alemania; Inglaterra; Italia,3,sí
+Leon Britton,England,West Ham United FC,Inglaterra,1,sí
+Leon Osman,England,Everton FC,Inglaterra,1,sí
 Leonardo Balerdi,Argentina,Borussia Dortmund; Marseille FC,Alemania; Francia,3,sí
+Leonardo Bonucci,Italy,FC Internazionale Milano; Genoa FC; Juventus; AC Milan,Italia; Inglaterra,6,sí
 Leonardo Cilaurren,Spain,Athletic Club,España,1,sí
 Leonardo Spinazzola,Italy,Juventus; Atalanta BC; AS Roma; SSC Napoli,Italia,5,sí
 Leroy Sané,Germany,Schalke 04; Manchester City FC; FC Bayern Munich,Alemania; Italia,3,sí
+Les Ferdinand,England,Newcastle United FC; Tottenham Hotspur FC; West Ham United FC,Inglaterra,3,sí
 Lesley Ugochukwu,France,Stade Rennais FC; Chelsea FC,Francia; Inglaterra,2,sí
 Levente Bősze,Hungary,Como 1907,Italia,1,sí
 Levi Colwill,England,Chelsea FC,Inglaterra,1,sí
@@ -981,6 +1150,7 @@ Lisandro Martínez,Argentina,Manchester United FC,Inglaterra,1,sí
 Lloyd Kelly,England,Newcastle United FC; Juventus,Inglaterra; Italia,3,sí
 Logan Costa,France,Villarreal CF,España,1,sí
 Loïc Badé,France,Stade Rennais FC; Sevilla FC; Bayer Leverkusen,Francia; España; Alemania,4,sí
+Loïc Rémy,France,Marseille FC; Newcastle United FC; Chelsea FC; Crystal Palace FC; Getafe CF,Francia; Inglaterra; España,5,sí
 Loïs Openda,Belgium,RB Leipzig; Juventus,Alemania; Italia,3,sí
 Lorenz Assignon,France,Stade Rennais FC; VfB Stuttgart,Francia; Alemania,2,sí
 Lorenzo Bernasconi,Italy,Atalanta BC,Italia,2,sí
@@ -999,29 +1169,40 @@ Luca Marianucci,Italy,SSC Napoli,Italia,1,sí
 Luca Pfeiffer,Germany,VfB Stuttgart,Alemania,1,sí
 Luca Ranieri,Italy,ACF Fiorentina,Italia,1,sí
 Luca Reggiani,Italy,Borussia Dortmund,Alemania,1,sí
-Luca Toni,Italy,ACF Fiorentina; FC Bayern Munich; AS Roma; Genoa FC; Juventus,Italia; Alemania,6,sí
+Luca Toni,Italy,ACF Fiorentina; FC Bayern Munich; Genoa FC; AS Roma; Juventus,Italia; Alemania,6,sí
 Lucá Williams-Barnett,England,Tottenham Hotspur FC,Inglaterra,1,sí
+Lucas Barrios,Paraguay,Borussia Dortmund,Alemania,1,sí
 Lucas Beraldo,Brazil,Paris Saint-Germain,Francia,1,sí
 Lucas Bergvall,Sweden,Tottenham Hotspur FC,Inglaterra,1,sí
 Lucas Boyé,Argentina,RC Celta de Vigo,España,1,sí
 Lucas Chevalier,France,Lille OSC; Paris Saint-Germain,Francia,2,sí
 Lucas Digne,France,Lille OSC; Paris Saint-Germain; AS Roma; FC Barcelona; Everton FC; Aston Villa FC,Francia; Italia; España; Inglaterra,6,sí
 Lucas Michal,France,AS Monaco,Francia,1,sí
+Lucas Moura,Brazil,Paris Saint-Germain; Tottenham Hotspur FC,Francia; Inglaterra,2,sí
+Lucas Ocampos,Argentina,AS Monaco; Marseille FC; Genoa FC; AC Milan; Sevilla FC,Francia; Italia; Inglaterra; España,6,sí
 Lucas Perrin,France,Marseille FC,Francia,1,sí
 Lucas Tousart,France,Olympique de Lyon,Francia,2,sí
 Lucas Vázquez,Spain,Real Madrid CF; Bayer Leverkusen,España; Alemania,2,sí
+Lucho González,Argentina,Marseille FC,Francia,1,sí
 Luciano Vietto,Argentina,Villarreal CF; Club Atlético de Madrid; Sevilla FC; Valencia CF; Fulham FC,España; Inglaterra,5,sí
 Lucien Agoumé,France,FC Internazionale Milano; Sevilla FC,Italia; España,3,sí
+Lúcio,Brazil,Bayer Leverkusen; FC Bayern Munich; FC Internazionale Milano; Juventus,Alemania; Italia,4,sí
 Ludovic Blas,France,Stade Rennais FC,Francia,1,sí
+Ludovic Butelle,France,Valencia CF,España,1,sí
+Ludovic Giuly,France,AS Monaco; FC Barcelona; AS Roma; Paris Saint-Germain,Francia; España; Italia,5,sí
+Luis Aragonés,Spain,Real Madrid CF; Club Atlético de Madrid,España,2,sí
 Luis Díaz,Colombia,Liverpool FC; FC Bayern Munich,Inglaterra; Alemania,2,sí
 Luis Enrique,Spain,Real Madrid CF; FC Barcelona,España,2,sí
 Luís Fabiano,Brazil,Stade Rennais FC; Sevilla FC,Francia; España,2,sí
+Luis Fernandez,France,Paris Saint-Germain,Francia,1,sí
 Luís Figo,Portugal,FC Barcelona; Real Madrid CF; FC Internazionale Milano,España; Italia,3,sí
 Luis Henrique,Brazil,Marseille FC; FC Internazionale Milano,Francia; Italia,2,sí
 Luis Milla,Spain,Getafe CF; Como 1907,España; Italia,2,sí
+Luis Muriel,Colombia,Udinese Calcio; Sevilla FC; Atalanta BC,Italia; España,3,sí
 Luis Rioja,Spain,Valencia CF,España,1,sí
 Luis Suárez (ESP),Spain,FC Barcelona; FC Internazionale Milano,España; Italia,2,sí
 Luis Suárez (URU),Uruguay,Liverpool FC; FC Barcelona; Club Atlético de Madrid,Inglaterra; España,3,sí
+Luiz Gustavo,Brazil,TSG Hoffenheim; FC Bayern Munich; VfL Wolfsburg; Marseille FC,Alemania; Francia,5,sí
 Luiz Júnior,Brazil,Villarreal CF,España,1,sí
 Luka Modrić,Croatia,Tottenham Hotspur FC; Real Madrid CF; AC Milan,Inglaterra; España,3,sí
 Luka Topalović,Slovenia,FC Internazionale Milano,Italia,1,sí
@@ -1029,6 +1210,7 @@ Luka Vušković,Croatia,Tottenham Hotspur FC,Inglaterra,1,sí
 Lukas Hradecky,Finland,Bayer Leverkusen; AS Monaco,Alemania; Francia,2,sí
 Lukas Klostermann,Germany,RB Leipzig,Alemania,1,sí
 Lukas Podolski,Germany,FC Bayern Munich; Arsenal FC; FC Internazionale Milano,Alemania; Inglaterra; Italia,3,sí
+Łukasz Piszczek,Poland,Borussia Dortmund,Alemania,1,sí
 Łukasz Skorupski,Poland,AS Roma,Italia,1,sí
 Luke Shaw,England,Manchester United FC,Inglaterra,1,sí
 Luuk de Jong,Netherlands,Borussia Mönchengladbach; Newcastle United FC; Sevilla FC; FC Barcelona,Alemania; Inglaterra; España,4,sí
@@ -1039,6 +1221,8 @@ Mads Hermansen,Denmark,West Ham United FC,Inglaterra,1,sí
 Maduka Okoye,Nigeria,Udinese Calcio,Italia,1,sí
 Maghnes Akliouche,France,AS Monaco,Francia,1,sí
 Mahdi Camara,France,Stade Rennais FC,Francia,1,sí
+Maicon,Brazil,AS Monaco; FC Internazionale Milano; Manchester City FC; AS Roma,Francia; Italia,4,sí
+Makoto Hasebe,Japan,VfL Wolfsburg,Alemania,1,sí
 Malang Sarr,France,OG Nice; Chelsea FC; AS Monaco,Francia; Inglaterra,3,sí
 Malcom,Brazil,FC Barcelona,España,1,sí
 Malick Thiaw,Germany,Schalke 04; AC Milan; Newcastle United FC,Alemania; Inglaterra,3,sí
@@ -1046,11 +1230,18 @@ Malik Tillman,United States,FC Bayern Munich; Bayer Leverkusen,Alemania,2,sí
 Malo Gusto,France,Olympique de Lyon; Chelsea FC,Francia; Inglaterra,2,sí
 Mama Baldé,Guinea-Bissau,Olympique de Lyon,Francia,2,sí
 Mamadou Coulibaly,France,AS Monaco,Francia,1,sí
-Maniche,Portugal,Chelsea FC; Club Atlético de Madrid; FC Internazionale Milano,Inglaterra; España; Italia,3,sí
+Mamadou Niang,Senegal,Marseille FC,Francia,1,sí
+Maniche,Portugal,Club Atlético de Madrid; Chelsea FC; FC Internazionale Milano,España; Inglaterra; Italia,3,sí
+Manolo Gabbiadini,Italy,Atalanta BC; Juventus,Italia,2,sí
+Manolo Sanchís,Spain,Real Madrid CF,España,1,sí
+Manor Solomon,Israel,Fulham FC; Tottenham Hotspur FC; Villarreal CF,Inglaterra; España,3,sí
 Manu Koné,France,Borussia Mönchengladbach; AS Roma,Alemania; Italia,3,sí
 Manu Morlanes,Spain,Villarreal CF,España,1,sí
 Manu Sánchez,Spain,Club Atlético de Madrid; RC Celta de Vigo,España,2,sí
+Manu Trigueros,Spain,Villarreal CF,España,1,sí
 Manuel Akanji,Switzerland,Borussia Dortmund; Manchester City FC; FC Internazionale Milano,Alemania; Italia,4,sí
+Manuel Amoros,France,AS Monaco; Marseille FC,Francia,3,sí
+Manuel Lanzini,Argentina,West Ham United FC,Inglaterra,2,sí
 Manuel Lazzari,Italy,SS Lazio,Inglaterra,1,sí
 Manuel Locatelli,Italy,AC Milan; Juventus,Inglaterra; Italia,3,sí
 Manuel Neuer,Germany,Schalke 04; FC Bayern Munich,Alemania,2,sí
@@ -1067,17 +1258,22 @@ Marc Roca,Spain,FC Bayern Munich; Real Betis,Alemania; España,3,sí
 Marc-André ter Stegen,Germany,Borussia Mönchengladbach; FC Barcelona; Girona FC,Alemania; España,3,sí
 Marc-Oliver Kempf,Germany,VfB Stuttgart; Como 1907,Alemania; Italia,2,sí
 Marcel Desailly,France,Marseille FC; AC Milan; Chelsea FC,Francia; Inglaterra,3,sí
-Marcel Sabitzer,Austria,RB Leipzig; FC Bayern Munich; Manchester United FC; Borussia Dortmund,Alemania; Inglaterra,4,sí
+Marcel Sabitzer,Austria,RB Leipzig; FC Bayern Munich; Borussia Dortmund; Manchester United FC,Alemania; Inglaterra,4,sí
+Marcel Schmelzer,Germany,Borussia Dortmund,Alemania,1,sí
 Marcelo Brozović,Croatia,FC Internazionale Milano,Italia,1,sí
 Marco Asensio,Spain,Real Madrid CF; Paris Saint-Germain; Aston Villa FC,España; Francia; Inglaterra,3,sí
 Marco Ballotta,Italy,SS Lazio; FC Internazionale Milano,Inglaterra; Italia,3,sí
 Marco Bizot,Netherlands,Aston Villa FC,Inglaterra,1,sí
+Marco Borriello,Italy,AC Milan; Genoa FC; AS Roma; Juventus; West Ham United FC; Atalanta BC,Inglaterra; Italia,9,sí
 Marco Brescianini,Italy,AC Milan; Atalanta BC; ACF Fiorentina,Inglaterra; Italia,5,sí
 Marco Carnesecchi,Italy,Atalanta BC,Italia,1,sí
 Marco Friedl,Austria,FC Bayern Munich; Werder Bremen,Alemania,3,sí
 Marco Grüll,Austria,Werder Bremen,Alemania,1,sí
 Marco Materazzi,Italy,Everton FC; FC Internazionale Milano,Inglaterra; Italia,2,sí
+Marco Reus,Germany,Borussia Mönchengladbach; Borussia Dortmund,Alemania,2,sí
 Marco Romano,Italy,Como 1907,Italia,2,sí
+Marco Russ,Germany,VfL Wolfsburg,Alemania,1,sí
+Marco Simone,Italy,AC Milan; Paris Saint-Germain; AS Monaco,Inglaterra; Francia,5,sí
 Marco Sportiello,Italy,Atalanta BC; ACF Fiorentina; AC Milan,Italia; Inglaterra,4,sí
 Marco van Basten,Netherlands,AC Milan,Inglaterra,1,sí
 Marco Verratti,Italy,Paris Saint-Germain,Francia,1,sí
@@ -1085,14 +1281,17 @@ Marcos Alonso,Spain,Real Madrid CF; ACF Fiorentina; Chelsea FC; FC Barcelona; RC
 Marcos André,Brazil,Real Valladolid; Valencia CF,España,3,sí
 Marcos Llorente,Spain,Real Madrid CF; Club Atlético de Madrid,España,2,sí
 Marcos Senesi,Argentina,Tottenham Hotspur FC,Inglaterra,1,sí
+Marcos Senna,Spain,Villarreal CF,España,1,sí
 Marcus Bettinelli,England,Fulham FC; Chelsea FC; Manchester City FC,Inglaterra; Italia,3,sí
-Marcus Rashford,England,Manchester United FC; FC Barcelona; Aston Villa FC,Inglaterra; España,3,sí
+Marcus Rashford,England,Manchester United FC; Aston Villa FC; FC Barcelona,Inglaterra; España,3,sí
 Marcus Thuram-Ulien,France,Borussia Mönchengladbach; FC Internazionale Milano,Alemania; Italia,2,sí
 Marek Hamšík,Slovakia,SSC Napoli,Italia,1,sí
 Mariano,Brazil,Sevilla FC,España,1,sí
 Mariano Díaz,Dominican Republic,Real Madrid CF; Olympique de Lyon; Sevilla FC,España; Francia,4,sí
 Marin Pongračić,Croatia,VfL Wolfsburg; Borussia Dortmund; ACF Fiorentina,Alemania; Italia,3,sí
 Mario Balotelli,Italy,FC Internazionale Milano; Manchester City FC; AC Milan; Liverpool FC; OG Nice; Marseille FC; Genoa FC,Italia; Inglaterra; Francia,8,sí
+Mario Basler,Germany,Werder Bremen; FC Bayern Munich,Alemania,2,sí
+Mario Gaspar,Spain,Villarreal CF,España,1,sí
 Mario Gila,Spain,SS Lazio; Real Madrid CF; AC Milan,Inglaterra; España,3,sí
 Mario Gómez,Germany,VfB Stuttgart; FC Bayern Munich; ACF Fiorentina; VfL Wolfsburg,Alemania; Italia,5,sí
 Mario Götze,Germany,Borussia Dortmund; FC Bayern Munich,Alemania,3,sí
@@ -1101,18 +1300,28 @@ Mario Kempes,Argentina,Valencia CF,España,2,sí
 Mario Mandžukić,Croatia,VfL Wolfsburg; FC Bayern Munich; Club Atlético de Madrid; Juventus; AC Milan,Alemania; España; Italia; Inglaterra,5,sí
 Mario Martín,Spain,Real Madrid CF; Real Valladolid; Getafe CF,España,4,sí
 Mario Pašalić,Croatia,Chelsea FC; AS Monaco; AC Milan; Atalanta BC,Inglaterra; Francia; Italia,5,sí
+Marius Trésor,France,Marseille FC,Francia,1,sí
 Marius Wolf,Germany,Borussia Dortmund,Alemania,1,sí
 Mark Flekken,Netherlands,Bayer Leverkusen,Alemania,1,sí
+Mark Hughes,Wales,Manchester United FC; FC Barcelona; FC Bayern Munich; Chelsea FC; Everton FC,Inglaterra; España; Alemania,6,sí
+Mark Iuliano,Italy,Juventus,Italia,1,sí
+Mark Lawrenson,England,Liverpool FC,Inglaterra,1,sí
+Mark Noble,England,West Ham United FC,Inglaterra,1,sí
+Mark Schwarzer,Australia,Fulham FC; Chelsea FC,Inglaterra,2,sí
 Mark Travers,Ireland,Everton FC,Inglaterra,1,sí
+Mark Viduka,Australia,Newcastle United FC,Inglaterra,1,sí
 Marko Arnautović,Austria,FC Internazionale Milano; Werder Bremen; West Ham United FC,Italia; Alemania; Inglaterra,5,sí
 Marko Marin,Germany,Borussia Mönchengladbach; Werder Bremen; Chelsea FC; Sevilla FC,Alemania; Inglaterra; España,4,sí
 Markus Kolke,Germany,Werder Bremen,Alemania,1,sí
 Maroan Sannadi,Spain,Athletic Club,España,1,sí
+Marouane Fellaini,Belgium,Everton FC; Manchester United FC,Inglaterra,2,sí
 Marquinhos,Brazil,AS Roma; Paris Saint-Germain,Italia; Francia,3,sí
 Marten de Roon,Netherlands,Atalanta BC,Italia,2,sí
 Martial Godo,Ivory Coast,Fulham FC,Inglaterra,1,sí
 Martin Baturina,Croatia,Como 1907,Italia,1,sí
+Martin Braithwaite,Denmark,FC Barcelona,España,1,sí
 Martin Dúbravka,Slovakia,Newcastle United FC; Manchester United FC; Tottenham Hotspur FC,Inglaterra,4,sí
+Martin Keown,England,Arsenal FC; Aston Villa FC; Everton FC,Inglaterra,4,sí
 Martín Montoya,Spain,FC Barcelona; FC Internazionale Milano; Valencia CF,España; Italia,3,sí
 Martin Ødegaard,Norway,Real Madrid CF; Real Sociedad; Arsenal FC,España; Inglaterra,4,sí
 Martín Satriano,Uruguay,FC Internazionale Milano; Olympique de Lyon; Getafe CF,Italia; Francia; España,5,sí
@@ -1123,6 +1332,7 @@ Marvin Pieringer,Germany,Schalke 04,Alemania,2,sí
 Mason Greenwood,England,Manchester United FC; Getafe CF; Marseille FC,Inglaterra; España; Francia,3,sí
 Mason Mount,England,Chelsea FC; Manchester United FC,Inglaterra,2,sí
 Mateo Kovačić,Croatia,FC Internazionale Milano; Real Madrid CF; Chelsea FC; Manchester City FC,Italia; España; Inglaterra,5,sí
+Mateo Musacchio,Argentina,Villarreal CF; AC Milan,España; Inglaterra,2,sí
 Mateo Retegui,Argentina,Genoa FC; Atalanta BC,Italia,2,sí
 Mateu Morey,Spain,Borussia Dortmund,Alemania,1,sí
 Mateus Fernandes,Portugal,West Ham United FC; Tottenham Hotspur FC,Inglaterra,2,sí
@@ -1130,15 +1340,17 @@ Matheus Cunha,Brazil,RB Leipzig; Club Atlético de Madrid; Manchester United FC,
 Matheus Nunes,Portugal,Manchester City FC,Italia,1,sí
 Mathias Jensen,Denmark,RC Celta de Vigo,España,1,sí
 Mathías Olivera,Uruguay,Getafe CF; SSC Napoli,España; Italia,2,sí
+Mathieu Valbuena,France,Marseille FC,Francia,1,sí
 Mathis Amougou,France,Chelsea FC,Inglaterra,1,sí
 Mathys Angély,France,VfL Wolfsburg,Alemania,1,sí
 Mathys De Carvalho,France,Olympique de Lyon,Francia,1,sí
-Mathys Detourbet,France,Manchester City FC; AS Monaco,Italia; Francia,2,sí
+Mathys Detourbet,France,AS Monaco; Manchester City FC,Francia; Italia,2,sí
 Mathys Tel,France,Stade Rennais FC; FC Bayern Munich; Tottenham Hotspur FC,Francia; Alemania; Inglaterra,4,sí
 Matías Almeyda,Argentina,Sevilla FC; SS Lazio; FC Internazionale Milano,España; Inglaterra; Italia,3,sí
 Matías Fernández,Chile,Villarreal CF; AC Milan,España; Inglaterra,2,sí
 Matias Fernandez-Pardo,Belgium,Lille OSC,Francia,1,sí
 Matías Soulé,Argentina,Juventus; AS Roma,Italia,2,sí
+Mats Hummels,Germany,FC Bayern Munich; Borussia Dortmund; AS Roma,Alemania; Italia,6,sí
 Mats Rots,Netherlands,TSG Hoffenheim,Alemania,1,sí
 Matt O'Riley,England,Fulham FC; Marseille FC,Inglaterra; Francia,2,sí
 Matteo Cancellieri,Italy,SS Lazio,Inglaterra,2,sí
@@ -1155,7 +1367,7 @@ Matthias Ginter,Germany,Borussia Dortmund; Borussia Mönchengladbach,Alemania,2,
 Matthias Sammer,Germany,VfB Stuttgart; FC Internazionale Milano; Borussia Dortmund,Alemania; Italia,3,sí
 Matthijs de Ligt,Netherlands,Juventus; FC Bayern Munich; Manchester United FC,Italia; Alemania; Inglaterra,3,sí
 Matthis Abline,France,Stade Rennais FC,Francia,1,sí
-Mattia Compagnon,Udine,Udinese Calcio; Juventus,Italia,2,sí
+Mattia Compagnon,Italy,Udinese Calcio; Juventus,Italia,2,sí
 Mattia Mosconi,Italy,FC Internazionale Milano,Italia,1,sí
 Mattia Perin,Italy,Genoa FC; Juventus,Italia,3,sí
 Mattia Zaccagni,Italy,SS Lazio,Inglaterra,2,sí
@@ -1164,9 +1376,12 @@ Matty Cash,Poland,Aston Villa FC,Inglaterra,1,sí
 Matty James,England,Manchester United FC,Inglaterra,1,sí
 Matvey Safonov,Russia,Paris Saint-Germain,Francia,1,sí
 Matz Sels,Belgium,Newcastle United FC,Inglaterra,1,sí
+Mauricio Isla,Chile,Udinese Calcio; Juventus; Marseille FC,Italia; Francia,3,sí
 Mauro Icardi,Argentina,FC Internazionale Milano; Paris Saint-Germain,Italia; Francia,3,sí
+Mauro Tassotti,Italy,AC Milan,Inglaterra,1,sí
 Max Alleyne,England,Manchester City FC,Italia,1,sí
 Max Dowman,England,Arsenal FC,Inglaterra,1,sí
+Max Kruse,Germany,Werder Bremen; Borussia Mönchengladbach; VfL Wolfsburg,Alemania,5,sí
 Maxence Caqueret,France,Olympique de Lyon; Como 1907,Francia; Italia,2,sí
 Maxence Lacroix,France,VfL Wolfsburg; Crystal Palace FC,Alemania; Inglaterra,2,sí
 Maxi Oyedele,Poland,Manchester United FC,Inglaterra,1,sí
@@ -1178,7 +1393,9 @@ Maximilian Beier,Germany,TSG Hoffenheim; Borussia Dortmund,Alemania,2,sí
 Maximilian Eggestein,Germany,Werder Bremen,Alemania,1,sí
 Maximilian Mittelstädt,Germany,VfB Stuttgart,Alemania,1,sí
 Máximo Perrone,Argentina,Manchester City FC; Como 1907,Italia,3,sí
+Maxwell,Brazil,FC Internazionale Milano; FC Barcelona; Paris Saint-Germain,Italia; España; Francia,3,sí
 Mehdi Abeid,France,Newcastle United FC,Inglaterra,1,sí
+Mehmet Scholl,Germany,FC Bayern Munich,Alemania,1,sí
 Melvin Bard,France,Olympique de Lyon; OG Nice,Francia,2,sí
 Memphis Depay,Netherlands,Manchester United FC; FC Barcelona; Club Atlético de Madrid,Inglaterra; España,3,sí
 Mërgim Vojvoda,Kosovo,Como 1907,Italia,1,sí
@@ -1193,9 +1410,12 @@ Michael Krohn-Dehli,Denmark,RC Celta de Vigo; Sevilla FC,España,2,sí
 Michael Laudrup,Denmark,SS Lazio; Juventus; FC Barcelona; Real Madrid CF,Inglaterra; Italia; España,4,sí
 Michael Olise,France,Crystal Palace FC; FC Bayern Munich,Inglaterra; Alemania,2,sí
 Michael Owen,England,Liverpool FC; Real Madrid CF; Newcastle United FC; Manchester United FC,Inglaterra; España,4,sí
+Michael Zorc,Germany,Borussia Dortmund,Alemania,1,sí
+Michail Antonio,Jamaica,West Ham United FC,Inglaterra,1,sí
 Michel Platini,France,Juventus,Italia,1,sí
 Michele Di Gregorio,Italy,FC Internazionale Milano; Juventus,Italia,3,sí
 Michy Batshuayi,Belgium,Marseille FC; Chelsea FC; Borussia Dortmund; Valencia CF,Francia; Inglaterra; Alemania; España,4,sí
+Mickaël Landreau,France,Paris Saint-Germain,Francia,1,sí
 Micky van de Ven,Netherlands,VfL Wolfsburg; Tottenham Hotspur FC,Alemania; Inglaterra,2,sí
 Miguel Gutiérrez,Spain,Real Madrid CF; Girona FC; SSC Napoli,España; Italia,3,sí
 Miguel Rubio,Spain,Getafe CF; Real Valladolid,España,2,sí
@@ -1205,28 +1425,32 @@ Mike Maignan,France,Lille OSC; AC Milan,Francia; Inglaterra,2,sí
 Mikel Jauregizar,Spain,Athletic Club,España,1,sí
 Mikel Merino,Spain,Borussia Dortmund; Newcastle United FC; Real Sociedad; Arsenal FC,Alemania; Inglaterra; España,5,sí
 Mikel Oyarzabal,Spain,Real Sociedad,España,1,sí
+Mikel San José,Spain,Liverpool FC,Inglaterra,1,sí
 Mikel Vesga,Spain,Athletic Club,España,1,sí
 Milan Baroš,Czech Republic,Liverpool FC; Aston Villa FC,Inglaterra,2,sí
 Milos Kerkez,Hungary,AC Milan; Liverpool FC,Inglaterra,2,sí
 Miroslav Klose,Germany,Werder Bremen; FC Bayern Munich; SS Lazio,Alemania; Inglaterra,3,sí
 Mitchel Bakker,Netherlands,Paris Saint-Germain; Bayer Leverkusen; Atalanta BC; Lille OSC,Francia; Alemania; Italia,4,sí
+Mitchell Weiser,Germany,FC Bayern Munich; Bayer Leverkusen; Werder Bremen,Alemania,4,sí
 Mohamed Abdelmonem,Egypt,OG Nice,Francia,1,sí
 Mohamed Amoura,Algeria,VfL Wolfsburg,Alemania,2,sí
-Mohamed Salah,Egypt,Chelsea FC; ACF Fiorentina; AS Roma; Liverpool FC,Inglaterra; Italia,5,sí
+Mohamed Salah,Egypt,Chelsea FC; AS Roma; ACF Fiorentina; Liverpool FC,Inglaterra; Italia,5,sí
 Mohamed-Ali Cho,France,Real Sociedad; OG Nice,España; Francia,2,sí
 Moi Gómez,Spain,Villarreal CF; Getafe CF,España,3,sí
 Moise Kean,Italy,Juventus; Everton FC; Paris Saint-Germain; ACF Fiorentina,Italia; Inglaterra; Francia,6,sí
 Moisés Caicedo,Ecuador,Chelsea FC,Inglaterra,1,sí
 Mônica,Brazil,Club Atlético de Madrid,España,1,sí
+Morgan De Sanctis,Italy,Juventus; Udinese Calcio; Sevilla FC; AS Roma; AS Monaco,Italia; España; Francia,5,sí
 Morgan Rogers,England,Manchester City FC; Aston Villa FC; Chelsea FC,Italia; Inglaterra,3,sí
 Morgan Sanson,France,Marseille FC; Aston Villa FC; OG Nice,Francia; Inglaterra,4,sí
-Moritz Jenz,Germany,VfL Wolfsburg; Schalke 04,Alemania,2,sí
+Moritz Jenz,Germany,Schalke 04; VfL Wolfsburg,Alemania,2,sí
 Morten Frendrup,Denmark,Genoa FC,Italia,1,sí
 Morten Hjulmand,Denmark,Club Atlético de Madrid,España,1,sí
 Moussa Niakhaté,France,Olympique de Lyon,Francia,1,sí
 Moussa Sissoko,France,Newcastle United FC; Tottenham Hotspur FC,Inglaterra,2,sí
 Moustapha Cissé,Guinea,Atalanta BC,Italia,1,sí
 Moustapha Seck,Senegal,AS Roma,Italia,1,sí
+Munir El Haddadi,Morocco,FC Barcelona; Valencia CF; Sevilla FC; Getafe CF,España,4,sí
 Myles Lewis-Skelly,England,Arsenal FC,Inglaterra,1,sí
 N'Golo Kanté,France,Chelsea FC,Inglaterra,1,sí
 Nabil Bentaleb,Algeria,Tottenham Hotspur FC; Schalke 04; Newcastle United FC; Lille OSC,Inglaterra; Alemania; Francia,5,sí
@@ -1234,6 +1458,7 @@ Nadiem Amiri,Germany,TSG Hoffenheim; Bayer Leverkusen; Genoa FC,Alemania; Italia
 Nadir Zortea,Italy,Atalanta BC,Italia,1,sí
 Nahuel Molina,Argentina,Udinese Calcio; Club Atlético de Madrid,Italia; España,2,sí
 Naldo,Brazil,Werder Bremen; VfL Wolfsburg; Schalke 04; AS Monaco,Alemania; Francia,4,sí
+Nampalys Mendy,Senegal,AS Monaco,Francia,1,sí
 Nani,Portugal,Manchester United FC; Valencia CF; SS Lazio,Inglaterra; España,3,sí
 Naouirou Ahamada,France,VfB Stuttgart; Crystal Palace FC; Stade Rennais FC,Alemania; Inglaterra; Francia,4,sí
 Natan,Brazil,SSC Napoli; Real Betis,Italia; España,3,sí
@@ -1248,14 +1473,19 @@ Nayef Aguerd,Morocco,Stade Rennais FC; West Ham United FC; Real Sociedad; Marsei
 Neco Williams,Wales,Liverpool FC; Fulham FC,Inglaterra,2,sí
 Neil El Aynaoui,Morocco,AS Roma,Italia,1,sí
 Nelson Deossa,Colombia,Real Betis,España,1,sí
+Nélson Semedo,Portugal,FC Barcelona,España,1,sí
 Nemanja Vidić,Serbia,Manchester United FC; FC Internazionale Milano,Inglaterra; Italia,2,sí
+Neven Subotić,Serbia,Borussia Dortmund,Alemania,1,sí
+Neville Southall,Wales,Everton FC,Inglaterra,1,sí
 Neymar,Brazil,FC Barcelona; Paris Saint-Germain,España; Francia,2,sí
 Ngal'ayel Mukau,Democratic Republic of the Congo,Lille OSC,Francia,1,sí
+Niall Quinn,Ireland,Arsenal FC; Manchester City FC,Inglaterra; Italia,2,sí
 Niccolò Fortini,Italy,ACF Fiorentina,Italia,1,sí
 Niccolò Pisilli,Italy,AS Roma,Italia,1,sí
 Nicholas Rizzo,Italy,Genoa FC,Italia,1,sí
 Nick Pope,England,Newcastle United FC,Inglaterra,1,sí
 Nick Woltemade,Germany,Werder Bremen; VfB Stuttgart; Newcastle United FC,Alemania; Inglaterra,3,sí
+Nicky Butt,England,Manchester United FC; Newcastle United FC,Inglaterra,2,sí
 Niclas Füllkrug,Germany,Werder Bremen; Borussia Dortmund; West Ham United FC; AC Milan,Alemania; Inglaterra,5,sí
 Nico Elvedi,Switzerland,Borussia Mönchengladbach,Alemania,1,sí
 Nico González (ESP),Spain,FC Barcelona; Valencia CF; Manchester City FC,España; Italia,3,sí
@@ -1264,8 +1494,10 @@ Nico Paz,Argentina,Real Madrid CF; Como 1907,España; Italia,2,sí
 Nico Schlotterbeck,Germany,Borussia Dortmund,Alemania,1,sí
 Nico Serrano,Spain,Athletic Club,España,1,sí
 Nico Williams,Spain,Athletic Club,España,1,sí
+Nicola Berti,Italy,FC Internazionale Milano; Tottenham Hotspur FC,Italia; Inglaterra,2,sí
 Nicola Leali,Italy,Juventus; Genoa FC,Italia,2,sí
-Nicola Zalewski,Poland,AS Roma; FC Internazionale Milano; Atalanta BC,Italia,4,sí
+Nicola Sansone,Germany,Villarreal CF,España,1,sí
+Nicola Zalewski,Poland,AS Roma; Atalanta BC; FC Internazionale Milano,Italia,4,sí
 Nicolas Anelka,France,Paris Saint-Germain; Arsenal FC; Real Madrid CF; Liverpool FC; Manchester City FC; Chelsea FC; Juventus,Francia; Inglaterra; España; Italia,8,sí
 Nicolás González,Argentina,VfB Stuttgart; ACF Fiorentina; Juventus; Club Atlético de Madrid,Alemania; Italia; España,5,sí
 Nicolas Kühn,Germany,Como 1907,Italia,1,sí
@@ -1281,7 +1513,8 @@ Nicolò Casale,Italy,SS Lazio,Inglaterra,1,sí
 Nicolò Fagioli,Italy,Juventus; ACF Fiorentina,Italia,3,sí
 Nicolò Rovella,Italy,Genoa FC; Juventus; SS Lazio,Italia; Inglaterra,5,sí
 Nicolò Savona,Italy,Juventus,Italia,1,sí
-Nicolò Zaniolo,Italy,FC Internazionale Milano; AS Roma; Aston Villa FC; Atalanta BC; Udinese Calcio; ACF Fiorentina,Italia; Inglaterra,7,sí
+Nicolò Zaniolo,Italy,FC Internazionale Milano; AS Roma; Aston Villa FC; Atalanta BC; ACF Fiorentina; Udinese Calcio,Italia; Inglaterra,7,sí
+Nigel Winterburn,England,Arsenal FC; West Ham United FC,Inglaterra,2,sí
 Nikita Contini,Italy,SSC Napoli,Italia,1,sí
 Niklas Dorsch,Germany,FC Bayern Munich,Alemania,1,sí
 Niklas Lomb,Germany,Bayer Leverkusen,Alemania,1,sí
@@ -1292,10 +1525,12 @@ Nikola Krstović,Montenegro,Atalanta BC,Italia,1,sí
 Nikola Milenković,Serbia,ACF Fiorentina,Italia,1,sí
 Nikola Vlašić,Croatia,Everton FC; West Ham United FC,Inglaterra,2,sí
 Nikolas Nartey,Denmark,VfB Stuttgart,Alemania,1,sí
+Nils Petersen,Germany,FC Bayern Munich; Werder Bremen,Alemania,3,sí
 Noa Lang,Netherlands,SSC Napoli,Italia,1,sí
 Noah Darvich,Germany,VfB Stuttgart,Alemania,1,sí
 Noah Edjouma,France,Lille OSC,Francia,1,sí
 Noel Törnqvist,Sweden,Como 1907,Italia,1,sí
+Nolito,Spain,FC Barcelona; Manchester City FC; Sevilla FC,España; Italia,3,sí
 Noni Madueke,England,Chelsea FC; Arsenal FC,Inglaterra,2,sí
 Nordi Mukiele,France,RB Leipzig; Paris Saint-Germain; Bayer Leverkusen,Alemania; Francia,3,sí
 Nouhoum Kamissoko,Mali,Marseille FC,Francia,1,sí
@@ -1304,6 +1539,7 @@ Nuno Mendes,Portugal,Paris Saint-Germain,Francia,2,sí
 Nuno Tavares,Portugal,Arsenal FC; Marseille FC; SS Lazio,Inglaterra; Francia,4,sí
 Nuri Şahin,Turkey,Borussia Dortmund; Real Madrid CF; Liverpool FC; Werder Bremen,Alemania; España; Inglaterra,6,sí
 Odilon Kossounou,Ivory Coast,Bayer Leverkusen; Atalanta BC,Alemania; Italia,3,sí
+Odion Ighalo,Nigeria,Udinese Calcio; Manchester United FC,Italia; Inglaterra,2,sí
 Odsonne Édouard,France,Paris Saint-Germain; Crystal Palace FC,Francia; Inglaterra,2,sí
 Odysseas Vlachodimos,Germany,VfB Stuttgart; Newcastle United FC; Sevilla FC,Alemania; Inglaterra; España,3,sí
 Oier Zarraga,Spain,Athletic Club; Udinese Calcio,España; Italia,2,sí
@@ -1314,6 +1550,7 @@ Oliver Baumann,Germany,TSG Hoffenheim,Alemania,1,sí
 Oliver Burke,Scotland,RB Leipzig; Werder Bremen,Alemania,2,sí
 Oliver Christensen,Denmark,ACF Fiorentina,Italia,1,sí
 Oliver Kahn,Germany,FC Bayern Munich,Alemania,1,sí
+Oliver Neuville,Germany,Bayer Leverkusen; Borussia Mönchengladbach,Alemania,2,sí
 Oliver Provstgaard,Denmark,SS Lazio,Inglaterra,1,sí
 Oliver Scarles,England,West Ham United FC,Inglaterra,1,sí
 Oliver Skipp,England,Tottenham Hotspur FC,Inglaterra,1,sí
@@ -1324,6 +1561,7 @@ Ollie Watkins,England,Aston Villa FC,Inglaterra,1,sí
 Omar Marmoush,Egypt,VfL Wolfsburg; VfB Stuttgart; Manchester City FC,Alemania; Italia,3,sí
 Omari Forson,England,Manchester United FC,Inglaterra,1,sí
 Omari Hutchinson,England,Chelsea FC,Inglaterra,1,sí
+Ömer Toprak,Germany,Bayer Leverkusen; Borussia Dortmund; Werder Bremen,Alemania,4,sí
 Orel Mangala,Belgium,VfB Stuttgart; Everton FC; Olympique de Lyon,Alemania; Inglaterra; Francia,4,sí
 Oriol Romeu,Spain,FC Barcelona; Chelsea FC; Valencia CF; VfB Stuttgart; Girona FC,España; Inglaterra; Alemania,7,sí
 Orri Óskarsson,Iceland,Real Sociedad,España,1,sí
@@ -1331,6 +1569,7 @@ Osame Sahraoui,Morocco,Lille OSC,Francia,1,sí
 Oscar,Brazil,Chelsea FC,Inglaterra,1,sí
 Oscar Bobb,Norway,Manchester City FC; Fulham FC,Italia; Inglaterra,2,sí
 Óscar Mingueza,Spain,FC Barcelona; RC Celta de Vigo; Crystal Palace FC,España; Inglaterra,3,sí
+Oscar Wendt,Sweden,Borussia Mönchengladbach,Alemania,1,sí
 Oumar Solet,France,Olympique de Lyon; Udinese Calcio,Francia; Italia,2,sí
 Ousmane Dembélé,France,Stade Rennais FC; Borussia Dortmund; FC Barcelona; Paris Saint-Germain,Francia; Alemania; España,4,sí
 Ozan Kabak,Turkey,VfB Stuttgart; Schalke 04; Liverpool FC; TSG Hoffenheim,Alemania; Inglaterra,4,sí
@@ -1339,31 +1578,45 @@ Pablo Barrios,Spain,Club Atlético de Madrid,España,1,sí
 Pablo Busto,Spain,Real Betis,España,1,sí
 Pablo Durán,Spain,RC Celta de Vigo,España,1,sí
 Pablo Fornals,Spain,Villarreal CF; West Ham United FC; Real Betis,España; Inglaterra,3,sí
+Pablo Hernández,Spain,Valencia CF; Getafe CF,España,3,sí
 Pablo Ibáñez,Spain,Club Atlético de Madrid,España,1,sí
 Pablo Marín,Spain,Real Sociedad,España,1,sí
+Pablo Piatti,Argentina,Valencia CF,España,1,sí
 Pablo Sarabia,Spain,Real Madrid CF; Getafe CF; Sevilla FC; Paris Saint-Germain,España; Francia,4,sí
 Pablo Torre,Spain,FC Barcelona; Girona FC,España,2,sí
+Pablo Zabaleta,Argentina,Manchester City FC; West Ham United FC,Italia; Inglaterra,2,sí
+Paco Alcácer,Spain,Valencia CF; Getafe CF; FC Barcelona; Borussia Dortmund; Villarreal CF,España; Alemania,6,sí
+Paco Gento,Spain,Real Madrid CF,España,1,sí
+Paolo Di Canio,Italy,Juventus; AC Milan; West Ham United FC,Italia; Inglaterra,3,sí
 Paolo Maldini,Italy,AC Milan,Inglaterra,1,sí
+Paolo Montero,Uruguay,Atalanta BC; Juventus,Italia,2,sí
 Paolo Rossi,Italy,Juventus; Como 1907; AC Milan,Italia; Inglaterra,4,sí
 Papa Bouba Diop,Senegal,Fulham FC; West Ham United FC,Inglaterra,2,sí
 Pape Cabral,Senegal,AS Monaco,Francia,1,sí
 Pape Gueye,Senegal,Marseille FC; Sevilla FC; Villarreal CF,Francia; España,3,sí
 Pape Matar Sarr,Senegal,Tottenham Hotspur FC,Inglaterra,1,sí
+Papu Gómez,Argentina,Atalanta BC; Sevilla FC,Italia; España,2,sí
+Papy Djilobodji,Senegal,Chelsea FC; Werder Bremen,Inglaterra; Alemania,2,sí
 Park Ji-sung,South Korea,Manchester United FC,Inglaterra,1,sí
 Pascal Groß,Germany,TSG Hoffenheim; Borussia Dortmund,Alemania,2,sí
 Pasquale Mazzocchi,Italy,SSC Napoli,Italia,1,sí
 Patrick Cutrone,Italy,AC Milan; ACF Fiorentina; Valencia CF; Como 1907,Inglaterra; Italia; España,4,sí
 Patrick Dorgu,Denmark,Manchester United FC,Inglaterra,1,sí
 Patrick Drewes,Germany,VfL Wolfsburg; Borussia Dortmund,Alemania,2,sí
+Patrick Herrmann,Germany,Borussia Mönchengladbach,Alemania,1,sí
 Patrick Kluivert,Netherlands,AC Milan; FC Barcelona; Newcastle United FC; Valencia CF; Lille OSC,Inglaterra; España; Francia,5,sí
 Patrick van Aanholt,Netherlands,Chelsea FC; Newcastle United FC; Crystal Palace FC,Inglaterra,3,sí
 Patrick Vieira,France,AC Milan; Arsenal FC; Juventus; FC Internazionale Milano; Manchester City FC,Inglaterra; Italia,5,sí
 Patrick Wimmer,Austria,VfL Wolfsburg; TSG Hoffenheim,Alemania,2,sí
+Patrik Berger,Czechoslovakia,Borussia Dortmund; Liverpool FC; Aston Villa FC,Alemania; Inglaterra,3,sí
 Patrik Schick,Czech Republic,AS Roma; RB Leipzig; Bayer Leverkusen,Italia; Alemania,3,sí
 Pau Cubarsí,Spain,FC Barcelona,España,1,sí
 Pau Navarro,Spain,Villarreal CF,España,1,sí
 Pau Torres,Spain,Villarreal CF; Aston Villa FC,España; Inglaterra,2,sí
+Paul Breitner,Germany,FC Bayern Munich; Real Madrid CF,Alemania; España,3,sí
 Paul Gascoigne,England,Newcastle United FC; Tottenham Hotspur FC; SS Lazio; Everton FC,Inglaterra,4,sí
+Paul Ince,England,West Ham United FC; Manchester United FC; FC Internazionale Milano; Liverpool FC,Inglaterra; Italia,4,sí
+Paul Merson,England,Arsenal FC; Aston Villa FC,Inglaterra,2,sí
 Paul Pogba,France,Manchester United FC; Juventus; AS Monaco,Inglaterra; Italia; Francia,5,sí
 Paul Scholes,England,Manchester United FC,Inglaterra,2,sí
 Pauleta,Portugal,Paris Saint-Germain,Francia,1,sí
@@ -1374,6 +1627,7 @@ Pavao Pervan,Austria,VfL Wolfsburg,Alemania,1,sí
 Pavel Nedvěd,Czech Republic,SS Lazio; Juventus,Inglaterra; Italia,2,sí
 Pavel Šulc,Czech Republic,Olympique de Lyon,Francia,1,sí
 Pedri,Spain,FC Barcelona,España,1,sí
+Pedro León,Spain,Getafe CF; Real Madrid CF,España,4,sí
 Pedro Neto,Portugal,SS Lazio; Chelsea FC,Inglaterra,2,sí
 Pedro Obiang,Equatorial Guinea,West Ham United FC,Inglaterra,1,sí
 Pedro Porro,Spain,Girona FC; Manchester City FC; Real Valladolid; Tottenham Hotspur FC,España; Italia; Inglaterra,5,sí
@@ -1385,10 +1639,15 @@ Pere Milla,Spain,Getafe CF,España,1,sí
 Pervis Estupiñán,Ecuador,Villarreal CF; AC Milan,España; Inglaterra,2,sí
 Petar Ratkov,Serbia,SS Lazio,Inglaterra,1,sí
 Petar Sučić,Croatia,FC Internazionale Milano,Italia,1,sí
+Peter Beardsley,England,Manchester United FC; Newcastle United FC; Liverpool FC; Everton FC; Manchester City FC; Fulham FC,Inglaterra; Italia,8,sí
+Peter Crouch,England,Tottenham Hotspur FC; Aston Villa FC; Liverpool FC,Inglaterra,4,sí
 Péter Gulácsi,Hungary,Liverpool FC; RB Leipzig,Inglaterra; Alemania,2,sí
+Peter Pekarík,Slovakia,VfL Wolfsburg,Alemania,1,sí
 Peter Schmeichel,Denmark,Manchester United FC; Aston Villa FC; Manchester City FC,Inglaterra; Italia,3,sí
 Petr Čech,Czech Republic,Stade Rennais FC; Chelsea FC; Arsenal FC,Francia; Inglaterra,3,sí
 Phil Foden,England,Manchester City FC,Italia,1,sí
+Phil Jagielka,England,Everton FC,Inglaterra,1,sí
+Phil Neville,England,Manchester United FC; Everton FC,Inglaterra,2,sí
 Philipp Hofmann,Germany,Schalke 04,Alemania,1,sí
 Philipp Köhn,Switzerland,RB Leipzig; AS Monaco,Alemania; Francia,2,sí
 Philipp Lahm,Germany,FC Bayern Munich; VfB Stuttgart,Alemania,2,sí
@@ -1398,63 +1657,80 @@ Philippe Coutinho,Brazil,FC Internazionale Milano; Liverpool FC; FC Barcelona; F
 Pierluigi Gollini,Italy,Aston Villa FC; Atalanta BC; Tottenham Hotspur FC; ACF Fiorentina; SSC Napoli; Genoa FC; AS Roma,Inglaterra; Italia,8,sí
 Piero Hincapié,Ecuador,Bayer Leverkusen; Arsenal FC,Alemania; Inglaterra,3,sí
 Pierre Kalulu,France,AC Milan; Juventus,Inglaterra; Italia,3,sí
-Pierre-Emerick Aubameyang,Gabon,AC Milan; Lille OSC; AS Monaco; Borussia Dortmund; Arsenal FC; Chelsea FC; FC Barcelona; Marseille FC,Inglaterra; Francia; Alemania; España,9,sí
+Pierre-Emerick Aubameyang,Gabon,AC Milan; Lille OSC; AS Monaco; Borussia Dortmund; Arsenal FC; FC Barcelona; Chelsea FC; Marseille FC,Inglaterra; Francia; Alemania; España,9,sí
 Pierre-Emile Højbjerg,Denmark,FC Bayern Munich; Schalke 04; Tottenham Hotspur FC; Marseille FC,Alemania; Inglaterra; Francia,5,sí
 Pietro Comuzzo,Italy,ACF Fiorentina,Italia,1,sí
 Pietro Magni,Italy,Juventus; Genoa FC,Italia,2,sí
 Pietro Terracciano,Italy,ACF Fiorentina; AC Milan,Italia; Inglaterra,3,sí
+Pietro Vierchowod,Italy,AS Roma; Juventus; AC Milan,Italia; Inglaterra,3,sí
 Piotr Zieliński,Poland,Udinese Calcio; SSC Napoli; FC Internazionale Milano,Italia,3,sí
 Pirri,Spain,Club Atlético de Madrid,España,1,sí
 Pol Lozano,Spain,Girona FC,España,1,sí
-Predrag Mijatović,Serbia and Montenegro,Valencia CF; Real Madrid CF,España,2,sí
+Predrag Mijatović,Montenegro,Valencia CF; Real Madrid CF,España,2,sí
 Quentin Merlin,France,Marseille FC; Stade Rennais FC,Francia,2,sí
 Quincy Promes,Netherlands,Sevilla FC,España,1,sí
 Radamel Falcao,Colombia,Club Atlético de Madrid; AS Monaco; Manchester United FC; Chelsea FC,España; Francia; Inglaterra,4,sí
 Radosław Majecki,Poland,AS Monaco,Francia,1,sí
 Radosław Żelezny,Poland,AS Roma,Italia,1,sí
 Radu Drăgușin,Romania,Juventus; Genoa FC; Tottenham Hotspur FC; ACF Fiorentina,Italia; Inglaterra,5,sí
+Rafael Gordillo,Spain,Real Madrid CF,España,1,sí
 Rafael Leão,Portugal,Lille OSC; AC Milan,Francia; Inglaterra,2,sí
 Rafael Márquez,Mexico,AS Monaco; FC Barcelona,Francia; España,2,sí
+Rafael Tolói,Brazil,AS Roma; Atalanta BC,Italia,2,sí
 Rafael van der Vaart,Netherlands,Real Madrid CF; Tottenham Hotspur FC; Real Betis,España; Inglaterra,3,sí
+Raffael,Brazil,Juventus; Schalke 04; Borussia Mönchengladbach,Italia; Alemania,3,sí
 Raffaele Di Gennaro,Italy,FC Internazionale Milano,Italia,2,sí
 Rafinha,Brazil,Schalke 04; Genoa FC; FC Bayern Munich,Alemania; Italia,3,sí
 Rafinha Alcántara,Spain,FC Barcelona; FC Internazionale Milano; Paris Saint-Germain; Real Sociedad,España; Italia; Francia,4,sí
 Raheem Sterling,England,Liverpool FC; Manchester City FC; Chelsea FC; Arsenal FC,Inglaterra; Italia,4,sí
+Raí,Brazil,Paris Saint-Germain,Francia,1,sí
 Ramires,Brazil,Chelsea FC,Inglaterra,1,sí
 Ramon Hendriks,Netherlands,VfB Stuttgart,Alemania,1,sí
 Ramon Terrats,Spain,Girona FC; Villarreal CF; Getafe CF,España,5,sí
 Ramy Bensebaini,Algeria,Stade Rennais FC; Borussia Mönchengladbach; Borussia Dortmund,Francia; Alemania,3,sí
-Randal Kolo Muani,France,Paris Saint-Germain; Juventus; Tottenham Hotspur FC,Francia; Italia; Inglaterra,3,sí
+Randal Kolo Muani,France,Paris Saint-Germain; Tottenham Hotspur FC; Juventus,Francia; Inglaterra; Italia,3,sí
 Raoul Bellanova,Italy,Atalanta BC; FC Internazionale Milano,Italia,3,sí
 Raphaël Varane,France,Real Madrid CF; Manchester United FC; Como 1907,España; Inglaterra; Italia,3,sí
 Raphinha,Brazil,Stade Rennais FC; FC Barcelona,Francia; España,2,sí
 Rasmus Højlund,Denmark,Atalanta BC; Manchester United FC; SSC Napoli,Italia; Inglaterra,4,sí
+Raúl Albiol,Spain,Getafe CF; Valencia CF; Real Madrid CF; Villarreal CF,España,4,sí
 Raúl Asencio,Spain,Real Madrid CF,España,1,sí
 Raúl de Tomás,Spain,Real Madrid CF; Real Valladolid,España,2,sí
 Raúl García,Spain,Club Atlético de Madrid; Athletic Club,España,2,sí
 Raúl González,Spain,Real Madrid CF; Schalke 04,España; Alemania,2,sí
 Raúl Jiménez,Mexico,Club Atlético de Madrid; Fulham FC,España; Inglaterra,2,sí
+Raúl Tamudo,Spain,Real Sociedad,España,1,sí
+Ray Clemence,England,Liverpool FC; Tottenham Hotspur FC,Inglaterra,2,sí
 Rayan Aït-Nouri,Algeria,Manchester City FC,Italia,1,sí
 Rayan Cherki,France,Olympique de Lyon; Manchester City FC,Francia; Italia,2,sí
+Raymond Kopa,France,Real Madrid CF,España,1,sí
 Reda Belahyane,Morocco,OG Nice; SS Lazio,Francia; Inglaterra,2,sí
 Reece James,England,Chelsea FC,Inglaterra,1,sí
 Reece Welch,England,Everton FC,Inglaterra,1,sí
+Remo Freuler,Switzerland,Atalanta BC,Italia,1,sí
+Rémy Cabella,France,Newcastle United FC; Marseille FC,Inglaterra; Francia,3,sí
 Rémy Descamps,France,Paris Saint-Germain; Olympique de Lyon,Francia,2,sí
+Renato Civelli,Argentina,Marseille FC,Francia,1,sí
 Renato Sanches,Portugal,FC Bayern Munich; Paris Saint-Germain; AS Roma,Alemania; Francia; Italia,3,sí
-Renato Veiga,Portugal,Chelsea FC; Villarreal CF; Juventus,Inglaterra; España; Italia,3,sí
+Renato Veiga,Portugal,Chelsea FC; Juventus; Villarreal CF,Inglaterra; Italia; España,3,sí
 Ricard Artero,Spain,Girona FC,España,1,sí
+Ricardo Gomes,Brazil,Paris Saint-Germain,Francia,1,sí
 Ricardo Quaresma,Portugal,FC Barcelona; FC Internazionale Milano; Chelsea FC,España; Italia; Inglaterra,3,sí
+Ricardo Rodriguez,Switzerland,VfL Wolfsburg; AC Milan,Alemania; Inglaterra,2,sí
 Riccardo Braschi,Italy,ACF Fiorentina,Italia,1,sí
 Riccardo Calafiori,Italy,AS Roma; Genoa FC; Arsenal FC,Italia; Inglaterra,3,sí
-Riccardo Orsolini,Italy,Juventus; Atalanta BC,Italia,2,sí
+Riccardo Ferri,Italy,FC Internazionale Milano,Italia,1,sí
+Riccardo Orsolini,Italy,Atalanta BC; Juventus,Italia,2,sí
 Richarlison,Brazil,Everton FC; Tottenham Hotspur FC,Inglaterra,2,sí
 Rico Lewis,England,Manchester City FC,Italia,1,sí
 Ridgeciano Haps,Suriname,Genoa FC,Italia,1,sí
 Rio Cardines,Trinidad and Tobago,Crystal Palace FC,Inglaterra,1,sí
 Rio Ferdinand,England,West Ham United FC; Manchester United FC,Inglaterra,2,sí
+Rio Mavuba,France,Villarreal CF,España,1,sí
 Rio Ngumoha,England,Liverpool FC,Inglaterra,1,sí
 Rivaldo,Brazil,FC Barcelona; AC Milan,España; Inglaterra,2,sí
 Riyad Mahrez,Algeria,Manchester City FC,Italia,1,sí
+Robbie Fowler,England,Liverpool FC; Manchester City FC,Inglaterra; Italia,3,sí
 Robert Andrich,Germany,Bayer Leverkusen,Alemania,1,sí
 Robert Glatzel,Germany,VfL Wolfsburg,Alemania,1,sí
 Robert Lewandowski,Poland,Borussia Dortmund; FC Bayern Munich; FC Barcelona,Alemania; España,3,sí
@@ -1465,8 +1741,11 @@ Robert Skov,Denmark,TSG Hoffenheim,Alemania,1,sí
 Róbert Vittek,Slovakia,Lille OSC,Francia,1,sí
 Roberto Baggio,Italy,ACF Fiorentina; Juventus; AC Milan; FC Internazionale Milano,Italia; Inglaterra,4,sí
 Roberto Carlos,Brazil,FC Internazionale Milano; Real Madrid CF,Italia; España,2,sí
+Roberto Donadoni,Italy,Atalanta BC; AC Milan,Italia; Inglaterra,3,sí
 Roberto Firmino,Brazil,TSG Hoffenheim; Liverpool FC,Alemania; Inglaterra,2,sí
 Roberto Piccoli,Italy,Atalanta BC; Genoa FC; ACF Fiorentina,Italia,3,sí
+Roberto Soldado,Spain,Real Madrid CF; Getafe CF; Valencia CF; Tottenham Hotspur FC; Villarreal CF,España; Inglaterra,5,sí
+Roberto Trashorras,Spain,FC Barcelona,España,1,sí
 Robin Gosens,Germany,Atalanta BC; FC Internazionale Milano; ACF Fiorentina; Schalke 04,Italia; Alemania,6,sí
 Robin Hranáč,Czech Republic,TSG Hoffenheim,Alemania,1,sí
 Robin Le Normand,Spain,Real Sociedad; Club Atlético de Madrid,España,2,sí
@@ -1474,13 +1753,16 @@ Robin van Persie,Netherlands,Arsenal FC; Manchester United FC,Inglaterra,2,sí
 Robinho,Brazil,Real Madrid CF; Manchester City FC; AC Milan,España; Italia; Inglaterra,3,sí
 Rodri,Spain,Villarreal CF; Club Atlético de Madrid; Manchester City FC,España; Italia,3,sí
 Rodri Mendoza,Spain,Club Atlético de Madrid,España,1,sí
+Rodrigo,Spain,Valencia CF,España,2,sí
 Rodrigo Bentancur,Uruguay,Juventus; Tottenham Hotspur FC,Italia; Inglaterra,2,sí
 Rodrigo Riquelme,Spain,Club Atlético de Madrid; Girona FC; Real Betis,España,3,sí
 Rodrygo,Brazil,Real Madrid CF,España,1,sí
 Rolando Mandragora,Italy,Genoa FC; Juventus; Udinese Calcio; ACF Fiorentina,Italia,6,sí
+Romain Alessandrini,France,Stade Rennais FC; Marseille FC,Francia,2,sí
 Romain Del Castillo,France,Olympique de Lyon; Stade Rennais FC,Francia,2,sí
 Romain Perraud,France,OG Nice; Real Betis; Lille OSC,Francia; España,4,sí
 Roman Pavlyuchenko,Russia,Tottenham Hotspur FC,Inglaterra,1,sí
+Roman Weidenfeller,Germany,Borussia Dortmund,Alemania,1,sí
 Romano Floriani Mussolini,Italy,SS Lazio,Inglaterra,1,sí
 Romano Schmid,Austria,Werder Bremen,Alemania,1,sí
 Romário,Brazil,FC Barcelona; Valencia CF,España,2,sí
@@ -1494,6 +1776,7 @@ Ronaldinho,Brazil,Paris Saint-Germain; FC Barcelona; AC Milan,Francia; España; 
 Ronaldo,Brazil,FC Barcelona; FC Internazionale Milano; Real Madrid CF; AC Milan,España; Italia; Inglaterra,4,sí
 Ronnie Wallwork,England,Manchester United FC,Inglaterra,1,sí
 Roony Bardghji,Sweden,FC Barcelona,España,1,sí
+Roque Mesa,Spain,Sevilla FC,España,2,sí
 Ross Barkley,England,Everton FC; Chelsea FC; Aston Villa FC; OG Nice,Inglaterra; Francia,5,sí
 Roy Keane,Ireland,Manchester United FC,Inglaterra,1,sí
 Roy Makaay,Netherlands,FC Bayern Munich,Alemania,1,sí
@@ -1508,22 +1791,28 @@ Rui Modesto,Angola,Udinese Calcio,Italia,1,sí
 Rui Silva,Portugal,Real Betis,España,1,sí
 Ruud Gullit,Netherlands,AC Milan; Chelsea FC,Inglaterra,2,sí
 Ruud van Nistelrooy,Netherlands,Manchester United FC; Real Madrid CF,Inglaterra; España,2,sí
+Ryad Boudebouz,France,Real Betis,España,1,sí
 Ryan Giggs,Wales,Manchester United FC,Inglaterra,1,sí
 Ryan Gravenberch,Netherlands,FC Bayern Munich; Liverpool FC,Alemania; Inglaterra,2,sí
 Ryan McAidoo,England,Manchester City FC,Italia,1,sí
 Ryan Sessegnon,England,Fulham FC; Tottenham Hotspur FC; TSG Hoffenheim,Inglaterra; Alemania,4,sí
+Ryan Shawcross,England,Manchester United FC,Inglaterra,1,sí
 Saba Goglichidze,Georgia,Udinese Calcio,Italia,1,sí
 Sacha Boey,France,Stade Rennais FC; FC Bayern Munich,Francia; Alemania,2,sí
 Sadibou Sané,Senegal,AS Monaco,Francia,1,sí
 Sadio Mané,Senegal,Liverpool FC; FC Bayern Munich,Inglaterra; Alemania,2,sí
 Saël Kumbedi,France,Olympique de Lyon; VfL Wolfsburg,Francia; Alemania,3,sí
 Salis Abdul Samed,Ghana,OG Nice,Francia,1,sí
+Salomon Kalou,Ivory Coast,Chelsea FC,Inglaterra,1,sí
 Salvatore Elia,Italy,Atalanta BC,Italia,1,sí
 Sam Beukema,Netherlands,SSC Napoli,Italia,1,sí
 Sam Johnstone,England,Manchester United FC; Aston Villa FC; Crystal Palace FC,Inglaterra,4,sí
+Sami Hyypiä,Finland,Liverpool FC; Bayer Leverkusen,Inglaterra; Alemania,2,sí
 Sami Khedira,Germany,VfB Stuttgart; Real Madrid CF; Juventus,Alemania; España; Italia,3,sí
+Samir Handanović,Slovenia,Udinese Calcio; FC Internazionale Milano,Italia,2,sí
 Samuel Amissah,England,Fulham FC,Inglaterra,1,sí
 Samuel Bamba,Germany,Borussia Dortmund,Alemania,1,sí
+Samuel Chukwueze,Nigeria,Villarreal CF; AC Milan; Fulham FC,España; Inglaterra,3,sí
 Samuel Dahl,Sweden,AS Roma,Italia,1,sí
 Samuel Edozie,England,Manchester City FC,Italia,1,sí
 Samuel Eto'o,Cameroon,Real Madrid CF; FC Barcelona; FC Internazionale Milano; Chelsea FC; Everton FC,España; Italia; Inglaterra,5,sí
@@ -1539,29 +1828,39 @@ Sandro Tonali,Italy,AC Milan; Newcastle United FC; Tottenham Hotspur FC,Inglater
 Santi Cazorla,Spain,Villarreal CF; Arsenal FC,España; Inglaterra,4,sí
 Santi Comesaña,Spain,Villarreal CF,España,1,sí
 Santiago Bueno,Uruguay,Girona FC,España,1,sí
+Santiago Cañizares,Spain,Real Madrid CF; Valencia CF,España,3,sí
 Santiago Giménez,Mexico,AC Milan,Inglaterra,1,sí
+Santillana,Spain,Real Madrid CF,España,1,sí
 Saša Lukić,Serbia,Fulham FC,Inglaterra,1,sí
 Saud Abdulhamid,Saudi Arabia,AS Roma,Italia,1,sí
 Saúl Ñíguez,Spain,Club Atlético de Madrid; Chelsea FC; Sevilla FC,España; Inglaterra,3,sí
 Sávio,Brazil,Real Madrid CF; Real Sociedad,España,2,sí
 Scott Banks,Scotland,Crystal Palace FC,Inglaterra,1,sí
+Scott Dann,England,Crystal Palace FC,Inglaterra,1,sí
 Scott McTominay,Scotland,Manchester United FC; SSC Napoli,Inglaterra; Italia,2,sí
 Sead Kolašinac,Bosnia and Herzegovina,Schalke 04; Arsenal FC; Marseille FC; Atalanta BC,Alemania; Inglaterra; Francia; Italia,5,sí
+Séamus Coleman,Ireland,Everton FC,Inglaterra,1,sí
 Sean Neave,England,Newcastle United FC,Inglaterra,1,sí
 Sean Steur,Netherlands,Newcastle United FC,Inglaterra,1,sí
 Sebastian Giovinco,Italy,Juventus,Italia,1,sí
+Sebastian Kehl,Germany,Borussia Dortmund,Alemania,1,sí
+Sebastian Larsson,Sweden,Arsenal FC,Inglaterra,1,sí
+Sebastian Rode,Germany,FC Bayern Munich; Borussia Dortmund,Alemania,2,sí
 Sebastian Szymański,Poland,Stade Rennais FC,Francia,1,sí
 Sebastiano Esposito,Italy,FC Internazionale Milano,Italia,1,sí
-Seko Fofana,France,Manchester City FC; Fulham FC; Udinese Calcio; Stade Rennais FC,Italia; Inglaterra; Francia,4,sí
+Sebastiano Rossi,Italy,AC Milan,Inglaterra,1,sí
+Seko Fofana,France,Fulham FC; Manchester City FC; Udinese Calcio; Stade Rennais FC,Inglaterra; Italia; Francia,4,sí
 Semuel Pizzignacco,Italy,Udinese Calcio,Italia,1,sí
 Senne Lammens,Belgium,Manchester United FC,Inglaterra,1,sí
 Senne Lynen,Belgium,Werder Bremen,Alemania,1,sí
 Senny Mayulu,France,Paris Saint-Germain,Francia,1,sí
+Sepp Maier,Germany,FC Bayern Munich,Alemania,1,sí
 Sepp van den Berg,Netherlands,Liverpool FC; Schalke 04,Inglaterra; Alemania,2,sí
 Serge Gnabry,Germany,Arsenal FC; Werder Bremen; TSG Hoffenheim; FC Bayern Munich,Inglaterra; Alemania,4,sí
 Sergi Cardona,Spain,Villarreal CF,España,1,sí
 Sergi Darder,Spain,Olympique de Lyon,Francia,1,sí
 Sergio Agüero,Argentina,Club Atlético de Madrid; Manchester City FC; FC Barcelona,España; Italia,3,sí
+Sergio Asenjo,Spain,Club Atlético de Madrid; Villarreal CF,España,3,sí
 Sergio Busquets,Spain,FC Barcelona,España,1,sí
 Sergio Camello,Spain,Club Atlético de Madrid,España,1,sí
 Sergio Carreira,Spain,RC Celta de Vigo,España,1,sí
@@ -1569,15 +1868,20 @@ Sergio Gómez,Spain,Borussia Dortmund; Manchester City FC; Real Sociedad,Alemani
 Sergio Ramos,Spain,Sevilla FC; Real Madrid CF; Paris Saint-Germain,España; Francia,4,sí
 Sergio Reguilón,Spain,Real Madrid CF; Sevilla FC; Tottenham Hotspur FC; Club Atlético de Madrid; Manchester United FC,España; Inglaterra,5,sí
 Serhou Guirassy,Guinea,Lille OSC; Stade Rennais FC; VfB Stuttgart; Borussia Dortmund,Francia; Alemania,5,sí
-Seydou Keita,Mali,Marseille FC; Sevilla FC; FC Barcelona; Valencia CF; AS Roma,Francia; España; Italia,5,sí
+Seydou Keita,Mali,Marseille FC; Sevilla FC; FC Barcelona; AS Roma; Valencia CF,Francia; España; Italia,5,sí
+Shay Given,Ireland,Newcastle United FC; Manchester City FC; Aston Villa FC,Inglaterra; Italia,3,sí
 Shea Charles,Northern Ireland,Manchester City FC,Italia,1,sí
 Shea Lacey,England,Manchester United FC,Inglaterra,1,sí
 Sheraldo Becker,Suriname,Real Sociedad,España,1,sí
+Shinji Kagawa,Japan,Borussia Dortmund; Manchester United FC,Alemania; Inglaterra,3,sí
 Silas Katompa Mvumpa,DR Congo,VfB Stuttgart,Alemania,1,sí
 Silas Ostrzinski,Germany,Borussia Dortmund,Alemania,1,sí
 Silvan Widmer,Switzerland,Udinese Calcio,Italia,1,sí
+Silvio Piola,Italy,Juventus,Italia,1,sí
 Simon Ngapandouetnbu,Cameroon,Marseille FC,Francia,1,sí
+Simon Rolfes,Germany,Werder Bremen; Bayer Leverkusen,Alemania,2,sí
 Simon Sohm,Switzerland,ACF Fiorentina,Italia,1,sí
+Simone Zaza,Italy,Atalanta BC; Juventus; West Ham United FC; Valencia CF,Italia; Inglaterra; España,6,sí
 Sinaly Diomandé,Ivory Coast,Olympique de Lyon,Francia,1,sí
 Skelly Alvero,France,Olympique de Lyon; Werder Bremen,Francia; Alemania,3,sí
 Sócrates,Brazil,ACF Fiorentina,Italia,1,sí
@@ -1585,22 +1889,40 @@ Sofiane Diop,Morocco,AS Monaco; OG Nice,Francia,2,sí
 Sofiane Feghouli,Algeria,Valencia CF; West Ham United FC,España; Inglaterra,2,sí
 Sofyan Amrabat,Morocco,Manchester United FC,Inglaterra,1,sí
 Sol Campbell,England,Tottenham Hotspur FC; Arsenal FC; Newcastle United FC,Inglaterra,4,sí
+Sonny Anderson,Brazil,AS Monaco; Marseille FC; FC Barcelona; Villarreal CF,Francia; España,4,sí
+Souleymane Camara,Senegal,AS Monaco,Francia,1,sí
+Souleymane Diawara,Senegal,Marseille FC,Francia,1,sí
 Soungoutou Magassa,France,AS Monaco; West Ham United FC,Francia; Inglaterra,2,sí
 Souza,Brazil,Tottenham Hotspur FC,Inglaterra,1,sí
 Stanislav Lobotka,Slovakia,RC Celta de Vigo; SSC Napoli,España; Italia,2,sí
 Stanley Nsoki,France,Paris Saint-Germain; OG Nice; TSG Hoffenheim,Francia; Alemania,3,sí
 Steeve Kango,France,Olympique de Lyon,Francia,1,sí
 Stefan Effenberg,Germany,Borussia Mönchengladbach; FC Bayern Munich; ACF Fiorentina; VfL Wolfsburg,Alemania; Italia,6,sí
-Stefan Posch,Austria,TSG Hoffenheim; Como 1907; Atalanta BC,Alemania; Italia,4,sí
+Stefan Kießling,Germany,Bayer Leverkusen,Alemania,1,sí
+Stefan Posch,Austria,TSG Hoffenheim; Atalanta BC; Como 1907,Alemania; Italia,4,sí
+Stefan Reuter,Germany,FC Bayern Munich; Juventus; Borussia Dortmund,Alemania; Italia,3,sí
+Stefano Mauri,Italy,Udinese Calcio,Italia,1,sí
 Stefano Sabelli,Italy,Genoa FC,Italia,1,sí
+Stefano Tacconi,Italy,Juventus; Genoa FC,Italia,2,sí
+Stéphane Chapuisat,Switzerland,Borussia Dortmund,Alemania,1,sí
+Stéphane Mbia,Cameroon,Stade Rennais FC; Marseille FC; Sevilla FC,Francia; España,4,sí
+Stéphane Ruffier,France,AS Monaco,Francia,1,sí
 Stephen Mfuni,England,Manchester City FC,Italia,1,sí
 Stephy Mavididi,England,Arsenal FC; Juventus,Inglaterra; Italia,2,sí
+Steve Bruce,England,Manchester United FC,Inglaterra,1,sí
+Steve Finnan,Ireland,Fulham FC; Liverpool FC,Inglaterra,2,sí
+Steve Mandanda,France,Marseille FC; Crystal Palace FC; Stade Rennais FC,Francia; Inglaterra,5,sí
 Steven Gerrard,England,Liverpool FC,Inglaterra,1,sí
+Steven Nzonzi,France,Sevilla FC; AS Roma; Stade Rennais FC,España; Italia; Francia,3,sí
+Steven Pienaar,South Africa,Borussia Dortmund; Everton FC; Tottenham Hotspur FC,Alemania; Inglaterra,6,sí
+Stewart Downing,England,Aston Villa FC; Liverpool FC; West Ham United FC,Inglaterra,3,sí
+Stiliyan Petrov,Bulgaria,Aston Villa FC,Inglaterra,1,sí
 Stole Dimitrievski,North Macedonia,Valencia CF,España,1,sí
 Strahinja Pavlović,Serbia,AS Monaco; AC Milan,Francia; Inglaterra,2,sí
 Sven Bender,Germany,Borussia Dortmund; Bayer Leverkusen,Alemania,2,sí
 Sven Botman,Netherlands,Lille OSC; Newcastle United FC,Francia; Inglaterra,2,sí
 Sven Ulreich,Germany,VfB Stuttgart; FC Bayern Munich,Alemania,3,sí
+Sylvain Wiltord,France,Stade Rennais FC; Arsenal FC; Marseille FC,Francia; Inglaterra,5,sí
 Taiwo Awoniyi,Nigeria,Liverpool FC,Inglaterra,1,sí
 Tajon Buchanan,Canada,FC Internazionale Milano; Villarreal CF,Italia; España,3,sí
 Takefusa Kubo,Japan,Real Madrid CF; Villarreal CF; Getafe CF; Real Sociedad,España,4,sí
@@ -1611,11 +1933,13 @@ Tanner Tessmann,United States,Olympique de Lyon,Francia,1,sí
 Taty Castellanos,Argentina,Girona FC; SS Lazio; West Ham United FC,España; Inglaterra,3,sí
 Taylor Harwood-Bellis,England,Manchester City FC,Italia,1,sí
 Teddy Sharman-Lowe,England,Chelsea FC,Inglaterra,1,sí
+Teddy Sheringham,England,Tottenham Hotspur FC; Manchester United FC; West Ham United FC,Inglaterra,4,sí
 Teun Koopmeiners,Netherlands,Atalanta BC; Juventus,Italia,2,sí
 Thiago Alcântara,Spain,FC Barcelona; FC Bayern Munich; Liverpool FC,España; Alemania; Inglaterra,3,sí
 Thiago Almada,Argentina,Olympique de Lyon; Club Atlético de Madrid,Francia; España,2,sí
 Thiago Motta,Brazil,FC Barcelona; Club Atlético de Madrid; Genoa FC; FC Internazionale Milano; Paris Saint-Germain,España; Italia; Francia,5,sí
 Thiago Pitarch,Spain,Real Madrid CF,España,1,sí
+Thiago Silva,Brazil,AC Milan; Paris Saint-Germain; Chelsea FC,Inglaterra; Francia,3,sí
 Thibaut Courtois,Belgium,Chelsea FC; Club Atlético de Madrid; Real Madrid CF,Inglaterra; España,3,sí
 Thierno Ballo,Austria,Chelsea FC,Inglaterra,1,sí
 Thierry Correia,Portugal,Valencia CF,España,1,sí
@@ -1623,6 +1947,8 @@ Thierry Henry,France,AS Monaco; Arsenal FC; Juventus; FC Barcelona,Francia; Ingl
 Thilo Kehrer,Germany,Schalke 04; Paris Saint-Germain; West Ham United FC; AS Monaco,Alemania; Francia; Inglaterra,5,sí
 Thomas Berenbruch,Italy,FC Internazionale Milano,Italia,1,sí
 Thomas Lemar,France,AS Monaco; Club Atlético de Madrid; Girona FC,Francia; España,3,sí
+Thomas Linke,Germany,Schalke 04; FC Bayern Munich,Alemania,2,sí
+Thomas Mangani,France,AS Monaco,Francia,1,sí
 Thomas Müller,Germany,FC Bayern Munich,Alemania,1,sí
 Thorgan Hazard,Belgium,Chelsea FC; Borussia Mönchengladbach; Borussia Dortmund,Inglaterra; Alemania,4,sí
 Tiago Gonçalves,Portugal,Olympique de Lyon,Francia,1,sí
@@ -1632,6 +1958,8 @@ Tiago Tomás,Portugal,VfB Stuttgart; VfL Wolfsburg,Alemania,3,sí
 Tidiam Gomis,France,RB Leipzig,Alemania,1,sí
 Tijjani Noslin,Netherlands,SS Lazio,Inglaterra,1,sí
 Tijjani Reijnders,Netherlands,AC Milan; Manchester City FC,Inglaterra; Italia,2,sí
+Tim Cahill,Samoa,Everton FC,Inglaterra,1,sí
+Tim Howard,United States,Manchester United FC; Everton FC,Inglaterra,3,sí
 Tim Iroegbunam,England,Aston Villa FC; Everton FC,Inglaterra,2,sí
 Tim Kleindienst,Germany,Borussia Mönchengladbach,Alemania,1,sí
 Tim Lemperle,Germany,TSG Hoffenheim,Alemania,1,sí
@@ -1646,6 +1974,7 @@ Tobias Sippel,Germany,Borussia Mönchengladbach,Alemania,1,sí
 Tochukwu Nnadi,Nigeria,Marseille FC,Francia,1,sí
 Tom Bischof,Germany,TSG Hoffenheim; FC Bayern Munich,Alemania,2,sí
 Tom Cairney,Scotland,Fulham FC,Inglaterra,1,sí
+Tom Huddlestone,England,Tottenham Hotspur FC; Manchester United FC,Inglaterra,2,sí
 Tom King,Wales,Everton FC,Inglaterra,1,sí
 Tom Louchet,France,OG Nice,Francia,1,sí
 Tom Rothe,Germany,Borussia Dortmund,Alemania,1,sí
@@ -1658,9 +1987,12 @@ Tommy Setford,England,Arsenal FC,Inglaterra,1,sí
 Toni Kroos,Germany,FC Bayern Munich; Bayer Leverkusen; Real Madrid CF,Alemania; España,3,sí
 Toni Lato,Spain,Valencia CF,España,1,sí
 Toni Martínez,Spain,West Ham United FC; Real Valladolid,Inglaterra; España,2,sí
+Tony Adams,England,Arsenal FC,Inglaterra,1,sí
+Tony Jantschke,Germany,Borussia Mönchengladbach,Alemania,1,sí
 Tosin Adarabioyo,England,Manchester City FC; Fulham FC; Chelsea FC,Italia; Inglaterra,3,sí
 Trent Alexander-Arnold,England,Liverpool FC; Real Madrid CF,Inglaterra; España,2,sí
 Trevoh Chalobah,England,Chelsea FC; Crystal Palace FC,Inglaterra,2,sí
+Trevor Francis,England,Manchester City FC; Atalanta BC,Italia,2,sí
 Trey Nyoni,England,Liverpool FC,Inglaterra,1,sí
 Tyler Adams,United States,RB Leipzig,Alemania,1,sí
 Tyler Dibling,England,Everton FC,Inglaterra,1,sí
@@ -1671,26 +2003,34 @@ Tyrese Hall,Jamaica,Tottenham Hotspur FC,Inglaterra,1,sí
 Tyrick Mitchell,England,Crystal Palace FC,Inglaterra,1,sí
 Tyrique George,England,Chelsea FC; Everton FC,Inglaterra,3,sí
 Tyrone Mings,England,Aston Villa FC,Inglaterra,2,sí
+Ugo Ehiogu,England,Aston Villa FC,Inglaterra,1,sí
+Uli Hoeneß,Germany,FC Bayern Munich,Alemania,1,sí
 Umar Sadiq,Nigeria,AS Roma; Real Sociedad; Valencia CF,Italia; España,5,sí
 Unai Gómez,Spain,Athletic Club; Udinese Calcio,España; Italia,2,sí
 Unai Nuñez,Spain,Athletic Club; RC Celta de Vigo; Valencia CF,España,5,sí
 Unai Simón,Spain,Athletic Club,España,1,sí
 Urko González de Zárate,Spain,Real Sociedad,España,1,sí
+Valdo,Brazil,Real Madrid CF,España,1,sí
 Valentín Barco,Argentina,Sevilla FC,España,1,sí
 Valentin Gendrey,France,TSG Hoffenheim,Alemania,1,sí
 Valentin Rongier,France,Marseille FC; Stade Rennais FC,Francia,2,sí
+Valter Birsa,Slovenia,Genoa FC; AC Milan,Italia; Inglaterra,2,sí
 Vanderson,Brazil,AS Monaco,Francia,1,sí
 Vanja Milinković-Savić,Serbia,Manchester United FC; SSC Napoli,Inglaterra; Italia,2,sí
 Vasilije Adžić,Montenegro,Juventus,Italia,1,sí
+Vedad Ibišević,Bosnia and Herzegovina,Paris Saint-Germain; VfB Stuttgart; Schalke 04,Francia; Alemania,3,sí
 Vedat Muriqi,Kosovo,SS Lazio,Inglaterra,1,sí
+Vicente Guaita,Spain,Valencia CF; Getafe CF; Crystal Palace FC,España; Inglaterra,3,sí
+Vicente Iborra,Spain,Sevilla FC; Villarreal CF,España,2,sí
 Victor Boniface,Nigeria,Bayer Leverkusen; Werder Bremen,Alemania,2,sí
 Victor Lindelöf,Sweden,Manchester United FC; Aston Villa FC,Inglaterra,2,sí
 Victor Moses,Nigeria,Crystal Palace FC; Chelsea FC; Liverpool FC; West Ham United FC; FC Internazionale Milano,Inglaterra; Italia,5,sí
 Víctor Muñoz,Spain,Real Madrid CF; Liverpool FC,España; Inglaterra,2,sí
 Victor Osimhen,Nigeria,VfL Wolfsburg; Lille OSC; SSC Napoli,Alemania; Francia; Italia,3,sí
-Viery,Ubá,ACF Fiorentina,Italia,1,sí
+Viery,Brazil,ACF Fiorentina,Italia,1,sí
 Viktor Gyökeres,Sweden,Arsenal FC,Inglaterra,1,sí
 Viktor Tsyhankov,Ukraine,Girona FC,España,1,sí
+Vincent Kompany,Belgium,Manchester City FC,Italia,1,sí
 Vincent Manuba,Germany,FC Bayern Munich,Alemania,1,sí
 Vincenzo Grifo,Italy,TSG Hoffenheim; Borussia Mönchengladbach,Alemania,3,sí
 Vinícius Júnior,Brazil,Real Madrid CF,España,1,sí
@@ -1699,18 +2039,24 @@ Virgil van Dijk,Netherlands,Liverpool FC,Inglaterra,1,sí
 Vitaliy Mykolenko,Ukraine,Everton FC,Inglaterra,1,sí
 Vitaly Janelt,Germany,RB Leipzig,Alemania,1,sí
 Vitinha,Portugal,Paris Saint-Germain,Francia,1,sí
+Vitolo,Spain,Sevilla FC; Club Atlético de Madrid; Getafe CF,España,3,sí
+Vitorino Hilton,Brazil,Marseille FC,Francia,1,sí
 Vladimír Coufal,Czech Republic,West Ham United FC; TSG Hoffenheim,Inglaterra; Alemania,2,sí
+Vladimir Jugović,Serbia,Juventus; Club Atlético de Madrid; AS Monaco,Italia; España; Francia,3,sí
 Waldemar Anton,Germany,VfB Stuttgart; Borussia Dortmund,Alemania,2,sí
 Walid Cheddira,Morocco,SSC Napoli,Italia,1,sí
 Walter Benítez,Argentina,OG Nice; Crystal Palace FC,Francia; Inglaterra,2,sí
+Walter Zenga,Italy,FC Internazionale Milano,Italia,1,sí
 Warren Zaïre-Emery,France,Paris Saint-Germain,Francia,1,sí
 Wataru Endo,Japan,VfB Stuttgart; Liverpool FC,Alemania; Inglaterra,3,sí
 Wayne Rooney,England,Everton FC; Manchester United FC,Inglaterra,3,sí
+Wayne Routledge,England,Crystal Palace FC; Tottenham Hotspur FC; Fulham FC; Aston Villa FC; Newcastle United FC,Inglaterra,5,sí
 Wesley,Brazil,Aston Villa FC,Inglaterra,1,sí
 Wesley Fofana,France,Chelsea FC,Inglaterra,1,sí
 Wesley Saïd,France,Stade Rennais FC,Francia,1,sí
 Wesley Sneijder,Netherlands,Real Madrid CF; FC Internazionale Milano; OG Nice,España; Italia; Francia,3,sí
 Weston McKennie,United States,Schalke 04; Juventus,Alemania; Italia,3,sí
+Wilfried Bony,Ivory Coast,Manchester City FC,Italia,1,sí
 Wilfried Zaha,England,Crystal Palace FC; Manchester United FC; Olympique de Lyon,Inglaterra; Francia,6,sí
 Will Hughes,England,Crystal Palace FC,Inglaterra,1,sí
 Willi Orbán,Hungary,RB Leipzig,Alemania,1,sí
@@ -1721,7 +2067,9 @@ William Wright,United Kingdom,Everton FC,Inglaterra,1,sí
 Willian José,Brazil,Real Madrid CF; Real Sociedad; Real Betis,España,4,sí
 Willian Pacho,Ecuador,Paris Saint-Germain,Francia,1,sí
 Williot Swedberg,Sweden,RC Celta de Vigo,España,1,sí
+Willy Sagnol,France,AS Monaco; FC Bayern Munich,Francia; Alemania,2,sí
 Wilson Odobert,France,Tottenham Hotspur FC,Inglaterra,1,sí
+Winston Reid,Denmark,West Ham United FC,Inglaterra,1,sí
 Wisdom Mike,Germany,FC Bayern Munich,Alemania,1,sí
 Wissam Ben Yedder,France,Sevilla FC; AS Monaco,España; Francia,2,sí
 Wladimiro Falcone,Italy,Como 1907,Italia,1,sí
@@ -1730,25 +2078,31 @@ Wout Faes,Belgium,AS Monaco,Francia,1,sí
 Wout Weghorst,Netherlands,VfL Wolfsburg; Manchester United FC,Alemania; Inglaterra,2,sí
 Wouter Burger,Netherlands,TSG Hoffenheim,Alemania,1,sí
 Xabi Alonso,Spain,Real Sociedad; Liverpool FC; Real Madrid CF; FC Bayern Munich,España; Inglaterra; Alemania,4,sí
+Xabi Prieto,Spain,Real Sociedad,España,1,sí
 Xavi Espart,Spain,FC Barcelona,España,1,sí
 Xavi Hernández,Spain,FC Barcelona,España,1,sí
 Xavier Simons,England,Chelsea FC,Inglaterra,1,sí
 Xherdan Shaqiri,Switzerland,FC Bayern Munich; FC Internazionale Milano; Liverpool FC; Olympique de Lyon,Alemania; Italia; Inglaterra; Francia,4,sí
-Yan Couto,Brazil,Girona FC; Manchester City FC; Borussia Dortmund,España; Italia; Alemania,5,sí
+Yan Couto,Brazil,Manchester City FC; Girona FC; Borussia Dortmund,Italia; España; Alemania,5,sí
 Yan Diomande,Ivory Coast,RB Leipzig,Alemania,1,sí
 Yankuba Minteh,Gambia,Newcastle United FC,Inglaterra,1,sí
 Yann Gboho,France,Stade Rennais FC,Francia,1,sí
 Yann Lienard,France,AS Monaco,Francia,1,sí
+Yann Sommer,Switzerland,Borussia Mönchengladbach; FC Bayern Munich; FC Internazionale Milano,Alemania; Italia,3,sí
+Yannick Bolasie,Democratic Republic of the Congo,Crystal Palace FC; Everton FC; Aston Villa FC,Inglaterra,3,sí
 Yannick Carrasco,Belgium,AS Monaco; Club Atlético de Madrid,Francia; España,4,sí
 Yannick Gerhardt,Germany,VfL Wolfsburg,Alemania,1,sí
 Yannik Keitel,Germany,VfB Stuttgart,Alemania,1,sí
 Yarek Gasiorowski,Spain,Valencia CF,España,1,sí
+Yassine Bounou,Morocco,Club Atlético de Madrid; Girona FC; Sevilla FC,España,4,sí
 Yaya Touré,Ivory Coast,AS Monaco; FC Barcelona; Manchester City FC,Francia; España; Italia,3,sí
 Yehvann Diouf,France,OG Nice,Francia,1,sí
 Yéremy Pino,Spain,Villarreal CF; Crystal Palace FC,España; Inglaterra,2,sí
-Yerry Mina,Colombia,FC Barcelona; Everton FC; ACF Fiorentina,España; Inglaterra; Italia,3,sí
+Yerry Mina,Colombia,Everton FC; FC Barcelona; ACF Fiorentina,Inglaterra; España; Italia,3,sí
 Yerson Mosquera,Colombia,Villarreal CF,España,1,sí
 Yoane Wissa,Democratic Republic of the Congo,Newcastle United FC,Inglaterra,1,sí
+Yohan Cabaye,France,Newcastle United FC; Paris Saint-Germain; Crystal Palace FC,Inglaterra; Francia,3,sí
+Younès Belhanda,Morocco,Schalke 04,Alemania,1,sí
 Youri Djorkaeff,France,AS Monaco; Paris Saint-Germain; FC Internazionale Milano,Francia; Italia,3,sí
 Youri Tielemans,Belgium,AS Monaco; Aston Villa FC; Manchester United FC,Francia; Inglaterra,3,sí
 Youssef En-Nesyri,Morocco,Sevilla FC,España,1,sí
@@ -1759,6 +2113,7 @@ Yukhym Konoplya,Ukraine,Borussia Mönchengladbach,Alemania,1,sí
 Yunus Musah,United States,Valencia CF; AC Milan; Atalanta BC,España; Inglaterra; Italia,3,sí
 Yusi,Morocco,Real Madrid CF,España,1,sí
 Zachary Athekame,Switzerland,AC Milan,Inglaterra,1,sí
+Zé Roberto,Brazil,Real Madrid CF; Bayer Leverkusen; FC Bayern Munich,España; Alemania,4,sí
 Zeki Çelik,Turkey,Lille OSC; AS Roma; Juventus,Francia; Italia,3,sí
 Zento Uno,Japan,Borussia Mönchengladbach,Alemania,1,sí
 Zico,Brazil,Udinese Calcio,Italia,1,sí

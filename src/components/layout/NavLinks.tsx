@@ -8,6 +8,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { useIrAJugar } from "@/features/auth/useIrAJugar";
+import { useSolicitudesPendientes } from "@/features/social/SolicitudesContext";
 
 const ENLACES = [
   { href: "/", label: "Inicio" },
@@ -31,6 +32,7 @@ type Indicador = { left: number; width: number };
 export function NavLinks({ className, mostrarIndicador = true }: NavLinksProps) {
   const pathname = usePathname();
   const alClicarJugar = useIrAJugar();
+  const { count: solicitudesPendientes } = useSolicitudesPendientes();
   const contenedorRef = useRef<HTMLDivElement>(null);
   const refsEnlaces = useRef<Array<HTMLAnchorElement | null>>([]);
   const [indicador, setIndicador] = useState<Indicador | null>(null);
@@ -104,9 +106,22 @@ export function NavLinks({ className, mostrarIndicador = true }: NavLinksProps) 
           // useIrAJugar.ts): sin cuenta, en vez de entrar a /jugar te
           // manda a /login?redirect=/jugar.
           onClick={enlace.href === "/jugar" ? alClicarJugar : undefined}
-          className={`transition-colors hover:text-primary ${i === indiceActivo ? "text-primary" : ""}`}
+          className={`relative inline-flex items-center transition-colors hover:text-primary ${
+            i === indiceActivo ? "text-primary" : ""
+          }`}
         >
           {enlace.label}
+          {/* Puntito verde: solicitudes de amistad pendientes. Solo en
+              "Social" -- desaparece en cuanto se acepta/rechaza la última
+              (ver SolicitudesContext), no al simplemente visitar la página. */}
+          {enlace.href === "/social" && solicitudesPendientes > 0 && (
+            <span
+              aria-label={`${solicitudesPendientes} solicitud${solicitudesPendientes === 1 ? "" : "es"} de amistad pendiente${
+                solicitudesPendientes === 1 ? "" : "s"
+              }`}
+              className="ml-1.5 h-2 w-2 shrink-0 rounded-full bg-primary shadow-[0_0_6px_rgba(74,222,154,0.9)]"
+            />
+          )}
         </Link>
       ))}
     </div>
