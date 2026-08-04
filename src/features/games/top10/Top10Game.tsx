@@ -85,12 +85,30 @@ type EstiloPosicion = {
   nombre: string;
 };
 
-function obtenerEstiloPosicion(posicion: number, acertado: boolean): EstiloPosicion {
-  if (!acertado) {
+// "pendiente": todavía "???" (no acertado, y no se han revelado las
+// respuestas). "fallado": te rendiste, pulsaste "Mostrar respuestas" y
+// esta fila no la habías acertado -- se enseña con halo rojo, igual que
+// pediste, para distinguirla de un acierto real (dorado/plata/bronce/
+// verde) sin confundir al jugador sobre qué puso él y qué no.
+type EstadoFila = "pendiente" | "acertado" | "fallado";
+
+function obtenerEstiloPosicion(posicion: number, estado: EstadoFila): EstiloPosicion {
+  if (estado === "pendiente") {
     return {
       fila: "border-border bg-card",
       badge: "bg-muted text-muted-foreground",
       nombre: "text-muted-foreground",
+    };
+  }
+
+  if (estado === "fallado") {
+    return {
+      fila: "border-destructive/50 bg-destructive/10 shadow-[0_0_18px_-4px_var(--destructive)]",
+      // "text-white" a propósito, no "text-destructive-foreground" -- ese
+      // token no está definido en globals.css (solo existe --destructive),
+      // así que la clase de Tailwind saldría sin color real.
+      badge: "bg-destructive text-white",
+      nombre: "text-destructive",
     };
   }
 
@@ -137,6 +155,7 @@ export function Top10Game() {
   const [tiempoFinal, setTiempoFinal] = useState<number | null>(null);
   const [rendido, setRendido] = useState(false);
   const [popupAbierto, setPopupAbierto] = useState(false);
+  const [mostrandoRespuestas, setMostrandoRespuestas] = useState(false);
 
   // Mismo patrón que GridBoard: descarta respuestas de peticiones obsoletas,
   // necesario porque React Strict Mode ejecuta el efecto de montaje dos veces
@@ -158,6 +177,7 @@ export function Top10Game() {
     setTiempoFinal(null);
     setRendido(false);
     setPopupAbierto(false);
+    setMostrandoRespuestas(false);
 
     try {
       // Se excluye el ranking actual para no repetirlo dos veces seguidas
@@ -262,14 +282,20 @@ export function Top10Game() {
         {ranking.respuestas.map((entrada, i) => {
           const posicion = i + 1;
           const acertado = estaAcertado(entrada);
+          // Revelado por "Mostrar respuestas" tras rendirte -- se enseña el
+          // nombre real igual que un acierto, pero con halo rojo (estilo
+          // "fallado") en vez del color de posición, para que no se
+          // confunda con algo que sí colocaste tú.
+          const fallado = !acertado && mostrandoRespuestas;
+          const revelado = acertado || fallado;
           const codigoPais = obtenerCodigoPais(entrada.nacionalidad);
-          const estilo = obtenerEstiloPosicion(posicion, acertado);
+          const estilo = obtenerEstiloPosicion(posicion, acertado ? "acertado" : fallado ? "fallado" : "pendiente");
 
           return (
             <div
               key={i}
               className={`isolate flex items-center gap-2.5 rounded-md border px-4 py-3 transition-all duration-300 sm:px-5 sm:py-4 ${estilo.fila} ${
-                acertado ? "animate-in zoom-in-95 fade-in slide-in-from-left-1 duration-300" : ""
+                revelado ? "animate-in zoom-in-95 fade-in slide-in-from-left-1 duration-300" : ""
               }`}
             >
               <span
@@ -294,7 +320,7 @@ export function Top10Game() {
                   nombre sin sitio donde pintarse. Así siempre hay hueco de
                   sobra para el nombre, sea cual sea el valor. */}
               <div className="flex min-w-0 flex-1 flex-col justify-center gap-0.5">
-                {acertado ? (
+                {revelado ? (
                   <NombreAbreviable
                     nombre={entrada.nombre}
                     className={`text-left font-semibold text-lg sm:text-xl ${estilo.nombre}`}
@@ -306,7 +332,7 @@ export function Top10Game() {
                     ???
                   </span>
                 )}
-                {acertado && (
+                {revelado && (
                   <span
                     className={`animate-in fade-in truncate text-left text-xs font-medium opacity-80 duration-300 sm:text-sm ${estilo.nombre}`}
                   >
@@ -331,8 +357,12 @@ export function Top10Game() {
           excludedLabel="Ya acertado"
           onSelect={procesarSeleccion}
           placeholder="Escribe un jugador..."
+          // Tablero bloqueado al terminar (o al enseñar las respuestas):
+          // antes no se deshabilitaba nunca, así que técnicamente se podía
+          // seguir colocando jugadores después de rendirte.
+          disabled={completado || rendido}
         />
-        <GameButton variant="destructive" onClick={handleRendirse}>
+        <GameButton variant="destructive" onClick={handleRendirse} disabled={completado || rendido}>
           Rendirse
         </GameButton>
       </div>
@@ -372,6 +402,25 @@ export function Top10Game() {
             )
           }
           onJugarDeNuevo={cargarRanking}
+          // Solo al rendirte tiene sentido "revelar" -- si completaste el
+          // Top10 ya se ve entero en el tablero, no hay nada que enseñar.
+          respuestasCorrectas={
+            rendido
+              ? {
+                  mostrando: mostrandoRespuestas,
+                  onToggle: () => setMostrandoRespuestas((actual) => !actual),
+                  // El propio tablero (detrás de este cartel, cierra con la
+                  // X) es el que se rellena en rojo -- aquí solo un aviso
+                  // corto para que sepas dónde mirar, sin duplicar la lista.
+                  contenido: (
+                    <p className="text-sm text-muted-foreground">
+                      Cierra este cartel para ver el Top 10 completo: lo que te faltaba aparece
+                      marcado en rojo.
+                    </p>
+                  ),
+                }
+              : undefined
+          }
         />
       )}
     </div>

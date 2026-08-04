@@ -2,57 +2,57 @@
   "competicion": "PD",
   "temporada": "All time",
   "metrica": "EDAD",
-  "titulo": "Goleadores más veteranos en LaLiga.",
-  "descripcion": "Goleadores más veteranos en LaLiga.",
+  "titulo": "Goleadores más jóvenes en LaLiga.",
+  "descripcion": "Goleadores más jóvenes en LaLiga.",
   "entradas": [
     {
-      "nombre": "Donato",
-      "valor": { "anios": 40, "meses": 4, "dias": 17 },
+      "nombre": "Lamine Yamal",
+      "valor": { "anios": 16, "meses": 2, "dias": 25 },
       "equipo": "Spain"
     },
     {
-      "nombre": "Jorge Molina",
-      "valor": { "anios": 40, "meses": 0, "dias": 15 },
+      "nombre": "Fabrice Olinga",
+      "valor": { "anios": 16, "meses": 3, "dias": 6 },
+      "equipo": "Cameroon"
+    },
+    {
+      "nombre": "Iker Muniain",
+      "valor": { "anios": 16, "meses": 9, "dias": 15 },
       "equipo": "Spain"
     },
     {
-      "nombre": "César Rodríguez",
-      "valor": { "anios": 39, "meses": 9, "dias": 4 },
+      "nombre": "Ansu Fati",
+      "valor": { "anios": 16, "meses": 10, "dias": 0 },
       "equipo": "Spain"
     },
     {
-      "nombre": "Alfredo di Stéfano",
-      "valor": { "anios": 39, "meses": 7, "dias": 16 },
+      "nombre": "Xisco Nadal",
+      "valor": { "anios": 16, "meses": 11, "dias": 19 },
       "equipo": "Spain"
     },
     {
-      "nombre": "Joaquín",
-      "valor": { "anios": 39, "meses": 7, "dias": 15 },
-      "equipo": "Spain"
-    },
-    {
-      "nombre": "Cristhian Stuani",
-      "valor": { "anios": 39, "meses": 7, "dias": 2 },
+      "nombre": "Juan Mena",
+      "valor": { "anios": 17, "meses": 1, "dias": 6 },
       "equipo": "Uruguay"
     },
     {
-      "nombre": "Luka Modrić",
-      "valor": { "anios": 39, "meses": 5, "dias": 14 },
+      "nombre": "Bojan Krkic",
+      "valor": { "anios": 17, "meses": 1, "dias": 22 },
       "equipo": "Croatia"
     },
     {
-      "nombre": "José Araquistain",
-      "valor": { "anios": 38, "meses": 11, "dias": 12 },
+      "nombre": "Juanmi",
+      "valor": { "anios": 17, "meses": 1, "dias": 23 },
       "equipo": "Spain"
     },
     {
-      "nombre": "Jesús Navas",
-      "valor": { "anios": 38, "meses": 9, "dias": 24 },
+      "nombre": "Alberto Rivera",
+      "valor": { "anios": 17, "meses": 3, "dias": 25 },
       "equipo": "Spain"
     },
     {
-      "nombre": "Iago Aspas",
-      "valor": { "anios": 38, "meses": 9, "dias": 1 },
+      "nombre": "Raúl González",
+      "valor": { "anios": 17, "meses": 4, "dias": 9 },
       "equipo": "Spain"
     }
   ]

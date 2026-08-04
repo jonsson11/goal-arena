@@ -34,8 +34,11 @@ type EntradaJugador = string | { nombre: string; url: string };
 //
 //  { nombre: "", url: "" },
 const JUGADORES_INICIALES: EntradaJugador[] = [
-{nombre:"César Rodríguez", url:"https://en.wikipedia.org/wiki/C%C3%A9sar_Rodr%C3%ADguez_(footballer,_born_1920)"},
-{nombre:"José Araquistáin", url:"https://en.wikipedia.org/wiki/Jos%C3%A9_Araquist%C3%A1in"}
+{nombre:"Rony Lopes", url:"https://en.wikipedia.org/wiki/Rony_Lopes"},
+{nombre:"Suso", url:"https://en.wikipedia.org/wiki/Suso_(footballer)"},
+{nombre:"Joaquín Correa", url:"https://en.wikipedia.org/wiki/Joaqu%C3%ADn_Correa"},
+{nombre:"Munas Dabbur", url:"https://en.wikipedia.org/wiki/Mu%27nas_Dabbur"}
+
   ];
 
 // Deriva el externalId ("wiki:Titulo Con Espacios") a partir de una URL

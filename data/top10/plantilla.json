@@ -1,60 +1,60 @@
 {
-  "competicion": "EC",
-  "temporada": "2004",
-  "metrica": "GOLES",
-  "titulo": "Máximos goleadores de Eurocopa 2004",
-  "descripcion": "TOP 10 goleadores en la Eurocopa 2004.",
+  "competicion": "LL",
+  "temporada": "All time",
+  "metrica": "DINERO",
+  "titulo": "Fichajes más caros del Sevilla FC (M €)",
+  "descripcion": "Fichajes más caros del Sevilla FC",
   "entradas": [
     {
-      "nombre": "Milan Baroš",
-      "valor": 5,
-      "equipo": "Czech Republic"
-    },
-    {
-      "nombre": "Ruud van Nistelrooy",
-      "valor": 4,
-      "equipo": "Netherlands"
-    },
-    {
-      "nombre": "Wayne Rooney",
-      "valor": 4,
-      "equipo": "England"
-    },
-
-    {
-      "nombre": "Angelos Charisteas",
-      "valor":3,
-      "equipo": "Greece"
-    },
-    {
-      "nombre": "Frank Lampard",
-      "valor": 3,
-      "equipo": "England"
-    },
-    {
-      "nombre": "Zinedine Zidane",
-      "valor": 3,
+      "nombre": "Jules Koundé",
+      "valor": "35M€",
       "equipo": "France"
     },
     {
-      "nombre": "Henrik Larsson",
-      "valor": 3,
-      "equipo": "Sweden"
-    },
-    {
-      "nombre": "Jon Dahl Tomasson",
-      "valor": 3,
-      "equipo": "Denmark"
-    },
-    {
-      "nombre": "Antonio Cassano",
-      "valor": 2,
-      "equipo": "Italy"
-    },
-    {
-      "nombre": "Rui Costa",
-      "valor": 2,
+      "nombre": "Rony Lopes",
+      "valor": "25M€",
       "equipo": "Portugal"
+    },
+    {
+      "nombre": "Luis Muriel",
+      "valor": "24.5M€",
+      "equipo": "Colombia"
+    },
+
+    {
+      "nombre": "Suso",
+      "valor": "21.7M€",
+      "equipo": "Spain"
+    },
+    {
+      "nombre": "Quincy Promes",
+      "valor": "21M€",
+      "equipo": "Netherlands"
+    },
+    {
+      "nombre": "Youssef En-Nesyri",
+      "valor": "20M€",
+      "equipo": "Morocco"
+    },
+    {
+      "nombre": "Joaquín Correa",
+      "valor": "18.2M€",
+      "equipo": "Argentina"
+    },
+    {
+      "nombre": "Mu'nas Dabbur",
+      "valor": "17M€",
+      "equipo": "Israel"
+    },
+    {
+      "nombre": "Franco Vázquez",
+      "valor": "16.8M€",
+      "equipo": "Argentina"
+    },
+    {
+      "nombre": "Rafa Mir",
+      "valor": "16M€",
+      "equipo": "Spain"
     }
   ]
 }

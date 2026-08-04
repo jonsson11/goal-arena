@@ -142,9 +142,13 @@ interface ApiScorer {
 interface EntradaJson {
   nombre: string
   externalId?: string | number
-  // Número de siempre (goles, asistencias...) o, si `metrica` del archivo
-  // es "EDAD", un objeto { anios, meses, dias } -- ver formatearEdad().
-  valor?: number | EdadJson
+  // Tres formas válidas:
+  //  - número de siempre (goles, asistencias...)
+  //  - { anios, meses, dias } si la métrica del archivo es "EDAD"
+  //  - un string ya formateado a mano ("80M€", "180,5 M€"...) para
+  //    cualquier métrica donde un número pelado no exprese bien el dato --
+  //    se guarda tal cual en `valorTexto` y se enseña así en el juego.
+  valor?: number | string | EdadJson
   goles?: number
   equipo?: string
 }
@@ -223,21 +227,25 @@ function desdeArchivo(ruta: string): Fuente {
       : Top10Metrica.GOLES
 
   const entradas: Entrada[] = datos.entradas.map((e: EntradaJson) => {
-    if (esEdadJson(e.valor)) {
-      return {
-        nombre: String(e.nombre).trim(),
-        externalId: e.externalId ? String(e.externalId) : undefined,
-        goles: edadANumeroOrdenable(e.valor),
-        valorTexto: formatearEdad(e.valor),
-        equipo: e.equipo?.trim() || undefined,
-      }
-    }
-    return {
+    const base = {
       nombre: String(e.nombre).trim(),
       externalId: e.externalId ? String(e.externalId) : undefined,
-      goles: Number(e.valor ?? e.goles),
       equipo: e.equipo?.trim() || undefined,
     }
+
+    if (esEdadJson(e.valor)) {
+      return { ...base, goles: edadANumeroOrdenable(e.valor), valorTexto: formatearEdad(e.valor) }
+    }
+
+    if (typeof e.valor === 'string') {
+      // Ya viene formateado a mano ("80M€"...) -- se enseña tal cual. El
+      // número de aquí abajo (`goles`) es solo el "algún número" que pide
+      // el campo `valor` de la base de datos (ver nota en el schema); el
+      // orden real lo decide la posición en el array, no este número.
+      return { ...base, goles: 0, valorTexto: e.valor.trim() }
+    }
+
+    return { ...base, goles: Number(e.valor ?? e.goles) }
   })
 
   if (entradas.some((e) => !e.nombre)) throw new Error('Hay entradas sin nombre en el JSON.')
