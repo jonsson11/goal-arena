@@ -31,28 +31,32 @@ export function AccountMenu() {
 
   return (
     <div className="flex items-center gap-2.5">
-      {/* Nombre + barra de XP, junto al avatar. Oculto por debajo de "sm"
-          a propósito -- el header en móvil ya va justo de sitio (logo,
-          cuenta, hamburguesa), y meter aquí nombre + barra lo apretaría
-          demasiado. En su lugar, el nivel se ve igualmente en móvil como
-          una insignia pegada al propio avatar (ver más abajo, "sm:hidden"). */}
+      {/* Nombre + barra de XP, junto al avatar. Ya no se oculta entera en
+          móvil (antes "hidden sm:flex") -- ahora se queda la barrita
+          siempre visible, solo más estrecha (w-10 en vez de w-20) y sin
+          nombre/chip de nivel de texto (eso lo sigue dando la insignia
+          numérica pegada al propio avatar, ver más abajo) para que quepa
+          justo al lado del avatar y la hamburguesa sin apretar el header. */}
       <Link
         href="/perfil"
-        className="group hidden flex-col items-end gap-1 sm:flex"
+        className="group flex flex-col items-end gap-1"
         title={`${usuario.xpActual} / ${usuario.xpSiguienteNivel} XP`}
       >
-        <span className="max-w-[140px] truncate text-xs font-semibold text-foreground transition-colors group-hover:text-primary">
+        <span className="hidden max-w-[140px] truncate text-xs font-semibold text-foreground transition-colors group-hover:text-primary sm:block">
           {usuario.nombre}
         </span>
         <div className="flex items-center gap-1.5">
           {/* Mismo estilo de "chip" que el nivel en ExperienciaGanada.tsx --
-              antes era texto suelto de 10px, ilegible en escritorio. */}
-          <span className="rounded-full bg-primary/15 px-2 py-0.5 text-xs font-bold text-primary">
+              solo desde "sm": en móvil el número de nivel ya lo da la
+              insignia sobre el avatar, repetirlo aquí sería redundante y
+              no hay sitio. */}
+          <span className="hidden rounded-full bg-primary/15 px-2 py-0.5 text-xs font-bold text-primary sm:inline">
             Nv. {usuario.nivel}
           </span>
           {/* Contorno fino verde neón alrededor de la barra -- antes era
-              solo el relleno sin borde, se perdía contra el fondo oscuro. */}
-          <div className="h-2 w-20 overflow-hidden rounded-full border border-primary/70 bg-muted shadow-[0_0_5px_0_rgba(74,222,154,0.55)]">
+              solo el relleno sin borde, se perdía contra el fondo oscuro.
+              w-10 en móvil, w-20 desde "sm" (misma barra, solo más ancha). */}
+          <div className="h-2 w-10 overflow-hidden rounded-full border border-primary/70 bg-muted shadow-[0_0_5px_0_rgba(74,222,154,0.55)] sm:w-20">
             <div
               className="h-full rounded-full bg-primary shadow-[0_0_6px_0_rgba(74,222,154,0.7)] transition-all duration-700"
               style={{ width: `${porcentajeXp}%` }}
@@ -78,8 +82,9 @@ export function AccountMenu() {
           )}
         </button>
 
-        {/* Mismo dato (nivel) que la barra de arriba, en formato insignia
-            -- solo en móvil, donde la barra completa está oculta. */}
+        {/* Mismo dato (nivel) que la barra de al lado, en formato insignia
+            -- solo en móvil, donde la barra ya no lleva el chip "Nv. X" de
+            texto (no había sitio para los dos). */}
         <span className="absolute -bottom-1 -right-1 flex h-[18px] w-[18px] items-center justify-center rounded-full border-2 border-background bg-primary text-[9px] font-extrabold text-primary-foreground sm:hidden">
           {usuario.nivel}
         </span>
