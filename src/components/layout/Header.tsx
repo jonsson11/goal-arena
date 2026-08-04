@@ -109,7 +109,7 @@ export default function Header() {
       </div>
 
       {open && (
-        <div className="animate-in fade-in slide-in-from-top-2 absolute left-0 top-full w-full border-t border-border bg-card/95 backdrop-blur-md duration-200 md:hidden">
+        <div className="animate-in fade-in slide-in-from-top-2 absolute left-0 top-full z-10 w-full border-t border-border bg-card/95 backdrop-blur-md duration-200 md:hidden">
           <NavLinks
             mostrarIndicador={false}
             className="flex flex-col gap-4 p-6 text-sm font-semibold uppercase tracking-wide text-card-foreground"

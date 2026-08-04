@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/features/auth/AuthContext";
@@ -9,6 +9,29 @@ export function AccountMenu() {
   const { usuario, logout } = useAuth();
   const router = useRouter();
   const [abierto, setAbierto] = useState(false);
+  const contenedorRef = useRef<HTMLDivElement>(null);
+
+  // Cierra el desplegable al tocar/clicar fuera de él -- antes solo se
+  // cerraba al pulsar "Configuración" o "Cerrar sesión" (cada uno con su
+  // propio setAbierto(false)), pero un click en cualquier otro sitio de la
+  // página lo dejaba abierto. mousedown + touchstart para que funcione
+  // igual con ratón que con el dedo en móvil.
+  useEffect(() => {
+    if (!abierto) return;
+
+    function alTocarFuera(evento: MouseEvent | TouchEvent) {
+      if (contenedorRef.current && !contenedorRef.current.contains(evento.target as Node)) {
+        setAbierto(false);
+      }
+    }
+
+    document.addEventListener("mousedown", alTocarFuera);
+    document.addEventListener("touchstart", alTocarFuera);
+    return () => {
+      document.removeEventListener("mousedown", alTocarFuera);
+      document.removeEventListener("touchstart", alTocarFuera);
+    };
+  }, [abierto]);
 
   async function handleLogout() {
     await logout();
@@ -65,7 +88,7 @@ export function AccountMenu() {
         </div>
       </Link>
 
-      <div className="relative">
+      <div className="relative" ref={contenedorRef}>
         <button
           onClick={() => setAbierto(!abierto)}
           className="flex h-10 w-10 items-center justify-center rounded-full border-2 border-primary bg-primary/10 text-lg transition-opacity hover:opacity-80"
@@ -90,7 +113,7 @@ export function AccountMenu() {
         </span>
 
         {abierto && (
-          <div className="absolute right-0 top-full mt-2 w-56 rounded-lg border border-border bg-card p-2 shadow-[0_8px_30px_-6px_rgba(0,0,0,0.5)]">
+          <div className="absolute right-0 top-full z-10 mt-2 w-56 rounded-lg border border-border bg-card p-2 shadow-[0_8px_30px_-6px_rgba(0,0,0,0.5)]">
             <div className="border-b border-border px-3 py-2">
               <p className="text-sm font-semibold text-foreground">{usuario.nombre}</p>
               <p className="text-xs text-muted-foreground">Nivel {usuario.nivel}</p>
