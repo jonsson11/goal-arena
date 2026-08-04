@@ -12,21 +12,37 @@ export type Usuario = {
 
 };
 
-export type EstadisticasRapidas = {
-  partidasJugadas: number;
-  porcentajeAcierto: number;
-  rachaActual: number;
-  rachaMaxima: number;
-};
-
 export type ResultadoPartida = "victoria" | "derrota";
+
+// Forma real de GET /api/perfil/estadisticas (ver ese archivo) --esto
+// reemplaza a los antiguos EstadisticasRapidas/PartidaHistorial de
+// mentira que vivían aquí.
+export type DesgloseModo = {
+  clave: string;
+  etiqueta: string;
+  partidasJugadas: number;
+  porcentajeVictoria: number;
+};
 
 export type PartidaHistorial = {
   id: string;
   juego: string;
+  modo: string | null;
+  etiqueta: string;
   resultado: ResultadoPartida;
-  detalle: string;
-  fecha: string;
+  expGanada: number;
+  fecha: string; // ISO
+};
+
+export type EstadisticasPerfil = {
+  total: {
+    partidasJugadas: number;
+    porcentajeVictoria: number;
+  };
+  rachaActual: number;
+  rachaMaxima: number;
+  porModo: DesgloseModo[];
+  historial: PartidaHistorial[];
 };
 
 export type Logro = {

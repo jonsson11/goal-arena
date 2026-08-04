@@ -46,9 +46,54 @@ model User {
   rachaActual        Int @default(0)
   rachaMaxima        Int @default(0)
 
+  // Último momento (en UTC, como toda fecha en Postgres) en que se otorgó
+  // el bonus de EXP por "primera victoria del día". Se compara contra el
+  // día de calendario en España (no UTC) en src/lib/experiencia.ts --
+  // null = todavía no se ha ganado nunca.
+  ultimoBonusDiario DateTime?
+
+  // Historial de partidas -- fuente real de "partidas jugadas por modo" y
+  // "% de victoria por modo" en el perfil (ver src/app/api/perfil/
+  // estadisticas/route.ts), y de paso el historial reciente.
+  partidas PartidaJugada[]
+
   // Relaciones de amistad -- ver el modelo Friendship más abajo.
   solicitudesEnviadas  Friendship[] @relation("SolicitudesEnviadas")
   solicitudesRecibidas Friendship[] @relation("SolicitudesRecibidas")
+}
+
+enum ResultadoPartidaJugada {
+  VICTORIA
+  DERROTA
+}
+
+// Una fila por partida terminada (victoria o derrota) en cualquier
+// minijuego en solitario. `juego` es texto libre a propósito ("GRID",
+// "TOP10"...) en vez de un enum -- el roadmap tiene 6 minijuegos
+// planeados y añadir uno nuevo no debería pedir una migración solo para
+// registrar sus partidas. La lista de valores válidos vive en código
+// (src/lib/experiencia.ts), no en la base de datos.
+model PartidaJugada {
+  id     String @id @default(cuid())
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String
+
+  juego String // "GRID" | "TOP10" (más adelante: "HIGHER_LOWER"...)
+  // Dificultad para GRID ("facil"|"medio"|"dificil"); null en juegos sin
+  // modos, como TOP10 hoy.
+  modo      String?
+  resultado ResultadoPartidaJugada
+
+  // Cuánta EXP dio esta partida en total (0 en derrota). Incluye el bonus
+  // diario si aplicó -- para desglosarlo, ver `bonusDiario`.
+  expGanada   Int     @default(0)
+  bonusDiario Boolean @default(false)
+
+  jugadaEn DateTime @default(now())
+
+  // Perfil: agregados por modo ordenados por fecha, e historial reciente.
+  @@index([userId, jugadaEn])
+  @@index([userId, juego, modo])
 }
 
 enum AvatarTipo {

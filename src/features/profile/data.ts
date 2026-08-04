@@ -1,5 +1,10 @@
-import type { Usuario, EstadisticasRapidas, PartidaHistorial, Logro } from "./type";
+import type { Usuario, Logro } from "./type";
 
+// OJO: `estadisticasRapidas` y `historialPartidas` (partidas jugadas, %
+// acierto, rachas, historial...) que vivían aquí como datos de mentira se
+// quitaron a propósito -- ahora ProfileView pide todo eso de verdad a
+// GET /api/perfil/estadisticas (ver ese archivo, y POST /api/partidas,
+// que es quien va rellenando esos datos partida a partida).
 
 export const usuarioInicial: Usuario = {
   id: "usuario-de-mentira",
@@ -11,21 +16,6 @@ export const usuarioInicial: Usuario = {
   xpActual: 320,
   xpSiguienteNivel: 500,
 };
-
-export const estadisticasRapidas: EstadisticasRapidas = {
-  partidasJugadas: 42,
-  porcentajeAcierto: 68,
-  rachaActual: 5,
-  rachaMaxima: 12,
-};
-
-export const historialPartidas: PartidaHistorial[] = [
-  { id: "1", juego: "3x3", resultado: "victoria", detalle: "9/9 casillas", fecha: "Hoy" },
-  { id: "2", juego: "Higher or Lower", resultado: "victoria", detalle: "Racha de 8", fecha: "Hoy" },
-  { id: "3", juego: "Top 10", resultado: "derrota", detalle: "6/10 acertados", fecha: "Ayer" },
-  { id: "4", juego: "3x3", resultado: "derrota", detalle: "5/9 casillas", fecha: "Ayer" },
-  { id: "5", juego: "Higher or Lower", resultado: "victoria", detalle: "Racha de 4", fecha: "Hace 2 días" },
-];
 
 export const AVATARES_DISPONIBLES: string[] = ["⚽", "🥅", "🧤", "🏆", "🔥", "🦁", "🐐", "⭐"];
 

@@ -6,6 +6,8 @@ import { obtenerCodigoPais } from "@/features/games/shared/banderas";
 import { GameResultDialog } from "@/features/games/shared/GameResultDialog";
 import { GameButton } from "@/features/games/shared/GameButton";
 import { PlayerSearch } from "@/features/games/shared/PlayerSearch";
+import { useRegistrarPartida } from "@/features/games/shared/useRegistrarPartida";
+import type { RespuestaPartida } from "@/lib/experiencia";
 import type { EntradaTop10, RankingTop10 } from "./type";
 import { buscarEntradaCoincidente } from "./logic";
 
@@ -156,6 +158,8 @@ export function Top10Game() {
   const [rendido, setRendido] = useState(false);
   const [popupAbierto, setPopupAbierto] = useState(false);
   const [mostrandoRespuestas, setMostrandoRespuestas] = useState(false);
+  const [experiencia, setExperiencia] = useState<RespuestaPartida | null>(null);
+  const registrarPartida = useRegistrarPartida();
 
   // Mismo patrón que GridBoard: descarta respuestas de peticiones obsoletas,
   // necesario porque React Strict Mode ejecuta el efecto de montaje dos veces
@@ -178,6 +182,7 @@ export function Top10Game() {
     setRendido(false);
     setPopupAbierto(false);
     setMostrandoRespuestas(false);
+    setExperiencia(null);
 
     try {
       // Se excluye el ranking actual para no repetirlo dos veces seguidas
@@ -231,12 +236,14 @@ export function Top10Game() {
       setMensaje("");
       setTiempoFinal(segundosTranscurridos(horaInicio));
       setPopupAbierto(true);
+      registrarPartida("TOP10", null, "victoria").then(setExperiencia);
     }
   }
 
   function handleRendirse() {
     setMensaje("");
     setTiempoFinal(segundosTranscurridos(horaInicio));
+    registrarPartida("TOP10", null, "derrota");
     setRendido(true);
     setPopupAbierto(true);
   }
@@ -402,6 +409,7 @@ export function Top10Game() {
             )
           }
           onJugarDeNuevo={cargarRanking}
+          experiencia={experiencia}
           // Solo al rendirte tiene sentido "revelar" -- si completaste el
           // Top10 ya se ve entero en el tablero, no hay nada que enseñar.
           respuestasCorrectas={

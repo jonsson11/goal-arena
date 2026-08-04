@@ -6,14 +6,30 @@ import { AuthGate } from "@/features/auth/AuthGate";
 import { GameButton } from "@/features/games/shared/GameButton";
 import { EditProfileDialog } from "./EditProfileDialog";
 import { FriendsCarousel } from "./FriendsCarousel";
-import { estadisticasRapidas, historialPartidas, logros, } from "./data";
+import { logros } from "./data";
 import type { Amigo } from "@/features/social/type";
-import type { TipoAvatar } from "./type";
+import type { EstadisticasPerfil, TipoAvatar } from "./type";
+
+// "Hoy" / "Ayer" / "Hace N días" / fecha completa -- se compara por día de
+// calendario local, no por diferencia de 24h exactas (si no, algo jugado
+// ayer a las 23:50 y comprobado hoy a las 00:10 diría "hace 0 días").
+function formatearFecha(iso: string): string {
+  const fecha = new Date(iso);
+  const inicioDia = (d: Date) => new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime();
+  const diffDias = Math.round((inicioDia(new Date()) - inicioDia(fecha)) / 86_400_000);
+
+  if (diffDias === 0) return "Hoy";
+  if (diffDias === 1) return "Ayer";
+  if (diffDias > 1 && diffDias < 7) return `Hace ${diffDias} días`;
+  return fecha.toLocaleDateString("es-ES", { day: "2-digit", month: "2-digit", year: "numeric" });
+}
 
 export function ProfileView() {
   const { usuario, actualizarUsuario } = useAuth();
   const [editando, setEditando] = useState(false);
   const [amigos, setAmigos] = useState<Amigo[]>([]);
+  const [estadisticas, setEstadisticas] = useState<EstadisticasPerfil | null>(null);
+  const [cargandoEstadisticas, setCargandoEstadisticas] = useState(true);
 
   useEffect(() => {
     if (!usuario) return;
@@ -22,6 +38,20 @@ export function ProfileView() {
       .then((datos) => setAmigos(datos.amigos ?? []))
       .catch(() => setAmigos([]));
   }, [usuario]);
+
+  useEffect(() => {
+    if (!usuario) return;
+    setCargandoEstadisticas(true);
+    fetch("/api/perfil/estadisticas")
+      .then((res) => (res.ok ? res.json() : null))
+      .then((datos) => setEstadisticas(datos))
+      .catch(() => setEstadisticas(null))
+      .finally(() => setCargandoEstadisticas(false));
+    // Se pide de nuevo también cuando cambia el nivel/XP del usuario --
+    // es la señal más fiable de que se acaba de registrar una partida
+    // nueva (ver useRegistrarPartida.ts), así el perfil no se queda con
+    // las estadísticas de antes de jugar si vuelves aquí sin recargar.
+  }, [usuario?.id, usuario?.nivel, usuario?.xpActual]);
 
   if (!usuario) {
     return (
@@ -45,6 +75,13 @@ export function ProfileView() {
   }
 
   const porcentajeXp = Math.round((usuario.xpActual / usuario.xpSiguienteNivel) * 100);
+
+  const statsRapidas = [
+    { valor: estadisticas?.total.partidasJugadas ?? 0, etiqueta: "Partidas" },
+    { valor: `${estadisticas?.total.porcentajeVictoria ?? 0}%`, etiqueta: "% Victoria" },
+    { valor: estadisticas?.rachaActual ?? 0, etiqueta: "Racha actual" },
+    { valor: estadisticas?.rachaMaxima ?? 0, etiqueta: "Racha máxima" },
+  ];
 
   return (
     <div className="mx-auto flex max-w-2xl flex-col gap-8 px-6 py-10">
@@ -92,21 +129,39 @@ export function ProfileView() {
 
       {/* Resumen rápido */}
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
-        {[
-          { valor: estadisticasRapidas.partidasJugadas, etiqueta: "Partidas" },
-          { valor: `${estadisticasRapidas.porcentajeAcierto}%`, etiqueta: "Acierto" },
-          { valor: estadisticasRapidas.rachaActual, etiqueta: "Racha actual" },
-          { valor: estadisticasRapidas.rachaMaxima, etiqueta: "Racha máxima" },
-        ].map((stat) => (
+        {statsRapidas.map((stat) => (
           <div
             key={stat.etiqueta}
-            className="flex flex-col items-center gap-1 rounded-lg border border-border bg-card p-4 transition-all duration-200 hover:-translate-y-1 hover:border-primary/50 hover:shadow-[0_0_20px_-6px_rgba(74,222,154,0.5)]"
+            className={`flex flex-col items-center gap-1 rounded-lg border border-border bg-card p-4 transition-all duration-200 hover:-translate-y-1 hover:border-primary/50 hover:shadow-[0_0_20px_-6px_rgba(74,222,154,0.5)] ${
+              cargandoEstadisticas ? "animate-pulse" : ""
+            }`}
           >
             <span className="text-2xl font-extrabold text-primary">{stat.valor}</span>
             <span className="text-center text-xs text-muted-foreground">{stat.etiqueta}</span>
           </div>
         ))}
       </div>
+
+      {/* Desglose por modo -- solo si ya hay alguna partida jugada */}
+      {!cargandoEstadisticas && estadisticas && estadisticas.porModo.length > 0 && (
+        <div className="flex flex-col gap-3">
+          <h2 className="text-lg font-bold text-foreground">Por modo</h2>
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+            {estadisticas.porModo.map((modo) => (
+              <div
+                key={modo.clave}
+                className="flex flex-col gap-1 rounded-lg border border-border bg-card p-3 transition-colors duration-200 hover:border-primary/40"
+              >
+                <span className="truncate text-xs font-semibold text-foreground">{modo.etiqueta}</span>
+                <span className="text-lg font-extrabold text-primary">{modo.porcentajeVictoria}%</span>
+                <span className="text-xs text-muted-foreground">
+                  {modo.partidasJugadas} {modo.partidasJugadas === 1 ? "partida" : "partidas"}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Amigos */}
       <div className="flex flex-col gap-3">
@@ -118,32 +173,40 @@ export function ProfileView() {
       <div className="flex flex-col gap-3">
         <h2 className="text-lg font-bold text-foreground">Partidas recientes</h2>
 
-        <div className="flex flex-col gap-2">
-          {historialPartidas.map((partida) => (
-            <div
-              key={partida.id}
-              className="flex items-center justify-between rounded-lg border border-border bg-card px-4 py-3 transition-all duration-200 hover:border-primary/40 hover:bg-card/80"
-            >
-              <div className="flex flex-col">
-                <span className="text-sm font-semibold text-foreground">{partida.juego}</span>
-                <span className="text-xs text-muted-foreground">{partida.detalle}</span>
-              </div>
+        {!cargandoEstadisticas && estadisticas?.historial.length === 0 ? (
+          <p className="rounded-lg border border-dashed border-border bg-card/50 px-4 py-6 text-center text-sm text-muted-foreground">
+            Todavía no has jugado ninguna partida. ¡Ve a Jugar y estrena tu historial!
+          </p>
+        ) : (
+          <div className="flex flex-col gap-2">
+            {(estadisticas?.historial ?? []).map((partida) => (
+              <div
+                key={partida.id}
+                className="flex items-center justify-between rounded-lg border border-border bg-card px-4 py-3 transition-all duration-200 hover:border-primary/40 hover:bg-card/80"
+              >
+                <div className="flex flex-col">
+                  <span className="text-sm font-semibold text-foreground">{partida.etiqueta}</span>
+                  {partida.resultado === "victoria" && (
+                    <span className="text-xs font-semibold text-primary">+{partida.expGanada} EXP</span>
+                  )}
+                </div>
 
-              <div className="flex flex-col items-end gap-1">
-                <span
-                  className={`rounded-full px-2 py-0.5 text-xs font-bold ${
-                    partida.resultado === "victoria"
-                      ? "bg-primary/15 text-primary"
-                      : "bg-destructive/15 text-destructive"
-                  }`}
-                >
-                  {partida.resultado === "victoria" ? "Victoria" : "Derrota"}
-                </span>
-                <span className="text-xs text-muted-foreground">{partida.fecha}</span>
+                <div className="flex flex-col items-end gap-1">
+                  <span
+                    className={`rounded-full px-2 py-0.5 text-xs font-bold ${
+                      partida.resultado === "victoria"
+                        ? "bg-primary/15 text-primary"
+                        : "bg-destructive/15 text-destructive"
+                    }`}
+                  >
+                    {partida.resultado === "victoria" ? "Victoria" : "Derrota"}
+                  </span>
+                  <span className="text-xs text-muted-foreground">{formatearFecha(partida.fecha)}</span>
+                </div>
               </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Logros */}

@@ -14,6 +14,14 @@ type AuthContextType = {
   logout: () => Promise<void>;
   /** Guarda nombre/avatar/avatarTipo de verdad en la base de datos. */
   actualizarUsuario: (datos: Pick<Usuario, "nombre" | "avatar" | "avatarTipo">) => Promise<ResultadoAuth>;
+  /**
+   * Vuelve a pedir /api/auth/me y refresca `usuario` con lo que haya en la
+   * BD ahora mismo -- se usa tras registrar una partida (POST /api/partidas),
+   * que cambia nivel/xpActual en el servidor sin pasar por actualizarUsuario.
+   * Sin esto, el Header y el perfil se quedarían con el nivel/XP de antes de
+   * jugar hasta el siguiente refresco de página.
+   */
+  refrescarUsuario: () => Promise<void>;
 };
 
 const AuthContext = createContext<AuthContextType | null>(null);
@@ -104,7 +112,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }
 
   return (
-    <AuthContext.Provider value={{ usuario, cargando, login, registrar, logout, actualizarUsuario }}>
+    <AuthContext.Provider
+      value={{
+        usuario,
+        cargando,
+        login,
+        registrar,
+        logout,
+        actualizarUsuario,
+        refrescarUsuario: cargarUsuarioActual,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );

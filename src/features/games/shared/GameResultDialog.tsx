@@ -11,6 +11,8 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 import { GameButton } from "./GameButton";
+import { ExperienciaGanada } from "./ExperienciaGanada";
+import type { RespuestaPartida } from "@/lib/experiencia";
 
 type ResultadoJuego = "exito" | "fracaso";
 
@@ -33,6 +35,10 @@ type GameResultDialogProps = {
   descripcion: ReactNode;
   onJugarDeNuevo: () => void;
   respuestasCorrectas?: RespuestasCorrectasProps;
+  /** Solo en victorias. Si viene, se enseña la sección de EXP ganada con
+   * la barra de nivel animándose (ver ExperienciaGanada.tsx). En derrota
+   * no se pasa nunca -- no se otorga EXP al perder. */
+  experiencia?: RespuestaPartida | null;
 };
 
 // Un tono por resultado (verde de marca para la victoria, el mismo rojo que
@@ -91,6 +97,7 @@ export function GameResultDialog({
   descripcion,
   onJugarDeNuevo,
   respuestasCorrectas,
+  experiencia,
 }: GameResultDialogProps) {
   const esExito = resultado === "exito";
   const color = COLOR_POR_RESULTADO[resultado];
@@ -114,7 +121,7 @@ export function GameResultDialog({
           "Volver a jugar" fuera de la pantalla. */}
       <DialogContent
         showCloseButton={false}
-        className={`max-h-[85vh] overflow-y-auto overflow-x-hidden bg-card text-center shadow-[0_0_70px_-15px_var(--glow)] ring-1 sm:max-w-md ${
+        className={`max-h-[85vh] overflow-y-auto overflow-x-hidden [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden bg-card text-center shadow-[0_0_70px_-15px_var(--glow)] ring-1 sm:max-w-md ${
           esExito ? "border-primary/40 ring-primary/20" : "border-destructive/40 ring-destructive/20"
         }`}
         style={
@@ -124,30 +131,38 @@ export function GameResultDialog({
           } as CSSProperties
         }
       >
-        {/* Franja de acento arriba del todo -- primer golpe de color antes
-            de que se vea nada más, para que el cartel no arranque "plano". */}
-        <div
-          aria-hidden
-          className="pointer-events-none absolute inset-x-0 top-0 h-1.5"
-          style={{ backgroundImage: `linear-gradient(90deg, transparent, ${color}, transparent)` }}
-        />
+        {/* Capa puramente decorativa (franja de acento, partículas,
+            resplandor) con su propio overflow-hidden, en vez de fiarse del
+            de <DialogContent> -- ese pasó a overflow-y-auto para poder
+            hacer scroll cuando el contenido (con la sección de EXP) no cabe
+            en pantallas bajas, y sin esta capa aparte las partículas
+            asomaban por debajo del cartel, fuera de las esquinas
+            redondeadas. rounded-[inherit] copia el radio del propio
+            <DialogContent> sin repetirlo a mano. La barra de scroll en sí
+            se oculta arriba (scrollbar-width / ::-webkit-scrollbar) -- el
+            scroll sigue funcionando con rueda/gesto, solo desaparece la
+            barra gris que rompía las esquinas redondeadas. */}
+        <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden rounded-[inherit]">
+          <div
+            className="absolute inset-x-0 top-0 h-1.5"
+            style={{ backgroundImage: `linear-gradient(90deg, transparent, ${color}, transparent)` }}
+          />
+
+          {PARTICULAS.map((p, i) => (
+            <span
+              key={i}
+              className="particula-flotante absolute bottom-0 h-[3px] w-[3px] rounded-full opacity-40"
+              style={{ left: p.left, animationDelay: p.delay, backgroundColor: color }}
+            />
+          ))}
+
+          <div
+            className="absolute left-1/2 top-0 h-40 w-64 -translate-x-1/2 -translate-y-1/3 rounded-full blur-3xl"
+            style={{ backgroundColor: color, opacity: 0.2 }}
+          />
+        </div>
 
         <BotonCerrar />
-
-        {PARTICULAS.map((p, i) => (
-          <span
-            key={i}
-            aria-hidden
-            className="particula-flotante pointer-events-none absolute bottom-0 h-[3px] w-[3px] rounded-full opacity-40"
-            style={{ left: p.left, animationDelay: p.delay, backgroundColor: color }}
-          />
-        ))}
-
-        <div
-          aria-hidden
-          className="pointer-events-none absolute left-1/2 top-0 h-40 w-64 -translate-x-1/2 -translate-y-1/3 rounded-full blur-3xl"
-          style={{ backgroundColor: color, opacity: 0.2 }}
-        />
 
         <DialogHeader className="relative z-10 items-center gap-3 pt-1">
           <div
@@ -188,6 +203,12 @@ export function GameResultDialog({
             {descripcion}
           </DialogDescription>
         </DialogHeader>
+
+        {esExito && experiencia && (
+          <div className="launcher-entrada relative z-10 w-full" style={conRetraso(0.24)}>
+            <ExperienciaGanada respuesta={experiencia} />
+          </div>
+        )}
 
         {respuestasCorrectas && (
           <div

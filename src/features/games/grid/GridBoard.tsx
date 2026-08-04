@@ -8,6 +8,8 @@ import { GameResultDialog } from "@/features/games/shared/GameResultDialog";
 import { GameButton } from "@/features/games/shared/GameButton";
 import { PlayerSearch } from "@/features/games/shared/PlayerSearch";
 import { obtenerCodigoPais } from "@/features/games/shared/banderas";
+import { useRegistrarPartida } from "@/features/games/shared/useRegistrarPartida";
+import type { RespuestaPartida } from "@/lib/experiencia";
 import type { Tablero, Celda, Condicion } from "./type";
 import { celdasValidasParaJugador, cumpleAmbasCondiciones } from "./logic";
 
@@ -402,6 +404,8 @@ export function GridBoard({ dificultad }: { dificultad: Dificultad }) {
   const [tiempoFinal, setTiempoFinal] = useState<number | null>(null);
   const [resultado, setResultado] = useState<"completado" | "rendido" | null>(null);
   const [popupAbierto, setPopupAbierto] = useState(false);
+  const [experiencia, setExperiencia] = useState<RespuestaPartida | null>(null);
+  const registrarPartida = useRegistrarPartida();
 
   const [solucionesDebug, setSolucionesDebug] = useState<Record<string, ResultadoCelda>>({});
   const [celdaDebugAbierta, setCeldaDebugAbierta] = useState<string | null>(null);
@@ -450,6 +454,7 @@ export function GridBoard({ dificultad }: { dificultad: Dificultad }) {
     setRespuestasCorrectas(null);
     setCargandoRespuestas(false);
     setMostrandoRespuestas(false);
+    setExperiencia(null);
 
     try {
       const res = await fetch(`/api/tablero/generar?dificultad=${dificultad}`);
@@ -540,6 +545,7 @@ export function GridBoard({ dificultad }: { dificultad: Dificultad }) {
       setTiempoFinal(segundosTranscurridos(horaInicio));
       setResultado("completado");
       setPopupAbierto(true);
+      registrarPartida("GRID", dificultad, "victoria").then(setExperiencia);
     }
   }
 
@@ -576,6 +582,11 @@ export function GridBoard({ dificultad }: { dificultad: Dificultad }) {
     setTiempoFinal(segundosTranscurridos(horaInicio));
     setResultado("rendido");
     setPopupAbierto(true);
+    // Se registra igual que una victoria (para que "partidas jugadas" y la
+    // racha reflejen la realidad), pero sin guardar la respuesta en
+    // `experiencia` -- GameResultDialog solo la enseña en victorias, y
+    // aquí expGanada siempre es 0 de todas formas.
+    registrarPartida("GRID", dificultad, "derrota");
   }
 
   // Alterna el texto de respuestas correctas dentro del propio cartel de
@@ -705,6 +716,7 @@ export function GridBoard({ dificultad }: { dificultad: Dificultad }) {
             )
           }
           onJugarDeNuevo={cargarTablero}
+          experiencia={experiencia}
           respuestasCorrectas={{
             mostrando: mostrandoRespuestas,
             onToggle: alternarRespuestasCorrectas,
