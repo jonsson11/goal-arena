@@ -274,41 +274,43 @@ export function Top10Game() {
 
   return (
     <div className="flex flex-col items-center gap-3 p-3 sm:gap-6 sm:p-6">
-      {/* Cabecera compacta SOLO en móvil (Opción C): título, contador de
-          aciertos y "Cambiar" fusionados en una sola línea fina, en vez de
-          un h1 grande + un botón "Cambiar Top10" + un párrafo "x/10
-          acertados" repartidos en tres sitios distintos de la pantalla.
-          Libera bastante alto vertical, que es justo lo que hacía falta
-          para que el tablero entero quepa sin desplazarse. A partir de sm:
-          se recupera el título grande de siempre (hay hueco de sobra en
-          pantallas más anchas). */}
-      <div className="flex w-full max-w-2xl items-center justify-between gap-2 sm:hidden">
-        <button
-          onClick={() => setConfirmandoCambio(true)}
-          className="shrink-0 text-xs font-bold text-secondary"
-        >
-          Cambiar
-        </button>
-        <h1 className="min-w-0 flex-1 truncate text-center text-sm font-bold text-foreground">
+      {/* Cabecera compacta SOLO en móvil (Opción C): "Cambiar" + contador en
+          una fila fina arriba, y el título EN SU PROPIA LÍNEA debajo, sin
+          truncate -- antes iban los tres en una sola línea con el título
+          recortado a un tira ("Goleadores más jóvenes en la histori...")
+          que no dejaba saber de qué iba el Top10. Así el título puede
+          ocupar 2 líneas si hace falta, siempre legible entero, a cambio
+          de un pelín más de alto (que sigue siendo mucho menos que el h1
+          grande + los controles sueltos de antes). A partir de sm: se
+          recupera el título grande de siempre. */}
+      <div className="flex w-full max-w-2xl flex-col items-center gap-1 sm:hidden">
+        <div className="flex w-full items-center justify-between gap-2">
+          <button
+            onClick={() => setConfirmandoCambio(true)}
+            className="shrink-0 text-xs font-bold text-secondary"
+          >
+            Cambiar
+          </button>
+          <span className="shrink-0 rounded-full bg-card px-2 py-0.5 text-[10px] font-semibold text-muted-foreground">
+            {acertados.length}/{total}
+          </span>
+        </div>
+        <h1 className="text-center text-sm font-bold leading-snug text-foreground">
           {ranking.titulo}
         </h1>
-        <span className="shrink-0 rounded-full bg-card px-2 py-0.5 text-[10px] font-semibold text-muted-foreground">
-          {acertados.length}/{total}
-        </span>
       </div>
       <h1 className="hidden text-center text-2xl font-bold text-foreground sm:block">
         {ranking.titulo}
       </h1>
 
-      {/* En móvil, grid de 2 columnas compacto desde el principio (antes
-          era 1 sola columna a ancho completo, con filas grandes -- las 10
-          entradas ocupaban toda la pantalla y de sobra, obligando a
-          desplazarse para llegar al buscador). Con 2 columnas + badge,
-          nombre y bandera más pequeños, las 10 posiciones caben en bastante
-          menos alto sin dejar de leerse bien. A partir de sm: se mantiene
-          el layout de 2 columnas de siempre (grid-flow-col + grid-rows-5),
-          con el tamaño grande que ya tenía. */}
-      <div className="grid w-full max-w-2xl grid-cols-2 gap-1.5 sm:grid-flow-col sm:grid-cols-2 sm:grid-rows-5 sm:gap-3">
+      {/* Relleno por COLUMNAS (grid-flow-col + grid-rows-5), no por filas:
+          así la posición 1 va arriba-izquierda, la 2 debajo, ... la 5 abajo
+          del todo de la columna izquierda, y la 6 empieza arriba-derecha
+          -- 1-5 en una columna, 6-10 en la otra, en vez de ir alternando
+          izquierda/derecha fila a fila (1-2, 3-4...). Mismo criterio que
+          ya tenía el layout de escritorio (sm:), ahora también en móvil,
+          por eso ya no hace falta duplicar la clase con el prefijo sm:. */}
+      <div className="grid w-full max-w-2xl grid-cols-2 grid-flow-col grid-rows-5 gap-1.5 sm:gap-3">
         {ranking.respuestas.map((entrada, i) => {
           const posicion = i + 1;
           const acertado = estaAcertado(entrada);
