@@ -1,71 +1,91 @@
--------------------PICHICHIS Y ASISTENCIAS LIGAS-------------------
+-------------------GOLEADORES Y ASISTENCIAS LIGAS-------------------
 
-Pichichis LaLiga 18/19 x
-Pichichis LaLiga 22/23 x
-Pichichis LaLiga 24/25 x
-Pichichis Bundesliga 23/24 x
-Pichichis Bundesliga 25/26 x
-Pichichis Ligue1 24/25 x 
-Pichichis Ligue1 25/26 x
-Pichichis PremierLeague 23/24 x
-Pichichis PremierLeague 24/25 x
-Pichichis PremierLeague 25/26 x
-Pichichis SerieA 23/24 x
-Pichichis SerieA 24/25 x
-Pichichis SerieA 25/26 x
+Pichichis LaLiga 18/19 
+Pichichis LaLiga 22/23 
+Pichichis LaLiga 24/25 
+
+Pichichis Bundesliga 23/24 
+Pichichis Bundesliga 25/26 
+
+Pichichis Ligue1 24/25 
+Pichichis Ligue1 25/26 
+
+Pichichis PremierLeague 23/24 
+Pichichis PremierLeague 24/25 
+Pichichis PremierLeague 25/26 
+
+Pichichis SerieA 23/24 
+Pichichis SerieA 24/25 
+Pichichis SerieA 25/26 
 
 
--------------------PICHICHIS Y ASISTENCIAS EUROPA-------------------
+-------------------GOLEADORES Y ASISTENCIAS EUROPA-------------------
 
-Pichichis ChampionsLeague 23/24 x
-Pichichis ChampionsLeague 24/25 x
+Pichichis ChampionsLeague 23/24 
+Pichichis ChampionsLeague 24/25 
+Asistencias ChampionsLeague 25/26 
 
-Asistencias ChampionsLeague 25/26 x
+Goleadores en Año Natural (2025)
 
--------------------PICHICHIS SELECCIONES-------------------
+-------------------GOLEADORES SELECCIONES-------------------
 
-Pichichis EUROCOPA 2004 x
-Pichichis EUROCOPA 2024 x
-Pichichis MUNDIAL 2002 x
-Pichichis MUNDIAL 2006 x
-Pichichis MUNDIAL 2010 x
-Pichichis MUNDIAL 2014 x
-Pichichis MUNDIAL 2018 x
-Pichichis MUNDIAL 2022 x
-Pichichis MUNDIAL 2026 x
+Pichichis EUROCOPA 2004 
+Pichichis EUROCOPA 2024 
+Pichichis MUNDIAL 2002 
+Pichichis MUNDIAL 2006 
+Pichichis MUNDIAL 2010 
+Pichichis MUNDIAL 2014 
+Pichichis MUNDIAL 2018 
+Pichichis MUNDIAL 2022 
+Pichichis MUNDIAL 2026 
 
 -------------------MINUTOS/TEMPORADA -------------------
 
-Más minutos disputados en el Atlético de Madrid (2025/26)
+Más minutos disputados en el Atlético de Madrid (2025/26) 
+Más minutos disputados en el Arsenal (2025/26) 
 
 -------------------PARTIDOS BAJO ENTRENADOR-------------------
 
-Más partidos bajo las órdenes de Pep Guardiola en el Bayern de Munich (2013-2016). x
-Más partidos bajo las órdenes de Mourinho en el Real Madrid (1a Etapa). x
-Más partidos bajo las órdenes de Didier Deschamps con Francia (2011-2026).
+Más partidos bajo las órdenes de Pep Guardiola en el Bayern de Munich (2013-2016). 
+Más partidos bajo las órdenes de Mourinho en el Real Madrid (1a Etapa). 
 
 -------------------PICHICHIS BAJO ENTRENADOR-------------------
 
-Pichichis bajo las órdenes de Diego Pablo Simeone en el Atlético de Madrid (2011-2026).
-Pichichis bajo las órdenes de Didier Deschamps con Francia (2011-2026). x
+Pichichis bajo las órdenes de Didier Deschamps con Francia (2011-2026). 
 
 -------------------ASISTENCIAS BAJO ENTRENADOR-------------------
 
-Asistencias bajo las órdenes de Pep Guardiola en el FC Barcelona (2008-2012). x
+Asistencias bajo las órdenes de Pep Guardiola en el FC Barcelona (2008-2012). 
 
 
 -------------------GOLEADORES POR EDAD-----------------------
 
-Goleadores más veteranos en LaLiga. x
-Goleadores más jóvenes en LaLiga. x
+Goleadores más veteranos en LaLiga. 
+Goleadores más jóvenes en LaLiga.
+
+Goleadores más veteranos en MUNDIAL. 
+Goleadores más jóvenes en MUNDIAL. 
 
 -------------------FICHAJES MÁS CAROS-----------------------------
-Tottenham x
-Manchester City x
-Borussia Dortmund x 
-Juventus x
-Bayern München x
+
+Tottenham 
+Manchester City 
+Borussia Dortmund 
+Juventus 
+Bayern München 
 ------------------VENTAS MÁS CARAS--------------------------------
-LaLiga x
-Ligue1 x
-Bayern München x
+
+LaLiga 
+Ligue1
+Bayern München 
+
+---------------------MVP's--------------------------------------
+ültimos 10 Mvp's finales ChampionsLeague.
+
+-----------------------TARJETAS---------------------------------
+Amarillas LaLiga (25-26)
+Amarillas LaLiga (All time)
+Rojas LaLiga (All time)
+
+Amarillas PremierLeague (All time)
+Rojas PremierLeague (All time)

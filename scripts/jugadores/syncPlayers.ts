@@ -34,8 +34,12 @@ type EntradaJugador = string | { nombre: string; url: string };
 //
 //  { nombre: "", url: "" },
 const JUGADORES_INICIALES: EntradaJugador[] = [
-{nombre:"João Palhinha", url:"https://en.wikipedia.org/wiki/Jo%C3%A3o_Palhinha"},
-{nombre:"Kim Min-jae", url:"https://en.wikipedia.org/wiki/Kim_Min-jae_(footballer)"}
+{nombre:"David Albelda", url:"https://en.wikipedia.org/wiki/David_Albelda"},
+{nombre:"Patxi Puñal", url:"https://en.wikipedia.org/wiki/Francisco_Pu%C3%B1al"}
+
+
+
+
 
 
   ];
