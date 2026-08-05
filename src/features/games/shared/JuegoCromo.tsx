@@ -61,35 +61,32 @@ export function JuegoCromo({ juego, icono }: { juego: JuegoSinIcono; icono: Reac
         // navegador no "promociona" la tarjeta a su propia capa 3D hasta que
         // aparece la primera transformación, así que el primer giro tiene
         // que crear la capa Y animar el rotateY a la vez -- y durante ese
-        // instante se ven las dos caras superpuestas "en espejo" (el bug de
-        // la captura). Con un rotateY(0deg) presente desde el montaje, la
-        // capa ya existe de antemano y el primer giro sale limpio igual que
-        // los siguientes.
+        // instante se ven las dos caras superpuestas "en espejo".
         style={{
           transform: `rotateY(${girado ? 180 : 0}deg)`,
           WebkitTransform: `rotateY(${girado ? 180 : 0}deg)`,
         }}
       >
-        {/* Cara frontal.
-            Los dos [backface-visibility:hidden] / [-webkit-backface-visibility:hidden]
-            (aquí y en la cara trasera, más abajo) son necesarios A LA VEZ: en
-            Chrome/Android basta con la propiedad estándar, pero Safari/iOS (y
-            algunos WebView de Android) solo respetan el prefijo -webkit-. Si
-            falta cualquiera de los dos, en esos navegadores las dos caras
-            quedan visibles superpuestas y "en espejo" a mitad de giro -- que es
-            justo el bug de "el texto también se voltea y no desaparece" en
-            móvil.
-        */}
-        {/* pointer-events-none cuando está girada: en algunos navegadores
-            móviles (sobre todo Android/WebView) el hit-testing de toques no
-            respeta backface-visibility:hidden con la misma fidelidad que el
-            pintado visual -- la cara "invisible" seguía pudiendo capturar el
-            toque, así que había que tocar dos veces (una que caía en la cara
-            oculta y no hacía nada, otra que ya sí llegaba a la visible). */}
+        {/* Cara frontal. */}
         <div
           className={`cromo-brillo absolute inset-0 flex flex-col items-center justify-center gap-2.5 rounded-[22px] border border-border bg-gradient-to-br from-card to-background p-5 text-center [backface-visibility:hidden] [-webkit-backface-visibility:hidden] ${
             girado ? "pointer-events-none" : ""
           }`}
+          // Refuerzo además del backface-visibility de arriba: en algunos
+          // navegadores móviles (el de la captura del bug) esa propiedad
+          // sola no basta y las dos caras se ven superpuestas a media
+          // vuelta. Con visibility:hidden de verdad, la cara que no toca
+          // deja de pintarse pase lo que pase con el 3D del navegador. El
+          // transitionDelay es la clave: al GIRAR la tarjeta, esta cara no
+          // desaparece hasta que el giro ha terminado del todo (500ms, el
+          // mismo tiempo que dura el rotateY), para no cortar la animación
+          // a medias; al VOLVER a mostrarse, aparece al instante (0s).
+          style={{
+            visibility: girado ? "hidden" : "visible",
+            transitionProperty: "visibility",
+            transitionDuration: "0s",
+            transitionDelay: girado ? "500ms" : "0s",
+          }}
         >
           {juego.etiqueta && (
             <span
@@ -115,6 +112,16 @@ export function JuegoCromo({ juego, icono }: { juego: JuegoSinIcono; icono: Reac
           className={`absolute inset-0 flex [transform:rotateY(180deg)] flex-col items-center justify-center gap-2.5 rounded-[22px] border border-border bg-gradient-to-br p-5 text-center [backface-visibility:hidden] [-webkit-backface-visibility:hidden] ${DEGRADADO_FONDO_POR_ACENTO[juego.acento]} ${
             girado ? "" : "pointer-events-none"
           }`}
+          // Mismo refuerzo que en la cara frontal, en espejo: visible al
+          // instante en cuanto se gira, oculta de verdad (no solo por
+          // backface-visibility) 500ms después de volver a la cara
+          // frontal -- justo cuando termina el giro de vuelta.
+          style={{
+            visibility: girado ? "visible" : "hidden",
+            transitionProperty: "visibility",
+            transitionDuration: "0s",
+            transitionDelay: girado ? "0s" : "500ms",
+          }}
         >
           <div className={`flex h-14 w-14 items-center justify-center rounded-2xl ${ICONO_FONDO_POR_ACENTO[juego.acento]}`}>
             {icono}
