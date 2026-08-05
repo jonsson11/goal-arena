@@ -6,6 +6,7 @@ import { obtenerCodigoPais } from "@/features/games/shared/banderas";
 import { GameResultDialog } from "@/features/games/shared/GameResultDialog";
 import { GameButton } from "@/features/games/shared/GameButton";
 import { PlayerSearch } from "@/features/games/shared/PlayerSearch";
+import { ConfirmDialog } from "@/features/games/shared/ConfirmDialog";
 import { useRegistrarPartida } from "@/features/games/shared/useRegistrarPartida";
 import type { RespuestaPartida } from "@/lib/experiencia";
 import type { EntradaTop10, RankingTop10 } from "./type";
@@ -161,6 +162,12 @@ export function Top10Game() {
   const [experiencia, setExperiencia] = useState<RespuestaPartida | null>(null);
   const registrarPartida = useRegistrarPartida();
 
+  // Confirmación previa a las dos acciones destructivas del juego: cambiar
+  // de Top10 a mitad de partida (se pierde el progreso actual) y rendirse
+  // (cuenta como derrota). Antes se disparaban directas al primer toque.
+  const [confirmandoCambio, setConfirmandoCambio] = useState(false);
+  const [confirmandoRendicion, setConfirmandoRendicion] = useState(false);
+
   // Mismo patrón que GridBoard: descarta respuestas de peticiones obsoletas,
   // necesario porque React Strict Mode ejecuta el efecto de montaje dos veces
   // en desarrollo y si no se vería parpadear un ranking antes del definitivo.
@@ -201,7 +208,7 @@ export function Top10Game() {
       setHoraInicio(Date.now());
     } catch (err) {
       if (miCargaId !== cargaIdRef.current) return;
-      setErrorCarga(err instanceof Error ? err.message : "Error desconocido.");
+      setErrorCarga(err instanceof Error ? err.message : "No se pudo generar el Top 10.");
     } finally {
       if (miCargaId === cargaIdRef.current) setCargando(false);
     }
@@ -211,32 +218,25 @@ export function Top10Game() {
     return acertados.some((a) => a.nombre === entrada.nombre);
   }
 
-  // El buscador devuelve cualquier jugador de la base de datos, no solo los
-  // del ranking: aquí se comprueba si el elegido está entre las respuestas.
   function procesarSeleccion(jugador: Jugador) {
-    if (!ranking) return;
+    if (!ranking || rendido) return;
 
-    const encontrada = buscarEntradaCoincidente(ranking.respuestas, jugador.nombre);
-
-    if (!encontrada) {
+    const entrada = buscarEntradaCoincidente(ranking.respuestas, jugador.nombre);
+    if (!entrada) {
       setMensaje(`${jugador.nombre} no está en este Top 10.`);
       return;
     }
-
-    if (estaAcertado(encontrada)) {
-      setMensaje(`${encontrada.nombre} ya ha sido colocado.`);
+    if (estaAcertado(entrada)) {
+      setMensaje(`Ya habías acertado a ${entrada.nombre}.`);
       return;
     }
 
-    const nuevosAcertados = [...acertados, encontrada];
+    const nuevosAcertados = [...acertados, entrada];
     setAcertados(nuevosAcertados);
-    setMensaje(`¡${encontrada.nombre} correcto!`);
+    setMensaje("");
 
     if (nuevosAcertados.length === ranking.respuestas.length) {
-      // Una sola llamada, reusada para el marcador y para el registro --
-      // igual que en GridBoard, para que no puedan desincronizarse.
       const segundos = segundosTranscurridos(horaInicio);
-      setMensaje("");
       setTiempoFinal(segundos);
       setPopupAbierto(true);
       registrarPartida("TOP10", null, "victoria", segundos).then(setExperiencia);
@@ -273,22 +273,42 @@ export function Top10Game() {
   const nombresAcertados = acertados.map((a) => a.nombre);
 
   return (
-    <div className="flex flex-col items-center gap-6 p-6">
-      <h1 className="text-center text-2xl font-bold text-foreground">{ranking.titulo}</h1>
+    <div className="flex flex-col items-center gap-3 p-3 sm:gap-6 sm:p-6">
+      {/* Cabecera compacta SOLO en móvil (Opción C): título, contador de
+          aciertos y "Cambiar" fusionados en una sola línea fina, en vez de
+          un h1 grande + un botón "Cambiar Top10" + un párrafo "x/10
+          acertados" repartidos en tres sitios distintos de la pantalla.
+          Libera bastante alto vertical, que es justo lo que hacía falta
+          para que el tablero entero quepa sin desplazarse. A partir de sm:
+          se recupera el título grande de siempre (hay hueco de sobra en
+          pantallas más anchas). */}
+      <div className="flex w-full max-w-2xl items-center justify-between gap-2 sm:hidden">
+        <button
+          onClick={() => setConfirmandoCambio(true)}
+          className="shrink-0 text-xs font-bold text-secondary"
+        >
+          Cambiar
+        </button>
+        <h1 className="min-w-0 flex-1 truncate text-center text-sm font-bold text-foreground">
+          {ranking.titulo}
+        </h1>
+        <span className="shrink-0 rounded-full bg-card px-2 py-0.5 text-[10px] font-semibold text-muted-foreground">
+          {acertados.length}/{total}
+        </span>
+      </div>
+      <h1 className="hidden text-center text-2xl font-bold text-foreground sm:block">
+        {ranking.titulo}
+      </h1>
 
-      {/* En móvil, una sola columna a lo ancho completo (grid-cols-1, sin
-          grid-flow-col): antes, con 2 columnas forzadas siempre, cada
-          tarjeta tenía la mitad del ancho disponible para nombre + valor +
-          bandera, y NombreAbreviable acababa recortando nombres ya
-          abreviados a un par de letras ("J.A..."). Además, con
-          grid-flow-col + grid-rows-5 el orden visual era 1-5 en la columna
-          izquierda y 6-10 en la derecha, lo que hacía fácil confundir, p.
-          ej., el 6 con el 7 (uno arriba-derecha, otro no visualmente
-          contiguo al 5). En una sola columna el orden 1..10 va de arriba a
-          abajo tal cual, sin ambigüedad. A partir de sm: se recupera el
-          layout de 2 columnas de siempre, que en pantallas más anchas sí
-          tiene hueco de sobra. */}
-      <div className="grid w-full max-w-2xl grid-cols-1 gap-2.5 sm:grid-flow-col sm:grid-cols-2 sm:grid-rows-5 sm:gap-3">
+      {/* En móvil, grid de 2 columnas compacto desde el principio (antes
+          era 1 sola columna a ancho completo, con filas grandes -- las 10
+          entradas ocupaban toda la pantalla y de sobra, obligando a
+          desplazarse para llegar al buscador). Con 2 columnas + badge,
+          nombre y bandera más pequeños, las 10 posiciones caben en bastante
+          menos alto sin dejar de leerse bien. A partir de sm: se mantiene
+          el layout de 2 columnas de siempre (grid-flow-col + grid-rows-5),
+          con el tamaño grande que ya tenía. */}
+      <div className="grid w-full max-w-2xl grid-cols-2 gap-1.5 sm:grid-flow-col sm:grid-cols-2 sm:grid-rows-5 sm:gap-3">
         {ranking.respuestas.map((entrada, i) => {
           const posicion = i + 1;
           const acertado = estaAcertado(entrada);
@@ -304,12 +324,12 @@ export function Top10Game() {
           return (
             <div
               key={i}
-              className={`isolate flex items-center gap-2.5 rounded-md border px-4 py-3 transition-all duration-300 sm:px-5 sm:py-4 ${estilo.fila} ${
+              className={`isolate flex items-center gap-1.5 rounded-lg border px-2 py-1.5 transition-all duration-300 sm:rounded-md sm:px-5 sm:py-4 ${estilo.fila} ${
                 revelado ? "animate-in zoom-in-95 fade-in slide-in-from-left-1 duration-300" : ""
               }`}
             >
               <span
-                className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-sm font-bold sm:h-7 sm:w-7 sm:text-sm ${estilo.badge}`}
+                className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-[10px] font-bold sm:h-7 sm:w-7 sm:text-sm ${estilo.badge}`}
               >
                 {posicion}
               </span>
@@ -317,10 +337,7 @@ export function Top10Game() {
                   hasta ilegible cuando el nombre es largo, NombreAbreviable
                   mide con ResizeObserver el hueco real que le queda al
                   nombre (ya descontados badge/bandera) y decide si cabe
-                  entero o hay que abreviarlo ("F. Valverde"). Con el ancho
-                  completo en móvil (ver comentario del grid arriba), este
-                  hueco real es mucho mayor y el nombre entero cabe casi
-                  siempre.
+                  entero o hay que abreviarlo ("F. Valverde").
 
                   El valor (goles, edad...) va DEBAJO del nombre, en
                   pequeño, no pegado a su derecha -- con valores cortos
@@ -333,18 +350,18 @@ export function Top10Game() {
                 {revelado ? (
                   <NombreAbreviable
                     nombre={entrada.nombre}
-                    className={`text-left font-semibold text-lg sm:text-xl ${estilo.nombre}`}
+                    className={`text-left text-[11px] font-semibold sm:text-xl ${estilo.nombre}`}
                   />
                 ) : (
                   <span
-                    className={`min-w-0 truncate text-left font-semibold text-base sm:text-base ${estilo.nombre}`}
+                    className={`min-w-0 truncate text-left text-[11px] font-semibold sm:text-base ${estilo.nombre}`}
                   >
                     ???
                   </span>
                 )}
                 {revelado && (
                   <span
-                    className={`animate-in fade-in truncate text-left text-xs font-medium opacity-80 duration-300 sm:text-sm ${estilo.nombre}`}
+                    className={`animate-in fade-in truncate text-left text-[9px] font-medium opacity-80 duration-300 sm:text-sm ${estilo.nombre}`}
                   >
                     {entrada.valorTexto ?? entrada.valor}
                   </span>
@@ -352,7 +369,7 @@ export function Top10Game() {
               </div>
               <span className="flex shrink-0 items-center justify-end">
                 {codigoPais && (
-                  <span className={`fi fi-${codigoPais} h-4.5 w-6 rounded-sm sm:h-6 sm:w-9`} />
+                  <span className={`fi fi-${codigoPais} h-3 w-4 rounded-sm sm:h-6 sm:w-9`} />
                 )}
               </span>
             </div>
@@ -372,22 +389,50 @@ export function Top10Game() {
           // seguir colocando jugadores después de rendirte.
           disabled={completado || rendido}
         />
-        <GameButton variant="destructive" onClick={handleRendirse} disabled={completado || rendido}>
+        <GameButton
+          variant="destructive"
+          onClick={() => setConfirmandoRendicion(true)}
+          disabled={completado || rendido}
+        >
           Rendirse
         </GameButton>
       </div>
 
-      <GameButton variant="secondary" onClick={cargarRanking}>
+      {/* "Cambiar Top10" y "x/10 acertados" sueltos SOLO a partir de sm: --
+          en móvil ya están fusionados en la cabecera compacta de arriba. */}
+      <GameButton
+        variant="secondary"
+        onClick={() => setConfirmandoCambio(true)}
+        className="hidden sm:inline-flex"
+      >
         Cambiar Top10
       </GameButton>
 
-      <p className="text-sm text-muted-foreground">
+      <p className="hidden text-sm text-muted-foreground sm:block">
         {acertados.length}/{total} acertados
       </p>
 
       {mensaje && !completado && !rendido && (
         <p className="text-sm text-muted-foreground">{mensaje}</p>
       )}
+
+      <ConfirmDialog
+        open={confirmandoCambio}
+        onOpenChange={setConfirmandoCambio}
+        titulo="¿Cambiar de Top10?"
+        descripcion="Se generará un ranking nuevo y perderás el progreso de la partida actual."
+        textoConfirmar="Sí, cambiar"
+        onConfirmar={cargarRanking}
+      />
+
+      <ConfirmDialog
+        open={confirmandoRendicion}
+        onOpenChange={setConfirmandoRendicion}
+        titulo="¿Rendirte?"
+        descripcion="Se contará como derrota y no ganarás experiencia de esta partida."
+        textoConfirmar="Sí, rendirme"
+        onConfirmar={handleRendirse}
+      />
 
       {(completado || rendido) && (
         <GameResultDialog
