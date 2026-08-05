@@ -265,7 +265,7 @@ export function PlayerSearch({
             setIsFocused(true);
           }}
           onKeyDown={handleKeyDown}
-          className={`h-12 w-full rounded-2xl border bg-card/60 pl-11 pr-10 text-sm text-foreground placeholder:text-muted-foreground outline-none backdrop-blur-md transition-colors duration-300 disabled:cursor-not-allowed disabled:opacity-50 ${
+          className={`h-12 w-full rounded-2xl border bg-card/60 pl-11 pr-10 text-base text-foreground placeholder:text-muted-foreground outline-none backdrop-blur-md transition-colors duration-300 disabled:cursor-not-allowed disabled:opacity-50 sm:text-sm ${
             isFocused ? "border-primary/60" : "border-white/10 hover:border-white/20"
           }`}
         />
