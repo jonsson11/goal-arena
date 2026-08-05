@@ -27,7 +27,7 @@ export default function JugarPage() {
 
       <div className="relative z-10 mx-auto flex max-w-3xl flex-col items-center gap-2 px-6 py-12">
         <h1
-          className="text-shimmer bg-gradient-to-r from-primary via-secondary to-primary bg-clip-text text-4xl font-extrabold tracking-tight text-transparent"
+          className="text-shimmer bg-gradient-to-r from-primary via-secondary to-primary bg-clip-text text-4xl font-extrabold tracking-tight text-transparent sm:text-5xl"
           style={{ textShadow: "0 0 30px rgba(74,222,154,0.25)" }}
         >
           Elige tu reto

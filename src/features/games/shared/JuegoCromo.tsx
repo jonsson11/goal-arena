@@ -53,9 +53,22 @@ export function JuegoCromo({ juego, icono }: { juego: JuegoSinIcono; icono: Reac
       }`}
     >
       <div
-        className={`relative h-full w-full transition-transform duration-500 [transform-style:preserve-3d] [-webkit-transform-style:preserve-3d] ${
-          girado ? "[transform:rotateY(180deg)]" : ""
-        }`}
+        className="relative h-full w-full transition-transform duration-500 [transform-style:preserve-3d] [-webkit-transform-style:preserve-3d]"
+        // El giro va por `style` (no por una clase Tailwind condicional) a
+        // propósito: así la tarjeta tiene SIEMPRE un rotateY explícito desde
+        // el primer render (0deg en reposo), en vez de no tener transform
+        // ninguno hasta el primer toque. Sin esto, en iOS (Safari/Chrome) el
+        // navegador no "promociona" la tarjeta a su propia capa 3D hasta que
+        // aparece la primera transformación, así que el primer giro tiene
+        // que crear la capa Y animar el rotateY a la vez -- y durante ese
+        // instante se ven las dos caras superpuestas "en espejo" (el bug de
+        // la captura). Con un rotateY(0deg) presente desde el montaje, la
+        // capa ya existe de antemano y el primer giro sale limpio igual que
+        // los siguientes.
+        style={{
+          transform: `rotateY(${girado ? 180 : 0}deg)`,
+          WebkitTransform: `rotateY(${girado ? 180 : 0}deg)`,
+        }}
       >
         {/* Cara frontal.
             Los dos [backface-visibility:hidden] / [-webkit-backface-visibility:hidden]
