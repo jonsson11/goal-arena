@@ -1,20 +1,27 @@
-// src/features/multijugador/BotonAtras.tsx
+// src/features/games/shared/BotonAtras.tsx
 //
 // Mismo estilo visual que el botón "Atrás" de GameLauncher.tsx (que a su
 // vez copia el botón "Iniciar sesión" del navbar) -- un solo estilo de
-// botón "volver" reconocible en toda la app, en vez de un link de texto
-// suelto como tenían antes estas pantallas ("← Multijugador"). No se
-// reutiliza el de GameLauncher directamente porque ese lleva enganchada
-// su animación de entrada escalonada (launcher-entrada + conRetraso),
-// específica de esa pantalla.
+// botón "volver" reconocible en toda la app. Vivía en features/multijugador
+// (donde nació, 06/08/2026), movido aquí el mismo día al empezar a
+// usarse también en /jugar -- ya no es propio del multijugador, es
+// genérico para cualquier pantalla de juego. No se reutiliza el de
+// GameLauncher directamente porque ese lleva enganchada su animación de
+// entrada escalonada (launcher-entrada + conRetraso), específica de esa
+// pantalla.
+//
+// Sin margen propio a propósito (antes tenía mb-4/mb-8): ahora lo usa
+// sobre todo TituloPagina.tsx, que lo posiciona con `absolute` en la
+// misma fila que el título -- un margen aquí no haría nada útil ahí y
+// solo estorbaría si algún día se usa suelto en otro sitio.
 
 import Link from "next/link";
 
-export function BotonAtras({ href }: { href: string }) {
+export function BotonAtras({ href, className = "" }: { href: string; className?: string }) {
   return (
     <Link
       href={href}
-      className="relative z-10 mb-8 inline-flex items-center gap-1.5 rounded-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90"
+      className={`z-10 inline-flex items-center gap-1.5 rounded-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90 ${className}`}
     >
       <svg viewBox="0 0 20 20" fill="none" className="h-4 w-4" xmlns="http://www.w3.org/2000/svg">
         <path

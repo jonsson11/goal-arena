@@ -187,7 +187,7 @@ export default function SalaEsperaPage({ params }: { params: Promise<{ codigo: s
   const salaLlena = sala.jugadores.length >= sala.maxJugadores;
 
   return (
-    <div className="px-6 pb-14 pt-8 sm:pt-10">
+    <div className="px-6 pb-14 pt-4 sm:pt-6">
       <div className="mx-auto flex max-w-lg flex-col items-center gap-8">
         <div className="flex flex-col items-center gap-2 text-center">
           <span className="rounded-full border border-secondary/40 bg-secondary/10 px-3 py-1 text-[11px] font-bold uppercase tracking-widest text-secondary">

@@ -1,11 +1,11 @@
 "use client";
-import { TituloPagina } from "@/components/layout/TituloPagina";
+
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/features/auth/AuthContext";
 import { AuthGate } from "@/features/auth/AuthGate";
 import { GameButton } from "@/features/games/shared/GameButton";
-import { BotonAtras } from "@/features/games/shared/BotonAtras";
+import { TituloPagina } from "@/components/layout/TituloPagina";
 import type { Dificultad } from "@/features/games/shared/types";
 import type { JuegoMultijugador } from "@/features/multijugador/type";
 
@@ -68,18 +68,17 @@ export default function CrearSalaPage() {
   }
 
   return (
-    <div className="relative px-6 pb-14 pt-8 sm:pt-10">
-      {/* Fuera de la columna centrada de abajo, pegado al borde real de la
-          pantalla -- mismo motivo que en /multijugador/page.tsx (así el
-          botón queda en el mismo sitio exacto en todas las pantallas del
-          multijugador, sin importar el ancho de columna de cada una). */}
-      <BotonAtras href="/multijugador" />
+    <div className="relative px-6 pb-14 pt-4 sm:pt-6">
+      {/* Título (con el botón "Atrás" dentro) fuera de la columna centrada
+          -- mismo motivo que en /jugar/page.tsx. */}
+      <TituloPagina acento="azul" hrefAtras="/multijugador" className="mb-2">
+        Crear sala
+      </TituloPagina>
 
       <div className="mx-auto flex max-w-lg flex-col gap-8">
-        <div className="flex flex-col items-center gap-2 text-center">
-          <TituloPagina acento="azul">Crear sala</TituloPagina>
-          <p className="text-sm text-muted-foreground">Configura la partida antes de invitar a tus amigos.</p>
-        </div>
+        <p className="text-center text-sm text-muted-foreground">
+          Configura la partida antes de invitar a tus amigos.
+        </p>
 
         <div className="flex flex-col gap-8 rounded-2xl border border-secondary/25 bg-secondary/[0.06] p-6 backdrop-blur-md sm:p-8">
           <div className="flex flex-col gap-3">

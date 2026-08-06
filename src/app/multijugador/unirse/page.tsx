@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/features/auth/AuthContext";
 import { AuthGate } from "@/features/auth/AuthGate";
 import { GameButton } from "@/features/games/shared/GameButton";
-import { BotonAtras } from "@/features/games/shared/BotonAtras";
 import { TituloPagina } from "@/components/layout/TituloPagina";
 
 export default function UnirseSalaPage() {
@@ -53,14 +52,19 @@ export default function UnirseSalaPage() {
   }
 
   return (
-    <div className="relative px-6 pb-14 pt-8 sm:pt-10">
-      {/* Fuera de la columna centrada de abajo, pegado al borde real de la
-          pantalla -- mismo motivo que en /multijugador/page.tsx. */}
-      <BotonAtras href="/multijugador" />
+    <div className="relative px-6 pb-14 pt-4 sm:pt-6">
+      {/* Título (con el botón "Atrás" dentro) fuera de la columna centrada
+          -- mismo motivo que en /jugar/page.tsx. */}
+      <TituloPagina acento="azul" hrefAtras="/multijugador" className="mb-2">
+        Unirse a sala
+      </TituloPagina>
 
       <div className="mx-auto flex max-w-sm flex-col items-center gap-6 text-center">
-        <TituloPagina acento="azul">Unirse a sala</TituloPagina>
-          <div className="flex w-full flex-col gap-4 rounded-2xl border border-primary/25 bg-primary/[0.06] p-6 backdrop-blur-md">
+        <p className="text-sm text-muted-foreground">
+          Escribe el código de 6 caracteres que te ha pasado tu amigo.
+        </p>
+
+        <div className="flex w-full flex-col gap-4 rounded-2xl border border-primary/25 bg-primary/[0.06] p-6 backdrop-blur-md">
           <input
             value={codigo}
             onChange={(e) => setCodigo(e.target.value.toUpperCase().slice(0, 6))}

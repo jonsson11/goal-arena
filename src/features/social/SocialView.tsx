@@ -6,21 +6,10 @@ import { useAuth } from "@/features/auth/AuthContext";
 import { AuthGate } from "@/features/auth/AuthGate";
 import { GameButton } from "@/features/games/shared/GameButton";
 import { useSolicitudesPendientes } from "@/features/social/SolicitudesContext";
-import type { Amigo, SolicitudAmistad } from "./type";
 import { TituloPagina } from "@/components/layout/TituloPagina";
+import type { Amigo, SolicitudAmistad } from "./type";
 
 type Pestana = "amigos" | "solicitudes";
-
-// Mismas posiciones fijas que en /jugar -- unas pocas partículas quietas
-// ya dan el efecto de fondo, sin necesidad de aleatoriedad.
-const PARTICULAS = [
-  { left: "6%", delay: "0s" },
-  { left: "18%", delay: "3s" },
-  { left: "35%", delay: "1.5s" },
-  { left: "58%", delay: "4.5s" },
-  { left: "74%", delay: "2s" },
-  { left: "90%", delay: "5.5s" },
-];
 
 function AvatarChico({
   amigo,
@@ -182,17 +171,8 @@ export function SocialView() {
   }
 
   return (
-    <div className="relative overflow-hidden">
-      {PARTICULAS.map((p, i) => (
-        <span
-          key={i}
-          aria-hidden
-          className="particula-flotante pointer-events-none fixed h-[3px] w-[3px] rounded-full bg-primary opacity-35"
-          style={{ left: p.left, animationDelay: p.delay }}
-        />
-      ))}
-
-      <div className="relative z-10 mx-auto flex max-w-2xl flex-col gap-6 px-6 py-12">
+    <div className="relative">
+      <div className="relative z-10 mx-auto flex max-w-2xl flex-col gap-6 px-6 pb-14 pt-4 sm:pt-6">
         <div className="flex flex-col items-center gap-2">
           <TituloPagina acento="verde">Social</TituloPagina>
           <p className="mb-2 text-center text-sm text-muted-foreground">

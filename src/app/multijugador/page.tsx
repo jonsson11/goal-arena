@@ -4,7 +4,6 @@ import Link from "next/link";
 import { DoorOpen, KeyRound } from "lucide-react";
 import { useAuth } from "@/features/auth/AuthContext";
 import { AuthGate } from "@/features/auth/AuthGate";
-import { BotonAtras } from "@/features/games/shared/BotonAtras";
 import { TituloPagina } from "@/components/layout/TituloPagina";
 
 export default function MultijugadorPage() {
@@ -23,16 +22,14 @@ export default function MultijugadorPage() {
   }
 
   return (
-    <div className="relative px-6 pb-14 pt-6 sm:pt-8">
-      {/* Fuera de la columna centrada de abajo a propósito -- así queda
-          pegado al borde real de la pantalla (mismo sitio en cualquier
-          ancho de contenido), no al borde de una columna estrecha que
-          cambia de anchura entre pantallas. Mismo criterio que ya usa
-          GameLauncher.tsx con su botón "Atrás". */}
-      <BotonAtras href="/" />
+    <div className="relative px-6 pb-14 pt-4 sm:pt-6">
+      {/* Título (con el botón "Atrás" dentro) fuera de la columna centrada
+          -- mismo motivo que en /jugar/page.tsx. */}
+      <TituloPagina acento="azul" hrefAtras="/" className="mb-2">
+        Multijugador
+      </TituloPagina>
 
       <div className="relative z-10 mx-auto flex max-w-2xl flex-col items-center gap-2">
-        <TituloPagina acento="azul">Multijugador</TituloPagina>
         <p className="mb-8 text-center text-sm text-muted-foreground">
           Enfréntate en directo a tus amigos, el mismo reto para todos.
         </p>
