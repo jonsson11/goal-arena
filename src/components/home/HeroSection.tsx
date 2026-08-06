@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
+import { Users } from "lucide-react";
 import { useIrAJugar } from "@/features/auth/useIrAJugar";
 
 export function HeroSection() {
@@ -33,13 +34,27 @@ export function HeroSection() {
         Sin apps, sin descargas, directo desde el navegador.
       </p>
 
-      <Link
-        href="/jugar"
-        onClick={alClicarJugar}
-        className="mt-2 rounded-lg bg-primary px-8 py-4 text-lg font-bold text-primary-foreground shadow-[0_0_30px_-6px_rgba(74,222,154,0.6)] transition-transform duration-200 hover:scale-105"
-      >
-        Jugar ahora
-      </Link>
+      {/* Un Jugador / Multijugador -- antes había un único CTA "Jugar
+          ahora" directo a /jugar. Con el multijugador ya real (no solo
+          "Próximamente" como en ArenasTeaser más abajo), hace falta elegir
+          entre los dos desde el principio. */}
+      <div className="mt-2 flex flex-col gap-3 sm:flex-row">
+        <Link
+          href="/jugar"
+          onClick={alClicarJugar}
+          className="rounded-lg bg-primary px-8 py-4 text-lg font-bold text-primary-foreground shadow-[0_0_30px_-6px_rgba(74,222,154,0.6)] transition-transform duration-200 hover:scale-105"
+        >
+          Un jugador
+        </Link>
+        <Link
+          href="/multijugador"
+          onClick={alClicarJugar}
+          className="flex items-center justify-center gap-2 rounded-lg border border-secondary bg-secondary/10 px-8 py-4 text-lg font-bold text-secondary shadow-[0_0_30px_-6px_rgba(29,122,156,0.5)] transition-transform duration-200 hover:scale-105"
+        >
+          <Users className="h-5 w-5" />
+          Multijugador
+        </Link>
+      </div>
     </section>
   );
 }

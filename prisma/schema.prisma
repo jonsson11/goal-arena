@@ -60,6 +60,10 @@ model User {
   // Relaciones de amistad -- ver el modelo Friendship más abajo.
   solicitudesEnviadas  Friendship[] @relation("SolicitudesEnviadas")
   solicitudesRecibidas Friendship[] @relation("SolicitudesRecibidas")
+
+  // Salas multijugador -- ver el modelo Sala más abajo.
+  salasCreadas Sala[]        @relation("CreadorSala")
+  salasUnidas  SalaJugador[]
 }
 
 enum ResultadoPartidaJugada {
@@ -334,11 +338,79 @@ model Top10Entry {
 
 // ============================================================
 // 3. PARTIDAS Y RONDAS (Individual / 1vs1 / Arena)
-//
+// ============================================================
+
+enum EstadoSala {
+  ESPERANDO // en la sala de espera, todavía no ha empezado
+  EN_CURSO  // partida sincronizada en marcha (Fase 2, pendiente de implementar)
+  FINALIZADA
+  CANCELADA // el creador salió antes de empezar, o algo similar
+}
+
+// Una sala = una partida multijugador, de 2 a 8 jugadores, para cualquier
+// minijuego que lo soporte (hoy solo GRID -- ver `juego`). Cubre tanto
+// "1vs1" como "Arena" con el mismo modelo: 1vs1 es simplemente una sala
+// con maxJugadores=2, no hay un modelo separado (decidido 05/08/2026).
+model Sala {
+  id     String @id @default(cuid())
+
+  // 6 caracteres, sin ambigüedad visual (ver generarCodigoSala en
+  // src/lib/salas.ts -- descarta 0/O, 1/I/L...). Es lo que se comparte
+  // para "Unirse a sala".
+  codigo String @unique
+
+  creador   User   @relation("CreadorSala", fields: [creadorId], references: [id], onDelete: Cascade)
+  creadorId String
+
+  // Texto libre a propósito, mismo criterio que PartidaJugada.juego -- "GRID"
+  // hoy, "TOP10" cuando se extienda el multijugador a ese modo (Fase 8/9).
+  juego        String
+  // Solo aplica a GRID ("facil"|"medio"|"dificil"); null en juegos sin
+  // dificultad, mismo criterio que PartidaJugada.modo.
+  dificultad   String?
+  maxJugadores Int     @default(2) // 2-8, validado en la API, no aquí
+
+  estado EstadoSala @default(ESPERANDO)
+
+  // Tablero (GRID) o ranking (TOP10, más adelante) ya fijado al crear la
+  // sala -- generado UNA sola vez con el mismo generador que usa el modo
+  // individual (generarTableroDesdeBD), y guardado tal cual para que todos
+  // los jugadores vean EXACTAMENTE el mismo reto, en vez de que cada
+  // cliente pida uno distinto como pasa en modo individual.
+  contenido Json?
+
+  // Momento exacto en que se pulsó "Empezar partida" -- fuente única de
+  // verdad para el timer compartido de la Fase 2 (cada cliente calcula el
+  // tiempo restante contra ESTE instante, no contra un cronómetro propio
+  // que arrancaría desincronizado entre móviles).
+  empezadaEn DateTime?
+
+  createdAt DateTime @default(now())
+
+  jugadores SalaJugador[]
+
+  @@index([estado])
+}
+
+// Quién está dentro de una sala (creador incluido) y si ha marcado
+// "Listo". El creador empieza la partida cuando todos (él incluido) están
+// listos.
+model SalaJugador {
+  id      String   @id @default(cuid())
+  sala    Sala     @relation(fields: [salaId], references: [id], onDelete: Cascade)
+  salaId  String
+  user    User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId  String
+  listo   Boolean  @default(false)
+  unidoEn DateTime @default(now())
+
+  // Un jugador no puede estar dos veces en la misma sala.
+  @@unique([salaId, userId])
+}
+
 // Aquí vivían Match, MatchParticipant, Round, RoundResult (y los enums
 // GameType/MatchType/MatchStatus) -- se han quitado del schema porque
 // nunca llegaron a usarse en ningún juego real y ya se habían borrado a
-// mano en la BD. Cuando se monte el modo 1vs1/Arena, se diseña de nuevo
-// desde cero (con lo aprendido mientras tanto) y se crea con una
-// migración nueva.
+// mano en la BD. El modo multijugador se ha diseñado de nuevo desde cero
+// con Sala/SalaJugador (ver arriba) en vez de reutilizar aquello.
 // ============================================================
