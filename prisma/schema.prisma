@@ -440,6 +440,15 @@ model SalaJugador {
   // mientras la partida sigue en marcha.
   resultado String?
 
+  // Cuánta EXP dio esta partida multijugador, y con qué desglose (base,
+  // bono de rapidez, bono diario, nivel de antes/después) -- mismo tipo
+  // RespuestaPartida que ya usa el modo individual (ver src/lib/
+  // experiencia.ts), guardado tal cual para poder reutilizar el mismo
+  // componente de animación (ExperienciaGanada.tsx) en el cartel de
+  // resultado del multijugador, sin reinventar esa pieza. Null mientras
+  // la partida sigue en marcha.
+  experiencia Json?
+
   // Un jugador no puede estar dos veces en la misma sala.
   @@unique([salaId, userId])
 }

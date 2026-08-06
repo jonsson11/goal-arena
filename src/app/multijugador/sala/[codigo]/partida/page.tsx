@@ -9,9 +9,11 @@ import { ConfirmDialog } from "@/features/games/shared/ConfirmDialog";
 import { PlayerSearch } from "@/features/games/shared/PlayerSearch";
 import { CasillaGrid, EncabezadoCondicion } from "@/features/games/grid/GridCasillas";
 import { celdasValidasParaJugador } from "@/features/games/grid/logic";
+import { ExperienciaGanada } from "@/features/games/shared/ExperienciaGanada";
 import type { Tablero, Celda } from "@/features/games/grid/type";
 import type { Jugador } from "@/features/games/shared/types";
 import type { EstadoPartida } from "@/features/multijugador/type";
+
 
 const INTERVALO_POLLING_PARTIDA_MS = 1500;
 const INTERVALO_POLLING_SALA_MS = 2000; // tras acabar, esperando revancha del anfitrión
@@ -95,7 +97,7 @@ function BarraProgresoRival({
 
 export default function PartidaMultijugadorPage({ params }: { params: Promise<{ codigo: string }> }) {
   const { codigo } = use(params);
-  const { usuario } = useAuth();
+  const { usuario, refrescarUsuario } = useAuth();
   const router = useRouter();
 
   const [partida, setPartida] = useState<EstadoPartida | null>(null);
@@ -135,6 +137,15 @@ export default function PartidaMultijugadorPage({ params }: { params: Promise<{ 
         }
 
         const nueva = datos as EstadoPartida;
+        // Justo al pasar a FINALIZADA (y solo esa vez): refresca el
+        // nivel/XP del Header/AuthContext. Sin esto, como el EXP de
+        // multijugador se aplica enteramente en el servidor (al cerrar la
+        // partida, no cuando el cliente "avisa" de nada), la barra de
+        // arriba se quedaba con el nivel/XP de antes de jugar hasta que
+        // algo más (como pedir la revancha) forzaba una recarga.
+        if (estadoActualRef.current !== "FINALIZADA" && nueva.estado === "FINALIZADA") {
+          refrescarUsuario();
+        }
         estadoActualRef.current = nueva.estado;
         setPartida(nueva);
         setCargando(false);
@@ -156,6 +167,13 @@ export default function PartidaMultijugadorPage({ params }: { params: Promise<{ 
       activoRef.current = false;
       clearInterval(intervalo);
     };
+    // refrescarUsuario se usa dentro de consultar() pero no se añade a las
+    // dependencias a propósito: no está memoizada (referencia nueva en
+    // cada render de AuthProvider), así que incluirla recrearía el
+    // intervalo de polling en cada refresco -- justo lo que este efecto
+    // evita usando la función local `consultar` en vez de un useCallback
+    // externo (mismo criterio que ya se explica arriba).
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [codigo, usuario]);
 
   // Cuenta atrás local, tic cada segundo -- se corrige solo con cada
@@ -222,8 +240,12 @@ export default function PartidaMultijugadorPage({ params }: { params: Promise<{ 
         setMensaje(datos.error ?? "No se pudo colocar ese jugador.");
         return;
       }
-      estadoActualRef.current = (datos as EstadoPartida).estado;
-      setPartida(datos as EstadoPartida);
+      const nueva = datos as EstadoPartida;
+      if (estadoActualRef.current !== "FINALIZADA" && nueva.estado === "FINALIZADA") {
+        refrescarUsuario();
+      }
+      estadoActualRef.current = nueva.estado;
+      setPartida(nueva);
     } catch {
       setMensaje("No se pudo conectar con el servidor.");
     }
@@ -421,6 +443,13 @@ function ResultadoPartida({
         <h1 className={`text-3xl font-extrabold tracking-tight ${colorTitulo}`}>{titulo}</h1>
         <p className="mt-1 text-sm text-muted-foreground">La partida ha terminado.</p>
       </div>
+
+      {/* Mismo componente que anima la barra de nivel en el modo
+          individual (GameResultDialog) -- se le pasa el mismo tipo
+          RespuestaPartida que ya calcula el servidor al cerrar la
+          partida, así que la animación (barra llenándose, destello si
+          subes de nivel...) sale gratis, sin reinventarla aquí. */}
+      <ExperienciaGanada respuesta={partida.miExperiencia} />
 
       <div className="flex w-full flex-col gap-2">
         {clasificacion.map((jugador, i) => (

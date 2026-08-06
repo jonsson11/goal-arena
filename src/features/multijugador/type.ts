@@ -1,6 +1,7 @@
 import type { TipoAvatar } from "@/features/profile/type";
 import type { Dificultad, Jugador } from "@/features/games/shared/types";
 import type { Condicion } from "@/features/games/grid/type";
+import type { RespuestaPartida } from "@/lib/experiencia";
 
 // Igual que PartidaJugada.juego -- texto libre, no enum. Hoy solo GRID
 // soporta multijugador; TOP10 se añade en una fase posterior sin migrar
@@ -64,6 +65,7 @@ export type EstadoPartida = {
   condicionesColumna: [Condicion, Condicion, Condicion];
   miProgreso: ColocacionPropia[];
   miResultado: "VICTORIA" | "DERROTA" | "EMPATE" | null;
+  miExperiencia: RespuestaPartida | null;
   rivales: RivalPartida[];
   empezadaEn: string; // ISO -- el cliente calcula el tiempo restante contra esto, no contra un cronómetro propio
   duracionSegundos: number;

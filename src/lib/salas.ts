@@ -12,6 +12,7 @@ import {
   calcularExperienciaMultijugador,
   aplicarExperiencia,
   type ResultadoMultijugador,
+  type RespuestaPartida,
 } from "@/lib/experiencia";
 
 // Sin 0/O, 1/I/L, ni vocales que formen palabras raras por accidente --
@@ -195,7 +196,7 @@ export async function finalizarPartidaSiToca(salaId: string): Promise<void> {
 
       const bonusDiarioDisponible =
         resultado === "victoria" && estaDisponibleBonusDiario(actual.ultimoBonusDiario, ahora);
-      const { bonusDiario, expGanada } = calcularExperienciaMultijugador(
+      const { bonusDiario, expGanada, expBase, bonusTiempoPct, expTiempoExtra } = calcularExperienciaMultijugador(
         (sala.dificultad as Dificultad) ?? "medio",
         resultado,
         segundos,
@@ -204,6 +205,20 @@ export async function finalizarPartidaSiToca(salaId: string): Promise<void> {
 
       const estadoAntes = { nivel: actual.nivel, xpActual: actual.xpActual, xpSiguienteNivel: actual.xpSiguienteNivel };
       const estadoDespues = aplicarExperiencia(estadoAntes, expGanada);
+
+      // Mismo objeto RespuestaPartida que ya devuelve POST /api/partidas
+      // en el modo individual -- guardarlo tal cual (no solo el número
+      // final) es lo que permite reutilizar ExperienciaGanada.tsx sin
+      // cambiar ni una línea de esa animación.
+      const respuestaPartida: RespuestaPartida = {
+        estadoAntes,
+        estadoDespues,
+        expBase,
+        bonusTiempoPct,
+        expTiempoExtra,
+        bonusDiario,
+        expGanada,
+      };
 
       const esVictoria = resultado === "victoria";
       const nuevaRacha = esVictoria ? actual.rachaActual + 1 : 0;
@@ -238,7 +253,7 @@ export async function finalizarPartidaSiToca(salaId: string): Promise<void> {
 
       await tx.salaJugador.update({
         where: { id: sj.id },
-        data: { resultado: resultado.toUpperCase() },
+        data: { resultado: resultado.toUpperCase(), experiencia: respuestaPartida },
       });
     }
   });
@@ -269,7 +284,7 @@ export async function construirEstadoPartida(salaId: string, miUserId: string): 
     condicionesColumna: contenido.condicionesColumna,
     miProgreso: (mi.progreso as unknown as ColocacionPropia[]) ?? [],
     miResultado: (mi.resultado as EstadoPartida["miResultado"]) ?? null,
-    rivales: sala.jugadores
+    miExperiencia: (mi.experiencia as unknown as RespuestaPartida | null) ?? null,    rivales: sala.jugadores
       .filter((sj) => sj.userId !== miUserId)
       .map(
         (sj): RivalPartida => ({
