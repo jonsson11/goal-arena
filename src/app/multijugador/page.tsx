@@ -4,7 +4,7 @@ import Link from "next/link";
 import { DoorOpen, KeyRound } from "lucide-react";
 import { useAuth } from "@/features/auth/AuthContext";
 import { AuthGate } from "@/features/auth/AuthGate";
-import { BotonAtras } from "@/features/multijugador/BotonAtras";
+import { BotonAtras } from "@/features/games/shared/BotonAtras";
 
 const PARTICULAS = [
   { left: "8%", delay: "0s" },

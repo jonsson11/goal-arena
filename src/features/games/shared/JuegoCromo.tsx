@@ -103,7 +103,7 @@ export function JuegoCromo({ juego, icono }: { juego: JuegoSinIcono; icono: Reac
       >
         {!girado ? (
           // Cara frontal
-          <div className="cromo-brillo absolute inset-0 flex flex-col items-center justify-center gap-2.5 rounded-[22px] border border-border bg-gradient-to-br from-card to-background p-5 text-center">
+          <div className="absolute inset-0 flex flex-col items-center justify-center gap-2.5 rounded-[22px] border border-border bg-gradient-to-br from-card to-background p-5 text-center">
             {juego.etiqueta && (
               <span
                 className={`absolute left-3.5 top-3.5 rounded-full border px-2 py-0.5 text-[9px] font-extrabold uppercase tracking-wider ${ETIQUETA_ESTILO[juego.etiqueta]}`}

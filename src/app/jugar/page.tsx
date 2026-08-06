@@ -1,5 +1,6 @@
 import { JUEGOS } from "@/features/games/shared/juegos";
 import { JuegoCromo } from "@/features/games/shared/JuegoCromo";
+import { BotonAtras } from "@/features/games/shared/BotonAtras";
 
 // Posiciones fijas (no aleatorias -- Math.random() no es válido en un
 // Server Component, y tampoco hace falta: unas pocas partículas quietas ya
@@ -15,7 +16,7 @@ const PARTICULAS = [
 
 export default function JugarPage() {
   return (
-    <div className="relative overflow-hidden">
+    <div className="relative overflow-hidden px-6 pb-14 pt-8 sm:pt-10">
       {PARTICULAS.map((p, i) => (
         <span
           key={i}
@@ -25,15 +26,21 @@ export default function JugarPage() {
         />
       ))}
 
-      <div className="relative z-10 mx-auto flex max-w-3xl flex-col items-center gap-2 px-6 py-12">
+      {/* Fuera de la columna centrada de abajo, pegado al borde real de
+          la pantalla -- mismo criterio que ya usan las pantallas de
+          multijugador (ver comentario largo en esas páginas). */}
+      <BotonAtras href="/" />
+
+      <div className="relative z-10 mx-auto flex max-w-3xl flex-col items-center gap-2">
         <h1
           className="text-shimmer bg-gradient-to-r from-primary via-secondary to-primary bg-clip-text text-4xl font-extrabold tracking-tight text-transparent sm:text-5xl"
           style={{ textShadow: "0 0 30px rgba(74,222,154,0.25)" }}
         >
-          Elige tu reto
+          Un jugador
         </h1>
         <p className="mb-8 text-center text-sm text-muted-foreground">
-          Toca una carta para ver de qué va (en escritorio también puedes pasar el cursor).
+          Elige tu reto y juega a tu ritmo. Toca una carta para ver de qué va (en escritorio
+          también puedes pasar el cursor).
         </p>
 
         <div className="grid w-full grid-cols-1 gap-9 sm:grid-cols-3">

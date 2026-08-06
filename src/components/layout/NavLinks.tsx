@@ -7,12 +7,13 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import { useIrAJugar } from "@/features/auth/useIrAJugar";
+import { useIrA } from "@/features/auth/useIrA";
 import { useSolicitudesPendientes } from "@/features/social/SolicitudesContext";
 
 const ENLACES = [
   { href: "/", label: "Inicio" },
-  { href: "/jugar", label: "Jugar" },
+  { href: "/jugar", label: "Un Jugador" },
+  { href: "/multijugador", label: "Multijugador" },
   { href: "/social", label: "Social" },
   { href: "/perfil", label: "Perfil" },
 ];
@@ -31,7 +32,8 @@ type Indicador = { left: number; width: number };
 
 export function NavLinks({ className, mostrarIndicador = true }: NavLinksProps) {
   const pathname = usePathname();
-  const alClicarJugar = useIrAJugar();
+  const alClicarJugar = useIrA("/jugar");
+  const alClicarMultijugador = useIrA("/multijugador");
   const { count: solicitudesPendientes } = useSolicitudesPendientes();
   const contenedorRef = useRef<HTMLDivElement>(null);
   const refsEnlaces = useRef<Array<HTMLAnchorElement | null>>([]);
@@ -102,10 +104,16 @@ export function NavLinks({ className, mostrarIndicador = true }: NavLinksProps) 
             refsEnlaces.current[i] = el;
           }}
           onMouseEnter={() => mostrarIndicador && moverIndicadorA(i)}
-          // Solo el link "Jugar" necesita el gate de sesión (ver
-          // useIrAJugar.ts): sin cuenta, en vez de entrar a /jugar te
-          // manda a /login?redirect=/jugar.
-          onClick={enlace.href === "/jugar" ? alClicarJugar : undefined}
+          // "Un Jugador" y "Multijugador" necesitan el gate de sesión
+          // (ver useIrA.ts): sin cuenta, en vez de entrar te manda a
+          // /login?redirect=<esa ruta>, y vuelve ahí mismo al loguearte.
+          onClick={
+            enlace.href === "/jugar"
+              ? alClicarJugar
+              : enlace.href === "/multijugador"
+                ? alClicarMultijugador
+                : undefined
+          }
           className={`relative inline-flex items-center transition-colors hover:text-primary ${
             i === indiceActivo ? "text-primary" : ""
           }`}

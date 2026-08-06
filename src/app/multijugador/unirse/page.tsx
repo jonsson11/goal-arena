@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/features/auth/AuthContext";
 import { AuthGate } from "@/features/auth/AuthGate";
 import { GameButton } from "@/features/games/shared/GameButton";
-import { BotonAtras } from "@/features/multijugador/BotonAtras";
+import { BotonAtras } from "@/features/games/shared/BotonAtras";
 
 export default function UnirseSalaPage() {
   const { usuario } = useAuth();

@@ -17,7 +17,7 @@ type AuthGateProps = {
   icono: ReactNode;
   titulo: string;
   descripcion: string;
-  /** A dónde volver tras loguearse o registrarse (ver useIrAJugar.ts para el mismo patrón con /jugar). */
+/** A dónde volver tras loguearse o registrarse (ver useIrA.ts para el mismo patrón, parametrizado por destino). */
   redirectTras: string;
   /** Chips cortos tipo "esto es lo que te espera" -- mismo componente visual que los `stats` del GameLauncher. */
   aspectos: string[];

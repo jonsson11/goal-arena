@@ -3,10 +3,11 @@
 import Link from "next/link";
 import Image from "next/image";
 import { User, Users } from "lucide-react";
-import { useIrAJugar } from "@/features/auth/useIrAJugar";
+import { useIrA } from "@/features/auth/useIrA";
 
 export function HeroSection() {
-  const alClicarJugar = useIrAJugar();
+  const alClicarJugar = useIrA("/jugar");
+  const alClicarMultijugador = useIrA("/multijugador");
 
   return (
     <section className="flex flex-col items-center gap-6 px-6 py-20 text-center">
@@ -49,7 +50,7 @@ export function HeroSection() {
         </Link>
         <Link
           href="/multijugador"
-          onClick={alClicarJugar}
+          onClick={alClicarMultijugador}
           className="flex items-center justify-center gap-2 rounded-lg bg-secondary px-8 py-4 text-lg font-bold text-secondary-foreground shadow-[0_0_30px_-6px_rgba(29,122,156,0.5)] transition-transform duration-200 hover:scale-105"
         >
           <Users className="h-5 w-5" />
