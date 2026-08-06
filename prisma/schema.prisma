@@ -342,7 +342,7 @@ model Top10Entry {
 
 enum EstadoSala {
   ESPERANDO // en la sala de espera, todavía no ha empezado
-  EN_CURSO  // partida sincronizada en marcha (Fase 2, pendiente de implementar)
+  EN_CURSO  // partida sincronizada en marcha
   FINALIZADA
   CANCELADA // el creador salió antes de empezar, o algo similar
 }
@@ -370,6 +370,13 @@ model Sala {
   dificultad   String?
   maxJugadores Int     @default(2) // 2-8, validado en la API, no aquí
 
+  // Límite de tiempo de la partida en sí (no de la sala de espera), fijado
+  // según la dificultad al crear la sala -- ver DURACION_RONDA_SEGUNDOS en
+  // src/lib/salas.ts. Junto con `empezadaEn`, es la fuente única de verdad
+  // del timer compartido: cada cliente calcula el tiempo restante como
+  // empezadaEn + duracionSegundos - ahora, nunca con un cronómetro propio.
+  duracionSegundos Int?
+
   estado EstadoSala @default(ESPERANDO)
 
   // Tablero (GRID) o ranking (TOP10, más adelante) ya fijado al crear la
@@ -380,9 +387,9 @@ model Sala {
   contenido Json?
 
   // Momento exacto en que se pulsó "Empezar partida" -- fuente única de
-  // verdad para el timer compartido de la Fase 2 (cada cliente calcula el
-  // tiempo restante contra ESTE instante, no contra un cronómetro propio
-  // que arrancaría desincronizado entre móviles).
+  // verdad para el timer compartido (cada cliente calcula el tiempo
+  // restante contra ESTE instante, no contra un cronómetro propio que
+  // arrancaría desincronizado entre móviles).
   empezadaEn DateTime?
 
   createdAt DateTime @default(now())
@@ -403,6 +410,35 @@ model SalaJugador {
   userId  String
   listo   Boolean  @default(false)
   unidoEn DateTime @default(now())
+
+  // A partir de aquí, todo lo que hace falta para la partida en sí --
+  // vacío/en su valor por defecto mientras la sala está en ESPERANDO.
+
+  // Casillas que ha resuelto ESTE jugador, en SU tablero -- cada jugador
+  // juega el mismo reto (mismas condiciones, ver Sala.contenido) pero de
+  // forma independiente, así que cada uno necesita su propio progreso.
+  // Guardado como JSON: array de { fila, columna, jugador } (mismo tipo
+  // `Jugador` que ya usa el modo individual). No se expone el detalle de
+  // qué ha colocado un jugador a sus rivales mientras la partida está en
+  // marcha -- solo el CONTADOR (ver `celdasResueltas`), para no dar pistas.
+  progreso Json @default("[]")
+
+  // Denormalizado a propósito, aunque sea derivable de `progreso.length`:
+  // así el endpoint de polling (GET /api/salas/[codigo]/partida) puede
+  // devolver el progreso de los rivales sin tener que parsear el JSON
+  // completo de cada uno solo para contar cuántas casillas llevan.
+  celdasResueltas Int @default(0)
+
+  // Momento exacto en que este jugador completó las 9 casillas -- si
+  // varios llegaran a completarlo (no debería poder pasar: la partida se
+  // cierra en el servidor en cuanto el PRIMERO llega a 9), esto desempata
+  // quién ganó de verdad.
+  terminadaEn DateTime?
+
+  // "VICTORIA" | "DERROTA" | "EMPATE" -- solo se rellena al finalizar la
+  // partida (ver finalizarPartidaSiToca en src/lib/salas.ts). Null
+  // mientras la partida sigue en marcha.
+  resultado String?
 
   // Un jugador no puede estar dos veces en la misma sala.
   @@unique([salaId, userId])

@@ -239,3 +239,59 @@ export type RespuestaPartida = {
   bonusDiario: boolean;
   expGanada: number;
 };
+
+// ────────────────────────────────────────────────────────────────
+// EXP en multijugador (Fase 8, 06/08/2026)
+// ────────────────────────────────────────────────────────────────
+//
+// A diferencia del modo individual (0 EXP en derrota, decisión del
+// 04/08/2026), en multijugador SÍ hay EXP por debajo de la victoria --
+// así lo pidió el usuario explícitamente ("ganar da más experiencia que
+// perder", no "solo ganar da experiencia"). Reutiliza la misma EXP base
+// por dificultad que el modo individual (expBasePorVictoria) para que
+// ganar una partida online de una dificultad dé lo mismo que ganar una
+// individual de esa misma dificultad, y solo se aplica una fracción
+// distinta según el resultado.
+export type ResultadoMultijugador = "victoria" | "derrota" | "empate";
+
+const FRACCION_EXP_POR_RESULTADO: Record<ResultadoMultijugador, number> = {
+  victoria: 1,
+  empate: 0.6,
+  derrota: 0.3,
+};
+
+/** Desglose de EXP para una partida multijugador terminada. Mismo cálculo
+ * base que calcularExperienciaVictoria, pero con la fracción según
+ * resultado de arriba en vez de 0 en derrota. El bono por rapidez solo se
+ * aplica a quien GANÓ completando el tablero entero (terminadaEn real) --
+ * quien gana porque se acabó el tiempo con más aciertos no "fue rápido",
+ * así que no tiene sentido darle ese bono; y quien pierde o empata no
+ * completó, así que tampoco hay un tiempo de partida que premiar. */
+export function calcularExperienciaMultijugador(
+  dificultad: Dificultad,
+  resultado: ResultadoMultijugador,
+  /** Segundos que tardó en completar el tablero -- solo se usa (y solo
+   * tiene sentido) cuando `resultado === "victoria"` Y ganó completando
+   * (no por timeout). Pásalo como 0 en cualquier otro caso. */
+  segundosSiCompletoAntes: number,
+  bonusDiarioDisponible: boolean
+): ExperienciaVictoria {
+  const expBase = expBasePorVictoria("GRID", dificultad);
+  const bonusTiempoPct =
+    resultado === "victoria" && segundosSiCompletoAntes > 0
+      ? bonusPorcentajePorTiempo("GRID", dificultad, segundosSiCompletoAntes)
+      : 0;
+  const expConTiempo = Math.round(expBase * (1 + bonusTiempoPct / 100));
+
+  const fraccion = FRACCION_EXP_POR_RESULTADO[resultado];
+  const expSinDiario = Math.round(expConTiempo * fraccion);
+  const expTiempoExtra = expSinDiario - Math.round(expBase * fraccion);
+
+  return {
+    expBase,
+    bonusTiempoPct,
+    expTiempoExtra,
+    bonusDiario: bonusDiarioDisponible,
+    expGanada: expSinDiario + (bonusDiarioDisponible ? BONUS_DIARIO_EXP : 0),
+  };
+}

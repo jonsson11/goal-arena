@@ -9,7 +9,7 @@
 import { NextResponse } from "next/server";
 import { crearClienteSupabaseServidor } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
-import { generarCodigoSalaUnico } from "@/lib/salas";
+import { generarCodigoSalaUnico, duracionRondaSegundos } from "@/lib/salas";
 import { generarTableroDesdeBD } from "@/features/games/grid/generarTablero.server";
 import type { Tablero } from "@/features/games/grid/type";
 import type { Dificultad } from "@/features/games/shared/types";
@@ -82,6 +82,11 @@ export async function POST(request: Request) {
       dificultad,
       maxJugadores,
       contenido,
+      // Duración de la RONDA (timer duro de la partida en sí, no de la
+      // sala de espera) -- fijada ya aquí, aunque no se use hasta que
+      // "Empezar partida" ponga `empezadaEn`, para que sean siempre
+      // coherentes entre sí sin tener que recalcular nada en ese momento.
+      duracionSegundos: juego === "GRID" ? duracionRondaSegundos(dificultad!) : null,
       // El creador entra ya como jugador de su propia sala, y ya "listo"
       // -- acaba de configurarla él mismo, no tiene sentido pedirle que
       // confirme otra vez que está listo.
