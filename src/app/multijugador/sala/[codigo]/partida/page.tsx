@@ -7,13 +7,12 @@ import { AuthGate } from "@/features/auth/AuthGate";
 import { GameButton } from "@/features/games/shared/GameButton";
 import { ConfirmDialog } from "@/features/games/shared/ConfirmDialog";
 import { PlayerSearch } from "@/features/games/shared/PlayerSearch";
+import { ExperienciaGanada } from "@/features/games/shared/ExperienciaGanada";
 import { CasillaGrid, EncabezadoCondicion } from "@/features/games/grid/GridCasillas";
 import { celdasValidasParaJugador } from "@/features/games/grid/logic";
-import { ExperienciaGanada } from "@/features/games/shared/ExperienciaGanada";
 import type { Tablero, Celda } from "@/features/games/grid/type";
 import type { Jugador } from "@/features/games/shared/types";
 import type { EstadoPartida } from "@/features/multijugador/type";
-
 
 const INTERVALO_POLLING_PARTIDA_MS = 1500;
 const INTERVALO_POLLING_SALA_MS = 2000; // tras acabar, esperando revancha del anfitrión
@@ -48,48 +47,40 @@ function formatoTiempo(segundos: number): string {
   return `${min}:${seg.toString().padStart(2, "0")}`;
 }
 
-function BarraProgresoRival({
-  nombre,
-  avatar,
-  avatarTipo,
-  celdasResueltas,
-  completado,
-  resultado,
-}: EstadoPartida["rivales"][number]) {
-  const pct = Math.min(100, (celdasResueltas / 9) * 100);
+// Ficha compacta de rival: foto + nombre + aciertos, sin barra de
+// progreso -- con hasta 7 rivales (sala de 8) es la diferencia entre una
+// rejilla de 2-3 columnas que cabe en la pantalla y una lista vertical
+// que obliga a bajar mucho. El check verde sustituye al número cuando ya
+// ha completado el tablero.
+function FichaRival({ nombre, avatar, avatarTipo, celdasResueltas, completado, resultado }: EstadoPartida["rivales"][number]) {
   return (
-    <div className="flex items-center gap-2.5 rounded-xl border border-border bg-card px-3 py-2.5">
-      {avatarTipo === "foto" ? (
-        // eslint-disable-next-line @next/next/no-img-element -- avatar de otro usuario, URL de Supabase Storage
-        <img src={avatar} alt={nombre} className="h-8 w-8 shrink-0 rounded-full border border-border object-cover" />
-      ) : (
-        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-border bg-background text-base">
-          {avatar}
-        </div>
-      )}
-      <div className="min-w-0 flex-1">
-        <div className="mb-1 flex items-center justify-between gap-2">
-          <span className="truncate text-xs font-semibold text-foreground">{nombre}</span>
-          <span className="shrink-0 text-[11px] font-bold text-muted-foreground">
-            {resultado
-              ? resultado === "VICTORIA"
-                ? "🏆"
-                : resultado === "EMPATE"
-                  ? "🤝"
-                  : ""
-              : `${celdasResueltas}/9`}
+    <div className="flex items-center gap-2 rounded-xl border border-border/60 bg-card/40 px-2.5 py-2 backdrop-blur-md">
+      <div className="relative shrink-0">
+        {avatarTipo === "foto" ? (
+          // eslint-disable-next-line @next/next/no-img-element -- avatar de otro usuario, URL de Supabase Storage
+          <img src={avatar} alt={nombre} className="h-8 w-8 rounded-full border border-border object-cover" />
+        ) : (
+          <div className="flex h-8 w-8 items-center justify-center rounded-full border border-border bg-background text-sm">
+            {avatar}
+          </div>
+        )}
+        {completado && !resultado && (
+          <span className="absolute -bottom-0.5 -right-0.5 flex h-3.5 w-3.5 items-center justify-center rounded-full bg-primary text-[8px] font-bold text-primary-foreground">
+            ✓
           </span>
-        </div>
-        {/* Barra con transición de ancho -- es la animación "sutil" del
-            acierto: cada vez que celdasResueltas sube, el ancho crece con
-            transition-all en vez de saltar de golpe. Nada de confeti ni
-            popups por cada acierto de un rival. */}
-        <div className="h-1.5 w-full overflow-hidden rounded-full bg-muted">
-          <div
-            className={`h-full rounded-full transition-all duration-500 ${completado ? "bg-primary" : "bg-secondary"}`}
-            style={{ width: `${pct}%` }}
-          />
-        </div>
+        )}
+      </div>
+      <div className="min-w-0 flex-1">
+        <p className="truncate text-xs font-semibold text-foreground">{nombre}</p>
+        <p className="text-[11px] font-bold text-muted-foreground">
+          {resultado
+            ? resultado === "VICTORIA"
+              ? "🏆 Ganó"
+              : resultado === "EMPATE"
+                ? "🤝 Empate"
+                : "—"
+            : `${celdasResueltas}/9 aciertos`}
+        </p>
       </div>
     </div>
   );
@@ -107,6 +98,11 @@ export default function PartidaMultijugadorPage({ params }: { params: Promise<{ 
   const [celdasPendientes, setCeldasPendientes] = useState<Celda[]>([]);
   const [jugadorPendiente, setJugadorPendiente] = useState<Jugador | null>(null);
   const [segundosRestantes, setSegundosRestantes] = useState(0);
+  // Cuenta atrás 3-2-1 antes de que arranque el timer real -- 0 significa
+  // "ya se puede jugar". Se recalcula en cada respuesta del servidor
+  // contra `empezadaEn` (un reloj compartido), nunca es un cronómetro
+  // propio del cliente -- ver comentario largo en /lib/salas.ts.
+  const [segundosCuentaAtras, setSegundosCuentaAtras] = useState(0);
   const [confirmandoSalida, setConfirmandoSalida] = useState(false);
   const [pidiendoRevancha, setPidiendoRevancha] = useState(false);
 
@@ -151,8 +147,11 @@ export default function PartidaMultijugadorPage({ params }: { params: Promise<{ 
         setCargando(false);
 
         const empezadaEnMs = new Date(nueva.empezadaEn).getTime();
-        const restante = nueva.duracionSegundos - (Date.now() - empezadaEnMs) / 1000;
-        setSegundosRestantes(Math.max(0, restante));
+        const msHastaEmpezar = empezadaEnMs - Date.now();
+        setSegundosCuentaAtras(msHastaEmpezar > 0 ? Math.ceil(msHastaEmpezar / 1000) : 0);
+
+        const segundosTranscurridos = Math.max(0, (Date.now() - empezadaEnMs) / 1000);
+        setSegundosRestantes(Math.max(0, Math.min(nueva.duracionSegundos, nueva.duracionSegundos - segundosTranscurridos)));
       } catch {
         if (activoRef.current) setError("No se pudo conectar con el servidor.");
       }
@@ -176,11 +175,16 @@ export default function PartidaMultijugadorPage({ params }: { params: Promise<{ 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [codigo, usuario]);
 
-  // Cuenta atrás local, tic cada segundo -- se corrige solo con cada
-  // respuesta fresca del servidor (arriba), nunca es la fuente de verdad.
+  // Tic local cada segundo -- adelanta tanto la cuenta atrás 3-2-1 como el
+  // timer real de la ronda, y se corrige solo con cada respuesta fresca
+  // del servidor (arriba). Un único efecto para los dos relojes, no dos
+  // por separado.
   useEffect(() => {
     if (partida?.estado !== "EN_CURSO") return;
-    const tic = setInterval(() => setSegundosRestantes((s) => Math.max(0, s - 1)), 1000);
+    const tic = setInterval(() => {
+      setSegundosCuentaAtras((s) => Math.max(0, s - 1));
+      setSegundosRestantes((s) => Math.max(0, s - 1));
+    }, 1000);
     return () => clearInterval(tic);
   }, [partida?.estado]);
 
@@ -252,7 +256,7 @@ export default function PartidaMultijugadorPage({ params }: { params: Promise<{ 
   }
 
   function procesarSeleccion(jugador: Jugador) {
-    if (!partida || partida.estado !== "EN_CURSO") return;
+    if (!partida || partida.estado !== "EN_CURSO" || segundosCuentaAtras > 0) return;
     const tablero = construirTablero(partida);
     const validas = celdasValidasParaJugador(jugador, tablero);
 
@@ -304,94 +308,130 @@ export default function PartidaMultijugadorPage({ params }: { params: Promise<{ 
 
   const tablero = construirTablero(partida);
   const finalizada = partida.estado === "FINALIZADA";
+  const enCuentaAtras = !finalizada && segundosCuentaAtras > 0;
 
   return (
-    <div className="mx-auto flex max-w-4xl flex-col items-center gap-6 px-4 py-6 sm:px-6">
-      {!finalizada && (
-        <div className="flex w-full max-w-md items-center justify-between">
-          <span className="rounded-full border border-border bg-card px-3 py-1 text-xs font-medium text-muted-foreground">
-            {ETIQUETA_DIFICULTAD[partida.dificultad ?? ""] ?? partida.dificultad}
-          </span>
-          <span
-            className={`rounded-full border px-3 py-1 text-sm font-extrabold tabular-nums ${
-              segundosRestantes <= 30
-                ? "animate-pulse border-destructive bg-destructive/10 text-destructive"
-                : "border-primary/40 bg-primary/10 text-primary"
-            }`}
-          >
-            ⏱ {formatoTiempo(segundosRestantes)}
-          </span>
-        </div>
-      )}
+    <div className="px-4 pb-14 pt-8 sm:px-6 sm:pt-10">
+      <div className="mx-auto flex max-w-4xl flex-col items-center gap-6">
+        {!finalizada && !enCuentaAtras && (
+          <div className="flex w-full max-w-md items-center justify-between">
+            <span className="rounded-full border border-border bg-card px-3 py-1 text-xs font-medium text-muted-foreground">
+              {ETIQUETA_DIFICULTAD[partida.dificultad ?? ""] ?? partida.dificultad}
+            </span>
+            <span
+              className={`rounded-full border px-3 py-1 text-sm font-extrabold tabular-nums ${
+                segundosRestantes <= 30
+                  ? "animate-pulse border-destructive bg-destructive/10 text-destructive"
+                  : "border-primary/40 bg-primary/10 text-primary"
+              }`}
+            >
+              ⏱ {formatoTiempo(segundosRestantes)}
+            </span>
+          </div>
+        )}
 
-      {finalizada ? (
-        <ResultadoPartida
-          partida={partida}
-          esCreador={esCreador}
-          onPedirRevancha={pedirRevancha}
-          onSalir={() => setConfirmandoSalida(true)}
-          pidiendoRevancha={pidiendoRevancha}
-        />
-      ) : (
-        <div className="flex w-full flex-col items-center gap-6 lg:flex-row lg:items-start lg:justify-center">
-          <div className="w-full max-w-md">
-            <div className="grid w-full grid-cols-[minmax(0,0.7fr)_repeat(3,minmax(0,1fr))] gap-1.5 sm:gap-2">
-              <div />
-              {tablero.condicionesColumna.map((cond, i) => (
-                <EncabezadoCondicion key={i} condicion={cond} />
-              ))}
+        {finalizada ? (
+          <ResultadoPartida
+            partida={partida}
+            esCreador={esCreador}
+            onPedirRevancha={pedirRevancha}
+            onSalir={() => setConfirmandoSalida(true)}
+            pidiendoRevancha={pidiendoRevancha}
+          />
+        ) : enCuentaAtras ? (
+          // Cuenta atrás 3-2-1: el tablero ya está cargado (fetch hecho,
+          // solo que no se pinta todavía) -- lo único que falta es que
+          // llegue el instante `empezadaEn` compartido. key=segundosCuentaAtras
+          // fuerza a React a remontar el número en cada tic, así se
+          // dispara la animación de entrada en cada cambio.
+          <div className="flex h-72 w-full flex-col items-center justify-center gap-3">
+            <span className="text-xs font-bold uppercase tracking-[0.3em] text-muted-foreground">Prepárate</span>
+            <span
+              key={segundosCuentaAtras}
+              className="animate-in zoom-in-50 fade-in text-8xl font-extrabold text-primary duration-300"
+            >
+              {segundosCuentaAtras}
+            </span>
+          </div>
+        ) : (
+          <div className="flex w-full flex-col items-center gap-6 lg:flex-row lg:items-start lg:justify-center">
+            <div className="w-full max-w-md">
+              <div className="grid w-full grid-cols-[minmax(0,0.7fr)_repeat(3,minmax(0,1fr))] gap-1.5 sm:gap-2">
+                <div />
+                {tablero.condicionesColumna.map((cond, i) => (
+                  <EncabezadoCondicion key={i} condicion={cond} />
+                ))}
 
-              {tablero.condicionesFila.map((condFila, fila) => (
-                <div key={fila} className="contents">
-                  <EncabezadoCondicion condicion={condFila} />
-                  {[0, 1, 2].map((columna) => {
-                    const celda = tablero.celdas.find((c) => c.fila === fila && c.columna === columna)!;
-                    const esPendiente = celdasPendientes.some((c) => c.fila === fila && c.columna === columna);
-                    return (
-                      <CasillaGrid
-                        key={columna}
-                        celda={celda}
-                        esPendiente={esPendiente}
-                        bloqueada={!esPendiente && celdasPendientes.length > 0}
-                        onClick={() => {
-                          if (esPendiente && jugadorPendiente) colocarJugador(jugadorPendiente, celda);
-                        }}
-                      />
-                    );
-                  })}
+                {tablero.condicionesFila.map((condFila, fila) => (
+                  <div key={fila} className="contents">
+                    <EncabezadoCondicion condicion={condFila} />
+                    {[0, 1, 2].map((columna) => {
+                      const celda = tablero.celdas.find((c) => c.fila === fila && c.columna === columna)!;
+                      const esPendiente = celdasPendientes.some((c) => c.fila === fila && c.columna === columna);
+                      return (
+                        <CasillaGrid
+                          key={columna}
+                          celda={celda}
+                          esPendiente={esPendiente}
+                          bloqueada={!esPendiente && celdasPendientes.length > 0}
+                          onClick={() => {
+                            if (esPendiente && jugadorPendiente) colocarJugador(jugadorPendiente, celda);
+                          }}
+                        />
+                      );
+                    })}
+                  </div>
+                ))}
+              </div>
+
+              <div className="mt-6 flex w-full justify-center">
+                <PlayerSearch
+                  onSearch={buscarJugadores}
+                  excludeNames={partida.miProgreso.map((c) => c.jugador.nombre)}
+                  onSelect={procesarSeleccion}
+                  placeholder="Escribe un jugador..."
+                  disabled={celdasPendientes.length > 0}
+                />
+              </div>
+              {mensaje && <p className="mt-3 text-center text-sm text-muted-foreground">{mensaje}</p>}
+
+              {/* Rivales en móvil/tablet: rejilla compacta debajo del
+                  buscador (2-3 columnas), no una lista vertical -- con 7
+                  rivales (sala de 8) son 3-4 filas cortas en vez de 7
+                  filas largas. En escritorio (lg:) se oculta aquí porque
+                  se muestra en la columna de al lado. */}
+              {partida.rivales.length > 0 && (
+                <div className="mt-6 grid w-full grid-cols-2 gap-2 sm:grid-cols-3 lg:hidden">
+                  {partida.rivales.map((rival) => (
+                    <FichaRival key={rival.id} {...rival} />
+                  ))}
                 </div>
-              ))}
+              )}
             </div>
 
-            <div className="mt-6 flex w-full justify-center">
-              <PlayerSearch
-                onSearch={buscarJugadores}
-                excludeNames={partida.miProgreso.map((c) => c.jugador.nombre)}
-                onSelect={procesarSeleccion}
-                placeholder="Escribe un jugador..."
-                disabled={celdasPendientes.length > 0}
-              />
-            </div>
-            {mensaje && <p className="mt-3 text-center text-sm text-muted-foreground">{mensaje}</p>}
+            {/* Misma rejilla de fichas, aquí en una sola columna pegada
+                (sticky) junto al tablero -- solo visible en escritorio,
+                donde sí sobra espacio a un lado. */}
+            {partida.rivales.length > 0 && (
+              <div className="hidden w-full max-w-xs flex-col gap-2 lg:sticky lg:top-6 lg:flex">
+                <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Rivales</span>
+                {partida.rivales.map((rival) => (
+                  <FichaRival key={rival.id} {...rival} />
+                ))}
+              </div>
+            )}
           </div>
+        )}
 
-          <div className="flex w-full max-w-xs flex-col gap-2 lg:sticky lg:top-6">
-            <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Rivales</span>
-            {partida.rivales.map((rival) => (
-              <BarraProgresoRival key={rival.id} {...rival} />
-            ))}
-          </div>
-        </div>
-      )}
-
-      <ConfirmDialog
-        open={confirmandoSalida}
-        onOpenChange={setConfirmandoSalida}
-        titulo="¿Salir de la sala?"
-        descripcion="Podrás volver a unirte más tarde con el mismo código, si la sala sigue abierta."
-        textoConfirmar="Sí, salir"
-        onConfirmar={salir}
-      />
+        <ConfirmDialog
+          open={confirmandoSalida}
+          onOpenChange={setConfirmandoSalida}
+          titulo="¿Salir de la sala?"
+          descripcion="Podrás volver a unirte más tarde con el mismo código, si la sala sigue abierta."
+          textoConfirmar="Sí, salir"
+          onConfirmar={salir}
+        />
+      </div>
     </div>
   );
 }
@@ -451,13 +491,14 @@ function ResultadoPartida({
           subes de nivel...) sale gratis, sin reinventarla aquí. */}
       <ExperienciaGanada respuesta={partida.miExperiencia} />
 
-      <div className="flex w-full flex-col gap-2">
+      {/* Misma clasificación de siempre, pero como un único panel de
+          cristal con separadores -- mismo criterio que la lista de
+          rivales de arriba y la de jugadores de la sala de espera. */}
+      <div className="w-full divide-y divide-border/60 overflow-hidden rounded-2xl border border-border/60 bg-card/40 backdrop-blur-md">
         {clasificacion.map((jugador, i) => (
           <div
             key={jugador.id}
-            className={`flex items-center justify-between rounded-xl border px-4 py-2.5 ${
-              jugador.esYo ? "border-primary/40 bg-primary/10" : "border-border bg-card"
-            }`}
+            className={`flex items-center justify-between px-4 py-3 ${jugador.esYo ? "bg-primary/10" : ""}`}
           >
             <div className="flex items-center gap-2.5">
               <span className="text-xs font-bold text-muted-foreground">#{i + 1}</span>

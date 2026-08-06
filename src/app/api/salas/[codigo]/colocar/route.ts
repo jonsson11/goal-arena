@@ -93,6 +93,13 @@ export async function POST(request: Request, { params }: { params: Promise<{ cod
     return NextResponse.json({ error: "Se ha acabado el tiempo." }, { status: 400 });
   }
 
+  // Guarda extra simétrica: todavía en la cuenta atrás 3-2-1 (ver
+  // SEGUNDOS_CUENTA_ATRAS) -- el cliente no debería dejar llegar hasta
+  // aquí durante la cuenta atrás, pero por si acaso.
+  if (sala.empezadaEn && Date.now() < sala.empezadaEn.getTime()) {
+    return NextResponse.json({ error: "La partida todavía no ha empezado." }, { status: 400 });
+  }
+
   const progreso = (mi.progreso as unknown as ColocacionPropia[]) ?? [];
 
   if (progreso.some((c) => c.fila === fila && c.columna === columna)) {

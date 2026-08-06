@@ -74,7 +74,6 @@ export function serializarSala(sala: SalaConJugadores): Sala {
   };
 }
 
-
 // Rellena `amistad` en cada jugador (menos en uno mismo) según la
 // relación real con quien está preguntando -- solo lo usa GET
 // /api/salas/[codigo], que es la ruta que hace polling la sala de espera
@@ -128,6 +127,16 @@ const DURACION_RONDA_SEGUNDOS: Record<Dificultad, number> = {
 export function duracionRondaSegundos(dificultad: Dificultad): number {
   return DURACION_RONDA_SEGUNDOS[dificultad];
 }
+
+// Cuenta atrás compartida antes de que arranque de verdad el timer de la
+// ronda -- todos los jugadores llegan a la pantalla de partida con datos
+// ya cargados (tablero, etc., aunque no visibles) y ven 3, 2, 1 hasta este
+// mismo instante de servidor. Como `empezadaEn` es un reloj compartido, da
+// igual la velocidad de conexión de cada uno: todos empiezan a la vez de
+// verdad, no "en cuanto su cliente esté listo". Ver el uso en
+// /api/salas/[codigo]/empezar (fija empezadaEn en el futuro) y en la
+// pantalla de partida (dibuja el 3-2-1 mientras `ahora < empezadaEn`).
+export const SEGUNDOS_CUENTA_ATRAS = 3;
 
 type SalaJugadorConUser = Prisma.SalaJugadorGetPayload<{ include: { user: true } }>;
 
@@ -318,7 +327,8 @@ export async function construirEstadoPartida(salaId: string, miUserId: string): 
     condicionesColumna: contenido.condicionesColumna,
     miProgreso: (mi.progreso as unknown as ColocacionPropia[]) ?? [],
     miResultado: (mi.resultado as EstadoPartida["miResultado"]) ?? null,
-    miExperiencia: (mi.experiencia as unknown as RespuestaPartida | null) ?? null,    rivales: sala.jugadores
+    miExperiencia: (mi.experiencia as unknown as RespuestaPartida | null) ?? null,
+    rivales: sala.jugadores
       .filter((sj) => sj.userId !== miUserId)
       .map(
         (sj): RivalPartida => ({
