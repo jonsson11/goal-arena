@@ -1,5 +1,5 @@
 "use client";
-
+import { TituloPagina } from "@/components/layout/TituloPagina";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/features/auth/AuthContext";
@@ -77,12 +77,7 @@ export default function CrearSalaPage() {
 
       <div className="mx-auto flex max-w-lg flex-col gap-8">
         <div className="flex flex-col items-center gap-2 text-center">
-          <h1
-            className="text-shimmer bg-gradient-to-r from-secondary via-primary to-secondary bg-clip-text text-4xl font-extrabold tracking-tight text-transparent sm:text-5xl"
-            style={{ textShadow: "0 0 30px rgba(29,122,156,0.35)" }}
-          >
-            Crear sala
-          </h1>
+          <TituloPagina acento="azul">Crear sala</TituloPagina>
           <p className="text-sm text-muted-foreground">Configura la partida antes de invitar a tus amigos.</p>
         </div>
 

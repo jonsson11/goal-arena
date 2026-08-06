@@ -6,6 +6,7 @@ import { useAuth } from "@/features/auth/AuthContext";
 import { AuthGate } from "@/features/auth/AuthGate";
 import { GameButton } from "@/features/games/shared/GameButton";
 import { BotonAtras } from "@/features/games/shared/BotonAtras";
+import { TituloPagina } from "@/components/layout/TituloPagina";
 
 export default function UnirseSalaPage() {
   const { usuario } = useAuth();
@@ -58,17 +59,8 @@ export default function UnirseSalaPage() {
       <BotonAtras href="/multijugador" />
 
       <div className="mx-auto flex max-w-sm flex-col items-center gap-6 text-center">
-        <h1
-          className="text-shimmer bg-gradient-to-r from-secondary via-primary to-secondary bg-clip-text text-4xl font-extrabold tracking-tight text-transparent sm:text-5xl"
-          style={{ textShadow: "0 0 30px rgba(29,122,156,0.35)" }}
-        >
-          Unirse a sala
-        </h1>
-        <p className="text-sm text-muted-foreground">
-          Escribe el código de 6 caracteres que te ha pasado tu amigo.
-        </p>
-
-        <div className="flex w-full flex-col gap-4 rounded-2xl border border-primary/25 bg-primary/[0.06] p-6 backdrop-blur-md">
+        <TituloPagina acento="azul">Unirse a sala</TituloPagina>
+          <div className="flex w-full flex-col gap-4 rounded-2xl border border-primary/25 bg-primary/[0.06] p-6 backdrop-blur-md">
           <input
             value={codigo}
             onChange={(e) => setCodigo(e.target.value.toUpperCase().slice(0, 6))}

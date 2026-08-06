@@ -5,15 +5,7 @@ import { DoorOpen, KeyRound } from "lucide-react";
 import { useAuth } from "@/features/auth/AuthContext";
 import { AuthGate } from "@/features/auth/AuthGate";
 import { BotonAtras } from "@/features/games/shared/BotonAtras";
-
-const PARTICULAS = [
-  { left: "8%", delay: "0s" },
-  { left: "22%", delay: "2s" },
-  { left: "40%", delay: "4s" },
-  { left: "63%", delay: "1s" },
-  { left: "78%", delay: "5s" },
-  { left: "91%", delay: "3s" },
-];
+import { TituloPagina } from "@/components/layout/TituloPagina";
 
 export default function MultijugadorPage() {
   const { usuario } = useAuth();
@@ -31,16 +23,7 @@ export default function MultijugadorPage() {
   }
 
   return (
-    <div className="relative overflow-hidden px-6 pb-14 pt-8 sm:pt-10">
-      {PARTICULAS.map((p, i) => (
-        <span
-          key={i}
-          aria-hidden
-          className="particula-flotante pointer-events-none fixed h-[3px] w-[3px] rounded-full bg-secondary opacity-35"
-          style={{ left: p.left, animationDelay: p.delay }}
-        />
-      ))}
-
+    <div className="relative px-6 pb-14 pt-6 sm:pt-8">
       {/* Fuera de la columna centrada de abajo a propósito -- así queda
           pegado al borde real de la pantalla (mismo sitio en cualquier
           ancho de contenido), no al borde de una columna estrecha que
@@ -49,12 +32,7 @@ export default function MultijugadorPage() {
       <BotonAtras href="/" />
 
       <div className="relative z-10 mx-auto flex max-w-2xl flex-col items-center gap-2">
-        <h1
-          className="text-shimmer bg-gradient-to-r from-secondary via-primary to-secondary bg-clip-text text-4xl font-extrabold tracking-tight text-transparent sm:text-5xl"
-          style={{ textShadow: "0 0 30px rgba(29,122,156,0.35)" }}
-        >
-          Multijugador
-        </h1>
+        <TituloPagina acento="azul">Multijugador</TituloPagina>
         <p className="mb-8 text-center text-sm text-muted-foreground">
           Enfréntate en directo a tus amigos, el mismo reto para todos.
         </p>

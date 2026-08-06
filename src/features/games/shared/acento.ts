@@ -36,17 +36,14 @@ export const TEXTO_POR_ACENTO: Record<Acento, string> = {
   gold: "text-[#D4AF37]",
 };
 
+// Fondo del icono dentro de la tarjeta -- mismo nivel de saturación que ya
+// usan las tarjetas de cristal de /multijugador (bg-secondary/25 en
+// "Crear sala", bg-primary/20 en "Unirse a sala"), para que las tarjetas
+// de "Un jugador" (JuegoCromo.tsx) se vean exactamente igual de intensas.
 export const ICONO_FONDO_POR_ACENTO: Record<Acento, string> = {
-  primary: "bg-primary/10 text-primary",
-  secondary: "bg-secondary/15 text-secondary",
-  gold: "bg-[#D4AF37]/15 text-[#D4AF37]",
-};
-
-// Degradado sutil de fondo para la cara trasera del cromo en JuegoCromo.tsx.
-export const DEGRADADO_FONDO_POR_ACENTO: Record<Acento, string> = {
-  primary: "from-primary/10 to-card",
-  secondary: "from-secondary/15 to-card",
-  gold: "from-[#D4AF37]/10 to-card",
+  primary: "bg-primary/20 text-primary",
+  secondary: "bg-secondary/25 text-secondary",
+  gold: "bg-[#D4AF37]/25 text-[#D4AF37]",
 };
 
 export const ICONO_BORDE_FONDO_POR_ACENTO: Record<Acento, string> = {
@@ -68,18 +65,14 @@ export const BORDE_HOVER_GLOW_POR_ACENTO: Record<Acento, string> = {
   gold: "border-[#D4AF37]/30 hover:border-[#D4AF37] hover:shadow-[0_0_30px_-4px_rgba(212,175,55,0.55)]",
 };
 
-export const HALO_POR_ACENTO: Record<Acento, string> = {
-  primary:
-    "shadow-[0_0_34px_-6px_rgba(74,222,154,0.35),0_0_0_1px_rgba(74,222,154,0.08)] hover:shadow-[0_0_55px_-4px_rgba(74,222,154,0.65),0_0_0_1px_rgba(74,222,154,0.25)]",
+// Tarjeta de cristal (fondo semitransparente + backdrop-blur + borde de
+// color, se aclara del todo al pasar el ratón) -- el mismo estilo que ya
+// usan las tarjetas de /multijugador (Crear sala / Unirse a sala),
+// llevado aquí para que JuegoCromo.tsx use EXACTAMENTE los mismos
+// números, no una aproximación a ojo.
+export const TARJETA_CRISTAL_POR_ACENTO: Record<Acento, string> = {
+  primary: "border-primary/30 bg-primary/10 hover:border-primary hover:shadow-[0_8px_40px_-10px_rgba(74,222,154,0.55)]",
   secondary:
-    "shadow-[0_0_34px_-6px_rgba(29,122,156,0.45),0_0_0_1px_rgba(29,122,156,0.10)] hover:shadow-[0_0_55px_-4px_rgba(29,122,156,0.75),0_0_0_1px_rgba(29,122,156,0.3)]",
-  gold: "shadow-[0_0_34px_-6px_rgba(212,175,55,0.4),0_0_0_1px_rgba(212,175,55,0.1)] hover:shadow-[0_0_55px_-4px_rgba(212,175,55,0.7),0_0_0_1px_rgba(212,175,55,0.3)]",
-};
-
-// Ver el comentario de HALO_ACTIVO_POR_ACENTO en JuegoCromo.tsx: se usa en
-// vez de HALO_POR_ACENTO (no combinado con él) cuando la carta está activa.
-export const HALO_ACTIVO_POR_ACENTO: Record<Acento, string> = {
-  primary: "shadow-[0_0_55px_-4px_rgba(74,222,154,0.65),0_0_0_1px_rgba(74,222,154,0.25)]",
-  secondary: "shadow-[0_0_55px_-4px_rgba(29,122,156,0.75),0_0_0_1px_rgba(29,122,156,0.3)]",
-  gold: "shadow-[0_0_55px_-4px_rgba(212,175,55,0.7),0_0_0_1px_rgba(212,175,55,0.3)]",
+    "border-secondary/35 bg-secondary/[0.12] hover:border-secondary hover:shadow-[0_8px_40px_-10px_rgba(29,122,156,0.6)]",
+  gold: "border-[#D4AF37]/30 bg-[#D4AF37]/10 hover:border-[#D4AF37] hover:shadow-[0_8px_40px_-10px_rgba(212,175,55,0.55)]",
 };

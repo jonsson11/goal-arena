@@ -8,6 +8,8 @@ import { AuthGate } from "@/features/auth/AuthGate";
 import { GameButton } from "@/features/games/shared/GameButton";
 import { ConfirmDialog } from "@/features/games/shared/ConfirmDialog";
 import type { Sala } from "@/features/multijugador/type";
+import { TituloPagina } from "@/components/layout/TituloPagina";
+
 
 const INTERVALO_POLLING_MS = 2500;
 
@@ -191,17 +193,14 @@ export default function SalaEsperaPage({ params }: { params: Promise<{ codigo: s
           <span className="rounded-full border border-secondary/40 bg-secondary/10 px-3 py-1 text-[11px] font-bold uppercase tracking-widest text-secondary">
             Sala de espera
           </span>
-          <h1
-            className="text-shimmer bg-gradient-to-r from-secondary via-primary to-secondary bg-clip-text text-4xl font-extrabold tracking-tight text-transparent sm:text-5xl"
-            style={{ textShadow: "0 0 30px rgba(29,122,156,0.35)" }}
-          >
+          <TituloPagina acento="azul">
             {ETIQUETA_JUEGO[sala.juego] ?? sala.juego}
             {sala.dificultad && (
               <span className="ml-2 bg-none text-lg font-semibold text-muted-foreground">
                 · {ETIQUETA_DIFICULTAD[sala.dificultad]}
               </span>
             )}
-          </h1>
+          </TituloPagina>
         </div>
 
         <button

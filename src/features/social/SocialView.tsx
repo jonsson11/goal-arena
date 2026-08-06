@@ -7,6 +7,7 @@ import { AuthGate } from "@/features/auth/AuthGate";
 import { GameButton } from "@/features/games/shared/GameButton";
 import { useSolicitudesPendientes } from "@/features/social/SolicitudesContext";
 import type { Amigo, SolicitudAmistad } from "./type";
+import { TituloPagina } from "@/components/layout/TituloPagina";
 
 type Pestana = "amigos" | "solicitudes";
 
@@ -193,12 +194,7 @@ export function SocialView() {
 
       <div className="relative z-10 mx-auto flex max-w-2xl flex-col gap-6 px-6 py-12">
         <div className="flex flex-col items-center gap-2">
-          <h1
-            className="text-shimmer bg-gradient-to-r from-primary via-secondary to-primary bg-clip-text text-4xl font-extrabold tracking-tight text-transparent sm:text-5xl"
-            style={{ textShadow: "0 0 30px rgba(74,222,154,0.25)" }}
-          >
-            Social
-          </h1>
+          <TituloPagina acento="verde">Social</TituloPagina>
           <p className="mb-2 text-center text-sm text-muted-foreground">
             Tus amigos, sus solicitudes y quién anda en línea ahora mismo.
           </p>
