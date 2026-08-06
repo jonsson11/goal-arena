@@ -74,6 +74,40 @@ export function serializarSala(sala: SalaConJugadores): Sala {
   };
 }
 
+
+// Rellena `amistad` en cada jugador (menos en uno mismo) según la
+// relación real con quien está preguntando -- solo lo usa GET
+// /api/salas/[codigo], que es la ruta que hace polling la sala de espera
+// (ver comentario en el tipo JugadorSala). Una sola consulta con OR para
+// todos los rivales a la vez, en vez de una por jugador.
+export async function enriquecerConAmistad(sala: Sala, miUserId: string): Promise<Sala> {
+  const otrosIds = sala.jugadores.map((j) => j.id).filter((id) => id !== miUserId);
+  if (otrosIds.length === 0) return sala;
+
+  const amistades = await prisma.friendship.findMany({
+    where: {
+      OR: [
+        { solicitanteId: miUserId, receptorId: { in: otrosIds } },
+        { receptorId: miUserId, solicitanteId: { in: otrosIds } },
+      ],
+    },
+  });
+
+  const estadoPorOtroId = new Map<string, "AMIGOS" | "PENDIENTE">();
+  for (const amistad of amistades) {
+    const otroId = amistad.solicitanteId === miUserId ? amistad.receptorId : amistad.solicitanteId;
+    estadoPorOtroId.set(otroId, amistad.estado === "ACEPTADA" ? "AMIGOS" : "PENDIENTE");
+  }
+
+  return {
+    ...sala,
+    jugadores: sala.jugadores.map((j) => ({
+      ...j,
+      amistad: j.id === miUserId ? "YO" : (estadoPorOtroId.get(j.id) ?? "NINGUNA"),
+    })),
+  };
+}
+
 // ────────────────────────────────────────────────────────────────
 // Partida en directo (Fase 2, 06/08/2026)
 // ────────────────────────────────────────────────────────────────

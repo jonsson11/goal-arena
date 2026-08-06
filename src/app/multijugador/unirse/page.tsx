@@ -2,10 +2,10 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
 import { useAuth } from "@/features/auth/AuthContext";
 import { AuthGate } from "@/features/auth/AuthGate";
 import { GameButton } from "@/features/games/shared/GameButton";
+import { BotonAtras } from "@/features/multijugador/BotonAtras";
 
 export default function UnirseSalaPage() {
   const { usuario } = useAuth();
@@ -52,33 +52,43 @@ export default function UnirseSalaPage() {
   }
 
   return (
-    <div className="mx-auto flex max-w-sm flex-col items-center gap-6 px-6 py-16 text-center">
-      <Link href="/multijugador" className="self-start text-xs font-bold text-secondary">
-        ← Multijugador
-      </Link>
-      <h1 className="text-3xl font-extrabold tracking-tight text-foreground">Unirse a sala</h1>
-      <p className="text-sm text-muted-foreground">
-        Escribe el código de 6 caracteres que te ha pasado tu amigo.
-      </p>
+    <div className="relative px-6 pb-14 pt-8 sm:pt-10">
+      {/* Fuera de la columna centrada de abajo, pegado al borde real de la
+          pantalla -- mismo motivo que en /multijugador/page.tsx. */}
+      <BotonAtras href="/multijugador" />
 
-      <input
-        value={codigo}
-        onChange={(e) => setCodigo(e.target.value.toUpperCase().slice(0, 6))}
-        onKeyDown={(e) => {
-          if (e.key === "Enter") unirse();
-        }}
-        placeholder="ABC123"
-        autoCapitalize="characters"
-        autoComplete="off"
-        disabled={uniendo}
-        className="w-full rounded-2xl border border-border bg-card/60 px-4 py-4 text-center text-3xl font-extrabold uppercase tracking-[0.3em] text-foreground outline-none transition-colors focus:border-primary/60 disabled:opacity-50"
-      />
+      <div className="mx-auto flex max-w-sm flex-col items-center gap-6 text-center">
+        <h1
+          className="text-shimmer bg-gradient-to-r from-secondary via-primary to-secondary bg-clip-text text-4xl font-extrabold tracking-tight text-transparent sm:text-5xl"
+          style={{ textShadow: "0 0 30px rgba(29,122,156,0.35)" }}
+        >
+          Unirse a sala
+        </h1>
+        <p className="text-sm text-muted-foreground">
+          Escribe el código de 6 caracteres que te ha pasado tu amigo.
+        </p>
 
-      {error && <p className="text-sm font-semibold text-destructive">{error}</p>}
+        <div className="flex w-full flex-col gap-4 rounded-2xl border border-primary/25 bg-primary/[0.06] p-6 backdrop-blur-md">
+          <input
+            value={codigo}
+            onChange={(e) => setCodigo(e.target.value.toUpperCase().slice(0, 6))}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") unirse();
+            }}
+            placeholder="ABC123"
+            autoCapitalize="characters"
+            autoComplete="off"
+            disabled={uniendo}
+            className="w-full rounded-2xl border border-border bg-background/50 px-4 py-4 text-center text-3xl font-extrabold uppercase tracking-[0.3em] text-foreground outline-none transition-colors focus:border-primary/60 disabled:opacity-50"
+          />
 
-      <GameButton onClick={unirse} disabled={uniendo || codigo.length !== 6} className="w-full py-3 text-base">
-        {uniendo ? "Uniéndose..." : "Unirse"}
-      </GameButton>
+          {error && <p className="text-sm font-semibold text-destructive">{error}</p>}
+
+          <GameButton onClick={unirse} disabled={uniendo || codigo.length !== 6} className="w-full py-3 text-base">
+            {uniendo ? "Uniéndose..." : "Unirse"}
+          </GameButton>
+        </div>
+      </div>
     </div>
   );
 }

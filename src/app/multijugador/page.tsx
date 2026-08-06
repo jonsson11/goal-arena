@@ -4,6 +4,7 @@ import Link from "next/link";
 import { DoorOpen, KeyRound } from "lucide-react";
 import { useAuth } from "@/features/auth/AuthContext";
 import { AuthGate } from "@/features/auth/AuthGate";
+import { BotonAtras } from "@/features/multijugador/BotonAtras";
 
 const PARTICULAS = [
   { left: "8%", delay: "0s" },
@@ -30,7 +31,7 @@ export default function MultijugadorPage() {
   }
 
   return (
-    <div className="relative overflow-hidden">
+    <div className="relative overflow-hidden px-6 pb-14 pt-8 sm:pt-10">
       {PARTICULAS.map((p, i) => (
         <span
           key={i}
@@ -40,7 +41,14 @@ export default function MultijugadorPage() {
         />
       ))}
 
-      <div className="relative z-10 mx-auto flex max-w-2xl flex-col items-center gap-2 px-6 py-12">
+      {/* Fuera de la columna centrada de abajo a propósito -- así queda
+          pegado al borde real de la pantalla (mismo sitio en cualquier
+          ancho de contenido), no al borde de una columna estrecha que
+          cambia de anchura entre pantallas. Mismo criterio que ya usa
+          GameLauncher.tsx con su botón "Atrás". */}
+      <BotonAtras href="/" />
+
+      <div className="relative z-10 mx-auto flex max-w-2xl flex-col items-center gap-2">
         <h1
           className="text-shimmer bg-gradient-to-r from-secondary via-primary to-secondary bg-clip-text text-4xl font-extrabold tracking-tight text-transparent sm:text-5xl"
           style={{ textShadow: "0 0 30px rgba(29,122,156,0.35)" }}
@@ -54,9 +62,9 @@ export default function MultijugadorPage() {
         <div className="grid w-full grid-cols-1 gap-6 sm:grid-cols-2">
           <Link
             href="/multijugador/crear"
-            className="group flex flex-col items-center gap-3 rounded-2xl border border-secondary/30 bg-card p-8 text-center transition-all duration-300 hover:-translate-y-1 hover:border-secondary hover:shadow-[0_0_40px_-8px_rgba(29,122,156,0.6)]"
+            className="group flex flex-col items-center gap-3 rounded-2xl border border-secondary/35 bg-secondary/[0.12] p-8 text-center backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:border-secondary hover:shadow-[0_8px_40px_-10px_rgba(29,122,156,0.6)]"
           >
-            <span className="flex h-16 w-16 items-center justify-center rounded-2xl bg-secondary/15 text-secondary">
+            <span className="flex h-16 w-16 items-center justify-center rounded-2xl bg-secondary/25 text-secondary">
               <DoorOpen className="h-8 w-8" />
             </span>
             <span className="text-xl font-extrabold text-foreground">Crear sala</span>
@@ -67,9 +75,9 @@ export default function MultijugadorPage() {
 
           <Link
             href="/multijugador/unirse"
-            className="group flex flex-col items-center gap-3 rounded-2xl border border-primary/30 bg-card p-8 text-center transition-all duration-300 hover:-translate-y-1 hover:border-primary hover:shadow-[0_0_40px_-8px_rgba(74,222,154,0.6)]"
+            className="group flex flex-col items-center gap-3 rounded-2xl border border-primary/30 bg-primary/10 p-8 text-center backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:border-primary hover:shadow-[0_8px_40px_-10px_rgba(74,222,154,0.55)]"
           >
-            <span className="flex h-16 w-16 items-center justify-center rounded-2xl bg-primary/15 text-primary">
+            <span className="flex h-16 w-16 items-center justify-center rounded-2xl bg-primary/20 text-primary">
               <KeyRound className="h-8 w-8" />
             </span>
             <span className="text-xl font-extrabold text-foreground">Unirse a sala</span>

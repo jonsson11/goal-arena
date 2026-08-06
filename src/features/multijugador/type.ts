@@ -19,6 +19,7 @@ export type JugadorSala = {
   avatarTipo: TipoAvatar;
   listo: boolean;
   esCreador: boolean;
+  amistad?: "AMIGOS" | "PENDIENTE" | "NINGUNA" | "YO";
 };
 
 export type Sala = {

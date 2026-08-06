@@ -12,8 +12,7 @@
 import { NextResponse } from "next/server";
 import { crearClienteSupabaseServidor } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
-import { serializarSala, SALA_INCLUDE_JUGADORES } from "@/lib/salas";
-
+import { serializarSala, enriquecerConAmistad, SALA_INCLUDE_JUGADORES } from "@/lib/salas";
 export const dynamic = "force-dynamic";
 
 async function usuarioActual() {
@@ -49,5 +48,6 @@ export async function GET(_request: Request, { params }: { params: Promise<{ cod
     return NextResponse.json({ error: "No estás en esa sala." }, { status: 403 });
   }
 
-  return NextResponse.json(serializarSala(sala));
+  const salaSerializada = await enriquecerConAmistad(serializarSala(sala), user.id);
+  return NextResponse.json(salaSerializada);
 }
