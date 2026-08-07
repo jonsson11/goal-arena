@@ -1,14 +1,11 @@
 "use client";
 
-// Antes era un Server Component (solo <Link>s, sin estado). Pasa a
-// cliente porque ahora hace falta medir posiciones en el DOM (para el
-// indicador deslizante) y saber la ruta activa (usePathname).
-
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { useIrA } from "@/features/auth/useIrA";
 import { useSolicitudesPendientes } from "@/features/social/SolicitudesContext";
+import { useLogrosReclamables } from "@/features/profile/LogrosReclamablesContext";
 
 const ENLACES = [
   { href: "/", label: "Inicio" },
@@ -20,11 +17,6 @@ const ENLACES = [
 
 type NavLinksProps = {
   className?: string;
-  // La pastilla deslizante asume una fila horizontal (usa left/width con
-  // "bottom" fijo). En el menú móvil los links van en columna
-  // (flex-col), donde ese cálculo no tiene sentido -- ahí se pasa
-  // `mostrarIndicador={false}` y se queda con el subrayado de color al
-  // hacer hover/estar activo, sin la pastilla animada.
   mostrarIndicador?: boolean;
 };
 
@@ -35,14 +27,12 @@ export function NavLinks({ className, mostrarIndicador = true }: NavLinksProps) 
   const alClicarJugar = useIrA("/jugar");
   const alClicarMultijugador = useIrA("/multijugador");
   const { count: solicitudesPendientes } = useSolicitudesPendientes();
+  const { count: logrosReclamables } = useLogrosReclamables();
   const contenedorRef = useRef<HTMLDivElement>(null);
   const refsEnlaces = useRef<Array<HTMLAnchorElement | null>>([]);
   const [indicador, setIndicador] = useState<Indicador | null>(null);
   const indiceActivo = ENLACES.findIndex((e) => e.href === pathname);
 
-  // Pastilla que se desliza bajo el link activo (o el que tiene el
-  // ratón encima) -- se calcula midiendo el DOM en vez de con CSS puro
-  // porque los links no tienen ancho fijo (cada palabra pesa distinto).
   function moverIndicadorA(indice: number) {
     const el = refsEnlaces.current[indice];
     const contenedor = contenedorRef.current;
@@ -52,14 +42,9 @@ export function NavLinks({ className, mostrarIndicador = true }: NavLinksProps) 
     setIndicador({ left: rectEl.left - rectContenedor.left, width: rectEl.width });
   }
 
-  // Al cambiar de página (o al montar), el indicador salta al link de
-  // la ruta activa. Si la ruta no es ninguno de los 4 (ej. /login), se
-  // oculta -- no tiene sentido dejarlo "pegado" al último visitado.
   useEffect(() => {
     if (!mostrarIndicador) return;
     if (indiceActivo === -1) {
-      // Ruta sin link asociado (ej. /login) -- se oculta la pastilla en
-      // vez de dejarla "pegada" al último link activo.
       // eslint-disable-next-line react-hooks/set-state-in-effect
       setIndicador(null);
       return;
@@ -78,14 +63,6 @@ export function NavLinks({ className, mostrarIndicador = true }: NavLinksProps) 
     <div
       ref={contenedorRef}
       className={`relative ${className ?? ""}`}
-      // El reseteo va en el CONTENEDOR, no en cada <Link> -- si estuviera en
-      // cada link, cruzar el hueco entre "Inicio" y "Jugar" (por ejemplo)
-      // dispara primero el onMouseLeave del uno (la pastilla vuelve de golpe
-      // a su sitio) y al instante el onMouseEnter del otro (salta de nuevo
-      // hacia delante), y ese doble salto es justo el "se vuelve loca" que
-      // se ve al mover el ratón por encima. Poniéndolo aquí, la pastilla
-      // solo se resetea cuando el ratón sale de TODA la barra, no al pasar
-      // por los huecos entre enlaces.
       onMouseLeave={alSalirDelLink}
     >
       {mostrarIndicador && indicador && (
@@ -104,9 +81,6 @@ export function NavLinks({ className, mostrarIndicador = true }: NavLinksProps) 
             refsEnlaces.current[i] = el;
           }}
           onMouseEnter={() => mostrarIndicador && moverIndicadorA(i)}
-          // "Un Jugador" y "Multijugador" necesitan el gate de sesión
-          // (ver useIrA.ts): sin cuenta, en vez de entrar te manda a
-          // /login?redirect=<esa ruta>, y vuelve ahí mismo al loguearte.
           onClick={
             enlace.href === "/jugar"
               ? alClicarJugar
@@ -119,14 +93,17 @@ export function NavLinks({ className, mostrarIndicador = true }: NavLinksProps) 
           }`}
         >
           {enlace.label}
-          {/* Puntito verde: solicitudes de amistad pendientes. Solo en
-              "Social" -- desaparece en cuanto se acepta/rechaza la última
-              (ver SolicitudesContext), no al simplemente visitar la página. */}
           {enlace.href === "/social" && solicitudesPendientes > 0 && (
             <span
               aria-label={`${solicitudesPendientes} solicitud${solicitudesPendientes === 1 ? "" : "es"} de amistad pendiente${
                 solicitudesPendientes === 1 ? "" : "s"
               }`}
+              className="ml-1.5 h-2 w-2 shrink-0 rounded-full bg-primary shadow-[0_0_6px_rgba(74,222,154,0.9)]"
+            />
+          )}
+          {enlace.href === "/perfil" && logrosReclamables > 0 && (
+            <span
+              aria-label={`${logrosReclamables} logro${logrosReclamables === 1 ? "" : "s"} para reclamar`}
               className="ml-1.5 h-2 w-2 shrink-0 rounded-full bg-primary shadow-[0_0_6px_rgba(74,222,154,0.9)]"
             />
           )}

@@ -45,11 +45,3 @@ export type EstadisticasPerfil = {
   historial: PartidaHistorial[];
 };
 
-export type Logro = {
-  id: string;
-  nombre: string;
-  descripcion: string;
-  icono: string;
-  desbloqueado: boolean;
-};
-

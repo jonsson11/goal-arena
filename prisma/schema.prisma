@@ -64,6 +64,38 @@ model User {
   // Salas multijugador -- ver el modelo Sala más abajo.
   salasCreadas Sala[]        @relation("CreadorSala")
   salasUnidas  SalaJugador[]
+
+  // Logros reclamados -- ver el modelo LogroReclamado más abajo.
+  logrosReclamados LogroReclamado[]
+}
+
+// Logros -- el catálogo en sí (32 logros: nivel, amigos, partidas
+// multijugador, victorias por juego, dificultad difícil, rachas y unos
+// pocos especiales) vive en código (src/lib/logros.ts), NO en la base de
+// datos: son fijos, y su progreso se calcula en caliente a partir de
+// datos que ya existen (User.nivel, PartidaJugada, Friendship,
+// User.rachaMaxima) -- no hay nada que "desbloquear y guardar", el
+// desbloqueo es simplemente "¿tu contador ya llega al umbral?". Lo único
+// que hace falta persistir de verdad es qué ha RECLAMADO cada usuario
+// (una acción real, con una EXP real ya entregada) y cuándo.
+model LogroReclamado {
+  id     String @id @default(cuid())
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String
+
+  // Id estable del catálogo en código (p. ej. "nivel-10", "racha-20") --
+  // no es una FK a una tabla de logros, porque no existe tal tabla.
+  logroId String
+
+  // Cuánta EXP dio al reclamarlo -- se guarda el valor de ESE momento
+  // (no se recalcula si el día de mañana se cambia la recompensa de ese
+  // logro en el catálogo; lo ya reclamado, reclamado está).
+  expGanada Int
+
+  reclamadoEn DateTime @default(now())
+
+  // Un logro no se puede reclamar dos veces.
+  @@unique([userId, logroId])
 }
 
 enum ResultadoPartidaJugada {
@@ -104,12 +136,6 @@ enum AvatarTipo {
   EMOJI
   FOTO
 }
-
-// Nota: aquí vivían Achievement y UserAchievement (logros). Se han quitado
-// del schema porque esas tablas ya se habían borrado a mano en la BD real y
-// no estaban implementadas en ningún sitio del código -- se diseñan de
-// nuevo cuando se aborde esa parte (necesita antes que los juegos reporten
-// resultados al backend).
 
 enum EstadoAmistad {
   PENDIENTE

@@ -5,6 +5,7 @@ import Header from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { AuthProvider } from "@/features/auth/AuthContext";
 import { SolicitudesProvider } from "@/features/social/SolicitudesContext";
+import { LogrosReclamablesProvider } from "@/features/profile/LogrosReclamablesContext";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -19,13 +20,6 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Goal Arena",
   description: "Demuestra cuánto sabes de fútbol. En minutos.",
-  // Explícito en vez de depender de la convención especial `app/icon.png`
-  // -- esa genera una ruta dinámica interna (/icon) que en este proyecto
-  // estaba dando 404 en local (posible roce con el middleware, que corre
-  // en toda ruta salvo las que acaban en extensión de imagen tipo ".png",
-  // y "/icon" sin extensión no cuenta como tal). Apuntando aquí a un
-  // archivo estático normal de public/ (que SÍ acaba en ".png" y por
-  // tanto el middleware ni lo toca) nos ahorramos ese problema del todo.
   icons: {
     icon: "/icon.png",
   },
@@ -44,9 +38,11 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col">
         <AuthProvider>
          <SolicitudesProvider>
-          <Header />
-          {children}
-          <Footer />
+          <LogrosReclamablesProvider>
+           <Header />
+           {children}
+           <Footer />
+          </LogrosReclamablesProvider>
          </SolicitudesProvider>
         </AuthProvider>
       </body>
