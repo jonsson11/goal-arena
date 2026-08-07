@@ -34,13 +34,7 @@ type EntradaJugador = string | { nombre: string; url: string };
 //
 //  { nombre: "", url: "" },
 const JUGADORES_INICIALES: EntradaJugador[] = [
-{nombre:"David Albelda", url:"https://en.wikipedia.org/wiki/David_Albelda"},
-{nombre:"Patxi Puñal", url:"https://en.wikipedia.org/wiki/Francisco_Pu%C3%B1al"}
-
-
-
-
-
+  
 
   ];
 
