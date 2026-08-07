@@ -153,89 +153,101 @@ export function ProfileView() {
         </button>
       </div>
 
-      {pestana === "logros" ? (
-        <LogrosView />
-      ) : (
-        <>
-          <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
-            {statsRapidas.map((stat) => (
-              <div
-                key={stat.etiqueta}
-                className={`flex flex-col items-center gap-1 rounded-lg border border-border bg-card p-4 transition-all duration-200 hover:-translate-y-1 hover:border-primary/50 hover:shadow-[0_0_20px_-6px_rgba(74,222,154,0.5)] ${
-                  cargandoEstadisticas ? "animate-pulse" : ""
-                }`}
-              >
-                <span className="text-2xl font-extrabold text-primary">{stat.valor}</span>
-                <span className="text-center text-xs text-muted-foreground">{stat.etiqueta}</span>
-              </div>
-            ))}
-          </div>
+      <div
+        className={
+          pestana === "resumen"
+            ? "animate-in fade-in slide-in-from-bottom-1 flex flex-col gap-8 duration-300"
+            : "hidden"
+        }
+      >
+        <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+          {statsRapidas.map((stat) => (
+            <div
+              key={stat.etiqueta}
+              className={`flex flex-col items-center gap-1 rounded-lg border border-border bg-card p-4 transition-all duration-200 hover:-translate-y-1 hover:border-primary/50 hover:shadow-[0_0_20px_-6px_rgba(74,222,154,0.5)] ${
+                cargandoEstadisticas ? "animate-pulse" : ""
+              }`}
+            >
+              <span className="text-2xl font-extrabold text-primary">{stat.valor}</span>
+              <span className="text-center text-xs text-muted-foreground">{stat.etiqueta}</span>
+            </div>
+          ))}
+        </div>
 
-          {!cargandoEstadisticas && estadisticas && estadisticas.porModo.length > 0 && (
-            <div className="flex flex-col gap-3">
-              <h2 className="text-lg font-bold text-foreground">Por modo</h2>
-              <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-                {estadisticas.porModo.map((modo) => (
-                  <div
-                    key={modo.clave}
-                    className="flex flex-col gap-1 rounded-lg border border-border bg-card p-3 transition-colors duration-200 hover:border-primary/40"
-                  >
-                    <span className="truncate text-xs font-semibold text-foreground">{modo.etiqueta}</span>
-                    <span className="text-lg font-extrabold text-primary">{modo.porcentajeVictoria}%</span>
-                    <span className="text-xs text-muted-foreground">
-                      {modo.partidasJugadas} {modo.partidasJugadas === 1 ? "partida" : "partidas"}
-                    </span>
+        {!cargandoEstadisticas && estadisticas && estadisticas.porModo.length > 0 && (
+          <div className="flex flex-col gap-3">
+            <h2 className="text-lg font-bold text-foreground">Por modo</h2>
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+              {estadisticas.porModo.map((modo) => (
+                <div
+                  key={modo.clave}
+                  className="flex flex-col gap-1 rounded-lg border border-border bg-card p-3 transition-colors duration-200 hover:border-primary/40"
+                >
+                  <span className="truncate text-xs font-semibold text-foreground">{modo.etiqueta}</span>
+                  <span className="text-lg font-extrabold text-primary">{modo.porcentajeVictoria}%</span>
+                  <span className="text-xs text-muted-foreground">
+                    {modo.partidasJugadas} {modo.partidasJugadas === 1 ? "partida" : "partidas"}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        <div className="flex flex-col gap-3">
+          <h2 className="text-lg font-bold text-foreground">Amigos</h2>
+          <FriendsCarousel amigos={amigos} />
+        </div>
+
+        <div className="flex flex-col gap-3">
+          <h2 className="text-lg font-bold text-foreground">Partidas recientes</h2>
+
+          {!cargandoEstadisticas && estadisticas?.historial.length === 0 ? (
+            <p className="rounded-lg border border-dashed border-border bg-card/50 px-4 py-6 text-center text-sm text-muted-foreground">
+              Todavía no has jugado ninguna partida. ¡Ve a Jugar y estrena tu historial!
+            </p>
+          ) : (
+            <div className="flex flex-col gap-2">
+              {(estadisticas?.historial ?? []).map((partida) => (
+                <div
+                  key={partida.id}
+                  className="flex items-center justify-between rounded-lg border border-border bg-card px-4 py-3 transition-all duration-200 hover:border-primary/40 hover:bg-card/80"
+                >
+                  <div className="flex flex-col">
+                    <span className="text-sm font-semibold text-foreground">{partida.etiqueta}</span>
+                    {partida.resultado === "victoria" && (
+                      <span className="text-xs font-semibold text-primary">+{partida.expGanada} EXP</span>
+                    )}
                   </div>
-                ))}
-              </div>
+
+                  <div className="flex flex-col items-end gap-1">
+                    <span
+                      className={`rounded-full px-2 py-0.5 text-xs font-bold ${
+                        partida.resultado === "victoria"
+                          ? "bg-primary/15 text-primary"
+                          : "bg-destructive/15 text-destructive"
+                      }`}
+                    >
+                      {partida.resultado === "victoria" ? "Victoria" : "Derrota"}
+                    </span>
+                    <span className="text-xs text-muted-foreground">{formatearFecha(partida.fecha)}</span>
+                  </div>
+                </div>
+              ))}
             </div>
           )}
+        </div>
+      </div>
 
-          <div className="flex flex-col gap-3">
-            <h2 className="text-lg font-bold text-foreground">Amigos</h2>
-            <FriendsCarousel amigos={amigos} />
-          </div>
-
-          <div className="flex flex-col gap-3">
-            <h2 className="text-lg font-bold text-foreground">Partidas recientes</h2>
-
-            {!cargandoEstadisticas && estadisticas?.historial.length === 0 ? (
-              <p className="rounded-lg border border-dashed border-border bg-card/50 px-4 py-6 text-center text-sm text-muted-foreground">
-                Todavía no has jugado ninguna partida. ¡Ve a Jugar y estrena tu historial!
-              </p>
-            ) : (
-              <div className="flex flex-col gap-2">
-                {(estadisticas?.historial ?? []).map((partida) => (
-                  <div
-                    key={partida.id}
-                    className="flex items-center justify-between rounded-lg border border-border bg-card px-4 py-3 transition-all duration-200 hover:border-primary/40 hover:bg-card/80"
-                  >
-                    <div className="flex flex-col">
-                      <span className="text-sm font-semibold text-foreground">{partida.etiqueta}</span>
-                      {partida.resultado === "victoria" && (
-                        <span className="text-xs font-semibold text-primary">+{partida.expGanada} EXP</span>
-                      )}
-                    </div>
-
-                    <div className="flex flex-col items-end gap-1">
-                      <span
-                        className={`rounded-full px-2 py-0.5 text-xs font-bold ${
-                          partida.resultado === "victoria"
-                            ? "bg-primary/15 text-primary"
-                            : "bg-destructive/15 text-destructive"
-                        }`}
-                      >
-                        {partida.resultado === "victoria" ? "Victoria" : "Derrota"}
-                      </span>
-                      <span className="text-xs text-muted-foreground">{formatearFecha(partida.fecha)}</span>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-        </>
-      )}
+      <div
+        className={
+          pestana === "logros"
+            ? "animate-in fade-in slide-in-from-bottom-1 duration-300"
+            : "hidden"
+        }
+      >
+        <LogrosView />
+      </div>
 
       <EditProfileDialog
         open={editando}
