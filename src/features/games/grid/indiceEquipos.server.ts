@@ -3,6 +3,7 @@
 // SOLO SERVIDOR.
 
 import { prisma } from "@/lib/prisma";
+import { conCache } from "@/lib/cache";
 import type { Condicion } from "./type";
 
 export const PATRON_NOMBRE_INVALIDO =
@@ -41,53 +42,63 @@ export type Indice = {
   equiposElegibles: Set<string>; // equipos marcados con elegibleParaGrid = true
 };
 
+// Antes se llamaba a esto en CADA petición -- generarTablero, "¿esta
+// casilla tiene solución única?" al colocar un jugador, contar-soluciones
+// del debug... y cada llamada releía TODOS los fichajes (Stint) de la
+// base de datos desde cero, con sus jugadores y equipos. Con una
+// dificultad alta y un tablero grande, eso eran cientos o miles de filas
+// por CADA casilla que marcabas -- justo lo que hacía sentir lenta esa
+// interacción (07/08/2026). Envuelto en conCache (5 min) para que solo
+// se reconstruya de verdad una vez cada rato, no en cada toque.
 export async function construirIndice(): Promise<Indice> {
-  const stints = await obtenerStints();
+  return conCache("indice-equipos-grid", 5 * 60 * 1000, async () => {
+    const stints = await obtenerStints();
 
-  const jugadoresPorEquipo = new Map<string, Set<string>>();
-  const jugadoresPorNacionalidad = new Map<string, Set<string>>();
-  const nacionalidadesPorEquipo = new Map<string, Set<string>>();
-  const paisPorEquipo = new Map<string, string>();
-  const escudoPorEquipo = new Map<string, string | null>();
-  const totalPorNacionalidad = new Map<string, number>();
-  const nombresPorJugador = new Map<string, string>();
-  const equiposElegibles = new Set<string>();
+    const jugadoresPorEquipo = new Map<string, Set<string>>();
+    const jugadoresPorNacionalidad = new Map<string, Set<string>>();
+    const nacionalidadesPorEquipo = new Map<string, Set<string>>();
+    const paisPorEquipo = new Map<string, string>();
+    const escudoPorEquipo = new Map<string, string | null>();
+    const totalPorNacionalidad = new Map<string, number>();
+    const nombresPorJugador = new Map<string, string>();
+    const equiposElegibles = new Set<string>();
 
-  for (const { playerId, team, player } of stints) {
-    const equipo = team.nombre;
+    for (const { playerId, team, player } of stints) {
+      const equipo = team.nombre;
 
-    if (!jugadoresPorEquipo.has(equipo)) jugadoresPorEquipo.set(equipo, new Set());
-    jugadoresPorEquipo.get(equipo)!.add(playerId);
-    paisPorEquipo.set(equipo, team.pais);
-    escudoPorEquipo.set(equipo, team.escudo);
-    nombresPorJugador.set(playerId, player.nombre);
-    if (team.elegibleParaGrid) equiposElegibles.add(equipo);
+      if (!jugadoresPorEquipo.has(equipo)) jugadoresPorEquipo.set(equipo, new Set());
+      jugadoresPorEquipo.get(equipo)!.add(playerId);
+      paisPorEquipo.set(equipo, team.pais);
+      escudoPorEquipo.set(equipo, team.escudo);
+      nombresPorJugador.set(playerId, player.nombre);
+      if (team.elegibleParaGrid) equiposElegibles.add(equipo);
 
-    const nacionalidad = player.nacionalidad;
-    const nacionalidadValida =
-      !!nacionalidad && nacionalidad !== "Desconocida" && esNombreValido(nacionalidad);
+      const nacionalidad = player.nacionalidad;
+      const nacionalidadValida =
+        !!nacionalidad && nacionalidad !== "Desconocida" && esNombreValido(nacionalidad);
 
-    if (!nacionalidadValida) continue;
+      if (!nacionalidadValida) continue;
 
-    if (!jugadoresPorNacionalidad.has(nacionalidad)) jugadoresPorNacionalidad.set(nacionalidad, new Set());
-    jugadoresPorNacionalidad.get(nacionalidad)!.add(playerId);
+      if (!jugadoresPorNacionalidad.has(nacionalidad)) jugadoresPorNacionalidad.set(nacionalidad, new Set());
+      jugadoresPorNacionalidad.get(nacionalidad)!.add(playerId);
 
-    if (!nacionalidadesPorEquipo.has(equipo)) nacionalidadesPorEquipo.set(equipo, new Set());
-    nacionalidadesPorEquipo.get(equipo)!.add(nacionalidad);
+      if (!nacionalidadesPorEquipo.has(equipo)) nacionalidadesPorEquipo.set(equipo, new Set());
+      nacionalidadesPorEquipo.get(equipo)!.add(nacionalidad);
 
-    totalPorNacionalidad.set(nacionalidad, (totalPorNacionalidad.get(nacionalidad) ?? 0) + 1);
-  }
+      totalPorNacionalidad.set(nacionalidad, (totalPorNacionalidad.get(nacionalidad) ?? 0) + 1);
+    }
 
-  return {
-    jugadoresPorEquipo,
-    jugadoresPorNacionalidad,
-    nacionalidadesPorEquipo,
-    paisPorEquipo,
-    escudoPorEquipo,
-    totalPorNacionalidad,
-    nombresPorJugador,
-    equiposElegibles,
-  };
+    return {
+      jugadoresPorEquipo,
+      jugadoresPorNacionalidad,
+      nacionalidadesPorEquipo,
+      paisPorEquipo,
+      escudoPorEquipo,
+      totalPorNacionalidad,
+      nombresPorJugador,
+      equiposElegibles,
+    };
+  });
 }
 
 export function interseccionNoVacia(a: Set<string>, b: Set<string>): boolean {

@@ -2,6 +2,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { normalizarTexto } from "@/lib/normalizacion/normalizarTexto";
+import { conCache } from "@/lib/cache";
 import type { Jugador } from "@/features/games/shared/types";
 
 export const dynamic = "force-dynamic";
@@ -20,9 +21,15 @@ export async function GET(request: Request) {
   try {
     const consultaNormalizada = normalizarTexto(q);
 
-    const candidatos = await prisma.player.findMany({
-      select: { nombre: true },
-    });
+    // Antes esto pedía TODOS los jugadores a la base de datos en CADA
+    // tecla (aunque solo fueran sus nombres, con cientos/miles de filas
+    // eso se nota). Los nombres apenas cambian salvo cuando se ejecuta un
+    // script de sync, así que se cachean 5 minutos -- de la segunda tecla
+    // en adelante (y de la siguiente búsqueda, y la siguiente...) esto ya
+    // no toca la base de datos para nada.
+    const candidatos = await conCache("nombres-jugadores", 5 * 60 * 1000, () =>
+      prisma.player.findMany({ select: { nombre: true } })
+    );
 
     const nombresCoincidentes = candidatos
       .filter((c) => normalizarTexto(c.nombre).includes(consultaNormalizada))
