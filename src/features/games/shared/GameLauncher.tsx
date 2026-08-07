@@ -91,7 +91,7 @@ export function GameLauncher({ href, children, dificultades = false }: GameLaunc
         // "principal" reconocible en toda la app, en vez de un link de
         // texto suelto. Círculo sin texto en móvil, píldora "< Atrás" a
         // partir de sm: -- mismo criterio que BotonAtras.tsx (07/08/2026).
-        className="launcher-entrada relative z-10 mb-8 flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground transition-opacity hover:opacity-90 sm:h-auto sm:w-auto sm:gap-1.5 sm:rounded-md sm:px-4 sm:py-2 sm:text-sm sm:font-semibold"
+        className="launcher-entrada relative z-10 mb-8 inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground transition-opacity hover:opacity-90 sm:h-auto sm:w-auto sm:gap-1.5 sm:rounded-md sm:px-4 sm:py-2 sm:text-sm sm:font-semibold"
         style={conRetraso(0)}
         aria-label="Atrás"
       >
