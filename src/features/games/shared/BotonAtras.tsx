@@ -14,6 +14,15 @@
 // sobre todo TituloPagina.tsx, que lo posiciona con `absolute` en la
 // misma fila que el título -- un margen aquí no haría nada útil ahí y
 // solo estorbaría si algún día se usa suelto en otro sitio.
+//
+// Círculo sin texto en móvil, píldora "< Atrás" a partir de `sm:`
+// (07/08/2026) -- la versión con texto, al vivir pegada al margen
+// izquierdo justo a la altura del título (ver TituloPagina.tsx), en
+// pantallas estrechas llegaba a solaparse con el propio título si este
+// era largo. Un círculo pequeño con solo la flecha ocupa mucho menos
+// ancho y es un patrón de vuelta-atrás igual de reconocible en móvil
+// (el `aria-label` mantiene el texto "Atrás" para lectores de pantalla,
+// aunque visualmente ya no aparezca).
 
 import Link from "next/link";
 
@@ -21,9 +30,10 @@ export function BotonAtras({ href, className = "" }: { href: string; className?:
   return (
     <Link
       href={href}
-      className={`z-10 inline-flex items-center gap-1.5 rounded-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90 ${className}`}
+      aria-label="Atrás"
+      className={`z-10 flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground transition-opacity hover:opacity-90 sm:h-auto sm:w-auto sm:gap-1.5 sm:rounded-md sm:px-4 sm:py-2 sm:text-sm sm:font-semibold ${className}`}
     >
-      <svg viewBox="0 0 20 20" fill="none" className="h-4 w-4" xmlns="http://www.w3.org/2000/svg">
+      <svg viewBox="0 0 20 20" fill="none" className="h-4 w-4 shrink-0" xmlns="http://www.w3.org/2000/svg">
         <path
           d="M12.5 15L7.5 10L12.5 5"
           stroke="currentColor"
@@ -32,7 +42,7 @@ export function BotonAtras({ href, className = "" }: { href: string; className?:
           strokeLinejoin="round"
         />
       </svg>
-      Atrás
+      <span className="hidden sm:inline">Atrás</span>
     </Link>
   );
 }

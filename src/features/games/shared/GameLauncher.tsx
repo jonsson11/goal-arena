@@ -89,11 +89,13 @@ export function GameLauncher({ href, children, dificultades = false }: GameLaunc
         // Mismo estilo que el botón "Iniciar sesión" del navbar
         // (AccountMenu.tsx) a propósito -- un solo estilo de botón
         // "principal" reconocible en toda la app, en vez de un link de
-        // texto suelto.
-        className="launcher-entrada relative z-10 mb-8 inline-flex items-center gap-1.5 rounded-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90"
+        // texto suelto. Círculo sin texto en móvil, píldora "< Atrás" a
+        // partir de sm: -- mismo criterio que BotonAtras.tsx (07/08/2026).
+        className="launcher-entrada relative z-10 mb-8 flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground transition-opacity hover:opacity-90 sm:h-auto sm:w-auto sm:gap-1.5 sm:rounded-md sm:px-4 sm:py-2 sm:text-sm sm:font-semibold"
         style={conRetraso(0)}
+        aria-label="Atrás"
       >
-        <svg viewBox="0 0 20 20" fill="none" className="h-4 w-4" xmlns="http://www.w3.org/2000/svg">
+        <svg viewBox="0 0 20 20" fill="none" className="h-4 w-4 shrink-0" xmlns="http://www.w3.org/2000/svg">
           <path
             d="M12.5 15L7.5 10L12.5 5"
             stroke="currentColor"
@@ -102,7 +104,7 @@ export function GameLauncher({ href, children, dificultades = false }: GameLaunc
             strokeLinejoin="round"
           />
         </svg>
-        Atrás
+        <span className="hidden sm:inline">Atrás</span>
       </Link>
 
       <div className="relative z-10 mx-auto grid w-full max-w-4xl items-center gap-10 lg:grid-cols-[1.05fr_1fr] lg:gap-14">

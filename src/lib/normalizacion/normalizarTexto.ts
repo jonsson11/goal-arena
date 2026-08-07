@@ -28,6 +28,16 @@ export function normalizarTexto(texto: string): string {
   return aplicarSustitucionesManuales(texto)
     .normalize("NFD")
     .replace(/[\u0300-\u036f]/g, "") // "Mbappé" -> "Mbappe"
+    // Apóstrofes (rectos y curvos), guiones, puntos y espacios -- para que
+    // dé igual cómo los escriba (o no) quien busca. Sin esto, "Eto'o" se
+    // normalizaba a "eto'o" y buscar "Etoo" (sin apóstrofe, lo más
+    // natural al teclear) no encontraba coincidencia -- "eto'o".includes
+    // ("etoo") es false por ese único carácter de en medio. Quitar
+    // también el espacio resuelve el mismo problema con apellidos con
+    // guion: "Alexander-Arnold" y "Alexander Arnold" (con espacio en vez
+    // de guion, lo más natural al escribirlo a mano) normalizan ahora
+    // los dos a "alexanderarnold".
+    .replace(/['\u2019\-.\s]/g, "")
     .toLowerCase()
     .trim();
 }
