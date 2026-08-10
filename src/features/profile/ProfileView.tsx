@@ -83,7 +83,7 @@ export function ProfileView() {
   ];
 
   return (
-    <div className="mx-auto flex max-w-2xl flex-col gap-8 px-6 py-10">
+    <div className="mx-auto flex w-full max-w-2xl min-w-0 flex-col gap-8 px-6 py-10 overflow-x-hidden">
       <div className="flex flex-col items-center gap-4 rounded-2xl border border-primary/30 bg-card p-8 text-center shadow-[0_0_30px_-8px_rgba(74,222,154,0.4)]">
         <div className="relative">
           {usuario.avatarTipo === "foto" ? (
@@ -242,7 +242,7 @@ export function ProfileView() {
       <div
         className={
           pestana === "logros"
-            ? "animate-in fade-in slide-in-from-bottom-1 duration-300"
+            ? "animate-in fade-in slide-in-from-bottom-1 duration-300 w-full min-w-0"
             : "hidden"
         }
       >

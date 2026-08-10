@@ -80,7 +80,7 @@ export function LogrosView() {
   const totalReclamados = logros.filter((l) => l.estado === "reclamado").length;
 
   return (
-    <div className="flex flex-col gap-7">
+    <div className="flex min-w-0 w-full flex-col gap-7">
       <p className="text-center text-sm text-muted-foreground">
         {totalReclamados} / {logros.length} logros reclamados
       </p>
@@ -88,12 +88,12 @@ export function LogrosView() {
       {grupos.map((grupo) => {
         const IconoCategoria = COMPONENTE_POR_ICONO[ICONO_POR_CATEGORIA[grupo.categoria]] ?? Star;
         return (
-          <div key={grupo.categoria} className="flex flex-col gap-3">
+          <div key={grupo.categoria} className="flex min-w-0 w-full flex-col gap-3">
             <h3 className="flex items-center gap-1.5 text-sm font-bold text-foreground">
               <IconoCategoria className="h-4 w-4 text-muted-foreground" />
               {NOMBRE_CATEGORIA[grupo.categoria]}
             </h3>
-            <div className="-mx-1 flex gap-3 overflow-x-auto px-1 pb-1">
+            <div className="-mx-1 flex w-full min-w-0 max-w-full gap-3 overflow-x-auto overscroll-x-contain px-1 pt-2 pb-1">
               {grupo.logros.map((logro) => (
                 <button
                   key={logro.id}

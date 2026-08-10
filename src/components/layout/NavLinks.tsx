@@ -88,7 +88,7 @@ export function NavLinks({ className, mostrarIndicador = true }: NavLinksProps) 
                 ? alClicarMultijugador
                 : undefined
           }
-          className={`relative inline-flex items-center transition-colors hover:text-primary ${
+          className={`relative inline-flex shrink-0 items-center whitespace-nowrap transition-colors hover:text-primary ${
             i === indiceActivo ? "text-primary" : ""
           }`}
         >

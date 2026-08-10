@@ -2,6 +2,7 @@
 
 import { use, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
+import { Eye, EyeOff } from "lucide-react";
 import { useAuth } from "@/features/auth/AuthContext";
 import { AuthGate } from "@/features/auth/AuthGate";
 import { GameButton } from "@/features/games/shared/GameButton";
@@ -10,6 +11,11 @@ import { PlayerSearch } from "@/features/games/shared/PlayerSearch";
 import { ExperienciaGanada } from "@/features/games/shared/ExperienciaGanada";
 import { CasillaGrid, EncabezadoCondicion } from "@/features/games/grid/GridCasillas";
 import { celdasValidasParaJugador } from "@/features/games/grid/logic";
+import {
+  contarSolucionesTodasLasCeldas,
+  TextoRespuestasCorrectas,
+  type ResultadoCelda,
+} from "@/features/games/grid/respuestasCorrectas";
 import type { Tablero, Celda } from "@/features/games/grid/type";
 import type { Jugador } from "@/features/games/shared/types";
 import type { EstadoPartida } from "@/features/multijugador/type";
@@ -333,6 +339,7 @@ export default function PartidaMultijugadorPage({ params }: { params: Promise<{ 
         {finalizada ? (
           <ResultadoPartida
             partida={partida}
+            tablero={tablero}
             esCreador={esCreador}
             onPedirRevancha={pedirRevancha}
             onSalir={() => setConfirmandoSalida(true)}
@@ -438,18 +445,45 @@ export default function PartidaMultijugadorPage({ params }: { params: Promise<{ 
 
 function ResultadoPartida({
   partida,
+  tablero,
   esCreador,
   onPedirRevancha,
   onSalir,
   pidiendoRevancha,
 }: {
   partida: EstadoPartida;
+  tablero: Tablero;
   esCreador: boolean;
   onPedirRevancha: () => void;
   onSalir: () => void;
   pidiendoRevancha: boolean;
 }) {
   const { usuario } = useAuth();
+
+  // Mismo mecanismo que el modo individual (GridBoard.tsx): se piden los
+  // datos al servidor solo la primera vez que se despliega el texto, y se
+  // guardan en caché aquí para no repetir la petición si se pliega y se
+  // vuelve a desplegar. `tablero` ya trae mi propio progreso (miProgreso),
+  // así que TextoRespuestasCorrectas puede pintar en verde/rojo tachado
+  // exactamente igual que en el modo individual.
+  const [respuestasCorrectas, setRespuestasCorrectas] = useState<Record<string, ResultadoCelda> | null>(null);
+  const [cargandoRespuestas, setCargandoRespuestas] = useState(false);
+  const [mostrandoRespuestas, setMostrandoRespuestas] = useState(false);
+
+  async function alternarRespuestasCorrectas() {
+    if (mostrandoRespuestas) {
+      setMostrandoRespuestas(false);
+      return;
+    }
+
+    setMostrandoRespuestas(true);
+    if (!respuestasCorrectas) {
+      setCargandoRespuestas(true);
+      const datos = await contarSolucionesTodasLasCeldas(tablero);
+      setRespuestasCorrectas(datos);
+      setCargandoRespuestas(false);
+    }
+  }
 
   const titulo =
     partida.miResultado === "VICTORIA" ? "¡Has ganado!" : partida.miResultado === "EMPATE" ? "Empate" : "Has perdido";
@@ -514,6 +548,27 @@ function ResultadoPartida({
             </div>
           </div>
         ))}
+      </div>
+
+      <div className="flex w-full flex-col items-center gap-2">
+        <GameButton
+          variant="secondary"
+          onClick={alternarRespuestasCorrectas}
+          className="flex w-full items-center justify-center gap-2 transition-transform hover:scale-[1.02]"
+        >
+          {mostrandoRespuestas ? (
+            <>
+              <EyeOff className="h-4 w-4" /> Ocultar respuestas correctas
+            </>
+          ) : (
+            <>
+              <Eye className="h-4 w-4" /> Mostrar respuestas correctas
+            </>
+          )}
+        </GameButton>
+        {mostrandoRespuestas && (
+          <TextoRespuestasCorrectas tablero={tablero} datos={respuestasCorrectas} cargando={cargandoRespuestas} />
+        )}
       </div>
 
       <div className="flex w-full flex-col gap-3">
