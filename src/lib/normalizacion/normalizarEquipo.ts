@@ -36,9 +36,16 @@ export function normalizar(texto: string): string {
 // genérica en italiano/francés, no el nombre que distingue al club):
 // "Udinese Calcio", "Atalanta BC", "Stade Rennais" se distinguen por
 // "Udinese"/"Atalanta"/"Rennais", no por el sufijo/prefijo societario.
+//
+// "acf"/"afc"/"ssc"/"ssd"/"asd"/"us"/"uc" son la misma familia -- siglas de
+// forma societaria (asociación/unión/sociedad deportiva) que anteponen su
+// nombre muchos clubes italianos e ingleses. Sin "acf" aquí, "Fiorentina" y
+// "ACF Fiorentina" normalizaban distinto ("fiorentina" vs "acf fiorentina")
+// y detectar-equipos-duplicados.ts no los agrupaba como el mismo club.
 export const RUIDO_CLUB = new Set([
   "fc", "cf", "rc", "rcd", "cd", "ud", "sd", "ca", "ac", "as", "sc", "sl",
   "sad", "club", "de", "del", "futbol", "football", "calcio", "bc", "stade",
+  "acf", "afc", "ssc", "ssd", "asd", "us", "uc",
 ]);
 
 // Gentilicios/apócopes que SÍ hace falta resolver a mano: no son ruido

@@ -25,13 +25,14 @@
 //    señal de que en realidad son dos equipos distintos que el
 //    emparejamiento por nombre ha juntado por error.
 //
-// 3. GRUPO NORMAL: se elige un equipo "canónico" (el que tenga escudo >
-//    externalId > elegibleParaGrid > más Stint+PlayerStat+jugadores con
-//    equipoActual, en ese orden de prioridad) y se reapuntan hacia él
-//    todos los Stint / PlayerStat / Player.equipoActual de las demás
-//    filas del grupo, que luego se borran. Si alguna fila no-canónica
-//    tenía un externalId que el canónico no tiene, se hereda antes de
-//    borrar (para no perder ese dato).
+// 3. GRUPO NORMAL: se elige un equipo "canónico" (el que tenga
+//    elegibleParaGrid=true > más Stint asignados > escudo > externalId >
+//    resto de peso de uso real, en ese orden de prioridad -- ver
+//    `compararParaCanonico` más abajo) y se reapuntan hacia él todos los
+//    Stint / PlayerStat / Player.equipoActual de las demás filas del
+//    grupo, que luego se borran. Si alguna fila no-canónica tenía un
+//    externalId que el canónico no tiene, se hereda antes de borrar (para
+//    no perder ese dato).
 //
 // Ejecutar con:
 //   npx tsx scripts/equipos/fusionar-equipos-duplicados.ts             (dry-run, no escribe nada)
@@ -59,8 +60,40 @@ type EquipoFila = {
   elegibleParaGrid: boolean;
 };
 
-function puntuar(equipo: EquipoFila): number {
-  return (equipo.escudo ? 4 : 0) + (equipo.externalId ? 2 : 0) + (equipo.elegibleParaGrid ? 1 : 0);
+// Desempates "de siempre" para cuando elegibleParaGrid y Stints no deciden
+// (ver compararParaCanonico) -- ya no incluye elegibleParaGrid, que ahora
+// se comprueba aparte y con prioridad absoluta, por delante de esto.
+function puntuarResto(equipo: EquipoFila): number {
+  return (equipo.escudo ? 2 : 0) + (equipo.externalId ? 1 : 0);
+}
+
+type EquipoConPeso = {
+  equipo: EquipoFila;
+  peso: number;
+  stints: number;
+  playerStats: number;
+  equipoActualDe: number;
+};
+
+// Pedido explícito del usuario (ver claude/pendientes-goal-arena.md): el
+// Grid necesita que el equipo canónico tenga elegibleParaGrid=true, así
+// que eso manda por encima de cualquier otro criterio -- si uno de los
+// duplicados ya es elegible y el otro no, gana el elegible aunque el otro
+// tenga escudo/externalId/más partidas. Solo si empatan en eso (los dos
+// true o los dos false) se mira quién tiene más Stints asignados -- ese es
+// el que "más cuesta mover" de verdad. Si siguen empatados, se cae a los
+// desempates de siempre (escudo > externalId > resto de peso de uso real)
+// para no dejarlo a un orden arbitrario.
+function compararParaCanonico(a: EquipoConPeso, b: EquipoConPeso): number {
+  const diferenciaElegible = Number(b.equipo.elegibleParaGrid) - Number(a.equipo.elegibleParaGrid);
+  if (diferenciaElegible !== 0) return diferenciaElegible;
+
+  if (a.stints !== b.stints) return b.stints - a.stints;
+
+  const diferenciaPuntos = puntuarResto(b.equipo) - puntuarResto(a.equipo);
+  if (diferenciaPuntos !== 0) return diferenciaPuntos;
+
+  return b.playerStats + b.equipoActualDe - (a.playerStats + a.equipoActualDe);
 }
 
 // Restos crudos de la plantilla de infobox de Wikipedia que se colaron
@@ -157,10 +190,9 @@ async function main() {
       continue;
     }
 
-    // Peso de uso real (Stint + PlayerStat + jugadores con equipoActual),
-    // para desempatar cuando ni escudo ni externalId ni elegibleParaGrid
-    // deciden -- el que más tenga es el que más "cuesta" mover, así que
-    // se queda como canónico y los demás se reapuntan hacia él.
+    // Se cuentan Stint / PlayerStat / jugadores con equipoActual de cada
+    // fila del grupo -- compararParaCanonico decide con esto (y con
+    // elegibleParaGrid/escudo/externalId) quién se queda como canónico.
     const conPeso = await Promise.all(
       lista.map(async (equipo) => {
         const [stints, playerStats, equipoActualDe] = await Promise.all([
@@ -172,16 +204,15 @@ async function main() {
       })
     );
 
-    conPeso.sort((a, b) => {
-      const diferenciaPuntos = puntuar(b.equipo) - puntuar(a.equipo);
-      if (diferenciaPuntos !== 0) return diferenciaPuntos;
-      return b.peso - a.peso;
-    });
+    conPeso.sort(compararParaCanonico);
 
     const [canonicoInfo, ...restoInfo] = conPeso;
     const canonico = canonicoInfo.equipo;
 
-    console.log(`"${clave}": canónico = "${canonico.nombre}" (id=${canonico.id})`);
+    console.log(
+      `"${clave}": canónico = "${canonico.nombre}" (id=${canonico.id}, ` +
+        `elegibleParaGrid=${canonico.elegibleParaGrid}, stints=${canonicoInfo.stints})`
+    );
 
     const externalIdAHeredar = !canonico.externalId
       ? restoInfo.find((r) => r.equipo.externalId)?.equipo.externalId
