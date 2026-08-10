@@ -100,6 +100,15 @@ export type EstadoPartidaTop10 = EstadoPartidaComun & {
   // `miProgreso`. Mismo criterio de seguridad que GRID, que tampoco manda
   // qué jugador va en cada casilla hasta que tú lo colocas.
   miProgreso: AciertoPropioTop10[];
+  // Nacionalidad de cada posición (1-based, índice 0 = posición 1),
+  // SIEMPRE visible desde el principio para las 10 -- a propósito, como
+  // pista, igual que el Top10 de Un Jugador (que muestra la bandera de
+  // cada fila aunque todavía no la hayas acertado). `null` si esa
+  // posición ya está acertada (ahí la bandera de verdad sale de
+  // `miProgreso`) o si el jugador no tiene nacionalidad registrada. Esto
+  // NO es la solución -- una bandera por sí sola no te dice el nombre --
+  // así que revelarla no rompe el criterio de seguridad de arriba.
+  pistasNacionalidad: (string | null)[];
 };
 
 /** Forma exacta de GET /api/salas/[codigo]/partida -- lo que hace falta

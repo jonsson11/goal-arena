@@ -224,11 +224,10 @@ function calcularResultados(
  * transacción con `FOR UPDATE` (bloqueo de fila) en cada una de esas
  * llamadas, aunque el 99% de las veces la partida ni de lejos toca
  * cerrarla todavía -- eso serializaba peticiones que no tenían nada que
- * ver entre sí (cada una esperando a que la anterior soltara el bloqueo)
- * y era justo lo que hacía sentir la sala/partida menos fluida. Ahora se
- * hace primero una comprobación barata SIN bloqueo (dos SELECT sueltos) y
- * solo se entra en la transacción de verdad cuando de verdad hay algo que
- * cerrar (10/08/2026).
+ * ver entre sí (cada una esperando a que la anterior soltara el bloqueo).
+ * Ahora se hace primero una comprobación barata SIN bloqueo (dos SELECT
+ * sueltos) y solo se entra en la transacción de verdad cuando de verdad
+ * hay algo que cerrar.
  */
 export async function finalizarPartidaSiToca(salaId: string): Promise<void> {
   const previa = await prisma.sala.findUnique({
@@ -237,23 +236,23 @@ export async function finalizarPartidaSiToca(salaId: string): Promise<void> {
   });
   if (!previa || previa.estado !== "EN_CURSO") return; // ya cerrada, o no está en curso todavía
 
-  const tiempoAgotado =
+  const yaTocaCerrar =
     previa.empezadaEn !== null &&
     previa.duracionSegundos !== null &&
     Date.now() >= previa.empezadaEn.getTime() + previa.duracionSegundos * 1000;
 
-  if (!tiempoAgotado) {
+  if (!yaTocaCerrar) {
     // Si alguien ya completó el reto, lo normal es que la propia ruta que
     // colocó/acertó esa última pieza ya haya cerrado la partida al
     // instante (ver .../colocar y .../acertar) -- este chequeo es solo
     // una red de seguridad barata por si un poll se cruzó antes de que
     // eso terminara de aplicarse, así que basta con un COUNT sin bloqueo.
-    const objetivo = objetivoAciertos(previa.juego as JuegoMultijugador, previa.contenido);
-    const alguienCompleto = await prisma.salaJugador.findFirst({
-      where: { salaId, celdasResueltas: { gte: objetivo } },
+    const objetivoPrevio = objetivoAciertos(previa.juego as JuegoMultijugador, previa.contenido);
+    const alguienCompletoYa = await prisma.salaJugador.findFirst({
+      where: { salaId, celdasResueltas: { gte: objetivoPrevio } },
       select: { id: true },
     });
-    if (!alguienCompleto) return; // todavía no toca cerrarla -- caso normal en casi todos los polls
+    if (!alguienCompletoYa) return; // todavía no toca cerrarla -- caso normal en casi todos los polls
   }
 
   // A partir de aquí sí puede tocar cerrar la sala de verdad: entramos en
@@ -420,6 +419,11 @@ export async function construirEstadoPartida(salaId: string, miUserId: string): 
       titulo: contenido.titulo,
       descripcion: contenido.descripcion,
       miProgreso: (mi.progreso as unknown as AciertoPropioTop10[]) ?? [],
+      // Solo la nacionalidad de cada posición, como pista visible desde
+      // el principio -- igual que el Top10 de Un Jugador -- SIN el
+      // nombre/valor real, que sigue sin mandarse hasta que se acierta
+      // (ver el comentario de seguridad en EstadoPartidaTop10).
+      pistasNacionalidad: contenido.respuestas.map((r) => r.nacionalidad ?? null),
     };
   }
 

@@ -103,17 +103,23 @@ function FichaRival({
 // -- 1-5 en la columna izquierda, 6-10 en la derecha -- que el modo
 // individual, ver Top10Game.tsx), pero SIN el ranking completo: solo se
 // conoce el nombre real de una posición cuando aparece en `miProgreso`
-// (ver comentario de seguridad en EstadoPartidaTop10). Versión más
-// sencilla que la del modo individual (sin abreviar nombre por
-// ResizeObserver ni colores oro/plata/bronce) -- aquí lo urgente es que
-// funcione igual de bien en partida real, no replicar cada detalle visual
-// del solitario.
+// (ver comentario de seguridad en EstadoPartidaTop10). La bandera, en
+// cambio, se ve SIEMPRE desde el principio en las 10 -- es una pista a
+// propósito, exactamente igual que el Top10 de Un Jugador (que también
+// enseña la bandera de cada fila antes de acertarla) -- viene de
+// `pistasNacionalidad`, que el servidor manda aparte del ranking
+// completo (una bandera sola no delata el nombre). Versión más sencilla
+// que la del modo individual (sin abreviar nombre por ResizeObserver ni
+// colores oro/plata/bronce) -- aquí lo urgente es que funcione igual de
+// bien en partida real, no replicar cada detalle visual del solitario.
 function TableroTop10Online({
   totalPosiciones,
   miProgreso,
+  pistasNacionalidad,
 }: {
   totalPosiciones: number;
   miProgreso: Extract<EstadoPartida, { juego: "TOP10" }>["miProgreso"];
+  pistasNacionalidad: Extract<EstadoPartida, { juego: "TOP10" }>["pistasNacionalidad"];
 }) {
   const porPosicion = new Map(miProgreso.map((a) => [a.posicion, a.entrada]));
 
@@ -124,7 +130,12 @@ function TableroTop10Online({
     >
       {Array.from({ length: totalPosiciones }, (_, i) => i + 1).map((posicion) => {
         const entrada = porPosicion.get(posicion);
-        const codigoPais = entrada ? obtenerCodigoPais(entrada.nacionalidad) : null;
+        // La bandera sale de la pista del servidor (siempre disponible),
+        // no de `entrada` -- así se ve desde el principio, no solo tras
+        // acertar. Si ya acerté esa posición, `entrada.nacionalidad`
+        // coincide con la pista de todos modos.
+        const nacionalidad = pistasNacionalidad[posicion - 1] ?? null;
+        const codigoPais = obtenerCodigoPais(nacionalidad);
 
         return (
           <div
@@ -158,18 +169,20 @@ function TableroTop10Online({
                 </span>
               )}
             </div>
-            {entrada &&
-              (codigoPais ? (
-                <span className={`fi fi-${codigoPais} h-3 w-4 shrink-0 rounded-sm sm:h-5 sm:w-7`} />
-              ) : (
-                // Nacionalidad sin bandera mapeada todavía (ver banderas.ts) --
-                // en vez de dejar el hueco en blanco (parecía "no ha
-                // cargado"), un indicador mínimo para que quede claro que
-                // ahí falta ampliar el mapa, no que algo se ha roto.
+            {codigoPais ? (
+              <span className={`fi fi-${codigoPais} h-3 w-4 shrink-0 rounded-sm sm:h-5 sm:w-7`} />
+            ) : (
+              nacionalidad && (
+                // Nacionalidad sin bandera mapeada todavía (ver
+                // banderas.ts) -- en vez de dejar el hueco en blanco
+                // (parecía "no ha cargado"), un indicador mínimo para que
+                // quede claro que ahí falta ampliar el mapa, no que algo
+                // se ha roto.
                 <span className="flex h-3 w-4 shrink-0 items-center justify-center rounded-sm bg-muted text-[7px] font-bold text-muted-foreground sm:h-5 sm:w-7 sm:text-[9px]">
-                  {entrada.nacionalidad.slice(0, 2).toUpperCase()}
+                  {nacionalidad.slice(0, 2).toUpperCase()}
                 </span>
-              ))}
+              )
+            )}
           </div>
         );
       })}
@@ -605,7 +618,11 @@ function SeccionTop10({
       <div className="w-full max-w-md">
         <h1 className="mb-4 text-center text-lg font-bold text-foreground sm:text-xl">{partida.titulo}</h1>
 
-        <TableroTop10Online totalPosiciones={partida.objetivo} miProgreso={partida.miProgreso} />
+        <TableroTop10Online
+          totalPosiciones={partida.objetivo}
+          miProgreso={partida.miProgreso}
+          pistasNacionalidad={partida.pistasNacionalidad}
+        />
 
         <div className="mt-6 flex w-full justify-center">
           <PlayerSearch

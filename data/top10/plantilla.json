@@ -1,19 +1,19 @@
 {
-  "competicion": "AMARILLAS-LALIGA-HISTORICO",
+  "competicion": "EXPULSIONES-PREMIER-HISTORICO",
   "temporada": "All time",
-  "metrica": "TARJETAS_AMARILLAS",
-  "titulo": "Jugadores con más tarjetas amarillas en la historia de LaLiga",
-  "descripcion": "Jugadores con más tarjetas amarillas en la historia de LaLiga",
+  "metrica": "TARJETAS_ROJAS",
+  "titulo": "Jugadores con más expuslsiones en la historia de la Premier League.",
+  "descripcion": "Jugadores con más expuslsiones en la historia de la Premier League.",
   "entradas": [
-    { "nombre": "Sergio Ramos", "valor": "176", "equipo": "Spain" },
-    { "nombre": "Raúl García", "valor": "151", "equipo": "Spain" },
-    { "nombre": "David Albelda", "valor": "149", "equipo": "Spain" },
-    { "nombre": "Alberto Lopo", "valor": "148", "equipo": "Spain" },
-    { "nombre": "Patxi Puñal", "valor": "143", "equipo": "Spain" },
-    { "nombre": "Fernando Hierro", "valor": "141", "equipo": "Spain" },
-    { "nombre": "Gabi", "valor": "132", "equipo": "Spain" },
-    { "nombre": "Sergio Busquets", "valor": "127", "equipo": "Spain" },
-    { "nombre": "Dani Parejo", "valor": "121", "equipo": "Spain" },
-    { "nombre": "Dani Alves", "valor": "116", "equipo": "Brazil" }
+    { "nombre": "Duncan Ferguson", "valor": "8", "equipo": "Scotland" },
+    { "nombre": "Richard Dunne", "valor": "8", "equipo": "Ireland" },
+    { "nombre": "Patrick Vieira", "valor": "8", "equipo": "France" },
+    { "nombre": "Roy Keane", "valor": "7", "equipo": "Ireland" },
+    { "nombre": "Lee Cattermole", "valor": "7", "equipo": "England" },
+    { "nombre": "Alan Smith", "valor": "7", "equipo": "England" },
+    { "nombre": "Vinnie Jones", "valor": "7", "equipo": "Wales" },
+    { "nombre": "Joey Barton", "valor": "6", "equipo": "England" },
+    { "nombre": "Paul Konchesky", "valor": "6", "equipo": "England" },
+    { "nombre": "John Hartson", "valor": "6", "equipo": "Wales" }
   ]
 }
