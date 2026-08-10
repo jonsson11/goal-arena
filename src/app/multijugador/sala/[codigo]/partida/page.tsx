@@ -9,6 +9,7 @@ import { GameButton } from "@/features/games/shared/GameButton";
 import { ConfirmDialog } from "@/features/games/shared/ConfirmDialog";
 import { PlayerSearch } from "@/features/games/shared/PlayerSearch";
 import { ExperienciaGanada } from "@/features/games/shared/ExperienciaGanada";
+import { obtenerCodigoPais } from "@/features/games/shared/banderas";
 import { CasillaGrid, EncabezadoCondicion } from "@/features/games/grid/GridCasillas";
 import { celdasValidasParaJugador } from "@/features/games/grid/logic";
 import {
@@ -34,8 +35,9 @@ async function buscarJugadores(query: string): Promise<Jugador[]> {
 /** Reconstruye un `Tablero` (mismo tipo que el modo individual) a partir
  * del estado de partida del servidor -- así el tablero de multijugador
  * puede reutilizar tal cual CasillaGrid/EncabezadoCondicion y la función
- * de validación celdasValidasParaJugador, sin duplicar nada de eso. */
-function construirTablero(partida: EstadoPartida): Tablero {
+ * de validación celdasValidasParaJugador, sin duplicar nada de eso. Solo
+ * tiene sentido cuando `partida.juego === "GRID"`. */
+function construirTablero(partida: Extract<EstadoPartida, { juego: "GRID" }>): Tablero {
   const celdas: Celda[] = [];
   for (let fila = 0; fila < 3; fila++) {
     for (let columna = 0; columna < 3; columna++) {
@@ -57,8 +59,13 @@ function formatoTiempo(segundos: number): string {
 // progreso -- con hasta 7 rivales (sala de 8) es la diferencia entre una
 // rejilla de 2-3 columnas que cabe en la pantalla y una lista vertical
 // que obliga a bajar mucho. El check verde sustituye al número cuando ya
-// ha completado el tablero.
-function FichaRival({ nombre, avatar, avatarTipo, celdasResueltas, completado, resultado }: EstadoPartida["rivales"][number]) {
+// ha completado el reto. `objetivo` (9 en GRID, 10 en TOP10) viene del
+// propio servidor -- ver EstadoPartida.objetivo.
+function FichaRival({
+  objetivo,
+  ...rival
+}: EstadoPartida["rivales"][number] & { objetivo: number }) {
+  const { nombre, avatar, avatarTipo, celdasResueltas, completado, resultado } = rival;
   return (
     <div className="flex items-center gap-2 rounded-xl border border-border/60 bg-card/40 px-2.5 py-2 backdrop-blur-md">
       <div className="relative shrink-0">
@@ -85,9 +92,87 @@ function FichaRival({ nombre, avatar, avatarTipo, celdasResueltas, completado, r
               : resultado === "EMPATE"
                 ? "🤝 Empate"
                 : "—"
-            : `${celdasResueltas}/9 aciertos`}
+            : `${celdasResueltas}/${objetivo} aciertos`}
         </p>
       </div>
+    </div>
+  );
+}
+
+// Tablero del Top10 Online: rejilla de 10 posiciones (mismo orden visual
+// -- 1-5 en la columna izquierda, 6-10 en la derecha -- que el modo
+// individual, ver Top10Game.tsx), pero SIN el ranking completo: solo se
+// conoce el nombre real de una posición cuando aparece en `miProgreso`
+// (ver comentario de seguridad en EstadoPartidaTop10). Versión más
+// sencilla que la del modo individual (sin abreviar nombre por
+// ResizeObserver ni colores oro/plata/bronce) -- aquí lo urgente es que
+// funcione igual de bien en partida real, no replicar cada detalle visual
+// del solitario.
+function TableroTop10Online({
+  totalPosiciones,
+  miProgreso,
+}: {
+  totalPosiciones: number;
+  miProgreso: Extract<EstadoPartida, { juego: "TOP10" }>["miProgreso"];
+}) {
+  const porPosicion = new Map(miProgreso.map((a) => [a.posicion, a.entrada]));
+
+  return (
+    <div
+      className="grid w-full grid-cols-2 grid-flow-col gap-1.5 sm:gap-3"
+      style={{ gridTemplateRows: `repeat(${Math.ceil(totalPosiciones / 2)}, minmax(0, 1fr))` }}
+    >
+      {Array.from({ length: totalPosiciones }, (_, i) => i + 1).map((posicion) => {
+        const entrada = porPosicion.get(posicion);
+        const codigoPais = entrada ? obtenerCodigoPais(entrada.nacionalidad) : null;
+
+        return (
+          <div
+            key={posicion}
+            className={`flex items-center gap-1.5 rounded-lg border px-2 py-1.5 transition-all duration-300 sm:rounded-xl sm:px-4 sm:py-3 ${
+              entrada
+                ? "animate-in zoom-in-95 fade-in border-primary bg-primary/10 shadow-[0_0_18px_-6px_rgba(74,222,154,0.6)] duration-300"
+                : "border-border bg-card"
+            }`}
+          >
+            <span
+              className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-[10px] font-bold sm:h-7 sm:w-7 sm:text-sm ${
+                entrada ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground"
+              }`}
+            >
+              {posicion}
+            </span>
+            <div className="flex min-w-0 flex-1 flex-col justify-center gap-0.5">
+              {entrada ? (
+                <>
+                  <span className="truncate text-left text-[11px] font-semibold text-primary sm:text-base">
+                    {entrada.nombre}
+                  </span>
+                  <span className="truncate text-left text-[9px] font-medium text-primary/80 sm:text-sm">
+                    {entrada.valorTexto ?? entrada.valor}
+                  </span>
+                </>
+              ) : (
+                <span className="truncate text-left text-[11px] font-semibold text-muted-foreground sm:text-base">
+                  ???
+                </span>
+              )}
+            </div>
+            {entrada &&
+              (codigoPais ? (
+                <span className={`fi fi-${codigoPais} h-3 w-4 shrink-0 rounded-sm sm:h-5 sm:w-7`} />
+              ) : (
+                // Nacionalidad sin bandera mapeada todavía (ver banderas.ts) --
+                // en vez de dejar el hueco en blanco (parecía "no ha
+                // cargado"), un indicador mínimo para que quede claro que
+                // ahí falta ampliar el mapa, no que algo se ha roto.
+                <span className="flex h-3 w-4 shrink-0 items-center justify-center rounded-sm bg-muted text-[7px] font-bold text-muted-foreground sm:h-5 sm:w-7 sm:text-[9px]">
+                  {entrada.nacionalidad.slice(0, 2).toUpperCase()}
+                </span>
+              ))}
+          </div>
+        );
+      })}
     </div>
   );
 }
@@ -262,7 +347,7 @@ export default function PartidaMultijugadorPage({ params }: { params: Promise<{ 
   }
 
   function procesarSeleccion(jugador: Jugador) {
-    if (!partida || partida.estado !== "EN_CURSO" || segundosCuentaAtras > 0) return;
+    if (!partida || partida.juego !== "GRID" || partida.estado !== "EN_CURSO" || segundosCuentaAtras > 0) return;
     const tablero = construirTablero(partida);
     const validas = celdasValidasParaJugador(jugador, tablero);
 
@@ -274,6 +359,34 @@ export default function PartidaMultijugadorPage({ params }: { params: Promise<{ 
       setCeldasPendientes(validas);
       setJugadorPendiente(jugador);
       setMensaje(`${jugador.nombre} vale para varias casillas. Elige una.`);
+    }
+  }
+
+  // Equivalente a colocarJugador/procesarSeleccion pero para TOP10 -- no
+  // hace falta elegir casilla (el servidor decide la posición según el
+  // ranking, que el cliente no conoce entero), así que es un único paso:
+  // se manda el jugador y se pinta lo que responda el servidor.
+  async function acertarJugador(jugador: Jugador) {
+    setMensaje("");
+    try {
+      const res = await fetch(`/api/salas/${codigo}/acertar`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ jugador }),
+      });
+      const datos = await res.json();
+      if (!res.ok) {
+        setMensaje(datos.error ?? "No se pudo comprobar ese jugador.");
+        return;
+      }
+      const nueva = datos as EstadoPartida;
+      if (estadoActualRef.current !== "FINALIZADA" && nueva.estado === "FINALIZADA") {
+        refrescarUsuario();
+      }
+      estadoActualRef.current = nueva.estado;
+      setPartida(nueva);
+    } catch {
+      setMensaje("No se pudo conectar con el servidor.");
     }
   }
 
@@ -312,7 +425,6 @@ export default function PartidaMultijugadorPage({ params }: { params: Promise<{ 
 
   if (!partida) return null;
 
-  const tablero = construirTablero(partida);
   const finalizada = partida.estado === "FINALIZADA";
   const enCuentaAtras = !finalizada && segundosCuentaAtras > 0;
 
@@ -322,7 +434,7 @@ export default function PartidaMultijugadorPage({ params }: { params: Promise<{ 
         {!finalizada && !enCuentaAtras && (
           <div className="flex w-full max-w-md items-center justify-between">
             <span className="rounded-full border border-border bg-card px-3 py-1 text-xs font-medium text-muted-foreground">
-              {ETIQUETA_DIFICULTAD[partida.dificultad ?? ""] ?? partida.dificultad}
+              {partida.juego === "GRID" ? (ETIQUETA_DIFICULTAD[partida.dificultad] ?? partida.dificultad) : "Top 10"}
             </span>
             <span
               className={`rounded-full border px-3 py-1 text-sm font-extrabold tabular-nums ${
@@ -339,16 +451,15 @@ export default function PartidaMultijugadorPage({ params }: { params: Promise<{ 
         {finalizada ? (
           <ResultadoPartida
             partida={partida}
-            tablero={tablero}
             esCreador={esCreador}
             onPedirRevancha={pedirRevancha}
             onSalir={() => setConfirmandoSalida(true)}
             pidiendoRevancha={pidiendoRevancha}
           />
         ) : enCuentaAtras ? (
-          // Cuenta atrás 3-2-1: el tablero ya está cargado (fetch hecho,
-          // solo que no se pinta todavía) -- lo único que falta es que
-          // llegue el instante `empezadaEn` compartido. key=segundosCuentaAtras
+          // Cuenta atrás 3-2-1: el tablero/ranking ya está cargado (fetch
+          // hecho, solo que no se pinta todavía) -- lo único que falta es
+          // que llegue el instante `empezadaEn` compartido. key=segundosCuentaAtras
           // fuerza a React a remontar el número en cada tic, así se
           // dispara la animación de entrada en cada cambio.
           <div className="flex h-72 w-full flex-col items-center justify-center gap-3">
@@ -360,74 +471,17 @@ export default function PartidaMultijugadorPage({ params }: { params: Promise<{ 
               {segundosCuentaAtras}
             </span>
           </div>
+        ) : partida.juego === "GRID" ? (
+          <SeccionGrid
+            partida={partida}
+            celdasPendientes={celdasPendientes}
+            jugadorPendiente={jugadorPendiente}
+            mensaje={mensaje}
+            onColocar={colocarJugador}
+            onSeleccionar={procesarSeleccion}
+          />
         ) : (
-          <div className="flex w-full flex-col items-center gap-6 lg:flex-row lg:items-start lg:justify-center">
-            <div className="w-full max-w-md">
-              <div className="grid w-full grid-cols-[minmax(0,0.7fr)_repeat(3,minmax(0,1fr))] gap-1.5 sm:gap-2">
-                <div />
-                {tablero.condicionesColumna.map((cond, i) => (
-                  <EncabezadoCondicion key={i} condicion={cond} />
-                ))}
-
-                {tablero.condicionesFila.map((condFila, fila) => (
-                  <div key={fila} className="contents">
-                    <EncabezadoCondicion condicion={condFila} />
-                    {[0, 1, 2].map((columna) => {
-                      const celda = tablero.celdas.find((c) => c.fila === fila && c.columna === columna)!;
-                      const esPendiente = celdasPendientes.some((c) => c.fila === fila && c.columna === columna);
-                      return (
-                        <CasillaGrid
-                          key={columna}
-                          celda={celda}
-                          esPendiente={esPendiente}
-                          bloqueada={!esPendiente && celdasPendientes.length > 0}
-                          onClick={() => {
-                            if (esPendiente && jugadorPendiente) colocarJugador(jugadorPendiente, celda);
-                          }}
-                        />
-                      );
-                    })}
-                  </div>
-                ))}
-              </div>
-
-              <div className="mt-6 flex w-full justify-center">
-                <PlayerSearch
-                  onSearch={buscarJugadores}
-                  excludeNames={partida.miProgreso.map((c) => c.jugador.nombre)}
-                  onSelect={procesarSeleccion}
-                  placeholder="Escribe un jugador..."
-                  disabled={celdasPendientes.length > 0}
-                />
-              </div>
-              {mensaje && <p className="mt-3 text-center text-sm text-muted-foreground">{mensaje}</p>}
-
-              {/* Rivales en móvil/tablet: rejilla compacta debajo del
-                  buscador (2-3 columnas), no una lista vertical -- con 7
-                  rivales (sala de 8) son 3-4 filas cortas en vez de 7
-                  filas largas. En escritorio (lg:) se oculta aquí porque
-                  se muestra en la columna de al lado. */}
-              {partida.rivales.length > 0 && (
-                <div className="mt-6 grid w-full grid-cols-2 gap-2 sm:grid-cols-3 lg:hidden">
-                  {partida.rivales.map((rival) => (
-                    <FichaRival key={rival.id} {...rival} />
-                  ))}
-                </div>
-              )}
-            </div>
-
-            {/* Misma rejilla de fichas, aquí en una sola columna pegada
-                (sticky) junto al tablero -- solo visible en escritorio,
-                donde sí sobra espacio a un lado. */}
-            {partida.rivales.length > 0 && (
-              <div className="hidden w-full max-w-xs flex-col gap-2 lg:sticky lg:top-6 lg:flex">
-                <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Rivales</span>
-                {partida.rivales.map((rival) => (
-                  <FichaRival key={rival.id} {...rival} />
-                ))}
-              </div>
-            )}
-          </div>
+          <SeccionTop10 partida={partida} mensaje={mensaje} onAcertar={acertarJugador} />
         )}
 
         <ConfirmDialog
@@ -443,16 +497,156 @@ export default function PartidaMultijugadorPage({ params }: { params: Promise<{ 
   );
 }
 
+// Tablero GRID en curso -- extraído a un componente propio (en vez de
+// dejarlo inline en un ternario) para que TypeScript estreche `partida` al
+// tipo GRID a través de las props, sin depender de un narrowing frágil
+// dentro de un JSX condicional compuesto.
+function SeccionGrid({
+  partida,
+  celdasPendientes,
+  jugadorPendiente,
+  mensaje,
+  onColocar,
+  onSeleccionar,
+}: {
+  partida: Extract<EstadoPartida, { juego: "GRID" }>;
+  celdasPendientes: Celda[];
+  jugadorPendiente: Jugador | null;
+  mensaje: string;
+  onColocar: (jugador: Jugador, celda: Celda) => void;
+  onSeleccionar: (jugador: Jugador) => void;
+}) {
+  const tablero = construirTablero(partida);
+
+  return (
+    <div className="flex w-full flex-col items-center gap-6 lg:flex-row lg:items-start lg:justify-center">
+      <div className="w-full max-w-md">
+        <div className="grid w-full grid-cols-[minmax(0,0.7fr)_repeat(3,minmax(0,1fr))] gap-1.5 sm:gap-2">
+          <div />
+          {tablero.condicionesColumna.map((cond, i) => (
+            <EncabezadoCondicion key={i} condicion={cond} />
+          ))}
+
+          {tablero.condicionesFila.map((condFila, fila) => (
+            <div key={fila} className="contents">
+              <EncabezadoCondicion condicion={condFila} />
+              {[0, 1, 2].map((columna) => {
+                const celda = tablero.celdas.find((c) => c.fila === fila && c.columna === columna)!;
+                const esPendiente = celdasPendientes.some((c) => c.fila === fila && c.columna === columna);
+                return (
+                  <CasillaGrid
+                    key={columna}
+                    celda={celda}
+                    esPendiente={esPendiente}
+                    bloqueada={!esPendiente && celdasPendientes.length > 0}
+                    onClick={() => {
+                      if (esPendiente && jugadorPendiente) onColocar(jugadorPendiente, celda);
+                    }}
+                  />
+                );
+              })}
+            </div>
+          ))}
+        </div>
+
+        <div className="mt-6 flex w-full justify-center">
+          <PlayerSearch
+            onSearch={buscarJugadores}
+            excludeNames={partida.miProgreso.map((c) => c.jugador.nombre)}
+            onSelect={onSeleccionar}
+            placeholder="Escribe un jugador..."
+            disabled={celdasPendientes.length > 0}
+          />
+        </div>
+        {mensaje && <p className="mt-3 text-center text-sm text-muted-foreground">{mensaje}</p>}
+
+        {/* Rivales en móvil/tablet: rejilla compacta debajo del buscador
+            (2-3 columnas), no una lista vertical -- con 7 rivales (sala de
+            8) son 3-4 filas cortas en vez de 7 filas largas. En
+            escritorio (lg:) se oculta aquí porque se muestra en la
+            columna de al lado. */}
+        {partida.rivales.length > 0 && (
+          <div className="mt-6 grid w-full grid-cols-2 gap-2 sm:grid-cols-3 lg:hidden">
+            {partida.rivales.map((rival) => (
+              <FichaRival key={rival.id} objetivo={partida.objetivo} {...rival} />
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* Misma rejilla de fichas, aquí en una sola columna pegada (sticky)
+          junto al tablero -- solo visible en escritorio, donde sí sobra
+          espacio a un lado. */}
+      {partida.rivales.length > 0 && (
+        <div className="hidden w-full max-w-xs flex-col gap-2 lg:sticky lg:top-6 lg:flex">
+          <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Rivales</span>
+          {partida.rivales.map((rival) => (
+            <FichaRival key={rival.id} objetivo={partida.objetivo} {...rival} />
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+// Ranking TOP10 en curso -- mismo motivo que SeccionGrid: props tipadas al
+// tipo TOP10 en vez de narrowing inline.
+function SeccionTop10({
+  partida,
+  mensaje,
+  onAcertar,
+}: {
+  partida: Extract<EstadoPartida, { juego: "TOP10" }>;
+  mensaje: string;
+  onAcertar: (jugador: Jugador) => void;
+}) {
+  return (
+    <div className="flex w-full flex-col items-center gap-6 lg:flex-row lg:items-start lg:justify-center">
+      <div className="w-full max-w-md">
+        <h1 className="mb-4 text-center text-lg font-bold text-foreground sm:text-xl">{partida.titulo}</h1>
+
+        <TableroTop10Online totalPosiciones={partida.objetivo} miProgreso={partida.miProgreso} />
+
+        <div className="mt-6 flex w-full justify-center">
+          <PlayerSearch
+            onSearch={buscarJugadores}
+            excludeNames={partida.miProgreso.map((a) => a.entrada.nombre)}
+            excludedLabel="Ya acertado"
+            onSelect={onAcertar}
+            placeholder="Escribe un jugador..."
+          />
+        </div>
+        {mensaje && <p className="mt-3 text-center text-sm text-muted-foreground">{mensaje}</p>}
+
+        {partida.rivales.length > 0 && (
+          <div className="mt-6 grid w-full grid-cols-2 gap-2 sm:grid-cols-3 lg:hidden">
+            {partida.rivales.map((rival) => (
+              <FichaRival key={rival.id} objetivo={partida.objetivo} {...rival} />
+            ))}
+          </div>
+        )}
+      </div>
+
+      {partida.rivales.length > 0 && (
+        <div className="hidden w-full max-w-xs flex-col gap-2 lg:sticky lg:top-6 lg:flex">
+          <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Rivales</span>
+          {partida.rivales.map((rival) => (
+            <FichaRival key={rival.id} objetivo={partida.objetivo} {...rival} />
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 function ResultadoPartida({
   partida,
-  tablero,
   esCreador,
   onPedirRevancha,
   onSalir,
   pidiendoRevancha,
 }: {
   partida: EstadoPartida;
-  tablero: Tablero;
   esCreador: boolean;
   onPedirRevancha: () => void;
   onSalir: () => void;
@@ -460,17 +654,15 @@ function ResultadoPartida({
 }) {
   const { usuario } = useAuth();
 
-  // Mismo mecanismo que el modo individual (GridBoard.tsx): se piden los
-  // datos al servidor solo la primera vez que se despliega el texto, y se
-  // guardan en caché aquí para no repetir la petición si se pliega y se
-  // vuelve a desplegar. `tablero` ya trae mi propio progreso (miProgreso),
-  // así que TextoRespuestasCorrectas puede pintar en verde/rojo tachado
-  // exactamente igual que en el modo individual.
+  // Solo GRID tiene botón de "mostrar respuestas correctas" por ahora
+  // (mismo mecanismo que el modo individual, ver GridBoard.tsx) -- TOP10
+  // Online no lo tiene todavía.
   const [respuestasCorrectas, setRespuestasCorrectas] = useState<Record<string, ResultadoCelda> | null>(null);
   const [cargandoRespuestas, setCargandoRespuestas] = useState(false);
   const [mostrandoRespuestas, setMostrandoRespuestas] = useState(false);
 
   async function alternarRespuestasCorrectas() {
+    if (partida.juego !== "GRID") return;
     if (mostrandoRespuestas) {
       setMostrandoRespuestas(false);
       return;
@@ -479,7 +671,7 @@ function ResultadoPartida({
     setMostrandoRespuestas(true);
     if (!respuestasCorrectas) {
       setCargandoRespuestas(true);
-      const datos = await contarSolucionesTodasLasCeldas(tablero);
+      const datos = await contarSolucionesTodasLasCeldas(construirTablero(partida));
       setRespuestasCorrectas(datos);
       setCargandoRespuestas(false);
     }
@@ -542,7 +734,9 @@ function ResultadoPartida({
               </span>
             </div>
             <div className="flex items-center gap-2">
-              <span className="text-xs text-muted-foreground">{jugador.celdasResueltas}/9</span>
+              <span className="text-xs text-muted-foreground">
+                {jugador.celdasResueltas}/{partida.objetivo}
+              </span>
               {jugador.resultado === "VICTORIA" && <span>🏆</span>}
               {jugador.resultado === "EMPATE" && <span>🤝</span>}
             </div>
@@ -550,26 +744,32 @@ function ResultadoPartida({
         ))}
       </div>
 
-      <div className="flex w-full flex-col items-center gap-2">
-        <GameButton
-          variant="secondary"
-          onClick={alternarRespuestasCorrectas}
-          className="flex w-full items-center justify-center gap-2 transition-transform hover:scale-[1.02]"
-        >
-          {mostrandoRespuestas ? (
-            <>
-              <EyeOff className="h-4 w-4" /> Ocultar respuestas correctas
-            </>
-          ) : (
-            <>
-              <Eye className="h-4 w-4" /> Mostrar respuestas correctas
-            </>
+      {partida.juego === "GRID" && (
+        <div className="flex w-full flex-col items-center gap-2">
+          <GameButton
+            variant="secondary"
+            onClick={alternarRespuestasCorrectas}
+            className="flex w-full items-center justify-center gap-2 transition-transform hover:scale-[1.02]"
+          >
+            {mostrandoRespuestas ? (
+              <>
+                <EyeOff className="h-4 w-4" /> Ocultar respuestas correctas
+              </>
+            ) : (
+              <>
+                <Eye className="h-4 w-4" /> Mostrar respuestas correctas
+              </>
+            )}
+          </GameButton>
+          {mostrandoRespuestas && (
+            <TextoRespuestasCorrectas
+              tablero={construirTablero(partida)}
+              datos={respuestasCorrectas}
+              cargando={cargandoRespuestas}
+            />
           )}
-        </GameButton>
-        {mostrandoRespuestas && (
-          <TextoRespuestasCorrectas tablero={tablero} datos={respuestasCorrectas} cargando={cargandoRespuestas} />
-        )}
-      </div>
+        </div>
+      )}
 
       <div className="flex w-full flex-col gap-3">
         {esCreador ? (

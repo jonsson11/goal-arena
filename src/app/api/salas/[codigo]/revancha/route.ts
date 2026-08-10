@@ -11,8 +11,15 @@ import { NextResponse } from "next/server";
 import { crearClienteSupabaseServidor } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
 import { generarTableroDesdeBD } from "@/features/games/grid/generarTablero.server";
-import { duracionRondaSegundos, serializarSala, SALA_INCLUDE_JUGADORES } from "@/lib/salas";
+import { generarTop10DesdeBD } from "@/features/games/top10/generarTop10.server";
+import {
+  duracionRondaSegundos,
+  DURACION_RONDA_TOP10_SEGUNDOS,
+  serializarSala,
+  SALA_INCLUDE_JUGADORES,
+} from "@/lib/salas";
 import type { Dificultad } from "@/features/games/shared/types";
+import type { JuegoMultijugador } from "@/features/multijugador/type";
 
 export const dynamic = "force-dynamic";
 
@@ -43,11 +50,19 @@ export async function POST(_request: Request, { params }: { params: Promise<{ co
     return NextResponse.json({ error: "Esta partida todavía no ha terminado." }, { status: 400 });
   }
 
+  const juego = sala.juego as JuegoMultijugador;
   const dificultad = sala.dificultad as Dificultad | null;
 
   let contenido;
   try {
-    contenido = dificultad ? await generarTableroDesdeBD(dificultad) : null;
+    // GRID: mismo tablero regenerado con la misma dificultad de antes.
+    // TOP10: un ranking nuevo al azar (no hay dificultad que conservar) --
+    // igual que "Cambiar Top10" en el modo individual, se evita repetir el
+    // mismo si hay más de uno disponible.
+    contenido =
+      juego === "GRID"
+        ? await generarTableroDesdeBD(dificultad!)
+        : await generarTop10DesdeBD((sala.contenido as { id?: string } | null)?.id);
   } catch (err) {
     const mensaje = err instanceof Error ? err.message : "No se pudo generar el reto de la revancha.";
     return NextResponse.json({ error: mensaje }, { status: 500 });
@@ -59,8 +74,9 @@ export async function POST(_request: Request, { params }: { params: Promise<{ co
       data: {
         estado: "ESPERANDO",
         empezadaEn: null,
-        contenido: contenido ?? undefined,
-        duracionSegundos: dificultad ? duracionRondaSegundos(dificultad) : sala.duracionSegundos,
+        contenido,
+        duracionSegundos:
+          juego === "GRID" ? duracionRondaSegundos(dificultad!) : DURACION_RONDA_TOP10_SEGUNDOS,
       },
     }),
     prisma.salaJugador.updateMany({

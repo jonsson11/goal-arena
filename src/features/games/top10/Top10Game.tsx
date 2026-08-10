@@ -370,9 +370,17 @@ export function Top10Game() {
                 )}
               </div>
               <span className="flex shrink-0 items-center justify-end">
-                {codigoPais && (
-                  <span className={`fi fi-${codigoPais} h-3 w-4 rounded-sm sm:h-6 sm:w-9`} />
-                )}
+                {revelado &&
+                  (codigoPais ? (
+                    <span className={`fi fi-${codigoPais} h-3 w-4 rounded-sm sm:h-6 sm:w-9`} />
+                  ) : (
+                    // Nacionalidad sin bandera mapeada todavía (ver
+                    // banderas.ts) -- mismo fallback que el Top10 Online,
+                    // para no dejar el hueco en blanco.
+                    <span className="flex h-3 w-4 items-center justify-center rounded-sm bg-muted text-[7px] font-bold text-muted-foreground sm:h-6 sm:w-9 sm:text-[9px]">
+                      {entrada.nacionalidad.slice(0, 2).toUpperCase()}
+                    </span>
+                  ))}
               </span>
             </div>
           );

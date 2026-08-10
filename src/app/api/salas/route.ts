@@ -9,9 +9,11 @@
 import { NextResponse } from "next/server";
 import { crearClienteSupabaseServidor } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
-import { generarCodigoSalaUnico, duracionRondaSegundos } from "@/lib/salas";
+import { generarCodigoSalaUnico, duracionRondaSegundos, DURACION_RONDA_TOP10_SEGUNDOS } from "@/lib/salas";
 import { generarTableroDesdeBD } from "@/features/games/grid/generarTablero.server";
+import { generarTop10DesdeBD } from "@/features/games/top10/generarTop10.server";
 import type { Tablero } from "@/features/games/grid/type";
+import type { RankingTop10 } from "@/features/games/top10/type";
 import type { Dificultad } from "@/features/games/shared/types";
 import { JUEGOS_MULTIJUGADOR_DISPONIBLES, type JuegoMultijugador } from "@/features/multijugador/type";
 
@@ -62,11 +64,9 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: `El número de jugadores debe estar entre ${MIN_JUGADORES} y ${MAX_JUGADORES}.` }, { status: 400 });
   }
 
-  let contenido: Tablero;
+  let contenido: Tablero | RankingTop10;
   try {
-    // Hoy solo GRID -- cuando se extienda a TOP10 (Fase 8/9), aquí se
-    // llamará al generador de rankings equivalente.
-    contenido = await generarTableroDesdeBD(dificultad!);
+    contenido = juego === "GRID" ? await generarTableroDesdeBD(dificultad!) : await generarTop10DesdeBD();
   } catch (err) {
     const mensaje = err instanceof Error ? err.message : "No se pudo generar el reto de la sala.";
     return NextResponse.json({ error: mensaje }, { status: 500 });
@@ -86,7 +86,7 @@ export async function POST(request: Request) {
       // sala de espera) -- fijada ya aquí, aunque no se use hasta que
       // "Empezar partida" ponga `empezadaEn`, para que sean siempre
       // coherentes entre sí sin tener que recalcular nada en ese momento.
-      duracionSegundos: juego === "GRID" ? duracionRondaSegundos(dificultad!) : null,
+      duracionSegundos: juego === "GRID" ? duracionRondaSegundos(dificultad!) : DURACION_RONDA_TOP10_SEGUNDOS,
       // El creador entra ya como jugador de su propia sala, y ya "listo"
       // -- acaba de configurarla él mismo, no tiene sentido pedirle que
       // confirme otra vez que está listo.

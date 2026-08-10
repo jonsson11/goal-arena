@@ -23,11 +23,16 @@ const ESTILO_POR_DIFICULTAD: Record<Dificultad, { fondo: string; texto: string }
 
 const OPCIONES_MAX_JUGADORES = [2, 3, 4, 5, 6, 7, 8];
 
+const OPCIONES_JUEGO: { valor: JuegoMultijugador; etiqueta: string }[] = [
+  { valor: "GRID", etiqueta: "3x3 Grid" },
+  { valor: "TOP10", etiqueta: "Top 10" },
+];
+
 export default function CrearSalaPage() {
   const { usuario } = useAuth();
   const router = useRouter();
 
-  const [juego] = useState<JuegoMultijugador>("GRID");
+  const [juego, setJuego] = useState<JuegoMultijugador>("GRID");
   const [dificultad, setDificultad] = useState<Dificultad>("medio");
   const [maxJugadores, setMaxJugadores] = useState(2);
   const [creando, setCreando] = useState(false);
@@ -52,7 +57,9 @@ export default function CrearSalaPage() {
       const res = await fetch("/api/salas", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ juego, dificultad, maxJugadores }),
+        // TOP10 no tiene dificultad -- no hace falta mandarla, el servidor
+        // solo la exige (y la usa) cuando juego === "GRID".
+        body: JSON.stringify(juego === "GRID" ? { juego, dificultad, maxJugadores } : { juego, maxJugadores }),
       });
       const datos = await res.json();
       if (!res.ok) {
@@ -84,31 +91,17 @@ export default function CrearSalaPage() {
           <div className="flex flex-col gap-3">
             <span className="text-sm font-semibold text-foreground">Juego</span>
             <div className="grid grid-cols-2 gap-2">
-              <div className="rounded-xl border border-secondary bg-secondary/15 px-4 py-3 text-center text-sm font-bold text-secondary">
-                3x3 Grid
-              </div>
-              <div className="cursor-not-allowed rounded-xl border border-border bg-background/40 px-4 py-3 text-center text-sm font-semibold text-muted-foreground opacity-60">
-                Top 10 <span className="block text-[10px] font-normal">Próximamente</span>
-              </div>
-            </div>
-          </div>
-
-          <div className="flex flex-col gap-3">
-            <span className="text-sm font-semibold text-foreground">Dificultad</span>
-            <div className="grid grid-cols-3 gap-2">
-              {OPCIONES_DIFICULTAD.map((opcion) => {
-                const activa = dificultad === opcion.valor;
-                const estilo = ESTILO_POR_DIFICULTAD[opcion.valor];
+              {OPCIONES_JUEGO.map((opcion) => {
+                const activo = juego === opcion.valor;
                 return (
                   <button
                     key={opcion.valor}
-                    onClick={() => setDificultad(opcion.valor)}
-                    className="touch-manipulation rounded-xl border px-3 py-3 text-sm font-bold transition-all duration-200"
-                    style={
-                      activa
-                        ? { backgroundColor: estilo.fondo, color: estilo.texto, borderColor: estilo.fondo }
-                        : { borderColor: "var(--border)", color: "var(--muted-foreground)" }
-                    }
+                    onClick={() => setJuego(opcion.valor)}
+                    className={`touch-manipulation rounded-xl border px-4 py-3 text-center text-sm font-bold transition-all duration-200 ${
+                      activo
+                        ? "border-secondary bg-secondary/15 text-secondary"
+                        : "border-border text-muted-foreground hover:border-secondary/50"
+                    }`}
                   >
                     {opcion.etiqueta}
                   </button>
@@ -116,6 +109,34 @@ export default function CrearSalaPage() {
               })}
             </div>
           </div>
+
+          {/* TOP10 no tiene dificultad (un solo modo, igual que en el
+              individual) -- este selector solo tiene sentido para GRID. */}
+          {juego === "GRID" && (
+            <div className="flex flex-col gap-3">
+              <span className="text-sm font-semibold text-foreground">Dificultad</span>
+              <div className="grid grid-cols-3 gap-2">
+                {OPCIONES_DIFICULTAD.map((opcion) => {
+                  const activa = dificultad === opcion.valor;
+                  const estilo = ESTILO_POR_DIFICULTAD[opcion.valor];
+                  return (
+                    <button
+                      key={opcion.valor}
+                      onClick={() => setDificultad(opcion.valor)}
+                      className="touch-manipulation rounded-xl border px-3 py-3 text-sm font-bold transition-all duration-200"
+                      style={
+                        activa
+                          ? { backgroundColor: estilo.fondo, color: estilo.texto, borderColor: estilo.fondo }
+                          : { borderColor: "var(--border)", color: "var(--muted-foreground)" }
+                      }
+                    >
+                      {opcion.etiqueta}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          )}
 
           <div className="flex flex-col gap-3">
             <span className="text-sm font-semibold text-foreground">Número de jugadores</span>
