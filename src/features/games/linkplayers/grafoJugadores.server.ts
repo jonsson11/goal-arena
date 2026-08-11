@@ -119,17 +119,67 @@ async function obtenerStints(): Promise<StintCrudo[]> {
 // filtro "no un club rarísimo" del 3x3) entran en el pool de "clubes
 // conocidos" que decide quién puede ser jugador inicial/final. Se eligen
 // los que más plantilla histórica tienen registrada -- mismo truco que
-// TOP_CLUBES_GRANDES_FACIL en generarTablero.server.ts (el 3x3 solo lo
-// usa para su dificultad fácil; aquí se aplica siempre, a las tres
-// dificultades de LinkPlayers, porque el problema que reportó el usuario
-// el 11/08/2026 -- "salen jugadores poco conocidos" -- no dependía de la
-// dificultad elegida). 40 en vez de los 30 del 3x3 porque aquí hace falta
-// algo más de variedad para que no toquen siempre los mismos nombres.
-// Primera estimación a ojo, ajustable sin más que cambiar este número.
-const TOP_CLUBES_CONOCIDOS = 40;
+// TOP_CLUBES_GRANDES_FACIL en generarTablero.server.ts. Bajado de 40 a 25
+// el 11/08/2026 (2ª ronda): con 40, entraban en el pool bastantes equipos
+// que ya no son de primer nivel (grandes históricos de segunda fila,
+// selecciones amplias por historial), y eso dejaba pasar demasiados
+// nombres poco reconocibles. Con menos clubes, el pool se concentra en
+// los clubes de verdad más grandes -- si sigue viéndose flojo, este es el
+// primer número a tocar (bajarlo más estrecha aún el pool).
+const TOP_CLUBES_CONOCIDOS = 25;
 
-function formatearEtapa(s: StintCrudo): { equipo: string; desde: string; hasta: string } {
-  return { equipo: s.team.nombre, desde: anio(s.startDate), hasta: s.endDate ? anio(s.endDate) : "actualidad" };
+// Además de jugar en un club "conocido", ahora hace falta haberlo hecho
+// una temporada real, no solo un cameo -- añadido el 11/08/2026 (2ª
+// ronda) porque el filtro de solo clubes (ver arriba) seguía dejando
+// pasar jugadores muy anónimos que técnicamente tuvieron un Stint muy
+// breve en un club grande (una cesión de unos meses, un fichaje de enero
+// que apenas jugó, un canterano que se fue casi enseguida) sin que eso
+// los hiciera reconocibles de verdad. Medio año (≈180 días) es a ojo:
+// deja pasar fichajes de invierno que se quedaron media temporada, pero
+// no cameos de semanas.
+const MIN_DIAS_ETAPA_CONOCIDO = 180;
+
+function duracionEnDias(s: StintCrudo): number {
+  const fin = s.endDate ?? new Date();
+  return (fin.getTime() - s.startDate.getTime()) / (1000 * 60 * 60 * 24);
+}
+
+type EtapaCruda = { equipo: string; startDate: Date; endDate: Date | null };
+
+// Junta etapas CONSECUTIVAS en el mismo club en una sola -- ej. "Torino
+// (2018-2019)" seguido de "Torino (2019-2022)" pasa a ser un único
+// "Torino (2018-2022)" (petición del usuario, 11/08/2026: antes salían
+// como dos etapas sueltas, aunque fuera literalmente la misma etapa
+// partida en dos filas de Stint). "Consecutivas" es la palabra clave: si
+// el jugador volvió a ese club más tarde tras pasar por otro equipo
+// (etapas separadas, no adyacentes en la lista ya ordenada
+// cronológicamente), se mantienen como etapas distintas -- eso sí es una
+// segunda etapa real, no un artefacto de cómo están partidos los datos.
+// Recibe `etapas` YA ordenadas por `startDate` ascendente.
+function fusionarEtapasConsecutivas(etapas: EtapaCruda[]): EtapaCruda[] {
+  const fusionadas: EtapaCruda[] = [];
+
+  for (const etapa of etapas) {
+    const anterior = fusionadas[fusionadas.length - 1];
+
+    if (anterior && anterior.equipo === etapa.equipo) {
+      // Extiende el rango de la etapa anterior en vez de añadir una nueva
+      // -- null (etapa todavía en curso) siempre "gana" como fecha de fin;
+      // si la anterior ya estaba abierta (null), se queda así tal cual.
+      if (anterior.endDate !== null && (etapa.endDate === null || etapa.endDate > anterior.endDate)) {
+        anterior.endDate = etapa.endDate;
+      }
+      continue;
+    }
+
+    fusionadas.push({ ...etapa });
+  }
+
+  return fusionadas;
+}
+
+function formatearEtapa(e: EtapaCruda): { equipo: string; desde: string; hasta: string } {
+  return { equipo: e.equipo, desde: anio(e.startDate), hasta: e.endDate ? anio(e.endDate) : "actualidad" };
 }
 
 export async function construirGrafo(): Promise<GrafoJugadores> {
@@ -140,11 +190,12 @@ export async function construirGrafo(): Promise<GrafoJugadores> {
     const idsPorNombre = new Map<string, string>();
     const stintsPorEquipo = new Map<string, StintCrudo[]>();
     const equipoElegibleParaGrid = new Map<string, boolean>();
+    const etapasCrudasPorJugador = new Map<string, EtapaCruda[]>();
 
     // Primera pasada: nodos (sin decidir todavía quién es "conocido" --
     // hace falta ver la plantilla histórica de TODOS los equipos antes de
-    // poder ordenarlos), agrupación por equipo, y las etapas de cada
-    // jugador (para las pistas por dificultad).
+    // poder ordenarlos), agrupación por equipo, y las etapas crudas de
+    // cada jugador (para las pistas por dificultad, ver más abajo).
     for (const s of stints) {
       if (!nodos.has(s.playerId)) {
         nodos.set(s.playerId, {
@@ -156,24 +207,30 @@ export async function construirGrafo(): Promise<GrafoJugadores> {
           etapas: [],
         });
         idsPorNombre.set(s.player.nombre, s.playerId);
+        etapasCrudasPorJugador.set(s.playerId, []);
       }
-      nodos.get(s.playerId)!.etapas.push(formatearEtapa(s));
+      etapasCrudasPorJugador.get(s.playerId)!.push({ equipo: s.team.nombre, startDate: s.startDate, endDate: s.endDate });
 
       if (!stintsPorEquipo.has(s.teamId)) stintsPorEquipo.set(s.teamId, []);
       stintsPorEquipo.get(s.teamId)!.push(s);
       equipoElegibleParaGrid.set(s.teamId, s.team.elegibleParaGrid);
     }
 
-    // Etapas en orden cronológico -- el orden de llegada de obtenerStints()
-    // no está garantizado.
-    for (const nodo of nodos.values()) {
-      nodo.etapas.sort((a, b) => Number(a.desde) - Number(b.desde));
+    // Etapas en orden cronológico real (por fecha, no por año -- dos
+    // etapas del mismo año necesitan la fecha completa para ordenarse
+    // bien), y luego fusionadas si son consecutivas en el mismo club (ver
+    // fusionarEtapasConsecutivas) antes de formatear a texto.
+    for (const [playerId, etapasCrudas] of etapasCrudasPorJugador) {
+      etapasCrudas.sort((a, b) => a.startDate.getTime() - b.startDate.getTime());
+      const fusionadas = fusionarEtapasConsecutivas(etapasCrudas);
+      nodos.get(playerId)!.etapas = fusionadas.map(formatearEtapa);
     }
 
     // Segunda pasada: los equipos "conocidos" son los TOP_CLUBES_CONOCIDOS
     // con más plantilla histórica distinta, de entre los ya marcados
-    // elegibleParaGrid=true. Cualquier jugador con al menos un Stint (en
-    // CUALQUIER temporada) en uno de esos equipos queda marcado `conocido`.
+    // elegibleParaGrid=true. Un jugador queda marcado `conocido` si tuvo
+    // AL MENOS una etapa de verdad (no un cameo, ver MIN_DIAS_ETAPA_
+    // CONOCIDO) en uno de esos equipos.
     const equiposConocidosIds = new Set(
       [...stintsPorEquipo.entries()]
         .filter(([teamId]) => equipoElegibleParaGrid.get(teamId))
@@ -184,7 +241,9 @@ export async function construirGrafo(): Promise<GrafoJugadores> {
 
     for (const [teamId, stintsEquipo] of stintsPorEquipo) {
       if (!equiposConocidosIds.has(teamId)) continue;
-      for (const s of stintsEquipo) nodos.get(s.playerId)!.conocido = true;
+      for (const s of stintsEquipo) {
+        if (duracionEnDias(s) >= MIN_DIAS_ETAPA_CONOCIDO) nodos.get(s.playerId)!.conocido = true;
+      }
     }
 
     const adyacencia = new Map<string, Map<string, Conexion>>();

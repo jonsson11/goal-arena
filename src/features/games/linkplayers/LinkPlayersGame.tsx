@@ -16,6 +16,16 @@ function segundosTranscurridos(inicio: number): number {
   return Math.floor((Date.now() - inicio) / 1000);
 }
 
+// La UI habla en "jugadores intermedios" (los que van entre el inicial y
+// el final: "Jugador inicial - j1 - j2 - j3 - Jugador final" = 3
+// jugadores intermedios), no en "Steps"/conexiones -- petición del
+// usuario (11/08/2026). Internamente el BFS sigue calculando en
+// conexiones (`distanciaMinima`, ver generarPartida.server.ts), que es
+// siempre un jugador intermedio más que el número que se enseña aquí.
+function etiquetaJugadoresIntermedios(n: number): string {
+  return n === 1 ? "jugador intermedio" : "jugadores intermedios";
+}
+
 async function buscarJugadores(query: string): Promise<Jugador[]> {
   const res = await fetch(`/api/jugadores/buscar?q=${encodeURIComponent(query)}`);
   if (!res.ok) throw new Error("Error al buscar jugadores");
@@ -35,21 +45,32 @@ async function verificarConexionApi(actual: string, siguiente: string): Promise<
 // Pistas de Stints bajo el nombre -- solo aparecen en fácil (equipo +
 // años) y medio (solo equipo, ver PistaEtapa en type.ts). En difícil
 // `pistas` viene undefined y este bloque no se pinta nada.
+//
+// Rediseñado (11/08/2026, petición del usuario): antes eran chips en
+// flex-wrap centrados, que con muchas etapas (jugadores con carreras
+// largas) quedaban desordenados y difíciles de leer de un vistazo. Ahora
+// cada etapa es su propia línea, alineada a la izquierda -- equipo a la
+// izquierda, años a la derecha de esa misma línea -- dentro de una lista
+// con scroll propio si hay muchas, para no descuadrar el alto de las dos
+// tarjetas (inicial/final) cuando una tiene una carrera mucho más larga
+// que la otra.
 function PistasEtapas({ pistas, acento }: { pistas: PistaEtapa[]; acento: "primary" | "secondary" }) {
   if (pistas.length === 0) return null;
 
-  const colorChip =
-    acento === "primary" ? "border-primary/30 bg-primary/10 text-primary" : "border-secondary/30 bg-secondary/10 text-secondary";
+  const colorTexto = acento === "primary" ? "text-primary" : "text-secondary";
 
   return (
-    <div className="flex flex-wrap justify-center gap-1">
+    <ul className="flex max-h-40 w-full flex-col gap-0.5 overflow-y-auto rounded-lg border border-white/10 bg-background/40 p-1.5">
       {pistas.map((pista, i) => (
-        <span key={i} className={`rounded-full border px-1.5 py-0.5 text-[9px] font-medium leading-tight ${colorChip}`}>
-          {pista.equipo}
-          {pista.temporada && <span className="opacity-70"> ({pista.temporada})</span>}
-        </span>
+        <li
+          key={i}
+          className="flex items-baseline justify-between gap-2 rounded px-1.5 py-0.5 text-left text-[11px] odd:bg-white/[0.03]"
+        >
+          <span className={`truncate font-medium ${colorTexto}`}>{pista.equipo}</span>
+          {pista.temporada && <span className="shrink-0 text-muted-foreground">{pista.temporada}</span>}
+        </li>
       ))}
-    </div>
+    </ul>
   );
 }
 
@@ -164,7 +185,13 @@ export function LinkPlayersGame({ dificultad }: { dificultad: Dificultad }) {
 
   const ganado = partida !== null && cadena.length > 0 && cadena[cadena.length - 1].jugador.nombre === partida.jugadorFinal.nombre;
   const terminada = ganado || rendido;
-  const steps = Math.max(cadena.length - 1, 0);
+  // Mientras se juega, el jugador final todavía no está en `cadena` (se
+  // añade solo al ganar, ver manejarSeleccion), así que todo lo que hay
+  // después del inicial cuenta como intermedio. Al ganar, `cadena` ya
+  // incluye el final, así que hay que descontarlo para no contarlo como
+  // intermedio también.
+  const jugadoresIntermedios = Math.max(cadena.length - (ganado ? 2 : 1), 0);
+  const jugadoresIntermediosObjetivo = Math.max(partida ? partida.distanciaMinima - 1 : 0, 0);
   const nombresEnCadena = cadena.map((p) => p.jugador.nombre);
 
   async function cargarPartida() {
@@ -226,11 +253,36 @@ export function LinkPlayersGame({ dificultad }: { dificultad: Dificultad }) {
         jugador: { nombre: jugador.nombre, nacionalidad: jugador.nacionalidad, imagenUrl: jugador.imagenUrl },
         conexion: { equipo: resultado.equipoComun!, temporada: resultado.temporada! },
       };
-      const nuevaCadena = [...cadena, nuevoPaso];
+      let nuevaCadena = [...cadena, nuevoPaso];
+
+      // Si el jugador añadido ES el final (el usuario lo buscó y lo puso
+      // él mismo), la partida ya está ganada con este paso.
+      let gano = jugador.nombre === partida.jugadorFinal.nombre;
+
+      // Petición del usuario (11/08/2026): "hay que obviar el último
+      // paso... esa comprobación tiene que ser automática" -- ya no hace
+      // falta que busque y seleccione al jugador final a mano. Tras cada
+      // jugador intermedio válido, se comprueba solo si YA conecta
+      // directamente con el final; si es así, se añade el final a la
+      // cadena automáticamente y se cierra la partida.
+      if (!gano) {
+        const resultadoFinal = await verificarConexionApi(jugador.nombre, partida.jugadorFinal.nombre);
+        if (resultadoFinal.conectados) {
+          nuevaCadena = [
+            ...nuevaCadena,
+            {
+              jugador: partida.jugadorFinal,
+              conexion: { equipo: resultadoFinal.equipoComun!, temporada: resultadoFinal.temporada! },
+            },
+          ];
+          gano = true;
+        }
+      }
+
       setCadena(nuevaCadena);
       setMensaje("");
 
-      if (jugador.nombre === partida.jugadorFinal.nombre) {
+      if (gano) {
         const segundos = segundosTranscurridos(horaInicio);
         setTiempoFinal(segundos);
         setPopupAbierto(true);
@@ -297,11 +349,12 @@ export function LinkPlayersGame({ dificultad }: { dificultad: Dificultad }) {
 
       <div className="flex items-center gap-4 text-sm">
         <span className="rounded-full border border-white/10 bg-card/60 px-3 py-1 text-muted-foreground">
-          Camino más corto: <span className="font-bold text-foreground">{partida.distanciaMinima}</span>{" "}
-          {partida.distanciaMinima === 1 ? "Step" : "Steps"}
+          Camino más corto: <span className="font-bold text-foreground">{jugadoresIntermediosObjetivo}</span>{" "}
+          {etiquetaJugadoresIntermedios(jugadoresIntermediosObjetivo)}
         </span>
         <span className="rounded-full border border-white/10 bg-card/60 px-3 py-1 text-muted-foreground">
-          Tus Steps: <span className="font-bold text-foreground">{steps}</span>
+          Tus {etiquetaJugadoresIntermedios(jugadoresIntermedios)}:{" "}
+          <span className="font-bold text-foreground">{jugadoresIntermedios}</span>
         </span>
       </div>
 
@@ -328,7 +381,7 @@ export function LinkPlayersGame({ dificultad }: { dificultad: Dificultad }) {
             className="flex flex-1 items-center justify-center gap-1.5"
           >
             <UndoIcon className="h-4 w-4" />
-            Revertir Step
+            Revertir jugador
           </GameButton>
           <GameButton
             variant="destructive"
@@ -375,22 +428,26 @@ export function LinkPlayersGame({ dificultad }: { dificultad: Dificultad }) {
             ganado ? (
               <>
                 Llegaste de <span className="font-semibold text-foreground">{partida.jugadorInicial.nombre}</span> a{" "}
-                <span className="font-semibold text-foreground">{partida.jugadorFinal.nombre}</span> en{" "}
-                <span className="font-semibold text-foreground">{steps}</span>{" "}
-                {steps === 1 ? "Step" : "Steps"} en <span className="font-semibold text-foreground">{tiempoFinal}</span>{" "}
-                segundos.
-                {steps === partida.distanciaMinima ? (
+                <span className="font-semibold text-foreground">{partida.jugadorFinal.nombre}</span> con{" "}
+                <span className="font-semibold text-foreground">{jugadoresIntermedios}</span>{" "}
+                {etiquetaJugadoresIntermedios(jugadoresIntermedios)} en{" "}
+                <span className="font-semibold text-foreground">{tiempoFinal}</span> segundos.
+                {jugadoresIntermedios === jugadoresIntermediosObjetivo ? (
                   <> ¡El camino más corto posible!</>
                 ) : (
-                  <> El camino más corto era de {partida.distanciaMinima} {partida.distanciaMinima === 1 ? "Step" : "Steps"}.</>
+                  <>
+                    {" "}
+                    El camino más corto era de {jugadoresIntermediosObjetivo}{" "}
+                    {etiquetaJugadoresIntermedios(jugadoresIntermediosObjetivo)}.
+                  </>
                 )}
               </>
             ) : (
               <>
-                Te has rendido con <span className="font-semibold text-foreground">{steps}</span>{" "}
-                {steps === 1 ? "Step" : "Steps"} dados. El camino más corto era de{" "}
-                <span className="font-semibold text-foreground">{partida.distanciaMinima}</span>{" "}
-                {partida.distanciaMinima === 1 ? "Step" : "Steps"}.
+                Te has rendido con <span className="font-semibold text-foreground">{jugadoresIntermedios}</span>{" "}
+                {etiquetaJugadoresIntermedios(jugadoresIntermedios)} colocados. El camino más corto era de{" "}
+                <span className="font-semibold text-foreground">{jugadoresIntermediosObjetivo}</span>{" "}
+                {etiquetaJugadoresIntermedios(jugadoresIntermediosObjetivo)}.
               </>
             )
           }

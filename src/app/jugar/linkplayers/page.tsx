@@ -25,8 +25,9 @@ export default function LinkPlayersPage() {
 
             <p className="relative max-w-md text-sm leading-relaxed text-muted-foreground sm:text-base">
               Conecta al jugador inicial con el final a través de excompañeros de
-              club, en el menor número de Steps posible. Puedes revertir un Step
-              en cualquier momento si se te ocurre un camino mejor.
+              club, con el menor número de jugadores intermedios posible. Puedes
+              revertir el último jugador en cualquier momento si se te ocurre un
+              camino mejor.
             </p>
           </header>
 
