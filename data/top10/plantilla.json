@@ -1,19 +1,19 @@
 {
-  "competicion": "EXPULSIONES-PREMIER-HISTORICO",
+  "competicion": "MEJOR-JUGADOR-LALIGA",
   "temporada": "All time",
-  "metrica": "TARJETAS_ROJAS",
-  "titulo": "Jugadores con más expuslsiones en la historia de la Premier League.",
-  "descripcion": "Jugadores con más expuslsiones en la historia de la Premier League.",
+  "metrica": "PARTIDOS",
+  "titulo": "Últimos 10 MVP's distintos en La Liga.",
+  "descripcion": "Últimos 10 MVP's en La Liga.",
   "entradas": [
-    { "nombre": "Duncan Ferguson", "valor": "8", "equipo": "Scotland" },
-    { "nombre": "Richard Dunne", "valor": "8", "equipo": "Ireland" },
-    { "nombre": "Patrick Vieira", "valor": "8", "equipo": "France" },
-    { "nombre": "Roy Keane", "valor": "7", "equipo": "Ireland" },
-    { "nombre": "Lee Cattermole", "valor": "7", "equipo": "England" },
-    { "nombre": "Alan Smith", "valor": "7", "equipo": "England" },
-    { "nombre": "Vinnie Jones", "valor": "7", "equipo": "Wales" },
-    { "nombre": "Joey Barton", "valor": "6", "equipo": "England" },
-    { "nombre": "Paul Konchesky", "valor": "6", "equipo": "England" },
-    { "nombre": "John Hartson", "valor": "6", "equipo": "Wales" }
+    { "nombre": "Lamine Yamal", "valor": "25/26", "equipo": "FC Barcelona" },
+    { "nombre": "Raphinha", "valor": "24/25", "equipo": "FC Barcelona" },
+    { "nombre": "Jude Bellingham", "valor": "23/24", "equipo": "Real Madrid" },
+    { "nombre": "Marc-André ter Stegen", "valor": "22/23", "equipo": "FC Barcelona" },
+    { "nombre": "Karim Benzema", "valor": "21/22", "equipo": "Real Madrid" },
+    { "nombre": "Jan Oblak", "valor": "20/21", "equipo": "Atlético de Madrid" },
+    { "nombre": "Karim Benzema", "valor": "19/20", "equipo": "Real Madrid" },
+    { "nombre": "Lionel Messi", "valor": "18/19", "equipo": "FC Barcelona" },
+    { "nombre": "Lionel Messi", "valor": "17/18", "equipo": "FC Barcelona" },
+    { "nombre": "Lionel Messi", "valor": "16/17", "equipo": "FC Barcelona" }
   ]
 }
