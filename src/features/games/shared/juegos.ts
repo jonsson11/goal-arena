@@ -1,5 +1,5 @@
 import { GridIcon } from "@/components/icons/grid";
-import { HigherLowerIcon } from "@/components/icons/higher-lower";
+import { LinkPlayersIcon } from "@/components/icons/link-players";
 import { PodiumIcon } from "@/components/icons/PodiumIcon";
 
 // El tipo y los mapas de color a Tailwind viven en ./acento.ts (lo comparten
@@ -53,16 +53,16 @@ export const JUEGOS: JuegoInfo[] = [
     stats: ["🎯 9 casillas por partida", "⏱️ ~2-3 min", "🧠 Dificultad media"],
     imagen: "/capturas/3x32.jpg"
   },
-  {
-    href: "/jugar/higher-lower",
-    nombre: "Higher or Lower",
-    categoria: "Racha infinita",
-    descripcion: "Adivina quién tiene el valor más alto y mantén la racha.",
-    Icono: HigherLowerIcon,
+ {
+    href: "/jugar/linkplayers",
+    nombre: "LinkPlayers",
+    categoria: "Enlaza los jugadores",
+    descripcion: "Conecta a dos jugadores a través de compañeros de club, en el menor número de Steps.",
+    Icono: LinkPlayersIcon,
     acento: "secondary",
     etiqueta: "BETA",
-    reto: "Un fallo y la racha se acaba. ¿Hasta dónde puedes llegar?",
-    stats: ["🔥 Racha infinita", "⏱️ Ronda exprés", "🧠 Dificultad progresiva"],
+    reto: "El camino más corto ya está calculado. ¿Puedes igualarlo?",
+    stats: ["🔗 Camino más corto calculado", "⏱️ ~3-5 min", "🧠 Dificultad variable"],
   },
   {
     href: "/jugar/top10",

@@ -6,10 +6,10 @@
 // nada de Prisma ni de Next -- es lógica pura, fácil de razonar y de
 // probar suelta.
 
-/** Los dos minijuegos activos hoy. Añadir uno nuevo no pide migración
- * (ver comentario de PartidaJugada.juego en schema.prisma) -- solo hay
- * que añadirlo aquí y a EXP_VICTORIA. */
-export const JUEGOS_VALIDOS = ["GRID", "TOP10"] as const;
+/** Los minijuegos activos hoy. Añadir uno nuevo no pide migración (ver
+ * comentario de PartidaJugada.juego en schema.prisma) -- solo hay que
+ * añadirlo aquí y a EXP_VICTORIA. */
+export const JUEGOS_VALIDOS = ["GRID", "TOP10", "LINKPLAYERS"] as const;
 export type JuegoPartida = (typeof JUEGOS_VALIDOS)[number];
 
 export type Dificultad = "facil" | "medio" | "dificil";
@@ -32,11 +32,25 @@ export type ResultadoPartida = "victoria" | "derrota";
 // de dificultad en GRID (25 / 50 / 100), y TOP10 justo en el punto medio
 // entre GRID medio y difícil ((50+100)/2 = 75), como pedía el comentario
 // de arriba desde el principio.
+// LINKPLAYERS (11/08/2026) sí tiene dificultad graduada, igual que GRID:
+// el jugador elige facil/medio/dificil antes de empezar (mismo selector,
+// ver GameLauncher.tsx con `dificultades`), y eso decide el rango de
+// Steps mínimos que debe tener el camino más corto real (ver
+// RANGO_STEPS_POR_DIFICULTAD en generarPartida.server.ts) -- así que la
+// EXP escala con esa dificultad tal como escala con la de GRID, no como
+// una EXP fija tipo TOP10. Un poco por debajo de GRID en cada escalón
+// (medio 75, el mismo valor que tenía LINKPLAYERS cuando era EXP fija)
+// porque encontrar cada Step no es tan mecánico como colocar en una
+// casilla del 3x3, pero tampoco escala tan agresivo como GRID difícil.
+// Primera estimación a ojo, igual que el resto de esta tabla.
 export const EXP_VICTORIA: Record<string, number> = {
   "GRID:facil": 25,
   "GRID:medio": 50,
   "GRID:dificil": 100,
   "TOP10:": 75, // TOP10 sin modo -- ver claveModo()
+  "LINKPLAYERS:facil": 50,
+  "LINKPLAYERS:medio": 75,
+  "LINKPLAYERS:dificil": 110,
 };
 
 /** Bonus por la primera victoria del día, cualquier modo. Se sujeta a
@@ -74,6 +88,14 @@ const DURACION_ESPERADA_SEGUNDOS: Record<string, number> = {
   "GRID:medio": 120,
   "GRID:dificil": 180,
   "TOP10:": 120,
+  // Más largas que TOP10/GRID a propósito -- encontrar cada Step implica
+  // pensar en excompañeros de club, no solo recordar un nombre o colocar
+  // en una casilla, y "dificil" exige más Steps de camino mínimo (ver
+  // RANGO_STEPS_POR_DIFICULTAD en generarPartida.server.ts). Primera
+  // estimación a ojo, igual que el resto de esta tabla.
+  "LINKPLAYERS:facil": 90,
+  "LINKPLAYERS:medio": 150,
+  "LINKPLAYERS:dificil": 220,
 };
 
 const TRAMOS_BONUS_TIEMPO: Array<{ hastaFraccion: number; bonusPct: number }> = [
@@ -104,7 +126,10 @@ function claveModo(juego: JuegoPartida, modo: string | null): string {
  * ella para nada -- ver POST /api/partidas. */
 export function esCombinacionValida(juego: string, modo: string | null): juego is JuegoPartida {
   if (!JUEGOS_VALIDOS.includes(juego as JuegoPartida)) return false;
-  if (juego === "GRID") return modo !== null && DIFICULTADES_VALIDAS.includes(modo as Dificultad);
+  // GRID y LINKPLAYERS tienen dificultad graduada -- exigen un modo válido.
+  if (juego === "GRID" || juego === "LINKPLAYERS") {
+    return modo !== null && DIFICULTADES_VALIDAS.includes(modo as Dificultad);
+  }
   // TOP10 (y cualquier futuro juego sin modos): modo debe venir vacío.
   return modo === null;
 }

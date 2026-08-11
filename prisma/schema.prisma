@@ -114,7 +114,7 @@ model PartidaJugada {
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId String
 
-  juego String // "GRID" | "TOP10" (más adelante: "HIGHER_LOWER"...)
+  juego String // "GRID" | "TOP10" | "LINKPLAYERS"
   // Dificultad para GRID ("facil"|"medio"|"dificil"); null en juegos sin
   // modos, como TOP10 hoy.
   modo      String?
