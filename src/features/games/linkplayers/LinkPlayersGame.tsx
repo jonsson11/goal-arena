@@ -42,9 +42,8 @@ async function verificarConexionApi(actual: string, siguiente: string): Promise<
   return res.json();
 }
 
-// Pistas de Stints bajo el nombre -- solo aparecen en fácil (equipo +
-// años) y medio (solo equipo, ver PistaEtapa en type.ts). En difícil
-// `pistas` viene undefined y este bloque no se pinta nada.
+// Pistas de Stints bajo el nombre -- equipo + años de cada etapa, igual
+// en las tres dificultades (ver PistaEtapa en type.ts).
 //
 // Rediseñado (11/08/2026, petición del usuario): antes eran chips en
 // flex-wrap centrados, que con muchas etapas (jugadores con carreras
@@ -54,6 +53,14 @@ async function verificarConexionApi(actual: string, siguiente: string): Promise<
 // con scroll propio si hay muchas, para no descuadrar el alto de las dos
 // tarjetas (inicial/final) cuando una tiene una carrera mucho más larga
 // que la otra.
+//
+// Etiqueta "cedido" (11/08/2026, 5ª ronda): cuando una etapa se solapa en
+// el tiempo con otra etapa anterior (de otro club) del mismo jugador --
+// típicamente porque un club sigue "actualidad" (sin fecha de fin) y
+// aparece otro club después ya cerrado -- se marca como probable cesión
+// (ver marcarCesiones en grafoJugadores.server.ts) para que no parezca un
+// hueco raro en la cronología: el jugador sigue de contrato en el primer
+// club mientras juega cedido en el segundo.
 function PistasEtapas({ pistas, acento }: { pistas: PistaEtapa[]; acento: "primary" | "secondary" }) {
   if (pistas.length === 0) return null;
 
@@ -64,10 +71,17 @@ function PistasEtapas({ pistas, acento }: { pistas: PistaEtapa[]; acento: "prima
       {pistas.map((pista, i) => (
         <li
           key={i}
-          className="flex items-baseline justify-between gap-2 rounded px-1.5 py-0.5 text-left text-[11px] odd:bg-white/[0.03]"
+          className="flex items-baseline gap-2 rounded px-1.5 py-0.5 text-left text-[11px] odd:bg-white/[0.03]"
         >
-          <span className={`truncate font-medium ${colorTexto}`}>{pista.equipo}</span>
-          {pista.temporada && <span className="shrink-0 text-muted-foreground">{pista.temporada}</span>}
+          <span className="flex min-w-0 items-baseline gap-1">
+            <span className={`truncate font-medium ${colorTexto}`}>{pista.equipo}</span>
+            {pista.cedido && (
+              <span className="shrink-0 rounded-full border border-white/10 px-1 py-px text-[8px] font-semibold uppercase tracking-wide text-muted-foreground">
+                Cedido
+              </span>
+            )}
+          </span>
+          {pista.temporada && <span className="ml-auto shrink-0 text-muted-foreground">{pista.temporada}</span>}
         </li>
       ))}
     </ul>

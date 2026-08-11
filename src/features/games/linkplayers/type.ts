@@ -3,18 +3,24 @@
 // Una pista de Stint para las tarjetas de jugador inicial/final --
 // `temporada` es opcional a propósito: en dificultad "medio" solo se
 // enseña el nombre del equipo, sin años (ver PISTAS_POR_DIFICULTAD en
-// generarPartida.server.ts).
-export type PistaEtapa = { equipo: string; temporada?: string };
+// generarPartida.server.ts). `cedido` (11/08/2026, 5ª ronda) marca las
+// etapas que probablemente fueron una cesión -- ver marcarCesiones en
+// grafoJugadores.server.ts: se infiere de que esta etapa se solapa en el
+// tiempo con otra etapa (de otro club) que empezó antes, no de que la
+// fuente lo anote explícitamente.
+export type PistaEtapa = { equipo: string; temporada?: string; cedido?: boolean };
 
 // Ficha mínima de un jugador para mostrar en las cabeceras de "inicio" y
 // "final" y en cada eslabón de la cadena -- no hace falta el resto de
 // campos de Jugador (goles, valor de mercado...), ninguno se usa aquí.
 //
 // `pistas` solo viene en jugadorInicial/jugadorFinal (nunca en los pasos
-// de la cadena que construye el jugador), y depende de la dificultad
-// elegida (11/08/2026, petición del usuario): en fácil, equipo + años de
-// cada etapa; en medio, solo los equipos, sin repetir; en difícil,
-// undefined -- sin pistas.
+// de la cadena que construye el jugador): siempre las etapas completas
+// (equipo + años), igual en las tres dificultades (11/08/2026, 3ª ronda
+// -- antes variaba por dificultad, ahora lo único que cambia con el nivel
+// es el rango de Steps exigido, ver RANGO_STEPS_POR_DIFICULTAD en
+// generarPartida.server.ts). Sigue siendo opcional en el tipo por si en
+// el futuro se quiere volver a ocultarlas en algún caso.
 export type JugadorObjetivo = {
   nombre: string;
   nacionalidad: string;

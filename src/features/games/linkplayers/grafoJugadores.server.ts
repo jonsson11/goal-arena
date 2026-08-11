@@ -40,24 +40,34 @@ export type NodoJugador = {
   nombre: string;
   nacionalidad: string;
   imagenUrl: string | null;
-  // Ha jugado (en cualquier temporada) en alguno de los TOP_CLUBES_
-  // CONOCIDOS -- ver más abajo. Ajustado el 11/08/2026: antes bastaba
-  // cualquier equipo con elegibleParaGrid=true (un pool grande, pensado
-  // para el 3x3), y el usuario reportó que seguían saliendo jugadores
-  // poco conocidos como inicio/final. Ahora es un pool mucho más
-  // pequeño y curado, pensado específicamente para "¿este jugador se
-  // reconoce a simple vista?". Solo se usa para decidir quién puede ser
-  // jugador INICIAL o FINAL de la partida -- el camino en sí puede pasar
-  // por cualquier jugador del grafo, conocido o no, igual que en la vida
-  // real una cadena de excompañeros puede pasar por un club pequeño de
-  // por medio.
+  // Ha jugado una etapa real (ver MIN_DIAS_ETAPA_CONOCIDO) en alguno de
+  // los TOP_CLUBES_CONOCIDOS -- ver más abajo. Ajustado el 11/08/2026:
+  // antes bastaba cualquier equipo con elegibleParaGrid=true (un pool
+  // grande, pensado para el 3x3), y el usuario reportó que seguían
+  // saliendo jugadores poco conocidos como inicio/final. Ahora es un pool
+  // mucho más pequeño y curado, pensado específicamente para "¿este
+  // jugador se reconoce a simple vista?". Solo se usa para decidir quién
+  // puede ser jugador INICIAL o FINAL de la partida en dificultad medio y
+  // difícil -- el camino en sí puede pasar por cualquier jugador del
+  // grafo, conocido o no, igual que en la vida real una cadena de
+  // excompañeros puede pasar por un club pequeño de por medio.
   conocido: boolean;
+  // Igual que `conocido`, pero con un pool todavía más pequeño
+  // (TOP_CLUBES_FACIL, los 10 clubes más grandes) -- añadido el
+  // 11/08/2026 (4ª ronda) a petición del usuario: en vez de acortar el
+  // camino para hacer fácil más sencillo (eso ya se probó y se revirtió),
+  // fácil vuelve a exigir el mismo camino que antes (2-3 Steps) pero
+  // eligiendo el inicial/final solo entre los clubes más reconocibles del
+  // mundo, no los 25 de `conocido`. Todo jugador `conocidoFacil` es
+  // también `conocido` (el pool de 10 es subconjunto del de 25).
+  conocidoFacil: boolean;
   // Etapas de este jugador (equipo + años), ordenadas cronológicamente --
   // fuente de las pistas que se enseñan en la tarjeta del jugador
   // inicial/final según la dificultad (ver generarPartida.server.ts).
   // Nunca se usa para nada más que eso: no entra en el cálculo del grafo
-  // ni del camino más corto.
-  etapas: { equipo: string; desde: string; hasta: string }[];
+  // ni del camino más corto. `cedido` (11/08/2026, 5ª ronda) marca las
+  // etapas que probablemente fueron una cesión -- ver marcarCesiones.
+  etapas: { equipo: string; desde: string; hasta: string; cedido: boolean }[];
 };
 
 export type Conexion = { equipo: string; desde: string; hasta: string };
@@ -68,6 +78,9 @@ export type GrafoJugadores = {
   // ids de nodos "conocidos" (ver NodoJugador.conocido), ya en un array
   // plano para barajar/samplear.
   conocidos: string[];
+  // ids de nodos "conocidos para fácil" (ver NodoJugador.conocidoFacil) --
+  // mismo array plano, pero del pool más estrecho (top 10 clubes).
+  conocidosFacil: string[];
   // Los endpoints (generar/verificar) trabajan con NOMBRES, no ids
   // internos -- mismo criterio que el resto de la app (Top10, Grid,
   // PlayerSearch identifican jugadores por nombre, no por id). Si dos
@@ -128,6 +141,14 @@ async function obtenerStints(): Promise<StintCrudo[]> {
 // primer número a tocar (bajarlo más estrecha aún el pool).
 const TOP_CLUBES_CONOCIDOS = 25;
 
+// Pool todavía más estrecho, solo para dificultad fácil -- añadido el
+// 11/08/2026 (4ª ronda) a petición del usuario: "capa mucho más los
+// jugadores solo para ese modo [fácil]. Pilla de los top10 equipos del
+// mundo y ya está". Mismo criterio de orden que TOP_CLUBES_CONOCIDOS
+// (plantilla histórica), solo que quedándose con los 10 primeros en vez
+// de 25 -- de ahí que sea un subconjunto exacto de `conocido`.
+const TOP_CLUBES_FACIL = 10;
+
 // Además de jugar en un club "conocido", ahora hace falta haberlo hecho
 // una temporada real, no solo un cameo -- añadido el 11/08/2026 (2ª
 // ronda) porque el filtro de solo clubes (ver arriba) seguía dejando
@@ -144,7 +165,31 @@ function duracionEnDias(s: StintCrudo): number {
   return (fin.getTime() - s.startDate.getTime()) / (1000 * 60 * 60 * 24);
 }
 
-type EtapaCruda = { equipo: string; startDate: Date; endDate: Date | null };
+type EtapaCruda = { equipo: string; startDate: Date; endDate: Date | null; cedido: boolean };
+
+// Marca qué etapas son probablemente una cesión -- añadido el 11/08/2026
+// (5ª ronda) a petición del usuario: al ver una tarjeta donde un club
+// seguía "actualidad" (sin fecha de fin) y DESPUÉS aparecía otro club ya
+// cerrado, preguntó qué significaba, y la respuesta es que normalmente es
+// una cesión (el jugador sigue de contrato en el primer club mientras
+// juega cedido en el segundo). En vez de fiarnos del texto "(loan)" del
+// wikitext de Wikipedia (que hoy se descarta al parsear, ver parseClub en
+// wikipediaSync.ts, y no todas las fuentes lo marcan igual), se infiere
+// directamente de las fechas -- más robusto y no depende de que la fuente
+// lo anote bien: una etapa X es "cedido" si se solapa en el tiempo con
+// OTRA etapa Y (de otro club) que empezó ANTES que X -- Y es entonces el
+// club "dueño" del jugador durante ese solape, y X es la cesión.
+// Recibe `etapas` YA ordenadas por `startDate` ascendente; muta en sitio.
+function marcarCesiones(etapas: EtapaCruda[]): void {
+  for (const etapa of etapas) {
+    etapa.cedido = etapas.some(
+      (otra) =>
+        otra !== etapa &&
+        otra.startDate.getTime() < etapa.startDate.getTime() &&
+        seSolapan(etapa.startDate, etapa.endDate, otra.startDate, otra.endDate)
+    );
+  }
+}
 
 // Junta etapas CONSECUTIVAS en el mismo club en una sola -- ej. "Torino
 // (2018-2019)" seguido de "Torino (2019-2022)" pasa a ser un único
@@ -155,7 +200,8 @@ type EtapaCruda = { equipo: string; startDate: Date; endDate: Date | null };
 // (etapas separadas, no adyacentes en la lista ya ordenada
 // cronológicamente), se mantienen como etapas distintas -- eso sí es una
 // segunda etapa real, no un artefacto de cómo están partidos los datos.
-// Recibe `etapas` YA ordenadas por `startDate` ascendente.
+// Recibe `etapas` YA ordenadas por `startDate` ascendente (y ya con
+// `cedido` calculado, ver marcarCesiones).
 function fusionarEtapasConsecutivas(etapas: EtapaCruda[]): EtapaCruda[] {
   const fusionadas: EtapaCruda[] = [];
 
@@ -169,6 +215,10 @@ function fusionarEtapasConsecutivas(etapas: EtapaCruda[]): EtapaCruda[] {
       if (anterior.endDate !== null && (etapa.endDate === null || etapa.endDate > anterior.endDate)) {
         anterior.endDate = etapa.endDate;
       }
+      // Si cualquiera de los tramos fusionados se detectó como cesión,
+      // la etapa combinada se enseña como cesión -- en la práctica casi
+      // siempre coinciden (es la misma cesión partida en dos filas).
+      anterior.cedido = anterior.cedido || etapa.cedido;
       continue;
     }
 
@@ -178,8 +228,8 @@ function fusionarEtapasConsecutivas(etapas: EtapaCruda[]): EtapaCruda[] {
   return fusionadas;
 }
 
-function formatearEtapa(e: EtapaCruda): { equipo: string; desde: string; hasta: string } {
-  return { equipo: e.equipo, desde: anio(e.startDate), hasta: e.endDate ? anio(e.endDate) : "actualidad" };
+function formatearEtapa(e: EtapaCruda): { equipo: string; desde: string; hasta: string; cedido: boolean } {
+  return { equipo: e.equipo, desde: anio(e.startDate), hasta: e.endDate ? anio(e.endDate) : "actualidad", cedido: e.cedido };
 }
 
 export async function construirGrafo(): Promise<GrafoJugadores> {
@@ -204,12 +254,15 @@ export async function construirGrafo(): Promise<GrafoJugadores> {
           nacionalidad: s.player.nacionalidad,
           imagenUrl: s.player.imagenUrl,
           conocido: false,
+          conocidoFacil: false,
           etapas: [],
         });
         idsPorNombre.set(s.player.nombre, s.playerId);
         etapasCrudasPorJugador.set(s.playerId, []);
       }
-      etapasCrudasPorJugador.get(s.playerId)!.push({ equipo: s.team.nombre, startDate: s.startDate, endDate: s.endDate });
+      etapasCrudasPorJugador
+        .get(s.playerId)!
+        .push({ equipo: s.team.nombre, startDate: s.startDate, endDate: s.endDate, cedido: false });
 
       if (!stintsPorEquipo.has(s.teamId)) stintsPorEquipo.set(s.teamId, []);
       stintsPorEquipo.get(s.teamId)!.push(s);
@@ -218,31 +271,39 @@ export async function construirGrafo(): Promise<GrafoJugadores> {
 
     // Etapas en orden cronológico real (por fecha, no por año -- dos
     // etapas del mismo año necesitan la fecha completa para ordenarse
-    // bien), y luego fusionadas si son consecutivas en el mismo club (ver
+    // bien), luego se marcan las posibles cesiones (ver marcarCesiones,
+    // necesita ver TODAS las etapas del jugador ya ordenadas) y por
+    // último se fusionan si son consecutivas en el mismo club (ver
     // fusionarEtapasConsecutivas) antes de formatear a texto.
     for (const [playerId, etapasCrudas] of etapasCrudasPorJugador) {
       etapasCrudas.sort((a, b) => a.startDate.getTime() - b.startDate.getTime());
+      marcarCesiones(etapasCrudas);
       const fusionadas = fusionarEtapasConsecutivas(etapasCrudas);
       nodos.get(playerId)!.etapas = fusionadas.map(formatearEtapa);
     }
 
     // Segunda pasada: los equipos "conocidos" son los TOP_CLUBES_CONOCIDOS
     // con más plantilla histórica distinta, de entre los ya marcados
-    // elegibleParaGrid=true. Un jugador queda marcado `conocido` si tuvo
+    // elegibleParaGrid=true -- y "conocidos para fácil" son solo los
+    // primeros TOP_CLUBES_FACIL de esa misma lista ordenada (subconjunto
+    // exacto). Un jugador queda marcado `conocido`/`conocidoFacil` si tuvo
     // AL MENOS una etapa de verdad (no un cameo, ver MIN_DIAS_ETAPA_
     // CONOCIDO) en uno de esos equipos.
-    const equiposConocidosIds = new Set(
-      [...stintsPorEquipo.entries()]
-        .filter(([teamId]) => equipoElegibleParaGrid.get(teamId))
-        .sort((a, b) => new Set(b[1].map((s) => s.playerId)).size - new Set(a[1].map((s) => s.playerId)).size)
-        .slice(0, TOP_CLUBES_CONOCIDOS)
-        .map(([teamId]) => teamId)
-    );
+    const equiposPorPlantilla = [...stintsPorEquipo.entries()]
+      .filter(([teamId]) => equipoElegibleParaGrid.get(teamId))
+      .sort((a, b) => new Set(b[1].map((s) => s.playerId)).size - new Set(a[1].map((s) => s.playerId)).size)
+      .map(([teamId]) => teamId);
+
+    const equiposConocidosIds = new Set(equiposPorPlantilla.slice(0, TOP_CLUBES_CONOCIDOS));
+    const equiposFacilIds = new Set(equiposPorPlantilla.slice(0, TOP_CLUBES_FACIL));
 
     for (const [teamId, stintsEquipo] of stintsPorEquipo) {
       if (!equiposConocidosIds.has(teamId)) continue;
+      const esFacil = equiposFacilIds.has(teamId);
       for (const s of stintsEquipo) {
-        if (duracionEnDias(s) >= MIN_DIAS_ETAPA_CONOCIDO) nodos.get(s.playerId)!.conocido = true;
+        if (duracionEnDias(s) < MIN_DIAS_ETAPA_CONOCIDO) continue;
+        nodos.get(s.playerId)!.conocido = true;
+        if (esFacil) nodos.get(s.playerId)!.conocidoFacil = true;
       }
     }
 
@@ -278,8 +339,9 @@ export async function construirGrafo(): Promise<GrafoJugadores> {
     }
 
     const conocidos = [...nodos.values()].filter((n) => n.conocido).map((n) => n.id);
+    const conocidosFacil = [...nodos.values()].filter((n) => n.conocidoFacil).map((n) => n.id);
 
-    return { nodos, adyacencia, conocidos, idsPorNombre };
+    return { nodos, adyacencia, conocidos, conocidosFacil, idsPorNombre };
   });
 }
 
