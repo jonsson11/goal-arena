@@ -6,8 +6,9 @@ import { useAuth } from "@/features/auth/AuthContext";
 import type { RespuestaPartida } from "@/lib/experiencia";
 
 /**
- * Hook compartido por GridBoard y Top10Game (y cualquier minijuego que se
- * añada después) para registrar el resultado de una partida terminada.
+ * Hook compartido por GridBoard, Top10Game y LinkPlayersGame (y cualquier
+ * minijuego que se añada después) para registrar el resultado de una
+ * partida terminada.
  *
  * Se traga cualquier error de red/servidor y devuelve `null` en vez de
  * lanzar -- registrar la partida no debe poder romper la pantalla de
@@ -19,7 +20,7 @@ export function useRegistrarPartida() {
 
   return useCallback(
     async (
-      juego: "GRID" | "TOP10",
+      juego: "GRID" | "TOP10" | "LINKPLAYERS",
       modo: string | null,
       resultado: "victoria" | "derrota",
       /** Segundos que tardó la partida -- solo importa en victoria (bonus
