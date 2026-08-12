@@ -20,7 +20,7 @@ export default function LinkPlayersPage() {
             </span>
 
             <h1 className="text-shimmer relative bg-gradient-to-r from-secondary via-primary to-secondary bg-clip-text font-heading text-4xl font-extrabold tracking-tight text-transparent sm:text-5xl">
-              LINKPLAYERS
+              LinkPlayers
             </h1>
 
             <p className="relative max-w-md text-sm leading-relaxed text-muted-foreground sm:text-base">
