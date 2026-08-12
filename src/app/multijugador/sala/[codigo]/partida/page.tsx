@@ -21,6 +21,7 @@ import type { Tablero, Celda } from "@/features/games/grid/type";
 import type { Jugador } from "@/features/games/shared/types";
 import type { EstadoPartida } from "@/features/multijugador/type";
 import type { PasoCadena } from "@/features/games/linkplayers/type";
+import { TarjetasObjetivo, EslabonCadena } from "@/features/games/linkplayers/LinkPlayersGame";
 
 const INTERVALO_POLLING_PARTIDA_MS = 1500;
 const INTERVALO_POLLING_SALA_MS = 2000; // tras acabar, esperando revancha del anfitrión
@@ -822,8 +823,7 @@ function SeccionLinkPlayers({
     <div className="flex w-full flex-col items-center gap-6 lg:flex-row lg:items-start lg:justify-center">
       <div className="w-full max-w-md">
         <div className="flex w-full gap-3">
-          <TarjetaObjetivoOnline titulo="Jugador inicial" jugador={partida.jugadorInicial} acento="primary" />
-          <TarjetaObjetivoOnline titulo="Jugador final" jugador={partida.jugadorFinal} acento="secondary" />
+            <TarjetasObjetivo jugadorInicial={partida.jugadorInicial} jugadorFinal={partida.jugadorFinal} />
         </div>
 
         <ul className="mt-6 flex w-full flex-col gap-2">

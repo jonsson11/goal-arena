@@ -122,38 +122,50 @@ function PistasEtapas({ pistas, acento }: { pistas: PistaEtapa[]; acento: "prima
   );
 }
 
-function TarjetaObjetivo({
+// Tarjeta COMPACTA de jugador inicial/final -- solo cabecera (avatar +
+// nombre + botón "Carrera"), sin la lista de etapas dentro. Rediseñado
+// (12/08/2026, mockup elegido por el usuario -- "opción 2, pero que cada
+// botón se pueda apagar/encender por separado, y si se abren los dos que
+// salgan uno encima de otro"): antes cada tarjeta llevaba su lista de
+// etapas siempre visible dentro, lo que en móvil, en fila, no dejaba
+// espacio para leerlas. Ahora las dos cabeceras van juntas y compactas
+// (caben perfectamente en fila incluso en móvil, ya no hace que apilarlas
+// en vertical) y el despliegue de la carrera lo controla el componente de
+// arriba (TarjetasObjetivo) para que los dos paneles aparezcan fuera de
+// las columnas, a todo el ancho.
+function TarjetaObjetivoCompacta({
   titulo,
   nombre,
   nacionalidad,
   imagenUrl,
-  pistas,
+  tieneCarrera,
+  abierta,
+  onToggleCarrera,
   acento,
 }: {
   titulo: string;
   nombre: string;
   nacionalidad: string;
   imagenUrl: string | null;
-  pistas?: PistaEtapa[];
+  tieneCarrera: boolean;
+  abierta: boolean;
+  onToggleCarrera: () => void;
   acento: "primary" | "secondary";
 }) {
   const codigoPais = obtenerCodigoPais(nacionalidad);
   const colorTexto = acento === "primary" ? "text-primary" : "text-secondary";
   const colorBorde = acento === "primary" ? "border-primary/40 bg-primary/10" : "border-secondary/40 bg-secondary/10";
 
-return (
+  return (
     // min-w-0 (12/08/2026, arreglo de móvil): sin esto, un flex item con
     // flex-1 NO se encoge por debajo del ancho de su contenido más largo
     // (comportamiento por defecto de flexbox, min-width:auto) -- con un
-    // nombre largo o varias etapas, la tarjeta se negaba a estrecharse y
-    // empujaba el ancho total fuera de la pantalla en móvil, en vez de
-    // dejar que el nombre/las etapas se recortaran con truncate como ya
-    // estaba pensado. w-full para que, apilada en vertical (ver el
-    // contenedor de arriba), ocupe todo el ancho en vez de quedarse a la
-    // mitad por el `flex-1` (que solo tiene efecto en fila).
+    // nombre largo, la tarjeta se negaba a estrecharse y empujaba el ancho
+    // total fuera de la pantalla, en vez de dejar que el nombre se
+    // recortara con truncate como ya estaba pensado.
     <div className={`flex w-full min-w-0 flex-1 flex-col items-center gap-2 rounded-2xl border p-3 text-center ${colorBorde}`}>
       <span className={`text-[10px] font-bold uppercase tracking-widest ${colorTexto}`}>{titulo}</span>
-      <div className="h-14 w-14 shrink-0 overflow-hidden rounded-full bg-gradient-to-br from-secondary to-primary/60 ring-1 ring-white/10">
+      <div className="h-12 w-12 shrink-0 overflow-hidden rounded-full bg-gradient-to-br from-secondary to-primary/60 ring-1 ring-white/10 sm:h-14 sm:w-14">
         {imagenUrl ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img src={imagenUrl} alt="" className="h-full w-full object-cover object-top" />
@@ -167,7 +179,86 @@ return (
         {codigoPais && <span className={`fi fi-${codigoPais} h-3 w-4 shrink-0 rounded-sm`} />}
         <p className="min-w-0 truncate text-sm font-semibold text-foreground">{nombre}</p>
       </div>
-      {pistas && <PistasEtapas pistas={pistas} acento={acento} />}
+      {tieneCarrera && (
+        <button
+          type="button"
+          onClick={onToggleCarrera}
+          className={`inline-flex shrink-0 items-center gap-1 rounded-full border px-2.5 py-1 text-[10.5px] font-semibold transition-colors ${
+            abierta ? "border-white/20 text-foreground" : "border-white/10 text-muted-foreground hover:text-foreground"
+          }`}
+        >
+          Carrera
+          <ChevronDown className={`h-2.5 w-2.5 shrink-0 transition-transform ${abierta ? "rotate-180" : ""}`} />
+        </button>
+      )}
+    </div>
+  );
+}
+
+// Fila de las dos cabeceras (inicial/final) + los paneles de carrera
+// desplegados debajo, a todo el ancho -- cada botón "Carrera" se
+// activa/desactiva por separado (no son pestañas excluyentes: se puede
+// tener las dos abiertas a la vez, cerradas las dos, o solo una), y si
+// las dos están abiertas se apilan una encima de otra en el orden
+// inicial → final. Ambas empiezan cerradas -- nada se enseña hasta que se
+// pulsa, para que la fila de arriba se quede siempre compacta.
+//
+// Exportado (12/08/2026, petición del usuario: "el multijugador tiene que
+// verse EXACTAMENTE igual que el modo individual") -- SeccionLinkPlayers
+// en multijugador/sala/[codigo]/partida/page.tsx reutiliza este mismo
+// componente en vez de una versión propia, para que se vea pixel a pixel
+// igual en los dos modos, comportamiento de los botones incluido.
+export function TarjetasObjetivo({
+  jugadorInicial,
+  jugadorFinal,
+}: {
+  jugadorInicial: { nombre: string; nacionalidad: string; imagenUrl: string | null; pistas?: PistaEtapa[] };
+  jugadorFinal: { nombre: string; nacionalidad: string; imagenUrl: string | null; pistas?: PistaEtapa[] };
+}) {
+  const [mostrarInicial, setMostrarInicial] = useState(false);
+  const [mostrarFinal, setMostrarFinal] = useState(false);
+
+  return (
+    <div className="flex w-full flex-col gap-3">
+      <div className="flex w-full gap-3">
+        <TarjetaObjetivoCompacta
+          titulo="Jugador inicial"
+          nombre={jugadorInicial.nombre}
+          nacionalidad={jugadorInicial.nacionalidad}
+          imagenUrl={jugadorInicial.imagenUrl}
+          tieneCarrera={!!jugadorInicial.pistas && jugadorInicial.pistas.length > 0}
+          abierta={mostrarInicial}
+          onToggleCarrera={() => setMostrarInicial((v) => !v)}
+          acento="primary"
+        />
+        <TarjetaObjetivoCompacta
+          titulo="Jugador final"
+          nombre={jugadorFinal.nombre}
+          nacionalidad={jugadorFinal.nacionalidad}
+          imagenUrl={jugadorFinal.imagenUrl}
+          tieneCarrera={!!jugadorFinal.pistas && jugadorFinal.pistas.length > 0}
+          abierta={mostrarFinal}
+          onToggleCarrera={() => setMostrarFinal((v) => !v)}
+          acento="secondary"
+        />
+      </div>
+
+      {mostrarInicial && jugadorInicial.pistas && (
+        <div className="flex flex-col gap-1">
+          <span className="text-[10px] font-bold uppercase tracking-widest text-primary">
+            Carrera de {jugadorInicial.nombre}
+          </span>
+          <PistasEtapas pistas={jugadorInicial.pistas} acento="primary" />
+        </div>
+      )}
+      {mostrarFinal && jugadorFinal.pistas && (
+        <div className="flex flex-col gap-1">
+          <span className="text-[10px] font-bold uppercase tracking-widest text-secondary">
+            Carrera de {jugadorFinal.nombre}
+          </span>
+          <PistasEtapas pistas={jugadorFinal.pistas} acento="secondary" />
+        </div>
+      )}
     </div>
   );
 }
@@ -216,7 +307,7 @@ function AvatarEslabon({ nombre, nacionalidad, imagenUrl }: { nombre: string; na
 // despliega su lista de etapas debajo -- así se puede consultar la
 // carrera de un jugador ya colocado para decidir si conviene revertirlo,
 // sin que la cadena se alargue de más cuando no hace falta consultarla.
-function EslabonCadena({ paso, esFinal }: { paso: PasoCadena; esFinal: boolean }) {
+export function EslabonCadena({ paso, esFinal }: { paso: PasoCadena; esFinal: boolean }) {
   const [expandido, setExpandido] = useState(false);
   const pistas = paso.jugador.pistas;
   const tienePistas = !!pistas && pistas.length > 0;
@@ -460,23 +551,12 @@ export function LinkPlayersGame({ dificultad }: { dificultad: Dificultad }) {
 
   return (
     <div className="flex flex-col items-center gap-5 p-3 sm:gap-6 sm:p-6">
-      <div className="flex w-full max-w-2xl flex-col gap-3 sm:flex-row">
-        <TarjetaObjetivo
-          titulo="Jugador inicial"
-          nombre={partida.jugadorInicial.nombre}
-          nacionalidad={partida.jugadorInicial.nacionalidad}
-          imagenUrl={partida.jugadorInicial.imagenUrl}
-          pistas={partida.jugadorInicial.pistas}
-          acento="primary"
-        />
-        <TarjetaObjetivo
-          titulo="Jugador final"
-          nombre={partida.jugadorFinal.nombre}
-          nacionalidad={partida.jugadorFinal.nacionalidad}
-          imagenUrl={partida.jugadorFinal.imagenUrl}
-          pistas={partida.jugadorFinal.pistas}
-          acento="secondary"
-        />
+      {/* Cabeceras compactas -- caben en fila incluso en móvil (12/08/2026,
+          mockup elegido por el usuario), cada una con su propio botón
+          "Carrera" independiente que despliega sus etapas debajo, a todo
+          el ancho (ver TarjetasObjetivo). */}
+      <div className="w-full max-w-2xl">
+        <TarjetasObjetivo jugadorInicial={partida.jugadorInicial} jugadorFinal={partida.jugadorFinal} />
       </div>
 
       <ul className="flex w-full max-w-md flex-col gap-2">
