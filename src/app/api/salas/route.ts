@@ -17,6 +17,7 @@ import type { Tablero } from "@/features/games/grid/type";
 import type { RankingTop10 } from "@/features/games/top10/type";
 import type { PartidaGenerada } from "@/features/games/linkplayers/type";
 import type { Dificultad } from "@/features/games/shared/types";
+import { JUEGOS_MULTIJUGADOR_DISPONIBLES, type JuegoMultijugador } from "@/features/multijugador/type";
 
 export const dynamic = "force-dynamic";
 
