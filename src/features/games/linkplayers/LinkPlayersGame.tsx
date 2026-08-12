@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { Link2, RotateCcw as UndoIcon } from "lucide-react";
-import type { Dificultad, Jugador } from "@/features/games/shared/types";
+import { ChevronDown, Link2, RotateCcw as UndoIcon } from "lucide-react";
+import type { Dificultad, Equipo, Jugador } from "@/features/games/shared/types";
 import { obtenerCodigoPais } from "@/features/games/shared/banderas";
 import { GameResultDialog } from "@/features/games/shared/GameResultDialog";
 import { GameButton } from "@/features/games/shared/GameButton";
@@ -30,6 +30,27 @@ async function buscarJugadores(query: string): Promise<Jugador[]> {
   const res = await fetch(`/api/jugadores/buscar?q=${encodeURIComponent(query)}`);
   if (!res.ok) throw new Error("Error al buscar jugadores");
   return res.json();
+}
+
+// Convierte las etapas de un candidato del buscador (Equipo, con
+// desde/hasta/cedido ya rellenos desde /api/jugadores/buscar) al formato
+// PistaEtapa que espera EslabonCadena para su desplegable "Carrera"
+// (12/08/2026, Opción B elegida por el usuario tras ver 3 mockups).
+// "cedido" (2ª ronda, mismo día): al principio el buscador no lo
+// calculaba y esta función lo omitía -- el usuario pidió explícitamente
+// que el desplegable de los intermedios marcase cesiones igual que las
+// tarjetas de inicio/final, así que ahora /api/jugadores/buscar también
+// lo calcula (mismo criterio de solape que marcarCesiones en
+// grafoJugadores.server.ts) y aquí solo se traslada.
+function pistasDeEquipos(equipos: Equipo[]): PistaEtapa[] {
+  return equipos.map((equipo) => ({
+    equipo: equipo.nombre,
+    temporada: equipo.desde ? `${equipo.desde} - ${equipo.hasta ?? "actualidad"}` : undefined,
+    // cedido (12/08/2026, 2ª ronda): ya viene calculado desde
+    // /api/jugadores/buscar (mismo criterio de solape que las tarjetas de
+    // inicio/final), solo hay que pasarlo tal cual.
+    cedido: equipo.cedido,
+  }));
 }
 
 async function verificarConexionApi(actual: string, siguiente: string): Promise<ResultadoConexion> {
@@ -61,13 +82,14 @@ async function verificarConexionApi(actual: string, siguiente: string): Promise<
 // (ver marcarCesiones en grafoJugadores.server.ts) para que no parezca un
 // hueco raro en la cronología: el jugador sigue de contrato en el primer
 // club mientras juega cedido en el segundo.
-function PistasEtapas({ pistas, acento }: { pistas: PistaEtapa[]; acento: "primary" | "secondary" }) {
-  if (pistas.length === 0) return null;
-
-  const colorTexto = acento === "primary" ? "text-primary" : "text-secondary";
-
+// Filas compartidas por PistasEtapas (tarjetas inicio/final) y el
+// desplegable "Carrera" de cada eslabón de la cadena (ver EslabonCadena
+// más abajo) -- misma línea por etapa, equipo a la izquierda y años a la
+// derecha, solo cambia el contenedor `<ul>` que las envuelve en cada
+// sitio.
+function FilasPistas({ pistas, colorTexto }: { pistas: PistaEtapa[]; colorTexto: string }) {
   return (
-    <ul className="flex max-h-40 w-full flex-col gap-0.5 overflow-y-auto rounded-lg border border-white/10 bg-background/40 p-1.5">
+    <>
       {pistas.map((pista, i) => (
         <li
           key={i}
@@ -84,6 +106,18 @@ function PistasEtapas({ pistas, acento }: { pistas: PistaEtapa[]; acento: "prima
           {pista.temporada && <span className="ml-auto shrink-0 text-muted-foreground">{pista.temporada}</span>}
         </li>
       ))}
+    </>
+  );
+}
+
+function PistasEtapas({ pistas, acento }: { pistas: PistaEtapa[]; acento: "primary" | "secondary" }) {
+  if (pistas.length === 0) return null;
+
+  const colorTexto = acento === "primary" ? "text-primary" : "text-secondary";
+
+  return (
+    <ul className="flex max-h-40 w-full flex-col gap-0.5 overflow-y-auto rounded-lg border border-white/10 bg-background/40 p-1.5">
+      <FilasPistas pistas={pistas} colorTexto={colorTexto} />
     </ul>
   );
 }
@@ -165,7 +199,20 @@ function AvatarEslabon({ nombre, nacionalidad, imagenUrl }: { nombre: string; na
 // vertical, con la conexión (club + años) como una píldora sobre esa
 // línea en vez de una frase completa -- más compacto y más fácil de leer
 // de un vistazo según la cadena crece.
+// Opción B (12/08/2026, elegida por el usuario entre 3 mockups): la
+// tarjeta se queda compacta por defecto, igual que antes. Solo si este
+// jugador trae pistas (los intermedios que coloca el propio usuario
+// siempre las traen, ver manejarSeleccion; jugadorInicial/jugadorFinal y
+// el camino de la solución también) aparece el botón "Carrera" que
+// despliega su lista de etapas debajo -- así se puede consultar la
+// carrera de un jugador ya colocado para decidir si conviene revertirlo,
+// sin que la cadena se alargue de más cuando no hace falta consultarla.
 function EslabonCadena({ paso, esFinal }: { paso: PasoCadena; esFinal: boolean }) {
+  const [expandido, setExpandido] = useState(false);
+  const pistas = paso.jugador.pistas;
+  const tienePistas = !!pistas && pistas.length > 0;
+  const colorTexto = esFinal ? "text-secondary" : "text-primary";
+
   return (
     <li className="relative">
       {paso.conexion && (
@@ -179,13 +226,28 @@ function EslabonCadena({ paso, esFinal }: { paso: PasoCadena; esFinal: boolean }
         </div>
       )}
       <div
-        className={`flex items-center gap-3 rounded-xl border px-3 py-2 ${
-          esFinal ? "border-secondary/50 bg-secondary/10" : "border-white/10 bg-card/60"
-        }`}
+        className={`flex items-center gap-3 border px-3 py-2 ${
+          expandido && tienePistas ? "rounded-t-xl border-b-0" : "rounded-xl"
+        } ${esFinal ? "border-secondary/50 bg-secondary/10" : "border-white/10 bg-card/60"}`}
       >
         <AvatarEslabon nombre={paso.jugador.nombre} nacionalidad={paso.jugador.nacionalidad} imagenUrl={paso.jugador.imagenUrl} />
-        <span className="text-sm font-medium text-foreground">{paso.jugador.nombre}</span>
+        <span className="flex-1 truncate text-sm font-medium text-foreground">{paso.jugador.nombre}</span>
+        {tienePistas && (
+          <button
+            type="button"
+            onClick={() => setExpandido((v) => !v)}
+            className="inline-flex shrink-0 items-center gap-1 rounded-full border border-white/10 px-2.5 py-1 text-[10.5px] font-semibold text-muted-foreground transition-colors hover:text-foreground"
+          >
+            Carrera
+            <ChevronDown className={`h-2.5 w-2.5 shrink-0 transition-transform ${expandido ? "rotate-180" : ""}`} />
+          </button>
+        )}
       </div>
+      {expandido && tienePistas && (
+        <ul className="flex w-full flex-col gap-0.5 rounded-b-xl border border-t-0 border-white/10 bg-background/40 p-1.5">
+          <FilasPistas pistas={pistas} colorTexto={colorTexto} />
+        </ul>
+      )}
     </li>
   );
 }
@@ -302,7 +364,16 @@ export function LinkPlayersGame({ dificultad }: { dificultad: Dificultad }) {
       }
 
       const nuevoPaso: PasoCadena = {
-        jugador: { nombre: jugador.nombre, nacionalidad: jugador.nacionalidad, imagenUrl: jugador.imagenUrl },
+        jugador: {
+          nombre: jugador.nombre,
+          nacionalidad: jugador.nacionalidad,
+          imagenUrl: jugador.imagenUrl,
+          // Pistas para el desplegable "Carrera" del eslabón (Opción B,
+          // 12/08/2026): así el usuario puede consultar la carrera
+          // completa del jugador que acaba de colocar y decidir si le
+          // conviene revertirlo, sin tener que buscarlo otra vez.
+          pistas: pistasDeEquipos(jugador.equipos),
+        },
         conexion: { equipo: resultado.equipoComun!, temporada: resultado.temporada! },
       };
       let nuevaCadena = [...cadena, nuevoPaso];

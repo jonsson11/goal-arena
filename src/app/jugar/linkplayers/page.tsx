@@ -17,9 +17,9 @@ import { GameLauncher } from "@/features/games/shared/GameLauncher";
 // esta lista es la fuente de la verdad para la UI y debe actualizarse a
 // mano si ese rango cambia.
 const OPCIONES_DIFICULTAD_LINKPLAYERS = [
-  { valor: "facil" as const, etiqueta: "1-2 pasos", pista: "jugadores intermedios · clubes top 10 del mundo" },
-  { valor: "medio" as const, etiqueta: "3-4 pasos", pista: "jugadores intermedios · clubes conocidos" },
-  { valor: "dificil" as const, etiqueta: "5-7 pasos", pista: "jugadores intermedios · clubes conocidos" },
+  { valor: "facil" as const, etiqueta: "1-2 pasos", pista: "Mejor respuesta = 1 o 2 jugadores." },
+  { valor: "medio" as const, etiqueta: "3-4 pasos", pista: "Mejor respuesta = 3 o 4 jugadores." },
+  { valor: "dificil" as const, etiqueta: "5-7 pasos", pista: "Mejor respuesta = 5 o 7 jugadores." },
 ];
 
 export default function LinkPlayersPage() {

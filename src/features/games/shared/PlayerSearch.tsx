@@ -21,11 +21,35 @@ interface PlayerSearchProps {
    * Por defecto false (se muestran marcados).
    */
   hideExcluded?: boolean;
+  /**
+   * Si es true, cada resultado enseña debajo del nombre un resumen de las
+   * etapas del jugador (club + años, ej. "Porto (2017-2018) · Man Utd
+   * (2018-actualidad)") -- añadido el 12/08/2026 a petición del usuario
+   * para LinkPlayers: buscar el siguiente jugador intermedio "a ciegas"
+   * (sin ver su carrera) le resultaba muy difícil. Por defecto false para
+   * no cambiar el resto de juegos (Top10, Grid) que ya usan este mismo
+   * componente. Requiere que `Jugador.equipos[].desde/hasta` vengan
+   * rellenos (ver /api/jugadores/buscar) -- si no, simplemente no se
+   * enseña nada para ese jugador.
+   */
+  mostrarEtapas?: boolean;
   placeholder?: string;
   disabled?: boolean;
   autoFocus?: boolean;
   clearOnSelect?: boolean;
   className?: string;
+}
+
+// Resumen compacto de las etapas de un jugador para la pista bajo su
+// nombre -- no fusiona etapas consecutivas del mismo club como sí hace
+// LinkPlayers en las tarjetas de inicio/final (ver grafoJugadores.
+// server.ts): aquí es solo una pista rápida mientras se busca, no hace
+// falta la misma precisión, y fusionar obligaría a mandar más datos
+// crudos (fechas completas) en cada resultado de búsqueda.
+function resumenEtapas(jugador: Jugador): string | null {
+  const conAnios = jugador.equipos.filter((e) => e.desde);
+  if (conAnios.length === 0) return null;
+  return conAnios.map((e) => `${e.nombre} (${e.desde}-${e.hasta})`).join(" · ");
 }
 
 const MIN_CHARS = 2;
@@ -102,6 +126,7 @@ export function PlayerSearch({
   excludeNames = [],
   excludedLabel = "Ya colocado",
   hideExcluded = false,
+  mostrarEtapas = false,
   placeholder = "Buscar jugador...",
   disabled = false,
   autoFocus = false,
@@ -307,6 +332,7 @@ export function PlayerSearch({
           {!isLoading &&
             results.map((jugador, index) => {
               const yaColocado = excludeSet.has(jugador.nombre);
+              const etapasTexto = mostrarEtapas && !yaColocado ? resumenEtapas(jugador) : null;
 
               return (
                 <li
@@ -320,7 +346,9 @@ export function PlayerSearch({
                     if (yaColocado) return;
                     handleSelect(jugador);
                   }}
-                  className={`flex items-center gap-3 rounded-xl px-2.5 py-2 transition-colors ${
+                  className={`flex gap-3 rounded-xl px-2.5 py-2 transition-colors ${
+                    etapasTexto ? "items-start" : "items-center"
+                  } ${
                     yaColocado
                       ? "cursor-not-allowed opacity-80"
                       : `cursor-pointer ${
@@ -344,6 +372,9 @@ export function PlayerSearch({
                       <p className="truncate text-xs font-semibold uppercase tracking-wide text-destructive">
                         {excludedLabel}
                       </p>
+                    )}
+                    {etapasTexto && (
+                      <p className="line-clamp-2 text-[11px] leading-snug text-muted-foreground">{etapasTexto}</p>
                     )}
                   </div>
                 </li>

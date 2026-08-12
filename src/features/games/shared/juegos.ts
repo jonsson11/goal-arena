@@ -63,6 +63,7 @@ export const JUEGOS: JuegoInfo[] = [
     etiqueta: "NEW",
     reto: "El camino más corto ya está calculado. ¿Puedes igualarlo?",
     stats: ["🔗 Camino más corto calculado", "⏱️ ~3-5 min", "🧠 Dificultad variable"],
+    imagen: "/capturas/linkplayers.jpg"
   },
   {
     href: "/jugar/top10",
