@@ -15,6 +15,18 @@ const OPCIONES_DIFICULTAD: { valor: Dificultad; etiqueta: string }[] = [
   { valor: "dificil", etiqueta: "Difícil" },
 ];
 
+// Mismas etiquetas que el selector de dificultad del modo individual (ver
+// /jugar/linkplayers/page.tsx) -- LinkPlayers habla en "jugadores
+// intermedios", no en "Fácil/Medio/Difícil" (petición del usuario,
+// 12/08/2026). Duplicado a propósito (misma razón que ese archivo: no se
+// puede compartir sin arrastrar código de servidor a un componente
+// cliente, y solo son unas pocas líneas).
+const OPCIONES_DIFICULTAD_LINKPLAYERS: { valor: Dificultad; etiqueta: string }[] = [
+  { valor: "facil", etiqueta: "1-2" },
+  { valor: "medio", etiqueta: "3-4" },
+  { valor: "dificil", etiqueta: "5-7" },
+];
+
 const ESTILO_POR_DIFICULTAD: Record<Dificultad, { fondo: string; texto: string }> = {
   facil: { fondo: "#4ADE9A", texto: "#0B1220" },
   medio: { fondo: "#E8A93D", texto: "#241300" },
@@ -25,6 +37,7 @@ const OPCIONES_MAX_JUGADORES = [2, 3, 4, 5, 6, 7, 8];
 
 const OPCIONES_JUEGO: { valor: JuegoMultijugador; etiqueta: string }[] = [
   { valor: "GRID", etiqueta: "3x3 Grid" },
+  { valor: "LINKPLAYERS", etiqueta: "LinkPlayers" },
   { valor: "TOP10", etiqueta: "Top 10" },
 ];
 
@@ -58,8 +71,10 @@ export default function CrearSalaPage() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         // TOP10 no tiene dificultad -- no hace falta mandarla, el servidor
-        // solo la exige (y la usa) cuando juego === "GRID".
-        body: JSON.stringify(juego === "GRID" ? { juego, dificultad, maxJugadores } : { juego, maxJugadores }),
+        // solo la exige (y la usa) cuando juego === "GRID" o "LINKPLAYERS".
+        body: JSON.stringify(
+          juego === "GRID" || juego === "LINKPLAYERS" ? { juego, dificultad, maxJugadores } : { juego, maxJugadores }
+        ),
       });
       const datos = await res.json();
       if (!res.ok) {
@@ -90,7 +105,7 @@ export default function CrearSalaPage() {
         <div className="flex flex-col gap-8 rounded-2xl border border-secondary/25 bg-secondary/[0.06] p-6 backdrop-blur-md sm:p-8">
           <div className="flex flex-col gap-3">
             <span className="text-sm font-semibold text-foreground">Juego</span>
-            <div className="grid grid-cols-2 gap-2">
+            <div className="grid grid-cols-3 gap-2">
               {OPCIONES_JUEGO.map((opcion) => {
                 const activo = juego === opcion.valor;
                 return (
@@ -111,12 +126,14 @@ export default function CrearSalaPage() {
           </div>
 
           {/* TOP10 no tiene dificultad (un solo modo, igual que en el
-              individual) -- este selector solo tiene sentido para GRID. */}
-          {juego === "GRID" && (
+              individual) -- este selector solo tiene sentido para GRID y
+              LINKPLAYERS. LinkPlayers usa sus propias etiquetas ("1-2"
+              jugadores intermedios, etc.) en vez de Fácil/Medio/Difícil. */}
+          {(juego === "GRID" || juego === "LINKPLAYERS") && (
             <div className="flex flex-col gap-3">
               <span className="text-sm font-semibold text-foreground">Dificultad</span>
               <div className="grid grid-cols-3 gap-2">
-                {OPCIONES_DIFICULTAD.map((opcion) => {
+                {(juego === "GRID" ? OPCIONES_DIFICULTAD : OPCIONES_DIFICULTAD_LINKPLAYERS).map((opcion) => {
                   const activa = dificultad === opcion.valor;
                   const estilo = ESTILO_POR_DIFICULTAD[opcion.valor];
                   return (
