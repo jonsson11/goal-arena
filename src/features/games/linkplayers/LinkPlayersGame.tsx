@@ -307,10 +307,25 @@ function AvatarEslabon({ nombre, nacionalidad, imagenUrl }: { nombre: string; na
 // despliega su lista de etapas debajo -- así se puede consultar la
 // carrera de un jugador ya colocado para decidir si conviene revertirlo,
 // sin que la cadena se alargue de más cuando no hace falta consultarla.
-export function EslabonCadena({ paso, esFinal }: { paso: PasoCadena; esFinal: boolean }) {
+export function EslabonCadena({
+  paso,
+  esFinal,
+  esInicial = false,
+}: {
+  paso: PasoCadena;
+  esFinal: boolean;
+  // El primer eslabón de la cadena es SIEMPRE el jugador inicial (ver los
+  // tres sitios que llaman a este componente) -- ese jugador ya tiene su
+  // propio desplegable "Carrera" en la tarjeta de arriba (ver
+  // TarjetasObjetivo), así que repetirlo aquí es redundante (12/08/2026,
+  // petición del usuario: "yo lo quitaría de ahí"). `esInicial` apaga el
+  // botón/desplegable solo para ese primer eslabón, sin tocar nada del
+  // resto de la cadena.
+  esInicial?: boolean;
+}) {
   const [expandido, setExpandido] = useState(false);
   const pistas = paso.jugador.pistas;
-  const tienePistas = !!pistas && pistas.length > 0;
+  const tienePistas = !esInicial && !!pistas && pistas.length > 0;
   const colorTexto = esFinal ? "text-secondary" : "text-primary";
 
   return (
@@ -363,7 +378,7 @@ function CaminoSolucion({ camino }: { camino: PasoCadena[] }) {
   return (
     <ul className="flex w-full flex-col gap-2 rounded-xl border border-white/10 bg-background/40 p-3 text-left">
       {camino.map((paso, i) => (
-        <EslabonCadena key={`${paso.jugador.nombre}-${i}`} paso={paso} esFinal={i === camino.length - 1} />
+              <EslabonCadena key={`${paso.jugador.nombre}-${i}`} paso={paso} esFinal={i === camino.length - 1} esInicial={i === 0} />
       ))}
     </ul>
   );
@@ -561,7 +576,12 @@ export function LinkPlayersGame({ dificultad }: { dificultad: Dificultad }) {
 
       <ul className="flex w-full max-w-md flex-col gap-2">
         {cadena.map((paso, i) => (
-          <EslabonCadena key={`${paso.jugador.nombre}-${i}`} paso={paso} esFinal={i === cadena.length - 1 && ganado} />
+          <EslabonCadena
+            key={`${paso.jugador.nombre}-${i}`}
+            paso={paso}
+            esFinal={i === cadena.length - 1 && ganado}
+            esInicial={i === 0}
+          />
         ))}
       </ul>
 

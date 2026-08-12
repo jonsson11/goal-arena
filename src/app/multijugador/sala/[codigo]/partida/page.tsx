@@ -2,7 +2,7 @@
 
 import { use, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Eye, EyeOff, Link2 } from "lucide-react";
+import { Eye, EyeOff } from "lucide-react";
 import { useAuth } from "@/features/auth/AuthContext";
 import { AuthGate } from "@/features/auth/AuthGate";
 import { GameButton } from "@/features/games/shared/GameButton";
@@ -20,7 +20,6 @@ import {
 import type { Tablero, Celda } from "@/features/games/grid/type";
 import type { Jugador } from "@/features/games/shared/types";
 import type { EstadoPartida } from "@/features/multijugador/type";
-import type { PasoCadena } from "@/features/games/linkplayers/type";
 import { TarjetasObjetivo, EslabonCadena } from "@/features/games/linkplayers/LinkPlayersGame";
 
 const INTERVALO_POLLING_PARTIDA_MS = 1500;
@@ -711,97 +710,6 @@ function SeccionTop10({
   );
 }
 
-// Avatar redondo con la bandera como insignia -- versión simplificada del
-// AvatarEslabon del modo individual (LinkPlayersGame.tsx, no exportado de
-// ahí a propósito: es un componente privado de ese archivo, y duplicar
-// este trocito pequeño es más simple que exportarlo solo para esto).
-function AvatarEslabonOnline({ nombre, nacionalidad, imagenUrl }: { nombre: string; nacionalidad: string; imagenUrl: string | null }) {
-  const codigoPais = obtenerCodigoPais(nacionalidad);
-  return (
-    <div className="relative h-10 w-10 shrink-0">
-      <div className="h-10 w-10 overflow-hidden rounded-full bg-gradient-to-br from-secondary to-primary/60 ring-1 ring-white/10">
-        {imagenUrl ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img src={imagenUrl} alt="" className="h-full w-full object-cover object-top" />
-        ) : (
-          <span className="flex h-full w-full items-center justify-center text-sm font-bold text-secondary-foreground">
-            {nombre[0]}
-          </span>
-        )}
-      </div>
-      {codigoPais && (
-        <span
-          className={`fi fi-${codigoPais} absolute -bottom-0.5 -right-0.5 h-3 w-4 rounded-[2px] shadow-[0_0_0_2px_var(--card)]`}
-        />
-      )}
-    </div>
-  );
-}
-
-// Tarjeta de jugador inicial/final -- versión simplificada de
-// TarjetaObjetivo del modo individual, SIN el desplegable de pistas de
-// carrera (12/08/2026, Entrega 2: simplificación deliberada para no
-// arrastrar todo ese componente -- el multijugador ya muestra el nombre y
-// la bandera, que es lo que hace falta para reconocer al objetivo; la
-// carrera completa queda para una posible mejora futura).
-function TarjetaObjetivoOnline({
-  titulo,
-  jugador,
-  acento,
-}: {
-  titulo: string;
-  jugador: Extract<EstadoPartida, { juego: "LINKPLAYERS" }>["jugadorInicial"];
-  acento: "primary" | "secondary";
-}) {
-  const codigoPais = obtenerCodigoPais(jugador.nacionalidad);
-  const colorTexto = acento === "primary" ? "text-primary" : "text-secondary";
-  const colorBorde = acento === "primary" ? "border-primary/40 bg-primary/10" : "border-secondary/40 bg-secondary/10";
-
-  return (
-    <div className={`flex flex-1 flex-col items-center gap-2 rounded-2xl border p-3 text-center ${colorBorde}`}>
-      <span className={`text-[10px] font-bold uppercase tracking-widest ${colorTexto}`}>{titulo}</span>
-      <div className="h-14 w-14 overflow-hidden rounded-full bg-gradient-to-br from-secondary to-primary/60 ring-1 ring-white/10">
-        {jugador.imagenUrl ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img src={jugador.imagenUrl} alt="" className="h-full w-full object-cover object-top" />
-        ) : (
-          <span className="flex h-full w-full items-center justify-center text-lg font-bold text-secondary-foreground">
-            {jugador.nombre[0]}
-          </span>
-        )}
-      </div>
-      <div className="flex items-center gap-1.5">
-        {codigoPais && <span className={`fi fi-${codigoPais} h-3 w-4 rounded-sm`} />}
-        <p className="text-sm font-semibold text-foreground">{jugador.nombre}</p>
-      </div>
-    </div>
-  );
-}
-
-// Un eslabón de MI cadena -- versión simplificada de EslabonCadena del
-// modo individual (misma línea de tiempo con avatar + píldora de
-// conexión), sin el botón "Carrera" (mismo motivo que TarjetaObjetivoOnline).
-function EslabonCadenaOnline({ paso }: { paso: PasoCadena }) {
-  return (
-    <li className="relative">
-      {paso.conexion && (
-        <div className="flex items-center gap-2 py-1 pl-5">
-          <span className="h-5 w-px shrink-0 bg-gradient-to-b from-white/25 to-white/10" />
-          <span className="inline-flex min-w-0 items-center gap-1.5 rounded-full border border-white/10 bg-card/60 px-2.5 py-1 text-[11px]">
-            <Link2 className="h-3 w-3 shrink-0 text-primary" />
-            <span className="truncate font-medium text-foreground">{paso.conexion.equipo}</span>
-            <span className="shrink-0 text-muted-foreground">· {paso.conexion.temporada}</span>
-          </span>
-        </div>
-      )}
-      <div className="flex items-center gap-3 rounded-xl border border-white/10 bg-card/60 px-3 py-2">
-        <AvatarEslabonOnline nombre={paso.jugador.nombre} nacionalidad={paso.jugador.nacionalidad} imagenUrl={paso.jugador.imagenUrl} />
-        <span className="flex-1 truncate text-sm font-medium text-foreground">{paso.jugador.nombre}</span>
-      </div>
-    </li>
-  );
-}
-
 // Cadena LinkPlayers en curso -- mismo motivo que SeccionGrid/SeccionTop10:
 // props tipadas al tipo LINKPLAYERS en vez de narrowing inline. Misma
 // estructura general (buscador + rivales en rejilla/columna sticky) que
@@ -822,13 +730,16 @@ function SeccionLinkPlayers({
   return (
     <div className="flex w-full flex-col items-center gap-6 lg:flex-row lg:items-start lg:justify-center">
       <div className="w-full max-w-md">
-        <div className="flex w-full gap-3">
             <TarjetasObjetivo jugadorInicial={partida.jugadorInicial} jugadorFinal={partida.jugadorFinal} />
-        </div>
 
         <ul className="mt-6 flex w-full flex-col gap-2">
           {partida.miCadena.map((paso, i) => (
-            <EslabonCadenaOnline key={`${paso.jugador.nombre}-${i}`} paso={paso} />
+            <EslabonCadena
+              key={`${paso.jugador.nombre}-${i}`}
+              paso={paso}
+              esFinal={i === partida.miCadena.length - 1 && yaTermine}
+              esInicial={i === 0}
+            />
           ))}
         </ul>
 
