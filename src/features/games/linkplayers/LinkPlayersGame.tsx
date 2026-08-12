@@ -141,10 +141,19 @@ function TarjetaObjetivo({
   const colorTexto = acento === "primary" ? "text-primary" : "text-secondary";
   const colorBorde = acento === "primary" ? "border-primary/40 bg-primary/10" : "border-secondary/40 bg-secondary/10";
 
-  return (
-    <div className={`flex flex-1 flex-col items-center gap-2 rounded-2xl border p-3 text-center ${colorBorde}`}>
+return (
+    // min-w-0 (12/08/2026, arreglo de móvil): sin esto, un flex item con
+    // flex-1 NO se encoge por debajo del ancho de su contenido más largo
+    // (comportamiento por defecto de flexbox, min-width:auto) -- con un
+    // nombre largo o varias etapas, la tarjeta se negaba a estrecharse y
+    // empujaba el ancho total fuera de la pantalla en móvil, en vez de
+    // dejar que el nombre/las etapas se recortaran con truncate como ya
+    // estaba pensado. w-full para que, apilada en vertical (ver el
+    // contenedor de arriba), ocupe todo el ancho en vez de quedarse a la
+    // mitad por el `flex-1` (que solo tiene efecto en fila).
+    <div className={`flex w-full min-w-0 flex-1 flex-col items-center gap-2 rounded-2xl border p-3 text-center ${colorBorde}`}>
       <span className={`text-[10px] font-bold uppercase tracking-widest ${colorTexto}`}>{titulo}</span>
-      <div className="h-14 w-14 overflow-hidden rounded-full bg-gradient-to-br from-secondary to-primary/60 ring-1 ring-white/10">
+      <div className="h-14 w-14 shrink-0 overflow-hidden rounded-full bg-gradient-to-br from-secondary to-primary/60 ring-1 ring-white/10">
         {imagenUrl ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img src={imagenUrl} alt="" className="h-full w-full object-cover object-top" />
@@ -154,9 +163,9 @@ function TarjetaObjetivo({
           </span>
         )}
       </div>
-      <div className="flex items-center gap-1.5">
-        {codigoPais && <span className={`fi fi-${codigoPais} h-3 w-4 rounded-sm`} />}
-        <p className="text-sm font-semibold text-foreground">{nombre}</p>
+      <div className="flex w-full min-w-0 items-center justify-center gap-1.5">
+        {codigoPais && <span className={`fi fi-${codigoPais} h-3 w-4 shrink-0 rounded-sm`} />}
+        <p className="min-w-0 truncate text-sm font-semibold text-foreground">{nombre}</p>
       </div>
       {pistas && <PistasEtapas pistas={pistas} acento={acento} />}
     </div>
@@ -451,7 +460,7 @@ export function LinkPlayersGame({ dificultad }: { dificultad: Dificultad }) {
 
   return (
     <div className="flex flex-col items-center gap-5 p-3 sm:gap-6 sm:p-6">
-      <div className="flex w-full max-w-2xl gap-3">
+      <div className="flex w-full max-w-2xl flex-col gap-3 sm:flex-row">
         <TarjetaObjetivo
           titulo="Jugador inicial"
           nombre={partida.jugadorInicial.nombre}
