@@ -412,11 +412,32 @@ model Sala {
   // cliente pida uno distinto como pasa en modo individual.
   contenido Json?
 
-  // Momento exacto en que se pulsó "Empezar partida" -- fuente única de
-  // verdad para el timer compartido (cada cliente calcula el tiempo
-  // restante contra ESTE instante, no contra un cronómetro propio que
-  // arrancaría desincronizado entre móviles).
+ // Momento exacto a partir del cual arranca de verdad el timer de la
+  // ronda (cuenta atrás 3-2-1 ya incluida) -- fuente única de verdad para
+  // el timer compartido, cada cliente calcula el tiempo restante contra
+  // ESTE instante, no contra un cronómetro propio que arrancaría
+  // desincronizado entre móviles.
+  //
+  // NULL mientras la sala está ESPERANDO, y TAMBIÉN durante un breve tramo
+  // ya en EN_CURSO (12/08/2026, arreglo de sincronización): "Empezar
+  // partida" marca `estado = EN_CURSO` pero deja `empezadaEn` en null
+  // hasta que TODOS los jugadores confirman que ya cargaron la pantalla de
+  // partida (ver `SalaJugador.cargado` y `marcarCargadoYArrancarCuentaAtrasSiToca`
+  // en src/lib/salas.ts) -- así el 3-2-1 arranca de verdad a la vez para
+  // todos, en vez de fijarse ya al pulsar el botón, momento en el que un
+  // jugador con peor conexión podía tardar más en enterarse (por el
+  // intervalo de polling de la sala de espera) y aterrizar en la pantalla
+  // de partida con la cuenta atrás ya casi agotada.
   empezadaEn DateTime?
+
+  // Momento exacto en que `estado` pasó a EN_CURSO (antes de que
+  // `empezadaEn` se fije) -- solo sirve de ancla para el margen de
+  // seguridad de la carga (ver SEGUNDOS_LIMITE_CARGA en src/lib/salas.ts):
+  // si pasa demasiado tiempo sin que todos hayan cargado la pantalla de
+  // partida (alguien cerró la pestaña, se le cortó la conexión...), la
+  // cuenta atrás arranca igualmente con quien esté, en vez de dejar la
+  // sala colgada para siempre.
+  enCursoDesde DateTime?
 
   createdAt DateTime @default(now())
 
@@ -474,6 +495,18 @@ model SalaJugador {
   // resultado del multijugador, sin reinventar esa pieza. Null mientras
   // la partida sigue en marcha.
   experiencia Json?
+
+  // Confirma que este jugador ya cargó la pantalla de partida (12/08/2026,
+  // arreglo de sincronización) -- se marca solo con que su cliente haga el
+  // primer polling a GET /api/salas/[codigo]/partida (ver
+  // marcarCargadoYArrancarCuentaAtrasSiToca en src/lib/salas.ts), sin
+  // ninguna petición aparte. Cuando todos los de la sala lo tienen a
+  // `true` (o se agota el margen de seguridad), el servidor fija
+  // `Sala.empezadaEn` y ahí arranca la cuenta atrás 3-2-1 de verdad, a la
+  // vez para todos. Se reinicia a `false` en cada revancha (ver
+  // /api/salas/[codigo]/revancha), igual que el resto del progreso de la
+  // ronda anterior.
+  cargado Boolean @default(false)
 
   // Un jugador no puede estar dos veces en la misma sala.
   @@unique([salaId, userId])
