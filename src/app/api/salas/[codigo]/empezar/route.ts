@@ -3,15 +3,22 @@
 // POST -> el creador empieza la partida: exige que haya al menos 2
 // jugadores y que TODOS (creador incluido) estén "listo". El tablero ya
 // se generó y fijó al crear la sala (ver /api/salas), así que aquí solo
-// se marca el inicio -- `empezadaEn` se fija en el FUTURO (no ahora
-// mismo), dando margen a la cuenta atrás 3-2-1 compartida que ve la
-// pantalla de partida antes de que el timer de la ronda empiece a correr
-// de verdad. Ver SEGUNDOS_CUENTA_ATRAS en src/lib/salas.ts.
+// se marca el inicio -- `estado` pasa a EN_CURSO, pero `empezadaEn` se
+// deja en null a propósito (12/08/2026, arreglo de sincronización): ya no
+// se fija aquí mismo con un margen fijo de unos segundos, sino más
+// adelante, en cuanto conste que TODOS los jugadores ya cargaron la
+// pantalla de partida (ver marcarCargadoYArrancarCuentaAtrasSiToca en
+// src/lib/salas.ts) -- así la cuenta atrás 3-2-1 la ve completa todo el
+// mundo, en vez de que quien tarde más en enterarse (por el intervalo de
+// polling de esta sala de espera) aterrice con la cuenta atrás ya casi
+// agotada. `enCursoDesde` sí se fija ya mismo, como ancla del margen de
+// seguridad (ver SEGUNDOS_LIMITE_CARGA) por si alguien nunca llega a
+// cargar la pantalla de partida.
 
 import { NextResponse } from "next/server";
 import { crearClienteSupabaseServidor } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
-import { serializarSala, SALA_INCLUDE_JUGADORES, SEGUNDOS_CUENTA_ATRAS } from "@/lib/salas";
+import { serializarSala, SALA_INCLUDE_JUGADORES } from "@/lib/salas";
 
 export const dynamic = "force-dynamic";
 
@@ -52,13 +59,14 @@ export async function POST(_request: Request, { params }: { params: Promise<{ co
     return NextResponse.json({ error: "Todavía hay jugadores que no están listos." }, { status: 400 });
   }
 
-  const salaActualizada = await prisma.sala.update({
-    where: { id: sala.id },
-    // empezadaEn en el FUTURO (no ahora mismo) -- da margen a la cuenta
-    // atrás 3-2-1 compartida antes de que el timer de la ronda empiece a
-    // correr de verdad. Ver comentario largo junto a SEGUNDOS_CUENTA_ATRAS.
-    data: { estado: "EN_CURSO", empezadaEn: new Date(Date.now() + SEGUNDOS_CUENTA_ATRAS * 1000) },
-    include: SALA_INCLUDE_JUGADORES,
+  const salaActualizada = await prisma.$transaction(async (tx) => {
+    await tx.salaJugador.updateMany({ where: { salaId: sala.id }, data: { cargado: false } });
+
+    return tx.sala.update({
+      where: { id: sala.id },
+      data: { estado: "EN_CURSO", empezadaEn: null, enCursoDesde: new Date() },
+      include: SALA_INCLUDE_JUGADORES,
+    });
   });
 
   return NextResponse.json(serializarSala(salaActualizada));

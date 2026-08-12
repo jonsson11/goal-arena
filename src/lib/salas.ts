@@ -15,6 +15,7 @@ import type {
 import type { Dificultad } from "@/features/games/shared/types";
 import type { Tablero } from "@/features/games/grid/type";
 import type { RankingTop10 } from "@/features/games/top10/type";
+import type { PartidaGenerada, PasoCadena } from "@/features/games/linkplayers/type";
 import {
   estaDisponibleBonusDiario,
   calcularExperienciaMultijugador,
@@ -145,9 +146,17 @@ export const DURACION_RONDA_TOP10_SEGUNDOS = 180;
 /** Cuántos aciertos hacen falta para completar la ronda, según el juego --
  * 9 casillas fijas en GRID, el tamaño del ranking en TOP10 (siempre 10 hoy,
  * pero se lee de `contenido` en vez de asumir el número, por si el
- * catálogo de Top10Ranking cambiara de tamaño en el futuro). */
+ * catálogo de Top10Ranking cambiara de tamaño en el futuro), y en
+ * LINKPLAYERS los Steps mínimos reales entre inicial y final (menos uno,
+ * para hablar en "jugadores intermedios" como el resto de la UI, ver
+ * LinkPlayersGame.tsx). OJO (12/08/2026, Entrega 2): en LINKPLAYERS este
+ * número es solo INFORMATIVO -- a diferencia de GRID/TOP10, la cadena
+ * puede completarse con más Steps que el mínimo, así que "completado" ya
+ * NO se decide comparando contra este objetivo (ver el comentario de
+ * `terminadaEn` en calcularResultados/finalizarPartidaSiToca más abajo). */
 export function objetivoAciertos(juego: JuegoMultijugador, contenido: unknown): number {
   if (juego === "GRID") return 9;
+  if (juego === "LINKPLAYERS") return Math.max((contenido as PartidaGenerada).distanciaMinima - 1, 0);
   return (contenido as RankingTop10).respuestas.length;
 }
 
@@ -160,22 +169,30 @@ export function objetivoAciertos(juego: JuegoMultijugador, contenido: unknown): 
 // /api/salas/[codigo]/empezar (fija empezadaEn en el futuro) y en la
 // pantalla de partida (dibuja el 3-2-1 mientras `ahora < empezadaEn`).
 export const SEGUNDOS_CUENTA_ATRAS = 3;
+// Margen de seguridad (12/08/2026, arreglo de sincronización): si pasa
+// este tiempo desde que la sala pasó a EN_CURSO sin que TODOS hayan
+// cargado la pantalla de partida (alguien cerró la pestaña, se le cortó
+// la conexión...), se arranca la cuenta atrás igualmente con quien esté.
+// Sin esto, un jugador que nunca llega a cargar dejaría la sala colgada
+// para siempre en "esperando a los demás".
+export const SEGUNDOS_LIMITE_CARGA = 15;
 
 type SalaJugadorConUser = Prisma.SalaJugadorGetPayload<{ include: { user: true } }>;
 
-/** Resultado + segundos (solo relevante en victoria por finalización, no
- * por timeout) que le corresponde a cada jugador al cerrar la partida.
- * Centralizado aquí para que tanto el cierre "por completar" como el
- * cierre "por timeout" (ver finalizarPartidaSiToca) usen exactamente la
- * misma regla de desempate/empate. */
 function calcularResultados(
   jugadores: SalaJugadorConUser[],
-  empezadaEn: Date,
-  objetivo: number
+  empezadaEn: Date
 ): Map<string, { resultado: ResultadoMultijugador; segundos: number }> {
   const resultados = new Map<string, { resultado: ResultadoMultijugador; segundos: number }>();
 
-  const completados = jugadores.filter((sj) => sj.celdasResueltas >= objetivo && sj.terminadaEn);
+  // Generalizado (12/08/2026, Entrega 2 -- LinkPlayers multijugador): antes
+  // comparaba `celdasResueltas >= objetivo`, que en GRID/TOP10 equivale
+  // exactamente a `terminadaEn` (solo se fija en el mismo momento en que se
+  // alcanza el objetivo, ver .../colocar y .../acertar) pero en LinkPlayers
+  // NO hay un número fijo de aciertos que marque la meta (la cadena puede
+  // completarse con más Steps que el mínimo) -- `terminadaEn` por sí solo
+  // ya es la fuente de verdad de "completó el reto", para los tres juegos.
+  const completados = jugadores.filter((sj) => sj.terminadaEn !== null);
   if (completados.length > 0) {
     // Alguien completó las 9 -- gana quien lo hizo antes (en la práctica
     // casi siempre habrá solo uno, porque la partida se cierra en cuanto
@@ -229,6 +246,50 @@ function calcularResultados(
  * sueltos) y solo se entra en la transacción de verdad cuando de verdad
  * hay algo que cerrar.
  */
+
+/** Marca a `userId` como "ya cargó la pantalla de partida" (con solo que
+ * su cliente llame a esto -- en la práctica, con que haga polling a GET
+ * /api/salas/[codigo]/partida, no hace falta ninguna petición aparte) y,
+ * si con esto YA están todos cargados (o se agotó el margen de seguridad,
+ * ver SEGUNDOS_LIMITE_CARGA), fija `Sala.empezadaEn` para que arranque la
+ * cuenta atrás 3-2-1 de verdad, a la vez para todos.
+ *
+ * Es IDEMPOTENTE y segura ante llamadas concurrentes -- mismo patrón que
+ * finalizarPartidaSiToca: una comprobación barata sin bloqueo primero, y
+ * solo se entra en una transacción con bloqueo de fila cuando de verdad
+ * toca fijar `empezadaEn`. Se llama desde construirEstadoPartida, ANTES de
+ * leer el estado fresco de la sala. */
+export async function marcarCargadoYArrancarCuentaAtrasSiToca(salaId: string, userId: string): Promise<void> {
+  const sala = await prisma.sala.findUnique({
+    where: { id: salaId },
+    select: { estado: true, empezadaEn: true, enCursoDesde: true },
+  });
+  if (!sala || sala.estado !== "EN_CURSO" || sala.empezadaEn !== null) return;
+
+  await prisma.salaJugador.updateMany({
+    where: { salaId, userId, cargado: false },
+    data: { cargado: true },
+  });
+
+  const jugadores = await prisma.salaJugador.findMany({ where: { salaId }, select: { cargado: true } });
+  const todosCargados = jugadores.every((sj) => sj.cargado);
+  const seAgotoElMargen =
+    sala.enCursoDesde !== null && Date.now() - sala.enCursoDesde.getTime() >= SEGUNDOS_LIMITE_CARGA * 1000;
+
+  if (!todosCargados && !seAgotoElMargen) return;
+
+  await prisma.$transaction(async (tx) => {
+    const filas = await tx.$queryRaw<Array<{ empezadaEn: Date | null }>>`
+      SELECT "empezadaEn" FROM "Sala" WHERE id = ${salaId} FOR UPDATE`;
+    if (filas.length === 0 || filas[0].empezadaEn !== null) return;
+
+    await tx.sala.update({
+      where: { id: salaId },
+      data: { empezadaEn: new Date(Date.now() + SEGUNDOS_CUENTA_ATRAS * 1000) },
+    });
+  });
+}
+
 export async function finalizarPartidaSiToca(salaId: string): Promise<void> {
   const previa = await prisma.sala.findUnique({
     where: { id: salaId },
@@ -242,14 +303,16 @@ export async function finalizarPartidaSiToca(salaId: string): Promise<void> {
     Date.now() >= previa.empezadaEn.getTime() + previa.duracionSegundos * 1000;
 
   if (!yaTocaCerrar) {
-    // Si alguien ya completó el reto, lo normal es que la propia ruta que
-    // colocó/acertó esa última pieza ya haya cerrado la partida al
-    // instante (ver .../colocar y .../acertar) -- este chequeo es solo
-    // una red de seguridad barata por si un poll se cruzó antes de que
-    // eso terminara de aplicarse, así que basta con un COUNT sin bloqueo.
-    const objetivoPrevio = objetivoAciertos(previa.juego as JuegoMultijugador, previa.contenido);
+// Si alguien ya completó el reto, lo normal es que la propia ruta que
+    // colocó/acertó/enlazó esa última pieza ya haya cerrado la partida al
+    // instante (ver .../colocar, .../acertar y .../enlazar) -- este
+    // chequeo es solo una red de seguridad barata por si un poll se cruzó
+    // antes de que eso terminara de aplicarse, así que basta con un COUNT
+    // sin bloqueo. Contra `terminadaEn` en vez de `celdasResueltas` (ver
+    // comentario largo en calcularResultados) -- funciona igual para los
+    // tres juegos, sin tener que leer `contenido` aquí.
     const alguienCompletoYa = await prisma.salaJugador.findFirst({
-      where: { salaId, celdasResueltas: { gte: objetivoPrevio } },
+      where: { salaId, terminadaEn: { not: null } },
       select: { id: true },
     });
     if (!alguienCompletoYa) return; // todavía no toca cerrarla -- caso normal en casi todos los polls
@@ -265,9 +328,8 @@ export async function finalizarPartidaSiToca(salaId: string): Promise<void> {
 
     const sala = await tx.sala.findUniqueOrThrow({ where: { id: salaId } });
     const jugadores = await tx.salaJugador.findMany({ where: { salaId }, include: { user: true } });
-    const objetivo = objetivoAciertos(sala.juego as JuegoMultijugador, sala.contenido);
 
-    const alguienCompleto = jugadores.some((sj) => sj.celdasResueltas >= objetivo);
+    const alguienCompleto = jugadores.some((sj) => sj.terminadaEn !== null);
     const tiempoAgotado =
       sala.empezadaEn !== null &&
       sala.duracionSegundos !== null &&
@@ -275,7 +337,7 @@ export async function finalizarPartidaSiToca(salaId: string): Promise<void> {
 
     if (!alguienCompleto && !tiempoAgotado) return; // todavía no toca cerrarla
 
-    const resultados = calcularResultados(jugadores, sala.empezadaEn!, objetivo);
+    const resultados = calcularResultados(jugadores, sala.empezadaEn!);
     const ahora = new Date();
 
     await tx.sala.update({ where: { id: sala.id }, data: { estado: "FINALIZADA" } });
@@ -373,13 +435,14 @@ export async function finalizarPartidaSiToca(salaId: string): Promise<void> {
  * timeout se resuelva aunque nadie coloque nada más), y luego arma el
  * tablero propio + el progreso (solo contador) de los rivales. */
 export async function construirEstadoPartida(salaId: string, miUserId: string): Promise<EstadoPartida | null> {
+  await marcarCargadoYArrancarCuentaAtrasSiToca(salaId, miUserId);
   await finalizarPartidaSiToca(salaId);
 
   const sala = await prisma.sala.findUnique({
     where: { id: salaId },
     include: { jugadores: { include: { user: true }, orderBy: { unidoEn: "asc" } } },
   });
-  if (!sala || !sala.empezadaEn || !sala.duracionSegundos) return null;
+  if (!sala || !sala.duracionSegundos) return null;
 
   const mi = sala.jugadores.find((sj) => sj.userId === miUserId);
   if (!mi) return null;
@@ -401,16 +464,18 @@ export async function construirEstadoPartida(salaId: string, miUserId: string): 
           avatarTipo: sj.user.avatarTipo === "FOTO" ? "foto" : "emoji",
           esCreador: sj.user.id === sala.creadorId,
           celdasResueltas: sj.celdasResueltas,
-          completado: sj.celdasResueltas >= objetivo,
+          completado: sj.terminadaEn !== null,
           resultado: (sj.resultado as RivalPartida["resultado"]) ?? null,
         })
       ),
-    empezadaEn: sala.empezadaEn.toISOString(),
+    empezadaEn: sala.empezadaEn ? sala.empezadaEn.toISOString() : null,
     duracionSegundos: sala.duracionSegundos,
     objetivo,
+    cargados: sala.jugadores.filter((sj) => sj.cargado).length,
   };
+  
 
-  if (juego === "TOP10") {
+if (juego === "TOP10") {
     const contenido = sala.contenido as unknown as RankingTop10;
     return {
       ...comun,
@@ -424,6 +489,24 @@ export async function construirEstadoPartida(salaId: string, miUserId: string): 
       // nombre/valor real, que sigue sin mandarse hasta que se acierta
       // (ver el comentario de seguridad en EstadoPartidaTop10).
       pistasNacionalidad: contenido.respuestas.map((r) => r.nacionalidad ?? null),
+    };
+  }
+
+  if (juego === "LINKPLAYERS") {
+    const contenido = sala.contenido as unknown as PartidaGenerada;
+    // `SalaJugador.progreso` guarda la cadena SIN el jugador inicial (igual
+    // que el resto de juegos: "progreso" es solo lo que YO he ido
+    // añadiendo, ver .../enlazar) -- aquí se le antepone para que el
+    // cliente reciba la cadena ya completa y no tenga que reconstruirla.
+    const miProgreso = (mi.progreso as unknown as PasoCadena[]) ?? [];
+    return {
+      ...comun,
+      juego: "LINKPLAYERS",
+      dificultad: (sala.dificultad as Dificultad | null) ?? "medio",
+      jugadorInicial: contenido.jugadorInicial,
+      jugadorFinal: contenido.jugadorFinal,
+      distanciaMinima: contenido.distanciaMinima,
+      miCadena: [{ jugador: contenido.jugadorInicial }, ...miProgreso],
     };
   }
 

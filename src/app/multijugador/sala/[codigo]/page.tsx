@@ -19,9 +19,19 @@ const ETIQUETA_DIFICULTAD: Record<string, string> = {
   dificil: "Difícil",
 };
 
+// LinkPlayers habla en "jugadores intermedios", no en Fácil/Medio/Difícil
+// (mismo criterio que el modo individual y que /multijugador/crear) --
+// (12/08/2026, Entrega 2).
+const ETIQUETA_DIFICULTAD_LINKPLAYERS: Record<string, string> = {
+  facil: "1-2",
+  medio: "3-4",
+  dificil: "5-7",
+};
+
 const ETIQUETA_JUEGO: Record<string, string> = {
   GRID: "3x3 Grid",
   TOP10: "Top 10",
+  LINKPLAYERS: "LinkPlayers",
 };
 
 function AvatarJugador({ avatar, avatarTipo, nombre }: Sala["jugadores"][number]) {
@@ -197,7 +207,10 @@ export default function SalaEsperaPage({ params }: { params: Promise<{ codigo: s
             {ETIQUETA_JUEGO[sala.juego] ?? sala.juego}
             {sala.dificultad && (
               <span className="ml-2 bg-none text-lg font-semibold text-muted-foreground">
-                · {ETIQUETA_DIFICULTAD[sala.dificultad]}
+                ·{" "}
+                {sala.juego === "LINKPLAYERS"
+                  ? ETIQUETA_DIFICULTAD_LINKPLAYERS[sala.dificultad]
+                  : ETIQUETA_DIFICULTAD[sala.dificultad]}
               </span>
             )}
           </TituloPagina>

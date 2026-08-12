@@ -87,7 +87,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ cod
     return NextResponse.json({ error: "Se ha acabado el tiempo." }, { status: 400 });
   }
 
-  if (sala.empezadaEn && Date.now() < sala.empezadaEn.getTime()) {
+  if (!sala.empezadaEn || Date.now() < sala.empezadaEn.getTime()) {
     return NextResponse.json({ error: "La partida todavía no ha empezado." }, { status: 400 });
   }
 

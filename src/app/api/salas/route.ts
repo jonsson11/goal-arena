@@ -12,10 +12,11 @@ import { prisma } from "@/lib/prisma";
 import { generarCodigoSalaUnico, duracionRondaSegundos, DURACION_RONDA_TOP10_SEGUNDOS } from "@/lib/salas";
 import { generarTableroDesdeBD } from "@/features/games/grid/generarTablero.server";
 import { generarTop10DesdeBD } from "@/features/games/top10/generarTop10.server";
+import { generarPartida } from "@/features/games/linkplayers/generarPartida.server";
 import type { Tablero } from "@/features/games/grid/type";
 import type { RankingTop10 } from "@/features/games/top10/type";
+import type { PartidaGenerada } from "@/features/games/linkplayers/type";
 import type { Dificultad } from "@/features/games/shared/types";
-import { JUEGOS_MULTIJUGADOR_DISPONIBLES, type JuegoMultijugador } from "@/features/multijugador/type";
 
 export const dynamic = "force-dynamic";
 
@@ -49,10 +50,12 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Ese juego todavía no está disponible en multijugador." }, { status: 400 });
   }
 
-  // Solo GRID exige dificultad hoy -- mismo criterio que PartidaJugada.modo
-  // (null en juegos sin modos, como TOP10).
+// GRID y LINKPLAYERS exigen dificultad hoy (LINKPLAYERS, 12/08/2026,
+  // Entrega 2: mismo selector de dificultad que el modo individual, ver
+  // generarPartida.server.ts) -- TOP10 no, mismo criterio que
+  // PartidaJugada.modo (null en juegos sin modos).
   let dificultad: Dificultad | null = null;
-  if (juego === "GRID") {
+  if (juego === "GRID" || juego === "LINKPLAYERS") {
     if (!DIFICULTADES_VALIDAS.includes(body.dificultad as Dificultad)) {
       return NextResponse.json({ error: "Dificultad no válida." }, { status: 400 });
     }
@@ -64,9 +67,14 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: `El número de jugadores debe estar entre ${MIN_JUGADORES} y ${MAX_JUGADORES}.` }, { status: 400 });
   }
 
-  let contenido: Tablero | RankingTop10;
+  let contenido: Tablero | RankingTop10 | PartidaGenerada;
   try {
-    contenido = juego === "GRID" ? await generarTableroDesdeBD(dificultad!) : await generarTop10DesdeBD();
+    contenido =
+      juego === "GRID"
+        ? await generarTableroDesdeBD(dificultad!)
+        : juego === "LINKPLAYERS"
+          ? await generarPartida(dificultad!)
+          : await generarTop10DesdeBD();
   } catch (err) {
     const mensaje = err instanceof Error ? err.message : "No se pudo generar el reto de la sala.";
     return NextResponse.json({ error: mensaje }, { status: 500 });
@@ -86,8 +94,9 @@ export async function POST(request: Request) {
       // sala de espera) -- fijada ya aquí, aunque no se use hasta que
       // "Empezar partida" ponga `empezadaEn`, para que sean siempre
       // coherentes entre sí sin tener que recalcular nada en ese momento.
-      duracionSegundos: juego === "GRID" ? duracionRondaSegundos(dificultad!) : DURACION_RONDA_TOP10_SEGUNDOS,
-      // El creador entra ya como jugador de su propia sala, y ya "listo"
+// GRID y LINKPLAYERS escalan con la dificultad (mismos tramos, ver
+      // duracionRondaSegundos); TOP10 tiene un único tramo fijo.
+      duracionSegundos: juego === "TOP10" ? DURACION_RONDA_TOP10_SEGUNDOS : duracionRondaSegundos(dificultad!),      // El creador entra ya como jugador de su propia sala, y ya "listo"
       // -- acaba de configurarla él mismo, no tiene sentido pedirle que
       // confirme otra vez que está listo.
       jugadores: {

@@ -2,7 +2,7 @@
 
 import { use, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Eye, EyeOff } from "lucide-react";
+import { Eye, EyeOff, Link2 } from "lucide-react";
 import { useAuth } from "@/features/auth/AuthContext";
 import { AuthGate } from "@/features/auth/AuthGate";
 import { GameButton } from "@/features/games/shared/GameButton";
@@ -20,11 +20,17 @@ import {
 import type { Tablero, Celda } from "@/features/games/grid/type";
 import type { Jugador } from "@/features/games/shared/types";
 import type { EstadoPartida } from "@/features/multijugador/type";
+import type { PasoCadena } from "@/features/games/linkplayers/type";
 
 const INTERVALO_POLLING_PARTIDA_MS = 1500;
 const INTERVALO_POLLING_SALA_MS = 2000; // tras acabar, esperando revancha del anfitrión
 
 const ETIQUETA_DIFICULTAD: Record<string, string> = { facil: "Fácil", medio: "Medio", dificil: "Difícil" };
+
+// LinkPlayers habla en "jugadores intermedios", no en Fácil/Medio/Difícil
+// (mismo criterio que /jugar/linkplayers y /multijugador/crear, ver
+// comentarios ahí) -- (12/08/2026, Entrega 2).
+const ETIQUETA_DIFICULTAD_LINKPLAYERS: Record<string, string> = { facil: "1-2", medio: "3-4", dificil: "5-7" };
 
 async function buscarJugadores(query: string): Promise<Jugador[]> {
   const res = await fetch(`/api/jugadores/buscar?q=${encodeURIComponent(query)}`);
@@ -250,12 +256,14 @@ export default function PartidaMultijugadorPage({ params }: { params: Promise<{ 
         setPartida(nueva);
         setCargando(false);
 
-        const empezadaEnMs = new Date(nueva.empezadaEn).getTime();
-        const msHastaEmpezar = empezadaEnMs - Date.now();
-        setSegundosCuentaAtras(msHastaEmpezar > 0 ? Math.ceil(msHastaEmpezar / 1000) : 0);
+        if (nueva.empezadaEn) {
+          const empezadaEnMs = new Date(nueva.empezadaEn).getTime();
+          const msHastaEmpezar = empezadaEnMs - Date.now();
+          setSegundosCuentaAtras(msHastaEmpezar > 0 ? Math.ceil(msHastaEmpezar / 1000) : 0);
 
-        const segundosTranscurridos = Math.max(0, (Date.now() - empezadaEnMs) / 1000);
-        setSegundosRestantes(Math.max(0, Math.min(nueva.duracionSegundos, nueva.duracionSegundos - segundosTranscurridos)));
+          const segundosTranscurridos = Math.max(0, (Date.now() - empezadaEnMs) / 1000);
+          setSegundosRestantes(Math.max(0, Math.min(nueva.duracionSegundos, nueva.duracionSegundos - segundosTranscurridos)));
+        }
       } catch {
         if (activoRef.current) setError("No se pudo conectar con el servidor.");
       }
@@ -403,6 +411,34 @@ export default function PartidaMultijugadorPage({ params }: { params: Promise<{ 
     }
   }
 
+  // Equivalente a colocarJugador/acertarJugador pero para LINKPLAYERS --
+  // tampoco hace falta elegir casilla, un único paso: se manda el
+  // candidato y el servidor decide si conecta con el último eslabón de mi
+  // cadena (y si con eso ya llego al jugador final, ver .../enlazar).
+  async function enlazarJugador(jugador: Jugador) {
+    setMensaje("");
+    try {
+      const res = await fetch(`/api/salas/${codigo}/enlazar`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ jugador }),
+      });
+      const datos = await res.json();
+      if (!res.ok) {
+        setMensaje(datos.error ?? "No se pudo comprobar ese jugador.");
+        return;
+      }
+      const nueva = datos as EstadoPartida;
+      if (estadoActualRef.current !== "FINALIZADA" && nueva.estado === "FINALIZADA") {
+        refrescarUsuario();
+      }
+      estadoActualRef.current = nueva.estado;
+      setPartida(nueva);
+    } catch {
+      setMensaje("No se pudo conectar con el servidor.");
+    }
+  }
+
   async function salir() {
     activoRef.current = false;
     await fetch(`/api/salas/${codigo}/salir`, { method: "POST" });
@@ -439,15 +475,21 @@ export default function PartidaMultijugadorPage({ params }: { params: Promise<{ 
   if (!partida) return null;
 
   const finalizada = partida.estado === "FINALIZADA";
-  const enCuentaAtras = !finalizada && segundosCuentaAtras > 0;
+  const esperandoCarga = !finalizada && partida.empezadaEn === null;
+  const enCuentaAtras = !finalizada && !esperandoCarga && segundosCuentaAtras > 0;
+  const totalJugadores = partida.rivales.length + 1;
 
   return (
     <div className="px-4 pb-14 pt-8 sm:px-6 sm:pt-10">
       <div className="mx-auto flex max-w-4xl flex-col items-center gap-6">
-        {!finalizada && !enCuentaAtras && (
+        {!finalizada && !esperandoCarga && !enCuentaAtras && (
           <div className="flex w-full max-w-md items-center justify-between">
             <span className="rounded-full border border-border bg-card px-3 py-1 text-xs font-medium text-muted-foreground">
-              {partida.juego === "GRID" ? (ETIQUETA_DIFICULTAD[partida.dificultad] ?? partida.dificultad) : "Top 10"}
+              {partida.juego === "GRID"
+                ? (ETIQUETA_DIFICULTAD[partida.dificultad] ?? partida.dificultad)
+                : partida.juego === "LINKPLAYERS"
+                  ? (ETIQUETA_DIFICULTAD_LINKPLAYERS[partida.dificultad] ?? partida.dificultad)
+                  : "Top 10"}
             </span>
             <span
               className={`rounded-full border px-3 py-1 text-sm font-extrabold tabular-nums ${
@@ -469,6 +511,16 @@ export default function PartidaMultijugadorPage({ params }: { params: Promise<{ 
             onSalir={() => setConfirmandoSalida(true)}
             pidiendoRevancha={pidiendoRevancha}
           />
+        ) : esperandoCarga ? (
+          <div className="flex h-72 w-full flex-col items-center justify-center gap-3">
+            <span className="text-xs font-bold uppercase tracking-[0.3em] text-muted-foreground">
+              Cargando partida
+            </span>
+            <span className="text-4xl font-extrabold tabular-nums text-primary">
+              {partida.cargados}/{totalJugadores}
+            </span>
+            <span className="text-sm text-muted-foreground">jugadores listos</span>
+          </div>
         ) : enCuentaAtras ? (
           // Cuenta atrás 3-2-1: el tablero/ranking ya está cargado (fetch
           // hecho, solo que no se pinta todavía) -- lo único que falta es
@@ -493,6 +545,8 @@ export default function PartidaMultijugadorPage({ params }: { params: Promise<{ 
             onColocar={colocarJugador}
             onSeleccionar={procesarSeleccion}
           />
+        ) : partida.juego === "LINKPLAYERS" ? (
+          <SeccionLinkPlayers partida={partida} mensaje={mensaje} onEnlazar={enlazarJugador} />
         ) : (
           <SeccionTop10 partida={partida} mensaje={mensaje} onAcertar={acertarJugador} />
         )}
@@ -656,6 +710,162 @@ function SeccionTop10({
   );
 }
 
+// Avatar redondo con la bandera como insignia -- versión simplificada del
+// AvatarEslabon del modo individual (LinkPlayersGame.tsx, no exportado de
+// ahí a propósito: es un componente privado de ese archivo, y duplicar
+// este trocito pequeño es más simple que exportarlo solo para esto).
+function AvatarEslabonOnline({ nombre, nacionalidad, imagenUrl }: { nombre: string; nacionalidad: string; imagenUrl: string | null }) {
+  const codigoPais = obtenerCodigoPais(nacionalidad);
+  return (
+    <div className="relative h-10 w-10 shrink-0">
+      <div className="h-10 w-10 overflow-hidden rounded-full bg-gradient-to-br from-secondary to-primary/60 ring-1 ring-white/10">
+        {imagenUrl ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img src={imagenUrl} alt="" className="h-full w-full object-cover object-top" />
+        ) : (
+          <span className="flex h-full w-full items-center justify-center text-sm font-bold text-secondary-foreground">
+            {nombre[0]}
+          </span>
+        )}
+      </div>
+      {codigoPais && (
+        <span
+          className={`fi fi-${codigoPais} absolute -bottom-0.5 -right-0.5 h-3 w-4 rounded-[2px] shadow-[0_0_0_2px_var(--card)]`}
+        />
+      )}
+    </div>
+  );
+}
+
+// Tarjeta de jugador inicial/final -- versión simplificada de
+// TarjetaObjetivo del modo individual, SIN el desplegable de pistas de
+// carrera (12/08/2026, Entrega 2: simplificación deliberada para no
+// arrastrar todo ese componente -- el multijugador ya muestra el nombre y
+// la bandera, que es lo que hace falta para reconocer al objetivo; la
+// carrera completa queda para una posible mejora futura).
+function TarjetaObjetivoOnline({
+  titulo,
+  jugador,
+  acento,
+}: {
+  titulo: string;
+  jugador: Extract<EstadoPartida, { juego: "LINKPLAYERS" }>["jugadorInicial"];
+  acento: "primary" | "secondary";
+}) {
+  const codigoPais = obtenerCodigoPais(jugador.nacionalidad);
+  const colorTexto = acento === "primary" ? "text-primary" : "text-secondary";
+  const colorBorde = acento === "primary" ? "border-primary/40 bg-primary/10" : "border-secondary/40 bg-secondary/10";
+
+  return (
+    <div className={`flex flex-1 flex-col items-center gap-2 rounded-2xl border p-3 text-center ${colorBorde}`}>
+      <span className={`text-[10px] font-bold uppercase tracking-widest ${colorTexto}`}>{titulo}</span>
+      <div className="h-14 w-14 overflow-hidden rounded-full bg-gradient-to-br from-secondary to-primary/60 ring-1 ring-white/10">
+        {jugador.imagenUrl ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img src={jugador.imagenUrl} alt="" className="h-full w-full object-cover object-top" />
+        ) : (
+          <span className="flex h-full w-full items-center justify-center text-lg font-bold text-secondary-foreground">
+            {jugador.nombre[0]}
+          </span>
+        )}
+      </div>
+      <div className="flex items-center gap-1.5">
+        {codigoPais && <span className={`fi fi-${codigoPais} h-3 w-4 rounded-sm`} />}
+        <p className="text-sm font-semibold text-foreground">{jugador.nombre}</p>
+      </div>
+    </div>
+  );
+}
+
+// Un eslabón de MI cadena -- versión simplificada de EslabonCadena del
+// modo individual (misma línea de tiempo con avatar + píldora de
+// conexión), sin el botón "Carrera" (mismo motivo que TarjetaObjetivoOnline).
+function EslabonCadenaOnline({ paso }: { paso: PasoCadena }) {
+  return (
+    <li className="relative">
+      {paso.conexion && (
+        <div className="flex items-center gap-2 py-1 pl-5">
+          <span className="h-5 w-px shrink-0 bg-gradient-to-b from-white/25 to-white/10" />
+          <span className="inline-flex min-w-0 items-center gap-1.5 rounded-full border border-white/10 bg-card/60 px-2.5 py-1 text-[11px]">
+            <Link2 className="h-3 w-3 shrink-0 text-primary" />
+            <span className="truncate font-medium text-foreground">{paso.conexion.equipo}</span>
+            <span className="shrink-0 text-muted-foreground">· {paso.conexion.temporada}</span>
+          </span>
+        </div>
+      )}
+      <div className="flex items-center gap-3 rounded-xl border border-white/10 bg-card/60 px-3 py-2">
+        <AvatarEslabonOnline nombre={paso.jugador.nombre} nacionalidad={paso.jugador.nacionalidad} imagenUrl={paso.jugador.imagenUrl} />
+        <span className="flex-1 truncate text-sm font-medium text-foreground">{paso.jugador.nombre}</span>
+      </div>
+    </li>
+  );
+}
+
+// Cadena LinkPlayers en curso -- mismo motivo que SeccionGrid/SeccionTop10:
+// props tipadas al tipo LINKPLAYERS en vez de narrowing inline. Misma
+// estructura general (buscador + rivales en rejilla/columna sticky) que
+// las otras dos secciones -- FichaRival es 100% genérico (solo usa
+// celdasResueltas/objetivo/completado/resultado), se reutiliza tal cual.
+function SeccionLinkPlayers({
+  partida,
+  mensaje,
+  onEnlazar,
+}: {
+  partida: Extract<EstadoPartida, { juego: "LINKPLAYERS" }>;
+  mensaje: string;
+  onEnlazar: (jugador: Jugador) => void;
+}) {
+  const nombresEnCadena = partida.miCadena.map((p) => p.jugador.nombre);
+  const yaTermine = partida.miCadena[partida.miCadena.length - 1]?.jugador.nombre === partida.jugadorFinal.nombre;
+
+  return (
+    <div className="flex w-full flex-col items-center gap-6 lg:flex-row lg:items-start lg:justify-center">
+      <div className="w-full max-w-md">
+        <div className="flex w-full gap-3">
+          <TarjetaObjetivoOnline titulo="Jugador inicial" jugador={partida.jugadorInicial} acento="primary" />
+          <TarjetaObjetivoOnline titulo="Jugador final" jugador={partida.jugadorFinal} acento="secondary" />
+        </div>
+
+        <ul className="mt-6 flex w-full flex-col gap-2">
+          {partida.miCadena.map((paso, i) => (
+            <EslabonCadenaOnline key={`${paso.jugador.nombre}-${i}`} paso={paso} />
+          ))}
+        </ul>
+
+        <div className="mt-6 flex w-full justify-center">
+          <PlayerSearch
+            onSearch={buscarJugadores}
+            excludeNames={nombresEnCadena}
+            excludedLabel="Ya en la cadena"
+            onSelect={onEnlazar}
+            placeholder="Escribe el siguiente jugador..."
+            disabled={yaTermine}
+          />
+        </div>
+        {mensaje && <p className="mt-3 text-center text-sm text-muted-foreground">{mensaje}</p>}
+
+        {partida.rivales.length > 0 && (
+          <div className="mt-6 grid w-full grid-cols-2 gap-2 sm:grid-cols-3 lg:hidden">
+            {partida.rivales.map((rival) => (
+              <FichaRival key={rival.id} objetivo={partida.objetivo} {...rival} />
+            ))}
+          </div>
+        )}
+      </div>
+
+      {partida.rivales.length > 0 && (
+        <div className="hidden w-full max-w-xs flex-col gap-2 lg:sticky lg:top-6 lg:flex">
+          <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Rivales</span>
+          {partida.rivales.map((rival) => (
+            <FichaRival key={rival.id} objetivo={partida.objetivo} {...rival} />
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+
 function ResultadoPartida({
   partida,
   esCreador,
@@ -703,11 +913,17 @@ function ResultadoPartida({
         ? "text-secondary"
         : "text-destructive";
 
+  // LINKPLAYERS no tiene `miProgreso` (tiene `miCadena`, que YA incluye el
+  // jugador inicial delante, ver EstadoPartidaLinkPlayers) -- se le resta
+  // 1 para que cuente lo mismo que `celdasResueltas` en el servidor
+  // (número de jugadores que YO he ido añadiendo, ver .../enlazar).
+  const misCeldasResueltas = partida.juego === "LINKPLAYERS" ? partida.miCadena.length - 1 : partida.miProgreso.length;
+
   const clasificacion = [
     {
       id: usuario?.id ?? "yo",
       nombre: usuario?.nombre ?? "Tú",
-      celdasResueltas: partida.miProgreso.length,
+      celdasResueltas: misCeldasResueltas,
       resultado: partida.miResultado,
       esYo: true,
     },

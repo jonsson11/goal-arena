@@ -12,6 +12,7 @@ import { crearClienteSupabaseServidor } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
 import { generarTableroDesdeBD } from "@/features/games/grid/generarTablero.server";
 import { generarTop10DesdeBD } from "@/features/games/top10/generarTop10.server";
+import { generarPartida } from "@/features/games/linkplayers/generarPartida.server";
 import {
   duracionRondaSegundos,
   DURACION_RONDA_TOP10_SEGUNDOS,
@@ -53,16 +54,21 @@ export async function POST(_request: Request, { params }: { params: Promise<{ co
   const juego = sala.juego as JuegoMultijugador;
   const dificultad = sala.dificultad as Dificultad | null;
 
-  let contenido;
+let contenido;
   try {
     // GRID: mismo tablero regenerado con la misma dificultad de antes.
+    // LINKPLAYERS (12/08/2026, Entrega 2): pareja de jugadores nueva con
+    // la misma dificultad de antes -- mismo criterio que GRID, no tiene
+    // sentido conservar la pareja anterior en una revancha.
     // TOP10: un ranking nuevo al azar (no hay dificultad que conservar) --
     // igual que "Cambiar Top10" en el modo individual, se evita repetir el
     // mismo si hay más de uno disponible.
     contenido =
       juego === "GRID"
         ? await generarTableroDesdeBD(dificultad!)
-        : await generarTop10DesdeBD((sala.contenido as { id?: string } | null)?.id);
+        : juego === "LINKPLAYERS"
+          ? await generarPartida(dificultad!)
+          : await generarTop10DesdeBD((sala.contenido as { id?: string } | null)?.id);
   } catch (err) {
     const mensaje = err instanceof Error ? err.message : "No se pudo generar el reto de la revancha.";
     return NextResponse.json({ error: mensaje }, { status: 500 });
@@ -74,14 +80,14 @@ export async function POST(_request: Request, { params }: { params: Promise<{ co
       data: {
         estado: "ESPERANDO",
         empezadaEn: null,
+        enCursoDesde: null,
         contenido,
-        duracionSegundos:
-          juego === "GRID" ? duracionRondaSegundos(dificultad!) : DURACION_RONDA_TOP10_SEGUNDOS,
+        duracionSegundos: juego === "TOP10" ? DURACION_RONDA_TOP10_SEGUNDOS : duracionRondaSegundos(dificultad!),
       },
     }),
     prisma.salaJugador.updateMany({
       where: { salaId: sala.id },
-      data: { progreso: [], celdasResueltas: 0, terminadaEn: null, resultado: null, listo: false },
+      data: { progreso: [], celdasResueltas: 0, terminadaEn: null, resultado: null, listo: false, cargado: false },
     }),
     // El creador vuelve a entrar ya "listo", mismo criterio que al crear
     // la sala la primera vez.
