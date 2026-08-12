@@ -506,7 +506,16 @@ export function LinkPlayersGame({ dificultad }: { dificultad: Dificultad }) {
         </div>
       </div>
 
-      <GameButton variant="secondary" onClick={() => setConfirmandoNuevaPartida(true)}>
+      {/* "Nueva partida" (12/08/2026, petición del usuario): el diálogo de
+          confirmación ("se perderá el progreso") solo tiene sentido con
+          la partida todavía en marcha -- terminada (ganada o rendida) ya
+          no hay progreso que perder, las estadísticas ya han contado esta
+          partida, así que se salta directo a cargarPartida() sin
+          preguntar. */}
+      <GameButton
+        variant="secondary"
+        onClick={() => (terminada ? cargarPartida() : setConfirmandoNuevaPartida(true))}
+      >
         Nueva partida
       </GameButton>
 

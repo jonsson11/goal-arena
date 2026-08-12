@@ -174,20 +174,65 @@ export function ProfileView() {
           ))}
         </div>
 
+        {/* "Por juego" (12/08/2026, petición del usuario): % de victoria
+            agrupado SOLO por juego (LinkPlayers / 3x3 Grid / Top 10),
+            independientemente del nivel -- a diferencia de "Por modo" de
+            debajo, que sí desglosa GRID/LINKPLAYERS en fácil/medio/difícil.
+            Las dos secciones conviven: esta da la foto rápida por juego,
+            la de abajo el detalle por dificultad para quien lo quiera. */}
+        {!cargandoEstadisticas && estadisticas && (estadisticas.porJuego?.length ?? 0) > 0 && (
+          <div className="flex flex-col gap-3">
+            <h2 className="text-lg font-bold text-foreground">Por juego</h2>
+            <div className="grid grid-cols-3 gap-3">
+              {estadisticas.porJuego.map((juego) => (
+                <div
+                  key={juego.clave}
+                  className="flex flex-col gap-1 rounded-lg border border-border bg-card p-3 transition-colors duration-200 hover:border-primary/40"
+                >
+                  <span className="truncate text-xs font-semibold text-foreground">{juego.etiqueta}</span>
+                  <span className="text-lg font-extrabold text-primary">{juego.porcentajeVictoria}%</span>
+                  <span className="text-xs text-muted-foreground">
+                    {juego.partidasJugadas} {juego.partidasJugadas === 1 ? "partida" : "partidas"}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* "Por modo" (12/08/2026, 3ª ronda): antes desglosaba por
+            dificultad exacta (hasta 4 tarjetas por juego, con etiquetas
+            en bruto tipo "GRID:facil-online" cuando venía de una sala de
+            multijugador) -- el usuario lo vio "feo" y demasiado
+            fragmentado, y pidió agrupar solo por modalidad: "Grid Un
+            jugador", "Grid Multijugador", así con cada juego. Ahora son
+            siempre 6 tarjetas fijas (3 juegos x Un jugador/Multijugador,
+            3 en cada fila), YA NO se ocultan las que no tienen ninguna
+            partida -- salen con "Sin partidas" en vez de "0 partidas" --
+            para que la rejilla quede siempre cuadrada en vez de
+            reordenarse según lo que ya se ha jugado (route.ts ya manda
+            las 6 combinaciones siempre, con partidasJugadas=0 en las que
+            faltan). */}
         {!cargandoEstadisticas && estadisticas && estadisticas.porModo.length > 0 && (
           <div className="flex flex-col gap-3">
             <h2 className="text-lg font-bold text-foreground">Por modo</h2>
-            <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+            <div className="grid grid-cols-3 gap-3">
               {estadisticas.porModo.map((modo) => (
                 <div
                   key={modo.clave}
                   className="flex flex-col gap-1 rounded-lg border border-border bg-card p-3 transition-colors duration-200 hover:border-primary/40"
                 >
                   <span className="truncate text-xs font-semibold text-foreground">{modo.etiqueta}</span>
-                  <span className="text-lg font-extrabold text-primary">{modo.porcentajeVictoria}%</span>
-                  <span className="text-xs text-muted-foreground">
-                    {modo.partidasJugadas} {modo.partidasJugadas === 1 ? "partida" : "partidas"}
-                  </span>
+                  {modo.partidasJugadas === 0 ? (
+                    <span className="text-lg font-extrabold text-muted-foreground">Sin partidas</span>
+                  ) : (
+                    <>
+                      <span className="text-lg font-extrabold text-primary">{modo.porcentajeVictoria}%</span>
+                      <span className="text-xs text-muted-foreground">
+                        {modo.partidasJugadas} {modo.partidasJugadas === 1 ? "partida" : "partidas"}
+                      </span>
+                    </>
+                  )}
                 </div>
               ))}
             </div>

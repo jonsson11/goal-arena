@@ -41,6 +41,10 @@ export type EstadisticasPerfil = {
   };
   rachaActual: number;
   rachaMaxima: number;
+  // % de victoria por JUEGO nada más, sin desglosar por dificultad
+  // (12/08/2026, petición del usuario) -- misma forma que DesgloseModo,
+  // `clave` es "LINKPLAYERS" | "GRID" | "TOP10" en vez de "GRID:facil".
+  porJuego: DesgloseModo[];
   porModo: DesgloseModo[];
   historial: PartidaHistorial[];
 };

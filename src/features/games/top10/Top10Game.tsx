@@ -274,6 +274,12 @@ export function Top10Game() {
 
   return (
     <div className="flex flex-col items-center gap-3 p-3 sm:gap-6 sm:p-6">
+      {/* "Cambiar"/"Cambiar Top10" (12/08/2026, petición del usuario): el
+          diálogo de confirmación ("se perderá el progreso") solo tiene
+          sentido mientras la partida sigue en marcha -- con
+          completado/rendido ya no hay progreso que perder (las
+          estadísticas ya han contado esta partida), así que se salta
+          directo a cargarRanking() sin preguntar. */}
       {/* Cabecera compacta SOLO en móvil (Opción C): "Cambiar" + contador en
           una fila fina arriba, y el título EN SU PROPIA LÍNEA debajo, sin
           truncate -- antes iban los tres en una sola línea con el título
@@ -286,7 +292,7 @@ export function Top10Game() {
       <div className="flex w-full max-w-2xl flex-col items-center gap-1 sm:hidden">
         <div className="flex w-full items-center justify-between gap-2">
           <button
-            onClick={() => setConfirmandoCambio(true)}
+            onClick={() => (completado || rendido ? cargarRanking() : setConfirmandoCambio(true))}
             className="shrink-0 text-xs font-bold text-secondary"
           >
             Cambiar
@@ -413,7 +419,7 @@ export function Top10Game() {
           en móvil ya están fusionados en la cabecera compacta de arriba. */}
       <GameButton
         variant="secondary"
-        onClick={() => setConfirmandoCambio(true)}
+        onClick={() => (completado || rendido ? cargarRanking() : setConfirmandoCambio(true))}
         className="hidden sm:inline-flex"
       >
         Cambiar Top10
