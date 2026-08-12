@@ -103,7 +103,10 @@ function anio(fecha: Date): string {
 // Años del solape real entre dos Stints (no de cada Stint por separado):
 // el más tardío de los dos inicios, hasta el más temprano de los dos
 // finales -- "actualidad" solo si NINGUNO de los dos ha terminado.
-function anosDeSolape(a: StintCrudo, b: StintCrudo): { desde: string; hasta: string } {
+function anosDeSolape(
+  a: { startDate: Date; endDate: Date | null },
+  b: { startDate: Date; endDate: Date | null }
+): { desde: string; hasta: string } {
   const inicio = a.startDate > b.startDate ? a.startDate : b.startDate;
 
   if (!a.endDate && !b.endDate) return { desde: anio(inicio), hasta: "actualidad" };
@@ -410,14 +413,37 @@ export function reconstruirCamino(destino: string, resultado: ResultadoBfs, graf
 // intenta el jugador -- por eso trabaja con nombres (lo único que tiene
 // el cliente, ver PlayerSearch/Jugador) y no con ids internos.
 export async function verificarConexion(nombreActual: string, nombreSiguiente: string): Promise<ResultadoConexion> {
-  const grafo = await construirGrafo();
+  const jugadores = await prisma.player.findMany({
+    where: { nombre: { in: [nombreActual, nombreSiguiente] } },
+    select: {
+      nombre: true,
+      stints: {
+        select: {
+          teamId: true,
+          startDate: true,
+          endDate: true,
+          team: { select: { nombre: true } },
+        },
+        orderBy: { startDate: "asc" },
+      },
+    },
+  });
 
-  const idActual = grafo.idsPorNombre.get(nombreActual);
-  const idSiguiente = grafo.idsPorNombre.get(nombreSiguiente);
-  if (!idActual || !idSiguiente) return { conectados: false };
+  const actual = jugadores.find((j) => j.nombre === nombreActual);
+  const siguiente = jugadores.find((j) => j.nombre === nombreSiguiente);
+  if (!actual || !siguiente) return { conectados: false };
 
-  const conexion = grafo.adyacencia.get(idActual)?.get(idSiguiente);
-  if (!conexion) return { conectados: false };
+  // Mismo criterio que conectar() en construirGrafo: si coincidieron en
+  // más de un club, basta con enseñar el primero que se encuentre.
+  for (const sa of actual.stints) {
+    for (const sb of siguiente.stints) {
+      if (sa.teamId !== sb.teamId) continue;
+      if (!seSolapan(sa.startDate, sa.endDate, sb.startDate, sb.endDate)) continue;
 
-  return { conectados: true, equipoComun: conexion.equipo, temporada: `${conexion.desde} - ${conexion.hasta}` };
+      const { desde, hasta } = anosDeSolape(sa, sb);
+      return { conectados: true, equipoComun: sa.team.nombre, temporada: `${desde} - ${hasta}` };
+    }
+  }
+
+  return { conectados: false };
 }
