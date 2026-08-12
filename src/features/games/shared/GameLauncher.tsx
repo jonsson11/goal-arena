@@ -16,9 +16,18 @@ type GameLauncherProps = {
   // el nodo de siempre y se muestra el único botón "Empezar partida".
   children: ReactNode | ((dificultad: Dificultad) => ReactNode);
   dificultades?: boolean;
+  // Permite que un juego concreto sustituya la etiqueta/pista de cada
+  // nivel -- añadido el 12/08/2026 para LinkPlayers, que pidió mostrar
+  // directamente el rango de jugadores intermedios ("1-2", "3-4"...) en
+  // vez de la palabra Fácil/Medio/Difícil: "la dificultad radicará en el
+  // conocimiento del jugador", no en una etiqueta abstracta. Si se omite,
+  // se usa OPCIONES_DIFICULTAD de siempre (3x3 no pasa nada, no cambia).
+  opcionesDificultad?: { valor: Dificultad; etiqueta: string; pista: string }[];
 };
 
-const OPCIONES_DIFICULTAD: { valor: Dificultad; etiqueta: string; pista: string }[] = [
+type OpcionDificultad = { valor: Dificultad; etiqueta: string; pista: string };
+
+const OPCIONES_DIFICULTAD: OpcionDificultad[] = [
   { valor: "facil", etiqueta: "Fácil", pista: "Conocimiento básico." },
   { valor: "medio", etiqueta: "Medio", pista: "Sabes de la redonda." },
   { valor: "dificil", etiqueta: "Difícil", pista: "Experto nivel elxokas." },
@@ -55,7 +64,7 @@ function conRetraso(segundos: number, extra: CSSProperties = {}): CSSProperties 
   return { ["--retraso" as string]: `${segundos}s`, ...extra } as CSSProperties;
 }
 
-export function GameLauncher({ href, children, dificultades = false }: GameLauncherProps) {
+export function GameLauncher({ href, children, dificultades = false, opcionesDificultad }: GameLauncherProps) {
   const [empezado, setEmpezado] = useState(false);
   const [dificultad, setDificultad] = useState<Dificultad>("dificil");
   const juego = JUEGOS.find((j) => j.href === href)!;
@@ -164,6 +173,7 @@ export function GameLauncher({ href, children, dificultades = false }: GameLaunc
 
           {dificultades ? (
             <SelectorDificultad
+              opciones={opcionesDificultad ?? OPCIONES_DIFICULTAD}
               onElegir={(elegida) => {
                 setDificultad(elegida);
                 setEmpezado(true);
@@ -184,10 +194,18 @@ export function GameLauncher({ href, children, dificultades = false }: GameLaunc
   );
 }
 
-// Selector de nivel para juegos que lo necesiten (de momento, solo el
-// 3x3). Reemplaza al botón único "Empezar partida" cuando `dificultades`
-// está activado en <GameLauncher>.
-function SelectorDificultad({ onElegir }: { onElegir: (dificultad: Dificultad) => void }) {
+// Selector de nivel para juegos que lo necesiten (3x3 y LinkPlayers).
+// Reemplaza al botón único "Empezar partida" cuando `dificultades` está
+// activado en <GameLauncher>. `opciones` permite que cada juego use sus
+// propias etiquetas/pistas (ver `opcionesDificultad` en GameLauncherProps)
+// sin tocar este componente compartido.
+function SelectorDificultad({
+  opciones,
+  onElegir,
+}: {
+  opciones: OpcionDificultad[];
+  onElegir: (dificultad: Dificultad) => void;
+}) {
   return (
     <div
       // Siempre en fila, también en móvil (a petición expresa) -- lo que
@@ -195,7 +213,7 @@ function SelectorDificultad({ onElegir }: { onElegir: (dificultad: Dificultad) =
       className="launcher-entrada mt-2 flex w-full flex-row justify-center gap-2 sm:w-auto sm:justify-start sm:gap-3"
       style={conRetraso(0.44)}
     >
-      {OPCIONES_DIFICULTAD.map(({ valor, etiqueta, pista }) => (
+      {opciones.map(({ valor, etiqueta, pista }) => (
         <div
           key={valor}
           className="flex flex-1 flex-col items-center gap-1 text-center sm:flex-none sm:items-start sm:text-left"

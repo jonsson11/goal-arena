@@ -4,9 +4,27 @@
 import { LinkPlayersGame } from "@/features/games/linkplayers/LinkPlayersGame";
 import { GameLauncher } from "@/features/games/shared/GameLauncher";
 
+// Etiquetas del selector de dificultad propias de LinkPlayers -- petición
+// del usuario (12/08/2026): en vez de "Fácil/Medio/Difícil", mostrar
+// directamente el rango de jugadores intermedios de cada nivel ("la
+// dificultad radicará en el conocimiento del jugador", no en una palabra
+// abstracta). Los números deben coincidir con RANGO_STEPS_POR_DIFICULTAD
+// en generarPartida.server.ts, MENOS 1 en cada extremo (esa constante
+// cuenta Steps/conexiones; la UI habla en jugadores intermedios, ver
+// LinkPlayersGame.tsx): facil 2-3 Steps -> 1-2, medio 4-5 -> 3-4, dificil
+// 6-8 -> 5-7. No se puede importar la constante del servidor directamente
+// aquí (arrastraría código de Prisma a un componente cliente), así que
+// esta lista es la fuente de la verdad para la UI y debe actualizarse a
+// mano si ese rango cambia.
+const OPCIONES_DIFICULTAD_LINKPLAYERS = [
+  { valor: "facil" as const, etiqueta: "1-2 pasos", pista: "jugadores intermedios · clubes top 10 del mundo" },
+  { valor: "medio" as const, etiqueta: "3-4 pasos", pista: "jugadores intermedios · clubes conocidos" },
+  { valor: "dificil" as const, etiqueta: "5-7 pasos", pista: "jugadores intermedios · clubes conocidos" },
+];
+
 export default function LinkPlayersPage() {
   return (
-    <GameLauncher href="/jugar/linkplayers" dificultades>
+    <GameLauncher href="/jugar/linkplayers" dificultades opcionesDificultad={OPCIONES_DIFICULTAD_LINKPLAYERS}>
       {(dificultad) => (
         <div className="flex flex-col items-center gap-8 px-4 pb-12 pt-8 sm:px-6">
           <header className="relative flex flex-col items-center gap-3 text-center">

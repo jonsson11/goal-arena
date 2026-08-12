@@ -129,15 +129,52 @@ function TarjetaObjetivo({
   );
 }
 
+// Avatar redondo (foto o inicial sobre degradado) con la bandera como
+// insignia en la esquina -- mismo lenguaje visual que ya usan
+// TarjetaObjetivo y PlayerSearch, para que la cadena se sienta parte del
+// mismo sistema en vez de una lista de texto suelta.
+function AvatarEslabon({ nombre, nacionalidad, imagenUrl }: { nombre: string; nacionalidad: string; imagenUrl: string | null }) {
+  const codigoPais = obtenerCodigoPais(nacionalidad);
+
+  return (
+    <div className="relative h-10 w-10 shrink-0">
+      <div className="h-10 w-10 overflow-hidden rounded-full bg-gradient-to-br from-secondary to-primary/60 ring-1 ring-white/10">
+        {imagenUrl ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img src={imagenUrl} alt="" className="h-full w-full object-cover object-top" />
+        ) : (
+          <span className="flex h-full w-full items-center justify-center text-sm font-bold text-secondary-foreground">
+            {nombre[0]}
+          </span>
+        )}
+      </div>
+      {codigoPais && (
+        <span
+          className={`fi fi-${codigoPais} absolute -bottom-0.5 -right-0.5 h-3 w-4 rounded-[2px] shadow-[0_0_0_2px_var(--card)]`}
+        />
+      )}
+    </div>
+  );
+}
+
+// Rediseñado (12/08/2026, petición del usuario: "la manera en la que se
+// visualizan los steps" no le convencía) -- antes cada paso era una caja
+// de solo texto con una línea "Jugaron juntos en X (años)" suelta encima.
+// Ahora es una línea de tiempo de verdad: avatar de cada jugador (mismo
+// componente que las tarjetas de inicio/final) conectados por una línea
+// vertical, con la conexión (club + años) como una píldora sobre esa
+// línea en vez de una frase completa -- más compacto y más fácil de leer
+// de un vistazo según la cadena crece.
 function EslabonCadena({ paso, esFinal }: { paso: PasoCadena; esFinal: boolean }) {
   return (
-    <li className="flex flex-col gap-1">
+    <li className="relative">
       {paso.conexion && (
-        <div className="flex items-center gap-1.5 pl-1 text-xs text-muted-foreground">
-          <Link2 className="h-3 w-3 shrink-0 text-primary" />
-          <span>
-            Jugaron juntos en <span className="font-semibold text-foreground">{paso.conexion.equipo}</span> (
-            {paso.conexion.temporada})
+        <div className="flex items-center gap-2 py-1 pl-5">
+          <span className="h-5 w-px shrink-0 bg-gradient-to-b from-white/25 to-white/10" />
+          <span className="inline-flex min-w-0 items-center gap-1.5 rounded-full border border-white/10 bg-card/60 px-2.5 py-1 text-[11px]">
+            <Link2 className="h-3 w-3 shrink-0 text-primary" />
+            <span className="truncate font-medium text-foreground">{paso.conexion.equipo}</span>
+            <span className="shrink-0 text-muted-foreground">· {paso.conexion.temporada}</span>
           </span>
         </div>
       )}
@@ -146,6 +183,7 @@ function EslabonCadena({ paso, esFinal }: { paso: PasoCadena; esFinal: boolean }
           esFinal ? "border-secondary/50 bg-secondary/10" : "border-white/10 bg-card/60"
         }`}
       >
+        <AvatarEslabon nombre={paso.jugador.nombre} nacionalidad={paso.jugador.nacionalidad} imagenUrl={paso.jugador.imagenUrl} />
         <span className="text-sm font-medium text-foreground">{paso.jugador.nombre}</span>
       </div>
     </li>
@@ -359,17 +397,6 @@ export function LinkPlayersGame({ dificultad }: { dificultad: Dificultad }) {
           pistas={partida.jugadorFinal.pistas}
           acento="secondary"
         />
-      </div>
-
-      <div className="flex items-center gap-4 text-sm">
-        <span className="rounded-full border border-white/10 bg-card/60 px-3 py-1 text-muted-foreground">
-          Camino más corto: <span className="font-bold text-foreground">{jugadoresIntermediosObjetivo}</span>{" "}
-          {etiquetaJugadoresIntermedios(jugadoresIntermediosObjetivo)}
-        </span>
-        <span className="rounded-full border border-white/10 bg-card/60 px-3 py-1 text-muted-foreground">
-          Tus {etiquetaJugadoresIntermedios(jugadoresIntermedios)}:{" "}
-          <span className="font-bold text-foreground">{jugadoresIntermedios}</span>
-        </span>
       </div>
 
       <ul className="flex w-full max-w-md flex-col gap-2">
