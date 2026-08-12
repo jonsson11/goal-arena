@@ -23,7 +23,7 @@ import { TARJETA_CRISTAL_POR_ACENTO, ICONO_FONDO_POR_ACENTO } from "./acento";
 type JuegoSinIcono = Omit<JuegoInfo, "Icono">;
 
 const ETIQUETA_ESTILO: Record<NonNullable<JuegoInfo["etiqueta"]>, string> = {
-  HOT: "border-destructive text-destructive",
+  DISPONIBLE: "border-destructive text-destructive",
   BETA: "border-muted-foreground text-muted-foreground",
   NEW: "border-primary text-primary",
 };
