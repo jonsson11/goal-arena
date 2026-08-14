@@ -1,7 +1,193 @@
 
---- Tanda iniciada 2026-08-14T06:16:26.983Z ---
+--- Tanda iniciada 2026-08-14T06:30:51.951Z ---
+Alex Murphy (cms2un9lu006kasduyxvw6xe5) — 3 -> 4 etapas
 
---- Tanda iniciada 2026-08-14T06:17:33.885Z ---
+--- Tanda iniciada 2026-08-14T06:41:04.659Z ---
+Alexander Schlager (cms3217n700frp8du9i15rx58) — 5 -> 8 etapas
+Alexis Sánchez (cms4b7tya004kkkducz3mcxdm) — 13 -> 14 etapas
+Altay Bayındır (cmsd3z5q200d7jsdu7d7inlvd) — 3 -> 4 etapas
+Andreas Skov Olsen (cms320zuk00ewp8duguplavzp) — 5 -> 6 etapas
+Angeliño (cms2wtveo013q0wdu1wggtm0o) — 13 -> 14 etapas
+Anthony Patterson (cmsd41re700ggjsduelhpflp9) — 3 -> 4 etapas
+António Silva (cms4eng440020rkdui9b214z3) — 2 -> 3 etapas
+Armindo Sieb (cmsd43ue300itjsduat5m2a83) — 6 -> 7 etapas
+Artem Dovbyk (cms2wv117017v0wdudw792wmc) — 8 -> 9 etapas
+Arthur Masuaku (cmsd44hur00jljsdusbkqfew2) — 7 -> 8 etapas
+Benjamín Domínguez (cmsd47uan00pgjsdunv5k91lb) — 2 -> 3 etapas
+Berat Djimsiti (cms2wvock01ag0wdu0w92j4zk) — 5 -> 6 etapas
+Boulaye Dia (cms2whkuh003t0wdu8x3owne8) — 7 -> 8 etapas
+Brennan Johnson (cms2vba6x01x2asdu7scjv5r5) — 4 -> 5 etapas
+Bruno Guimarães (cms2unf1d006wasdurep89xr6) — 5 -> 6 etapas
+Carlos Espí (cms8oewcp0000wgduib26eqhx) — 3 -> 4 etapas
+Chancel Mbemba (cms35uan4003ywkduecn7f0gq) — 3 -> 6 etapas
+Charlie Cresswell (cms36guzf0187wkdur9ptdfj0) — 3 -> 4 etapas
+Chidozie Awaziem (cms361yvp00hqwkduf4qp2fdc) — 12 -> 13 etapas
+Christian Nørgaard (cms2uxipi00zcasduowfts0c9) — 2 -> 7 etapas
+Damián Rodríguez (cmsd4vwq80084icdu80owg6cp) — 4 -> 5 etapas
+Dan Sinaté (cms35sqk6001uwkdup8w1esr9) — 2 -> 3 etapas
+Daniel Maldini (cms2wwd4401co0wdu8m169u9a) — 7 -> 8 etapas
+Daniel-Kofi Kyereh (cmsd4gkok010bjsdu2gnjlgjp) — 5 -> 6 etapas
+Danny Welbeck (cms2va3qn01u9asdues74mxjj) — 6 -> 7 etapas
+David Ospina (cmsa7nshh006n8wv6e12lmx16) — 6 -> 8 etapas
+Deniz Zeitler (cmsd4ydr800b9icdu4ct43zig) — 2 -> 3 etapas
+Dennis Cirkin (cmsd4yfn400bdicdu2wlj4dll) — 1 -> 2 etapas
+Dida (cms4aat7j005xdodu2jkro559) — 7 -> 9 etapas
+Diego Rico (cmsd4zf8s00chicduq4ff55v4) — 7 -> 8 etapas
+Dimitris Giannoulis (cms32devo0195p8du6e3zli9v) — 9 -> 10 etapas
+Djibril Sow (cmrytxwo700h320du79x3fn02) — 6 -> 7 etapas
+Dominic Vavassori (cms2wwz7701eo0wdubnwmp9zg) — 2 -> 3 etapas
+Dušan Vlahović (cms5ypsqw0000i8du4s9n9pvs) — 3 -> 4 etapas
+Dwight McNeil (cms2uzce1013masdu2moyzwel) — 2 -> 3 etapas
+Dženan Pejčinović (cmsd513tz00ebicdu2qc0f7hu) — 2 -> 3 etapas
+Ebenezer Akinsanmiro (cms2x65in003lygduwqxrwnkj) — 4 -> 5 etapas
+Edoardo Motta (cms2wgeju000d0wduosy1pvdr) — 1 -> 2 etapas
+El Bilal Touré (cms2unv0i008qasdutbycyqqe) — 6 -> 7 etapas
+Emre Can (cms32729f00v8p8du6iir0lgd) — 8 -> 7 etapas
+Enes Ünal (cms2upw7m00f3asduj7k8x91y) — 11 -> 12 etapas
+Enner Valencia (cms75i0bk000j7gdudb10hupn) — 8 -> 9 etapas
+Enzo Molebe (cmsd53p4m00jyicduj0ary4dp) — 3 -> 4 etapas
+Erawan Garnier (cms36pwkx01srwkdu85plaay2) — 2 -> 3 etapas
+Ethan Meichtry (cms2wr4nc00vw0wdu9ke31akv) — 2 -> 3 etapas
+Ethan Sutherland (cms2ut4am00o1asduwz0zv0fx) — 4 -> 5 etapas
+Evann Guessand (cms2vi9la02f1asdu9ts2y3pk) — 6 -> 7 etapas
+Ezequiel Lavezzi (cms4b8wmd007vkkdul56l4385) — 1 -> 5 etapas
+Facundo Buonanotte (cmsd54rzf00luicdu90ljfgru) — 5 -> 6 etapas
+Federico Ravaglia (cms2wx83001f20wdu78qsff9m) — 5 -> 6 etapas
+Filip Jörgensen (cms2v4vaa01hwasduao52v3p2) — 3 -> 4 etapas
+Filip Kostić (cms2wj66b008v0wduurqmgpkq) — 7 -> 8 etapas
+Franjo Ivanović (cms4eonbu005brkdul1yde322) — 4 -> 5 etapas
+Freddie Potts (cms2v4esb01gwasduidcs95hr) — 3 -> 4 etapas
+Gaetano Oristanio (cms2x1qmy01rm0wduh8m0sfqp) — 5 -> 6 etapas
+Gauthier Hein (cms36oaq401opwkduwdm0ctog) — 6 -> 7 etapas
+Gautier Lloris (cms36lv9s01k4wkdue0412a19) — 5 -> 6 etapas
+Gerónimo Rulli (cms35y4bt00b4wkduz9t54n1y) — 11 -> 12 etapas
+Giorgi Tsitaishvili (cmsd59tde00voicdu0olhw3dt) — 9 -> 10 etapas
+Giovani Lo Celso (cmryv55s00095w8duwe2vo1qx) — 7 -> 10 etapas
+Giovanni Bonfanti (cmsd59vf400vzicdu0pvtu2q5) — 6 -> 7 etapas
+Giovanni Reyna (cms336no30000g8duukdt74w8) — 3 -> 4 etapas
+Glen Kamara (cms36d5ws0123wkduzhkf1sgt) — 8 -> 9 etapas
+Gonçalo Ramos (cms2wjegm009f0wduyy6szyp6) — 5 -> 4 etapas
+Gonzalo García  (cmryv46k7007ew8duqtmetyxm) — 2 -> 3 etapas
+Haissem Hassan (cmsd5attv00xkicduxvalro0r) — 7 -> 8 etapas
+Hamit Altıntop (cmsa7nbav004l8wv6ixjshcfw) — 1 -> 6 etapas
+Harry Howell (cms2v9oxx01t6asdumbbboe04) — 1 -> 2 etapas
+Hugo Cuenca (cms2wqoig00v70wdukqy26t61) — 4 -> 5 etapas
+Hugo López (cmryv1nc6002fw8du0c3tyslp) — 2 -> 3 etapas
+Ian Poveda (cmsd5cxyo0129icdu0427z2u4) — 7 -> 8 etapas
+Jackson Irvine (cms32nxa6021qp8dujukb0a0i) — 9 -> 10 etapas
+Jacopo Fazzini (cms2wkdft00cl0wduhvgumqjr) — 2 -> 3 etapas
+James Trafford (cms2v78q901maasdumflrcgmp) — 6 -> 7 etapas
+Jan Virgili (cmryu8j0p016k20du9hk2gxv2) — 2 -> 3 etapas
+Jay Robinson (cms2uw99o00wbasduw7x3c9nc) — 1 -> 2 etapas
+Jérémie Boga (cms2wt3zq011h0wdufjknkysa) — 10 -> 9 etapas
+Joan Jordán (cmrytxuqi00gv20duollphdo4) — 6 -> 7 etapas
+Joël Veltman (cmsd5pths01ncicduhcyh1bpl) — 2 -> 3 etapas
+Johan Mojica (cmsd5kk6x01fvicdu0u3lsqii) — 14 -> 15 etapas
+Johann Lepenant (cms362sj600jowkduucmnwem2) — 3 -> 5 etapas
+Jordan Henderson (cms2vccr301zvasdu8p5oplpb) — 6 -> 7 etapas
+Jordan Zemura (cms2wo4uq00ov0wduvq0xwyj6) — 2 -> 3 etapas
+Josef Martínez (cms4b9l6k00a8kkdui6i0bbp2) — 10 -> 11 etapas
+Juanlu Sánchez (cmrytxmnf00gb20dujck1ctgm) — 3 -> 4 etapas
+Julen Agirrezabala (cmsd5qp9t01o0icduxlwtzs3c) — 4 -> 5 etapas
+Junior Mwanga (cms36fti9016mwkdu117ut808) — 6 -> 7 etapas
+Kalvin Phillips (cmsd5rv7k01rgicduhipro2qw) — 5 -> 6 etapas
+Kevin Akpoguma (cmsd5t6oh01t8icduvh4pvupv) — 5 -> 6 etapas
+Kevin Carlos (cms365js600pdwkdu58d9ymya) — 8 -> 9 etapas
+Kieron Bowie (cms2x3jm701w80wdufz62j7h0) — 5 -> 6 etapas
+Koffi Kouao (cmsd5ubye01viicdu78i13z8e) — 4 -> 5 etapas
+Konstantinos Koulierakis (cms3208po00cgp8du4ypm7llz) — 3 -> 4 etapas
+Leo Hjelde (cmsd5x28901zricdumg1c12v6) — 6 -> 7 etapas
+Loïs Openda (cms2wtdsy012l0wdu8fs456sj) — 6 -> 7 etapas
+Lorenzo Lucca (cms2wn9kt00l30wdugx3ueyse) — 12 -> 14 etapas
+Lovro Majer (cms320ads00clp8du7i5ahp76) — 4 -> 5 etapas
+Lucas Digne (cms2vh2ah02c2asduwynaoarf) — 7 -> 8 etapas
+Lucas Michal (cms36ohtx01owwkdu8tijq2gh) — 2 -> 3 etapas
+Lucas Stassin (cms36s99y01y6wkduxtah43a7) — 3 -> 4 etapas
+Luke Thomas (cms2v0npp0176asduyrdlns5j) — 8 -> 9 etapas
+Maghnes Akliouche (cms3697ky00v5wkdumdt95029) — 2 -> 3 etapas
+Mamadou Sangaré (cms36pl3401rowkduacozxol5) — 7 -> 8 etapas
+Manor Solomon (cmsd2gt8600008odut7sa0ku8) — 7 -> 8 etapas
+Marash Kumbulla (cmsd62o8c02ajicduwqsl85p3) — 6 -> 7 etapas
+Marc-André ter Stegen (cmryus0z200005kdunewy616v) — 4 -> 5 etapas
+Mario Kempes (cms4abbh8007gdoduoshvim9y) — 11 -> 12 etapas
+Mateo Pellegrino (cms2xcjoc00iqygduc29a9jb2) — 4 -> 5 etapas
+Matías Pérez (cms2xd7bg00kkygduig2y9ssb) — 2 -> 3 etapas
+Matthis Abline (cms3638wo00kawkdu2q31lj86) — 6 -> 7 etapas
+Mattia Compagnon (cms2xa6z300ddygdudarq1t7c) — 8 -> 10 etapas
+Mattia Viti (cmsd66dtt02hpicdugq6lh52t) — 6 -> 7 etapas
+Maxence Lacroix (cms2vamyv01veasdug01x6fyw) — 4 -> 5 etapas
+Mbwana Samatta (cms36msov01mlwkdu3vlcoyaf) — 3 -> 9 etapas
+Merih Demiral (cmsa7me3o001f8wv60p34pjtk) — 4 -> 9 etapas
+Michael Laudrup (cms4al78s0123dodu1bpg287m) — 7 -> 8 etapas
+Michy Batshuayi (cms32cqoq017pp8du7zk2ywjw) — 5 -> 11 etapas
+Miguel Gutiérrez (cms2wm1kf00gv0wdujhkji2ze) — 4 -> 5 etapas
+Mikel Vesga (cmrytv4n6007220du5fee5dgl) — 6 -> 7 etapas
+Mile Svilar (cms2wtofz013a0wduqnxrhig0) — 2 -> 3 etapas
+Mohamed Salah (cms4b3e9a0000i4duk8ipy661) — 7 -> 8 etapas
+Nahuel Molina (cmryttvg2003q20dugudxq057) — 5 -> 6 etapas
+Nicholas Oyekunle (cms2uw6yo00w9asdu6qlb694h) — 1 -> 2 etapas
+Nicolás Valentini (cmsd6dwjb02x6icdu7eudo0qc) — 4 -> 5 etapas
+Niklas Dorsch (cms32kfjd01r2p8dufrm0pi37) — 6 -> 8 etapas
+Nobel Mendy (cmsd6f7u30309icduyghmpk7u) — 8 -> 9 etapas
+Orel Mangala (cms35wwsz009bwkdu7wf6lbrm) — 7 -> 8 etapas
+Paolo Rossi (cms4amg0w015tdoduwjy6bpjz) — 6 -> 7 etapas
+Patrizio Masini (cmsd6ivuh036ricduuypq2q4p) — 5 -> 6 etapas
+Pau Cabanes (cmsd6iy1j036xicdumsc75p9z) — 5 -> 6 etapas
+Pep Chavarría (cmryu79t8014120du5zaas16j) — 4 -> 5 etapas
+Péter Gulácsi (cms32gj9o01h7p8duq3oykpfy) — 6 -> 7 etapas
+Pietro Comuzzo (cms2wyyri01jr0wdumrc2kxvz) — 1 -> 2 etapas
+Quinten Timber (cms35zblk00dpwkduf1h13tma) — 1 -> 4 etapas
+Rabby Nzingoula (cmsd6kbvv039ricduih9c8bsz) — 4 -> 5 etapas
+Radosław Żelezny (cms2wttl9013n0wduocq0a0jn) — 2 -> 3 etapas
+Rafa Mir (cmsd6kpzg03agicdu5assgkzv) — 9 -> 10 etapas
+Rafael Martins (cmsd6kly9039zicduu4gz65bt) — 15 -> 16 etapas
+Randal Kolo Muani (cms753vwd0000ngdumr2u3e23) — 7 -> 8 etapas
+Reece Welch (cms2uyvto012uasdugejepueu) — 3 -> 4 etapas
+Remi Matthews (cms2vack401uyasduzfbrijxz) — 6 -> 12 etapas
+Ricardo Carvalho (cms4anmj301aidodutec89yg4) — 2 -> 8 etapas
+Riccardo Braschi (cms2x0f3i01nn0wdu61cxoz3f) — 1 -> 2 etapas
+Rio Cardines (cms2vah1901v6asdu7uz4p1l1) — 1 -> 2 etapas
+Roberto Piccoli (cms2x0nze01ok0wdud8tfpjbj) — 9 -> 10 etapas
+Rodrigo Fernández (cmsd6n4g003epicdu0u4eedem) — 8 -> 9 etapas
+Romano Schmid (cms3221c800hhp8dum1377uzg) — 5 -> 6 etapas
+Romelu Lukaku (cms2wnc9600lh0wdu1g0ql5te) — 11 -> 12 etapas
+Ronald Araújo (cmrytof5l00093cdudbbg1y5m) — 4 -> 5 etapas
+Saba Sazonov (cmsd6pj7303jzicduuyj4g98s) — 6 -> 7 etapas
+Saïdou Sow (cmsd6qksj03mnicdu3wrbhsb3) — 6 -> 7 etapas
+Sammie Szmodics (cms2vduzx024xasdu3844l9bh) — 8 -> 9 etapas
+Samú Costa (cmryu8avj016420duae9lcixd) — 5 -> 6 etapas
+Samuel Bamba (cms32iyrn01n7p8du4izbos7p) — 5 -> 6 etapas
+Sander Berge (cms2uqhiv00hbasduf0zcdtx3) — 1 -> 6 etapas
+Sandro Kulenović (cms2x1zfv01si0wdu4sl6gr71) — 3 -> 7 etapas
+Santiago Castro (cms2wybn101i60wdu27uhit3l) — 2 -> 3 etapas
+Saša Lukić (cms2uqs7b00i5asdusvpfbt4c) — 5 -> 6 etapas
+Shea Charles (cms2uvn7e00ugasdul7xmrun9) — 3 -> 4 etapas
+Simon Sohm (cms2x0ai401ni0wdu5lvq1b4z) — 4 -> 5 etapas
+Stefan Posch (cms2xeeyw00orygduchiraxvg) — 9 -> 10 etapas
+Thiago Almada (cmrytu7fl004d20dumbaq2slw) — 5 -> 6 etapas
+Thierry Correia (cms2x8ufo009yygdu3xt47224) — 2 -> 3 etapas
+Timothy Weah (cms35zge000e2wkduy2lx8tiz) — 7 -> 6 etapas
+Tolu Arokodare (cms2usq7n00mtasdu6fwra3xo) — 5 -> 6 etapas
+Tom Louchet (cms364z6400o3wkduqhi8qbk6) — 2 -> 3 etapas
+Trevoh Chalobah (cms2v5fso01iwasduotf9t16n) — 5 -> 6 etapas
+Tyler Fredricson (cms2ulfar000xasdusj5t0rtd) — 1 -> 2 etapas
+Unai Elgezabal (cmsd6ykjp041dicdus4jbxu6x) — 10 -> 11 etapas
+Unai Nuñez (cmryv2wst004aw8duedjbi69l) — 8 -> 9 etapas
+Valentín Barco (cms36f8dq015uwkdu6sbk8e0h) — 5 -> 6 etapas
+Wes Burns (cms2vdpl6024aasduz4xmtbls) — 8 -> 9 etapas
+William Mikelbrencis (cmsd716o6047bicdu7knjz1zs) — 4 -> 5 etapas
+Yan Couto (cms326kh300ugp8duhrhnkpya) — 7 -> 8 etapas
+Yan Diomande (cms4e5yio000aeodu7wpiu64o) — 4 -> 5 etapas
+Yannis Becker (cms36emx4014swkdun4nfkfsb) — 3 -> 6 etapas
+Youssef Maziz (cms36i3s601b3wkdu0ix96sea) — 8 -> 9 etapas
+Youssouf Fofana (cms2wim0400730wdut055ys2w) — 3 -> 4 etapas
+Yunus Emre Konak (cmsd73dgo04bzicdu56lezhmz) — 4 -> 3 etapas
+Yusuf Kabadayı (cmsd73m9904ciicdu82i8q18b) — 7 -> 8 etapas
+Zion Suzuki (cms2xayni00f1ygdub22z3cv4) — 3 -> 4 etapas
 
---- Tanda iniciada 2026-08-14T06:19:38.753Z ---
-Abu Kamara (cmsd3rd970034jsdua0mqofo2) — 4 -> 5 etapas
+--- Tanda iniciada 2026-08-14T08:56:23.575Z ---
+Altay Bayindir (cms2ul5v80000asduyppxnw3u) — 3 -> 4 etapas
+
+--- Tanda iniciada 2026-08-14T08:57:32.910Z ---
+
+--- Tanda iniciada 2026-08-14T08:58:56.986Z ---

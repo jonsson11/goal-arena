@@ -1,6 +1,18 @@
 
---- Tanda iniciada 2026-08-14T06:16:26.983Z ---
-
---- Tanda iniciada 2026-08-14T06:17:33.885Z ---
-
---- Tanda iniciada 2026-08-14T06:19:38.753Z ---
+--- Reintento 2026-08-14T08:59:19.300Z -- siguen fallando tras corregir ---
+Aleksandar Stanković (cms2x6sc80050ygduk4w7asqa) — sin_infobox
+Antonio Casas (cms2xa52k00d8ygdumsoleal6) — sin_infobox
+Arthur (cms329yi3011xp8du82twwa0r) — sin_infobox
+Christian Rasmussen (cms32jg1801orp8dulrhtzosq) — sin_infobox
+Cleiton (cms31zlgj00amp8du2oacrmkn) — sin_infobox
+Daniel Mikołajewski (cms2xchz800iiygduuvw8qhai) — sin_infobox
+Dodô (cms2wz1qu01jt0wduw4v0uihk) — sin_infobox
+Filip Jović (cms31w2ix001vp8ducseg5kar) — sin_infobox
+Filip Stanković (cms2x8n0z0099ygduul05of0z) — sin_infobox
+Filippo Rinaldi (cms2xawrp00evygdujiemmif6) — sin_infobox
+Florian Müller (cms31xlsd005ap8ducbl0zkgh) — sin_infobox
+Frank Möller (cms32jnd901pjp8dubuxy88e6) — sin_infobox
+Giovane (cms2wn42o00kf0wduc8bqsyse) — sin_infobox
+İlhan Mansiz (cms75ytnm000dscduylyyf1h8) — sin_pagina
+Jorge Benítez  (cmryu3kc500w120du9s7he0x4) — sin_infobox
+Love (cmryv4ps40089w8dulvsh8cio) — sin_infobox

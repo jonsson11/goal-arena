@@ -45,9 +45,20 @@ type StintCrudo = {
 // petición" (rate limit, red, etc.) — este segundo caso se reintenta y,
 // si persiste, se loguea claramente en vez de esconderse.
 async function fetchWikitextExacto(titulo: string, reintento = 0): Promise<string | null> {
+  // `redirects=true` es importante: action=parse NO sigue redirecciones por
+  // defecto. Con jugadores populares es habitual que el título "corto"
+  // (ej. "Rodri") acabe convertido en una página de redirección hacia el
+  // título desambiguado (ej. "Rodri (footballer, born 1996)") si con el
+  // tiempo aparece otro jugador notable con el mismo nombre -- sin este
+  // parámetro, pedir "Rodri" devuelve solo el wikitext del redirect
+  // (`#REDIRECT [[...]]`), sin infobox, y el sync falla con "sin_infobox"
+  // aunque la página real exista y esté perfectamente accesible un clic
+  // más allá. Esto afecta sobre todo a re-sincronizaciones por URL/título
+  // guardado (externalId) de jugadores sincronizados hace tiempo, cuyo
+  // título en Wikipedia pudo cambiar desde entonces.
   const url = `https://en.wikipedia.org/w/api.php?action=parse&page=${encodeURIComponent(
     titulo
-  )}&prop=wikitext&section=0&format=json&origin=*`;
+  )}&prop=wikitext&section=0&redirects=true&format=json&origin=*`;
 
   let res: Response;
   try {
@@ -407,12 +418,24 @@ export type ResultadoSync =
  *   del archivo sobre por qué). Útil cuando el nombre no se detecta
  *   automáticamente, jugadores con nombres muy distintos a como aparecen
  *   en Wikipedia, etc.
+ * - `opciones.omitirNacionalidadEImagen`: si es true, se salta las
+ *   peticiones a Wikidata (nacionalidad) y a la API de imágenes de
+ *   Wikipedia -- quedan 2 de las 3 peticiones de red por jugador fuera.
+ *   La nacionalidad, en ese caso, se queda con lo que ya se pudo sacar del
+ *   propio wikitext (extraerNacionalidad/paisDesdeBirthPlace, sin coste de
+ *   red extra) en vez del valor más refinado de Wikidata; e `imagenUrl` NO
+ *   se toca en absoluto (ni se pisa con null) si el jugador ya existía.
+ *   Pensado para tandas de mantenimiento masivas centradas solo en
+ *   Stints (ver scripts/jugadores/actualizarStintsTodos.ts), donde
+ *   nacionalidad/foto casi nunca cambian y no vale la pena pagar esas 2
+ *   peticiones extra por cada uno de miles de jugadores.
  */
 export async function syncJugadorDesdeWikipedia(
   prisma: PrismaClient,
   nombreBuscado: string,
   urlManual?: string,
-  playerIdExistente?: string
+  playerIdExistente?: string,
+  opciones?: { omitirNacionalidadEImagen?: boolean }
 ): Promise<ResultadoSync> {
   let encontrado: { wikitext: string; tituloUsado: string } | null;
   if (urlManual) {
@@ -453,8 +476,14 @@ export async function syncJugadorDesdeWikipedia(
   if (etapas.length === 0) return { ok: false, motivo: "sin_etapas" };
 
   const perfil = extraerPerfil(wikitext);
-  const nacionalidadWikidata = await obtenerNacionalidadWikidata(tituloUsado);
-  const imagenUrl = await obtenerImagenWikipedia(tituloUsado);
+  const omitirExtra = opciones?.omitirNacionalidadEImagen ?? false;
+  // Sin `omitirExtra`: comportamiento de siempre, 2 peticiones extra.
+  // Con `omitirExtra`: nacionalidadWikidata se queda en null (cae al
+  // fallback ya extraído del wikitext, sin red) e imagenUrl se queda en
+  // `undefined` (distinto de `null`) para poder detectar más abajo que NO
+  // se debe tocar esa columna en el upsert -- ni pisarla con null.
+  const nacionalidadWikidata = omitirExtra ? null : await obtenerNacionalidadWikidata(tituloUsado);
+  const imagenUrl = omitirExtra ? undefined : await obtenerImagenWikipedia(tituloUsado);
   const nacionalidad = nacionalidadWikidata ?? perfil.nacionalidad;
   const golesTotales = etapas.reduce((sum, e) => sum + e.goals, 0);
   const partidosTotales = etapas.reduce((sum, e) => sum + e.caps, 0);
@@ -464,6 +493,10 @@ export async function syncJugadorDesdeWikipedia(
     : null;
 
   const nombreVisible = limpiarNombreVisible(tituloUsado);
+
+  // Si se omitió la foto, no incluimos la clave `imagenUrl` en el update
+  // -- así Prisma no toca esa columna, en vez de pisarla con null/undefined.
+  const campoImagenUpdate = imagenUrl !== undefined ? { imagenUrl } : {};
 
   const player = await prisma.player.upsert({
     where: playerIdExistente ? { id: playerIdExistente } : { externalId: `wiki:${tituloUsado}` },
@@ -475,7 +508,7 @@ export async function syncJugadorDesdeWikipedia(
       fechaNacimiento: perfil.fechaNacimiento,
       equipoActualId: equipoActual?.id ?? null,
       nacionalidad,
-      imagenUrl,
+      ...campoImagenUpdate,
     },
     create: {
       externalId: `wiki:${tituloUsado}`,
@@ -487,7 +520,7 @@ export async function syncJugadorDesdeWikipedia(
       asistencias: 0,
       partidos: partidosTotales,
       valorDeMercado: 0,
-      imagenUrl,
+      imagenUrl: imagenUrl ?? null,
     },
   });
 
