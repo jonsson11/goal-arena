@@ -1,13 +1,40 @@
 "use client";
 
+// Rediseño "lomo de color" (Fase 10, 19/08/2026): el selector de "Juego"
+// pasaba por 3 botones de texto plano, todos en el mismo color secundario
+// sin importar qué juego representaban -- perdía la identidad de icono +
+// color por juego que sí tienen /jugar y el resto de menús. Ahora
+// reutiliza directamente `JUEGOS` (icono, nombre, acento) para que el
+// selector de aquí sea, literalmente, el mismo dato que pinta las
+// tarjetas de /jugar. El panel contenedor también pasó de cristal
+// teñido de secundario a fondo sólido (`bg-card`), coherente con el resto
+// de tarjetas del rediseño (ya no quedan superficies "de cristal"
+// sueltas). Dificultad y número de jugadores se dejan igual -- son
+// selectores de un valor (no identidad de juego), ya con su propio
+// código de color por dificultad.
+
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/features/auth/AuthContext";
 import { AuthGate } from "@/features/auth/AuthGate";
 import { GameButton } from "@/features/games/shared/GameButton";
 import { TituloPagina } from "@/components/layout/TituloPagina";
+import { JUEGOS } from "@/features/games/shared/juegos";
+import { ICONO_FONDO_POR_ACENTO, SELECTOR_ACTIVO_POR_ACENTO, TEXTO_POR_ACENTO } from "@/features/games/shared/acento";
 import type { Dificultad } from "@/features/games/shared/types";
 import type { JuegoMultijugador } from "@/features/multijugador/type";
+
+// `JUEGOS` (en features/games/shared/juegos.ts) no lleva el valor de
+// enum que espera la API de salas (`JuegoMultijugador`) -- se relaciona
+// aquí por href en vez de por posición del array, para que si el orden
+// de `JUEGOS` cambia algún día esto no se desincronice en silencio.
+const VALOR_POR_HREF: Record<string, JuegoMultijugador> = {
+  "/jugar/grid": "GRID",
+  "/jugar/linkplayers": "LINKPLAYERS",
+  "/jugar/top10": "TOP10",
+};
+
+const JUEGOS_SELECCIONABLES = JUEGOS.map((j) => ({ ...j, valor: VALOR_POR_HREF[j.href] }));
 
 const OPCIONES_DIFICULTAD: { valor: Dificultad; etiqueta: string }[] = [
   { valor: "facil", etiqueta: "Fácil" },
@@ -34,12 +61,6 @@ const ESTILO_POR_DIFICULTAD: Record<Dificultad, { fondo: string; texto: string }
 };
 
 const OPCIONES_MAX_JUGADORES = [2, 3, 4, 5, 6, 7, 8];
-
-const OPCIONES_JUEGO: { valor: JuegoMultijugador; etiqueta: string }[] = [
-  { valor: "GRID", etiqueta: "3x3 Grid" },
-  { valor: "LINKPLAYERS", etiqueta: "LinkPlayers" },
-  { valor: "TOP10", etiqueta: "Top 10" },
-];
 
 export default function CrearSalaPage() {
   const { usuario } = useAuth();
@@ -102,23 +123,27 @@ export default function CrearSalaPage() {
           Configura la partida antes de invitar a tus amigos.
         </p>
 
-        <div className="flex flex-col gap-8 rounded-2xl border border-secondary/25 bg-secondary/[0.06] p-6 backdrop-blur-md sm:p-8">
+        <div className="flex flex-col gap-8 rounded-2xl border border-border bg-card p-6 backdrop-blur-md sm:p-8">
           <div className="flex flex-col gap-3">
             <span className="text-sm font-semibold text-foreground">Juego</span>
             <div className="grid grid-cols-3 gap-2">
-              {OPCIONES_JUEGO.map((opcion) => {
-                const activo = juego === opcion.valor;
+              {JUEGOS_SELECCIONABLES.map((j) => {
+                const activo = juego === j.valor;
+                const Icono = j.Icono;
                 return (
                   <button
-                    key={opcion.valor}
-                    onClick={() => setJuego(opcion.valor)}
-                    className={`touch-manipulation rounded-xl border px-4 py-3 text-center text-sm font-bold transition-all duration-200 ${
-                      activo
-                        ? "border-secondary bg-secondary/15 text-secondary"
-                        : "border-border text-muted-foreground hover:border-secondary/50"
+                    key={j.valor}
+                    onClick={() => setJuego(j.valor)}
+                    className={`flex touch-manipulation flex-col items-center gap-2 rounded-xl border p-3 text-center transition-all duration-200 ${
+                      activo ? SELECTOR_ACTIVO_POR_ACENTO[j.acento] : "border-border hover:border-muted-foreground/40"
                     }`}
                   >
-                    {opcion.etiqueta}
+                    <span className={`flex h-9 w-9 items-center justify-center rounded-lg ${ICONO_FONDO_POR_ACENTO[j.acento]}`}>
+                      <Icono className="h-5 w-5" />
+                    </span>
+                    <span className={`text-xs font-bold ${activo ? TEXTO_POR_ACENTO[j.acento] : "text-muted-foreground"}`}>
+                      {j.nombre}
+                    </span>
                   </button>
                 );
               })}

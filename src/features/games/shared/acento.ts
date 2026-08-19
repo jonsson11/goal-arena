@@ -89,3 +89,14 @@ export const BORDE_TARJETA_SOLIDA_POR_ACENTO: Record<Acento, string> = {
   secondary: "border-secondary/25 hover:border-secondary/60 hover:shadow-[0_8px_40px_-10px_rgba(29,122,156,0.55)]",
   gold: "border-[#D4AF37]/25 hover:border-[#D4AF37]/60 hover:shadow-[0_8px_40px_-10px_rgba(212,175,55,0.55)]",
 };
+
+// Estado "activo" para selectores donde el usuario ELIGE una opción (no
+// navega a otra pantalla) -- p.ej. el selector de juego de
+// /multijugador/crear. Borde + fondo + resplandor sólidos cuando está
+// seleccionado, sin depender de :hover como los mapas de tarjetas de
+// navegación de arriba (en móvil no hay hover de verdad).
+export const SELECTOR_ACTIVO_POR_ACENTO: Record<Acento, string> = {
+  primary: "border-primary bg-primary/10 shadow-[0_0_20px_-6px_rgba(74,222,154,0.5)]",
+  secondary: "border-secondary bg-secondary/10 shadow-[0_0_20px_-6px_rgba(29,122,156,0.5)]",
+  gold: "border-[#D4AF37] bg-[#D4AF37]/10 shadow-[0_0_20px_-6px_rgba(212,175,55,0.5)]",
+};

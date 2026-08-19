@@ -61,7 +61,7 @@ export default function MultijugadorPage() {
               </span>
             }
             footer={
-              <div className="mt-1 flex items-center gap-1.5 border-t border-border pt-2.5 text-xs text-muted-foreground">
+              <div className="mt-1 flex flex-wrap items-center gap-1.5 border-t border-border pt-2.5 text-xs text-muted-foreground">
                 <span>Tu liga actual:</span>
                 <b className="font-bold" style={{ color: liga.color }}>
                   {liga.nombre}

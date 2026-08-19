@@ -53,10 +53,8 @@ export function TarjetaLomo({ href, acento, icono, titulo, descripcion, badge, f
         compacta ? "min-h-[172px]" : "min-h-[136px]"
       } ${BORDE_TARJETA_SOLIDA_POR_ACENTO[acento]}`}
     >
-      {badge && <div className="absolute right-3.5 top-3.5 z-[1]">{badge}</div>}
-
       <div
-        className="relative flex w-[72px] shrink-0 items-center justify-center overflow-hidden sm:w-20"
+        className="relative flex w-[64px] shrink-0 items-center justify-center overflow-hidden sm:w-20"
         style={{
           background: `linear-gradient(180deg, color-mix(in srgb, ${hex} 92%, black 0%), color-mix(in srgb, ${hex} 60%, black 25%))`,
         }}
@@ -65,8 +63,21 @@ export function TarjetaLomo({ href, acento, icono, titulo, descripcion, badge, f
         <span className="relative text-[#0B1220]">{icono}</span>
       </div>
 
-      <div className="flex flex-1 flex-col justify-center gap-1.5 p-5">
-        <h3 className="text-lg font-extrabold text-foreground">{titulo}</h3>
+      {/* min-w-0 es necesario para que este hijo flex pueda encogerse por
+          debajo de su ancho de contenido -- sin esto, en pantallas
+          estrechas el título/descripción largos empujan la tarjeta y
+          provocan scroll horizontal en vez de hacer wrap del texto. */}
+      <div className="flex min-w-0 flex-1 flex-col justify-center gap-1.5 p-4 sm:p-5">
+        {/* La insignia (badge) va EN LA MISMA fila que el título, no
+            superpuesta en absoluto sobre toda la tarjeta -- así nunca se
+            solapa con el texto en pantallas estrechas, donde antes
+            "Modo Competitivo" + "RANKED" no cabían holgados uno al lado
+            del otro. Si de verdad no cabe, `flex-wrap` la baja a su
+            propia línea en vez de solaparse. */}
+        <div className="flex flex-wrap items-start justify-between gap-x-3 gap-y-1">
+          <h3 className="min-w-0 flex-1 text-base font-extrabold text-foreground sm:text-lg">{titulo}</h3>
+          {badge && <div className="shrink-0">{badge}</div>}
+        </div>
         <p className="text-sm leading-relaxed text-muted-foreground">{descripcion}</p>
         {footer}
       </div>
