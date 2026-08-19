@@ -48,7 +48,6 @@ export const JUEGOS: JuegoInfo[] = [
     descripcion: "Completa el tablero cruzando clubes y selecciones.",
     Icono: GridIcon,
     acento: "primary",
-    etiqueta: "DISPONIBLE",
     reto: "¿Serás capaz de completar el tablero sin fallar ni una casilla?",
     stats: ["🎯 9 casillas por partida", "⏱️ ~2-3 min", "🧠 Dificultad media"],
     imagen: "/capturas/3x32.jpg"
@@ -60,7 +59,6 @@ export const JUEGOS: JuegoInfo[] = [
     descripcion: "Conecta a dos jugadores a través de compañeros de club, en el menor número de Steps.",
     Icono: LinkPlayersIcon,
     acento: "secondary",
-    etiqueta: "NEW",
     reto: "El camino más corto ya está calculado. ¿Puedes igualarlo?",
     stats: ["🔗 Camino más corto calculado", "⏱️ ~3-5 min", "🧠 Dificultad variable"],
     imagen: "/capturas/linkplayers.jpg"
@@ -72,7 +70,6 @@ export const JUEGOS: JuegoInfo[] = [
     descripcion: "Adivina los diez jugadores de un ranking, con pistas.",
     Icono: PodiumIcon,
     acento: "gold",
-    etiqueta: "DISPONIBLE",
     reto: "Diez nombres, sin pistas de más. ¿Cuántos aciertas a la primera?",
     stats: ["🏆 10 nombres por ranking", "⏱️ ~3-5 min", "🧠 Dificultad alta"],
     imagen: "/capturas/top10.jpg"
