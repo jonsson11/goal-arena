@@ -3,7 +3,15 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { Trophy } from "lucide-react";
 import { useAuth } from "@/features/auth/AuthContext";
+import { ligaPorTrofeos } from "@/lib/trofeos";
+import { AnilloLiga } from "@/features/ranked/AnilloLiga";
+
+// Tamaño real del botón de avatar (h-10 w-10 = 2.5rem = 40px con el root
+// font-size por defecto) -- el aro de liga necesita este número exacto
+// para quedar pegado a su borde, no puede deducirlo de una clase Tailwind.
+const TAMANO_AVATAR_PX = 40;
 
 export function AccountMenu() {
   const { usuario, logout } = useAuth();
@@ -51,9 +59,25 @@ export function AccountMenu() {
   }
 
   const porcentajeXp = Math.min(100, Math.round((usuario.xpActual / usuario.xpSiguienteNivel) * 100));
+  const liga = ligaPorTrofeos(usuario.trofeos);
 
   return (
     <div className="flex items-center gap-2.5">
+      {/* Trofeos del modo competitivo (Fase 9, 19/08/2026) -- número seco
+          con icono, sin decoración de más: el aro de color alrededor del
+          avatar (ver más abajo) ya comunica la liga, este chip solo da el
+          número exacto. Visible en todos los tamaños de pantalla, a
+          diferencia del nombre/"Nv. X" que se ocultan en móvil -- los
+          trofeos son el dato central de este sistema, no uno secundario. */}
+      <Link
+        href="/multijugador/ranked"
+        className="flex items-center gap-1 text-xs font-bold text-[#D4AF37] transition-opacity hover:opacity-80"
+        title={`${usuario.trofeos} trofeos · Liga ${liga.nombre}`}
+      >
+        <Trophy className="h-3.5 w-3.5" />
+        {usuario.trofeos.toLocaleString("es-ES")}
+      </Link>
+
       {/* Nombre + barra de XP, junto al avatar. Ya no se oculta entera en
           móvil (antes "hidden sm:flex") -- ahora se queda la barrita
           siempre visible, solo más estrecha (w-10 en vez de w-20) y sin
@@ -91,7 +115,7 @@ export function AccountMenu() {
       <div className="relative" ref={contenedorRef}>
         <button
           onClick={() => setAbierto(!abierto)}
-          className="flex h-10 w-10 items-center justify-center rounded-full border-2 border-primary bg-primary/10 text-lg transition-opacity hover:opacity-80"
+          className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-lg transition-opacity hover:opacity-80"
         >
           {usuario.avatarTipo === "foto" ? (
             // eslint-disable-next-line @next/next/no-img-element -- avatar personalizado del usuario (data URL)
@@ -105,6 +129,12 @@ export function AccountMenu() {
           )}
         </button>
 
+        {/* Aro de la liga actual (Fase 9, 19/08/2026) -- sustituye el
+            borde fijo verde que tenía el botón de antes. Overlay absoluto
+            del mismo tamaño exacto que el botón (ver TAMANO_AVATAR_PX),
+            sin bloquear el click porque es pointer-events-none. */}
+        <AnilloLiga liga={liga} tamano={TAMANO_AVATAR_PX} />
+
         {/* Mismo dato (nivel) que la barra de al lado, en formato insignia
             -- solo en móvil, donde la barra ya no lleva el chip "Nv. X" de
             texto (no había sitio para los dos). */}
@@ -117,6 +147,9 @@ export function AccountMenu() {
             <div className="border-b border-border px-3 py-2">
               <p className="text-sm font-semibold text-foreground">{usuario.nombre}</p>
               <p className="text-xs text-muted-foreground">Nivel {usuario.nivel}</p>
+              <p className="text-xs font-semibold" style={{ color: liga.color }}>
+                {liga.nombre} · {usuario.trofeos.toLocaleString("es-ES")} 🏆
+              </p>
             </div>
 
             <Link

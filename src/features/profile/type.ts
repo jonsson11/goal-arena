@@ -10,6 +10,11 @@ export type Usuario = {
   xpActual: number;
   xpSiguienteNivel: number;
 
+  // Modo competitivo (Grid Ranked, Fase 9) -- sistema totalmente aparte
+  // del nivel/EXP de arriba. La liga (Canterano/Amateur/.../Leyenda) no
+  // viaja aquí: se deriva de `trofeos` en el cliente con `ligaPorTrofeos()`
+  // (src/lib/trofeos.ts), igual que ya se deriva en el servidor.
+  trofeos: number;
 };
 
 export type ResultadoPartida = "victoria" | "derrota";

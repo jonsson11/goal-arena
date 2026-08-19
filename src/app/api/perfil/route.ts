@@ -78,6 +78,7 @@ export async function PATCH(request: Request) {
     nivel: perfil.nivel,
     xpActual: perfil.xpActual,
     xpSiguienteNivel: perfil.xpSiguienteNivel,
+    trofeos: perfil.trofeos,
   };
 
   return NextResponse.json({ usuario });

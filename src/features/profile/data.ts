@@ -20,6 +20,7 @@ export const usuarioInicial: Usuario = {
   nivel: 7,
   xpActual: 320,
   xpSiguienteNivel: 500,
+  trofeos: 0,
 };
 
 export const AVATARES_DISPONIBLES: string[] = ["⚽", "🥅", "🧤", "🏆", "🔥", "🦁", "🐐", "⭐"];
