@@ -44,6 +44,11 @@ export const config = {
   matcher: [
     // Todo menos los archivos estáticos de Next y los assets con extensión
     // de imagen -- no tiene sentido gastar tiempo refrescando sesión ahí.
-    "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
+    // También se excluyen ads.txt/robots.txt/sitemap.xml (19/08/2026,
+    // preparación de AdSense): son archivos públicos de `public/` sin
+    // ninguna dependencia de sesión, así que tampoco tiene sentido pasar
+    // por Supabase en cada petición a ellos -- Google (y cualquier
+    // rastreador) los pide con cierta frecuencia al comprobar el sitio.
+    "/((?!_next/static|_next/image|favicon.ico|ads.txt|robots.txt|sitemap.xml|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
   ],
 };

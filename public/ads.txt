@@ -1,0 +1,14 @@
+# ads.txt de Goal Arena.
+#
+# Este archivo está VACÍO de propósito hasta tener una cuenta de AdSense
+# aprobada -- las líneas que empiezan por "#" son comentarios, así que no
+# afecta a nada mientras tanto.
+#
+# Cuando Google apruebe la cuenta, dará una línea con este formato exacto
+# (sustituir pub-XXXXXXXXXXXXXXXX por el ID real de editor):
+#
+# google.com, pub-XXXXXXXXXXXXXXXX, DIRECT, f08c47fec0942fa0
+#
+# Basta con descomentar esa línea (quitar el "#" y el espacio inicial) y
+# hacer commit -- no hace falta ningún cambio de código para que se sirva
+# en https://<dominio>/ads.txt.

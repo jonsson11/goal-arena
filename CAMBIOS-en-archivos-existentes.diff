@@ -1,0 +1,114 @@
+diff --git a/middleware.ts b/middleware.ts
+index be71bde..35ac21c 100644
+--- a/middleware.ts
++++ b/middleware.ts
+@@ -44,6 +44,11 @@ export const config = {
+   matcher: [
+     // Todo menos los archivos estáticos de Next y los assets con extensión
+     // de imagen -- no tiene sentido gastar tiempo refrescando sesión ahí.
+-    "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
++    // También se excluyen ads.txt/robots.txt/sitemap.xml (19/08/2026,
++    // preparación de AdSense): son archivos públicos de `public/` sin
++    // ninguna dependencia de sesión, así que tampoco tiene sentido pasar
++    // por Supabase en cada petición a ellos -- Google (y cualquier
++    // rastreador) los pide con cierta frecuencia al comprobar el sitio.
++    "/((?!_next/static|_next/image|favicon.ico|ads.txt|robots.txt|sitemap.xml|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
+   ],
+ };
+diff --git a/src/app/layout.tsx b/src/app/layout.tsx
+index bf423fa..c5f2fec 100644
+--- a/src/app/layout.tsx
++++ b/src/app/layout.tsx
+@@ -6,6 +6,9 @@ import { Footer } from "@/components/layout/Footer";
+ import { AuthProvider } from "@/features/auth/AuthContext";
+ import { SolicitudesProvider } from "@/features/social/SolicitudesContext";
+ import { LogrosReclamablesProvider } from "@/features/profile/LogrosReclamablesContext";
++import { ConsentimientoProvider } from "@/features/cookies/ConsentimientoContext";
++import { CookieBanner } from "@/features/cookies/CookieBanner";
++import { GoogleAdsenseScript } from "@/features/cookies/GoogleAdsenseScript";
+ 
+ const geistSans = Geist({
+   variable: "--font-geist-sans",
+@@ -17,12 +20,23 @@ const geistMono = Geist_Mono({
+   subsets: ["latin"],
+ });
+ 
++// ID de editor de AdSense (formato "ca-pub-XXXXXXXXXXXXXXXX"), definido en
++// Vercel una vez se apruebe la cuenta -- hasta entonces queda undefined y
++// tanto la meta tag de verificación de abajo como el script de
++// GoogleAdsenseScript (ver ese archivo) se quedan inertes, sin tocar más
++// código. La meta tag no depende de consentimiento de cookies: es solo
++// una etiqueta de verificación de propiedad, no carga ningún recurso.
++const ADSENSE_CLIENT_ID = process.env.NEXT_PUBLIC_ADSENSE_CLIENT_ID;
++
+ export const metadata: Metadata = {
+   title: "Goal Arena",
+   description: "Demuestra cuánto sabes de fútbol. En minutos.",
+   icons: {
+     icon: "/icon.png",
+   },
++  ...(ADSENSE_CLIENT_ID
++    ? { other: { "google-adsense-account": ADSENSE_CLIENT_ID } }
++    : {}),
+ };
+ 
+ export default function RootLayout({
+@@ -36,16 +50,20 @@ export default function RootLayout({
+       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+     >
+       <body className="min-h-full flex flex-col">
+-        <AuthProvider>
+-         <SolicitudesProvider>
+-          <LogrosReclamablesProvider>
+-           <Header />
+-           {children}
+-           <Footer />
+-          </LogrosReclamablesProvider>
+-         </SolicitudesProvider>
+-        </AuthProvider>
++        <ConsentimientoProvider>
++          <AuthProvider>
++           <SolicitudesProvider>
++            <LogrosReclamablesProvider>
++             <Header />
++             {children}
++             <Footer />
++             <CookieBanner />
++             <GoogleAdsenseScript />
++            </LogrosReclamablesProvider>
++           </SolicitudesProvider>
++          </AuthProvider>
++        </ConsentimientoProvider>
+       </body>
+     </html>
+   );
+-}
+\ No newline at end of file
++}
+diff --git a/src/components/layout/Footer.tsx b/src/components/layout/Footer.tsx
+index 030c907..75c057e 100644
+--- a/src/components/layout/Footer.tsx
++++ b/src/components/layout/Footer.tsx
+@@ -1,3 +1,6 @@
++import Link from "next/link";
++import { GestionarCookiesLink } from "@/features/cookies/GestionarCookiesLink";
++
+ function IconoInstagram({ className }: { className?: string }) {
+   return (
+     <svg viewBox="0 0 24 24" fill="none" className={className} xmlns="http://www.w3.org/2000/svg">
+@@ -48,6 +51,15 @@ export function Footer() {
+             Las imágenes de jugadores mostradas en la web proceden de Wikipedia. Todos los
+             créditos a sus autores originales y a la comunidad de Wikipedia.
+           </p>
++          <nav className="flex flex-wrap items-center justify-center gap-x-4 gap-y-1 text-[11px] text-muted-foreground/70 sm:justify-start">
++            <Link href="/privacidad" className="underline-offset-2 hover:text-primary hover:underline">
++              Privacidad
++            </Link>
++            <Link href="/cookies" className="underline-offset-2 hover:text-primary hover:underline">
++              Cookies
++            </Link>
++            <GestionarCookiesLink className="underline-offset-2 hover:text-primary hover:underline" />
++          </nav>
+         </div>
+ 
+         <div className="flex gap-5">

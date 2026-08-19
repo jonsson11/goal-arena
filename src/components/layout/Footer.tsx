@@ -1,3 +1,6 @@
+import Link from "next/link";
+import { GestionarCookiesLink } from "@/features/cookies/GestionarCookiesLink";
+
 function IconoInstagram({ className }: { className?: string }) {
   return (
     <svg viewBox="0 0 24 24" fill="none" className={className} xmlns="http://www.w3.org/2000/svg">
@@ -48,6 +51,15 @@ export function Footer() {
             Las imágenes de jugadores mostradas en la web proceden de Wikipedia. Todos los
             créditos a sus autores originales y a la comunidad de Wikipedia.
           </p>
+          <nav className="flex flex-wrap items-center justify-center gap-x-4 gap-y-1 text-[11px] text-muted-foreground/70 sm:justify-start">
+            <Link href="/privacidad" className="underline-offset-2 hover:text-primary hover:underline">
+              Privacidad
+            </Link>
+            <Link href="/cookies" className="underline-offset-2 hover:text-primary hover:underline">
+              Cookies
+            </Link>
+            <GestionarCookiesLink className="underline-offset-2 hover:text-primary hover:underline" />
+          </nav>
         </div>
 
         <div className="flex gap-5">
