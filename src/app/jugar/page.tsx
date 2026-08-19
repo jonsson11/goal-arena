@@ -16,7 +16,7 @@ export default function JugarPage() {
 
         <div className="grid w-full grid-cols-1 gap-9 sm:grid-cols-3">
           {JUEGOS.map(({ Icono, ...juego }) => (
-            <JuegoCromo key={juego.href} juego={juego} icono={<Icono className="h-9 w-9" />} />
+            <JuegoCromo key={juego.href} juego={juego} icono={<Icono className="h-4 w-4" />} />
           ))}
         </div>
       </div>

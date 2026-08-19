@@ -8,12 +8,19 @@
 // modo (Competitivo vs Amigos, ver ese archivo) -- contenido idéntico al
 // de antes, solo cambia la ruta y el `hrefAtras` (ahora vuelve a la
 // elección de modo, no a Inicio).
+//
+// Rediseño "lomo de color" (Fase 10, 19/08/2026): las dos tarjetas
+// (Crear sala / Unirse a sala) pasan de icono centrado sobre cristal
+// tintado a TarjetaLomo.tsx, mismo lenguaje que /multijugador y las
+// tarjetas de /jugar -- consistencia pedida explícitamente por el
+// usuario ("quiero seguir la misma línea de diseño en todo el
+// proyecto").
 
-import Link from "next/link";
 import { DoorOpen, KeyRound } from "lucide-react";
 import { useAuth } from "@/features/auth/AuthContext";
 import { AuthGate } from "@/features/auth/AuthGate";
 import { TituloPagina } from "@/components/layout/TituloPagina";
+import { TarjetaLomo } from "@/features/games/shared/TarjetaLomo";
 
 export default function JugarConAmigosPage() {
   const { usuario } = useAuth();
@@ -42,31 +49,23 @@ export default function JugarConAmigosPage() {
         </p>
 
         <div className="grid w-full grid-cols-1 gap-6 sm:grid-cols-2">
-          <Link
+          <TarjetaLomo
             href="/multijugador/crear"
-            className="group flex flex-col items-center gap-3 rounded-2xl border border-secondary/35 bg-secondary/[0.12] p-8 text-center backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:border-secondary hover:shadow-[0_8px_40px_-10px_rgba(29,122,156,0.6)]"
-          >
-            <span className="flex h-16 w-16 items-center justify-center rounded-2xl bg-secondary/25 text-secondary">
-              <DoorOpen className="h-8 w-8" />
-            </span>
-            <span className="text-xl font-extrabold text-foreground">Crear sala</span>
-            <span className="text-sm text-muted-foreground">
-              Elige juego y dificultad, invita a tus amigos con un código.
-            </span>
-          </Link>
+            acento="secondary"
+            icono={<DoorOpen className="h-7 w-7" />}
+            titulo="Crear sala"
+            descripcion="Elige juego y dificultad, invita a tus amigos con un código."
+            compacta
+          />
 
-          <Link
+          <TarjetaLomo
             href="/multijugador/unirse"
-            className="group flex flex-col items-center gap-3 rounded-2xl border border-primary/30 bg-primary/10 p-8 text-center backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:border-primary hover:shadow-[0_8px_40px_-10px_rgba(74,222,154,0.55)]"
-          >
-            <span className="flex h-16 w-16 items-center justify-center rounded-2xl bg-primary/20 text-primary">
-              <KeyRound className="h-8 w-8" />
-            </span>
-            <span className="text-xl font-extrabold text-foreground">Unirse a sala</span>
-            <span className="text-sm text-muted-foreground">
-              Introduce el código que te ha pasado un amigo.
-            </span>
-          </Link>
+            acento="primary"
+            icono={<KeyRound className="h-7 w-7" />}
+            titulo="Unirse a sala"
+            descripcion="Introduce el código que te ha pasado un amigo."
+            compacta
+          />
         </div>
       </div>
     </div>

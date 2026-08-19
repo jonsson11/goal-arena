@@ -4,17 +4,20 @@
 //
 // Pantalla de elección de modo (Fase 9, 19/08/2026) -- antes esta ruta
 // era directamente "crear sala / unirse por código" (eso vive ahora en
-// /multijugador/amigos, ver ese archivo). Diseño aprobado en el mockup
-// del 19/08/2026: dos tarjetas grandes, sin etiqueta "Casual" en la de
-// amigos (solo "Ranked" en la competitiva, que es la que aporta
-// información), icono de cada modo como marca de agua tenue al fondo de
-// la tarjeta en vez de icono protagonista en primer plano.
+// /multijugador/amigos, ver ese archivo).
+//
+// Rediseño "lomo de color" (Fase 10, 19/08/2026): sustituye el diseño de
+// icono como marca de agua tenue al fondo de la tarjeta (Fase 9) por
+// TarjetaLomo.tsx -- franja de color sólida con el icono dentro --, tras
+// una ronda de feedback en la que ese diseño de marca de agua no acababa
+// de convencer y se probaron varias alternativas con mockups (ver
+// claude/diseno-modo-competitivo.md).
 
-import Link from "next/link";
 import { Trophy, Users } from "lucide-react";
 import { useAuth } from "@/features/auth/AuthContext";
 import { AuthGate } from "@/features/auth/AuthGate";
 import { TituloPagina } from "@/components/layout/TituloPagina";
+import { TarjetaLomo } from "@/features/games/shared/TarjetaLomo";
 import { ligaPorTrofeos } from "@/lib/trofeos";
 
 export default function MultijugadorPage() {
@@ -46,53 +49,35 @@ export default function MultijugadorPage() {
         </p>
 
         <div className="flex w-full flex-col gap-5">
-          <Link
+          <TarjetaLomo
             href="/multijugador/ranked"
-            className="group relative flex min-h-[136px] flex-col justify-center gap-2 overflow-hidden rounded-2xl border border-primary/25 bg-card p-6 backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:border-primary/60 hover:shadow-[0_8px_40px_-10px_rgba(74,222,154,0.55)]"
-            style={{
-              backgroundImage:
-                "radial-gradient(120% 140% at 15% 0%, rgba(74,222,154,0.16), transparent 60%)",
-            }}
-          >
-            <Trophy
-              aria-hidden
-              className="pointer-events-none absolute -bottom-6 -right-4 h-36 w-36 text-primary opacity-[0.09]"
-            />
-            <span className="relative z-[1] self-start rounded-full border border-primary/40 bg-primary/15 px-2.5 py-1 text-[10px] font-extrabold uppercase tracking-wide text-primary">
-              Ranked
-            </span>
-            <h3 className="relative z-[1] text-lg font-extrabold text-foreground">Modo Competitivo</h3>
-            <p className="relative z-[1] max-w-[82%] text-sm leading-relaxed text-muted-foreground">
-              1vs1 de Grid contra un rival de tu nivel. Gana trofeos, sube de liga, desbloquea cosméticos de
-              temporada.
-            </p>
-            <div className="relative z-[1] mt-1 flex items-center gap-1.5 border-t border-border pt-2.5 text-xs text-muted-foreground">
-              <span>Tu liga actual:</span>
-              <b className="font-bold" style={{ color: liga.color }}>
-                {liga.nombre}
-              </b>
-              <span>· {usuario.trofeos.toLocaleString("es-ES")} 🏆</span>
-            </div>
-          </Link>
+            acento="primary"
+            icono={<Trophy className="h-7 w-7" />}
+            titulo="Modo Competitivo"
+            descripcion="1vs1 de Grid contra un rival de tu nivel. Gana trofeos, sube de liga, desbloquea cosméticos de temporada."
+            badge={
+              <span className="rounded-full border border-primary/40 bg-primary/15 px-2.5 py-1 text-[10px] font-extrabold uppercase tracking-wide text-primary">
+                Ranked
+              </span>
+            }
+            footer={
+              <div className="mt-1 flex items-center gap-1.5 border-t border-border pt-2.5 text-xs text-muted-foreground">
+                <span>Tu liga actual:</span>
+                <b className="font-bold" style={{ color: liga.color }}>
+                  {liga.nombre}
+                </b>
+                <span>· {usuario.trofeos.toLocaleString("es-ES")} 🏆</span>
+              </div>
+            }
+          />
 
-          <Link
+          <TarjetaLomo
             href="/multijugador/amigos"
-            className="group relative flex min-h-[136px] flex-col justify-center gap-2 overflow-hidden rounded-2xl border border-secondary/25 bg-card p-6 backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:border-secondary/60 hover:shadow-[0_8px_40px_-10px_rgba(29,122,156,0.55)]"
-            style={{
-              backgroundImage:
-                "radial-gradient(120% 140% at 15% 0%, rgba(29,122,156,0.18), transparent 60%)",
-            }}
-          >
-            <Users
-              aria-hidden
-              className="pointer-events-none absolute -bottom-6 -right-4 h-36 w-36 text-secondary opacity-[0.09]"
-            />
-            <h3 className="relative z-[1] text-lg font-extrabold text-foreground">Jugar con Amigos</h3>
-            <p className="relative z-[1] max-w-[82%] text-sm leading-relaxed text-muted-foreground">
-              Crea una sala o únete con un código. Grid, Top10 o LinkPlayers, de 2 a 8 jugadores, sin presión
-              de trofeos.
-            </p>
-          </Link>
+            acento="secondary"
+            icono={<Users className="h-7 w-7" />}
+            titulo="Jugar con Amigos"
+            descripcion="Crea una sala o únete con un código. Grid, Top10 o LinkPlayers, de 2 a 8 jugadores, sin presión de trofeos."
+          />
         </div>
       </div>
     </div>

@@ -76,3 +76,16 @@ export const TARJETA_CRISTAL_POR_ACENTO: Record<Acento, string> = {
     "border-secondary/35 bg-secondary/[0.12] hover:border-secondary hover:shadow-[0_8px_40px_-10px_rgba(29,122,156,0.6)]",
   gold: "border-[#D4AF37]/30 bg-[#D4AF37]/10 hover:border-[#D4AF37] hover:shadow-[0_8px_40px_-10px_rgba(212,175,55,0.55)]",
 };
+
+// Borde + glow para las tarjetas "lomo de color" del rediseño de menús
+// (Fase 10, 19/08/2026) -- fondo SÓLIDO (bg-card, no cristal tintado como
+// TARJETA_CRISTAL_POR_ACENTO de arriba), con el mismo borde/sombra al
+// hover que ya usaba /multijugador/page.tsx para sus dos tarjetas
+// grandes. Compartido por TarjetaLomo.tsx (icono en franja de color) y
+// JuegoCromo.tsx (imagen del juego arriba) para que ambas tarjetas -- con
+// imagen o sin ella -- usen exactamente el mismo borde.
+export const BORDE_TARJETA_SOLIDA_POR_ACENTO: Record<Acento, string> = {
+  primary: "border-primary/25 hover:border-primary/60 hover:shadow-[0_8px_40px_-10px_rgba(74,222,154,0.55)]",
+  secondary: "border-secondary/25 hover:border-secondary/60 hover:shadow-[0_8px_40px_-10px_rgba(29,122,156,0.55)]",
+  gold: "border-[#D4AF37]/25 hover:border-[#D4AF37]/60 hover:shadow-[0_8px_40px_-10px_rgba(212,175,55,0.55)]",
+};
