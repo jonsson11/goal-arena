@@ -10,13 +10,14 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Search, X } from "lucide-react";
+import { Search, X, Shield, History } from "lucide-react";
 import { useAuth } from "@/features/auth/AuthContext";
 import { AuthGate } from "@/features/auth/AuthGate";
 import { TituloPagina } from "@/components/layout/TituloPagina";
 import { GameButton } from "@/features/games/shared/GameButton";
 import { EscudoLiga } from "@/features/ranked/EscudoLiga";
 import { progresoLiga } from "@/lib/trofeos";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 
 const INTERVALO_POLLING_COLA_MS = 2000;
 
@@ -54,6 +55,7 @@ export default function RankedHubPage() {
   const [buscando, setBuscando] = useState(false);
   const [segundosEsperando, setSegundosEsperando] = useState(0);
   const [error, setError] = useState<string | null>(null);
+  const [historialAbierto, setHistorialAbierto] = useState(false);
 
   // Refs (no estado) para poder limpiar el intervalo/cancelar la cola al
   // desmontar sin depender de una closure con el valor de estado
@@ -149,14 +151,25 @@ export default function RankedHubPage() {
   useEffect(() => {
     let cancelado = false;
     fetch("/api/ranked/estado")
-      .then((r) => r.json())
-      .then((datos: { trofeos: number; historial: ItemHistorial[] }) => {
+      .then(async (r) => {
+        // Antes esto no comprobaba `r.ok` -- si el servidor devolvía un
+        // error, se intentaba leer `datos.historial` de un cuerpo que no
+        // lo tenía, y el historial se quedaba pillado en "Cargando..."
+        // para siempre sin que se viera ningún aviso (bug reportado
+        // 19/08/2026: "no se están mostrando las partidas recientes").
+        const datos = await r.json();
+        if (!r.ok) throw new Error(datos.error ?? "No se pudo cargar el historial.");
+        return datos as { trofeos: number; historial: ItemHistorial[] };
+      })
+      .then((datos) => {
         if (cancelado) return;
         setTrofeos(datos.trofeos);
         setHistorial(datos.historial);
       })
-      .catch(() => {
-        if (!cancelado) setHistorial([]);
+      .catch((err) => {
+        if (cancelado) return;
+        console.error("No se pudo cargar /api/ranked/estado:", err);
+        setHistorial([]);
       });
     return () => {
       cancelado = true;
@@ -191,6 +204,36 @@ export default function RankedHubPage() {
           <p className="mt-1 flex items-center justify-center gap-1.5 text-2xl font-extrabold text-[#D4AF37]">
             🏆 {trofeosMostrados.toLocaleString("es-ES")}
           </p>
+        </div>
+
+        {/* Accesos rápidos junto a los trofeos (pedido explícito del
+            usuario, 19/08/2026): antes eran un botón de ancho completo
+            ("Ver todas las ligas") y una lista fija de "Partidas
+            recientes" -- ahora son dos icono-botones compactos, cada uno
+            con su etiqueta debajo para que quede claro qué hace cada uno
+            sin ocupar tanto sitio. */}
+        <div className="flex items-center gap-6">
+          <button
+            type="button"
+            onClick={() => router.push("/multijugador/ranked/ligas")}
+            className="flex flex-col items-center gap-1.5 text-muted-foreground transition-colors hover:text-foreground"
+          >
+            <span className="flex h-11 w-11 items-center justify-center rounded-full border border-border bg-card transition-colors hover:border-primary/40 hover:bg-primary/10">
+              <Shield className="h-5 w-5" />
+            </span>
+            <span className="text-[11px] font-semibold">Ligas</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setHistorialAbierto(true)}
+            className="relative flex flex-col items-center gap-1.5 text-muted-foreground transition-colors hover:text-foreground"
+          >
+            <span className="flex h-11 w-11 items-center justify-center rounded-full border border-border bg-card transition-colors hover:border-primary/40 hover:bg-primary/10">
+              <History className="h-5 w-5" />
+            </span>
+            <span className="text-[11px] font-semibold">Historial</span>
+          </button>
         </div>
 
         <div className="w-full px-2">
@@ -235,46 +278,49 @@ export default function RankedHubPage() {
           </div>
         )}
 
-        <GameButton
-          type="button"
-          variant="secondary"
-          onClick={() => router.push("/multijugador/ranked/ligas")}
-          className="w-full py-2.5 text-sm"
-        >
-          Ver todas las ligas
-        </GameButton>
+      </div>
 
-        <div className="mt-2 flex w-full flex-col gap-2 text-left">
-          <p className="px-1 text-xs font-bold uppercase tracking-wide text-muted-foreground">Partidas recientes</p>
-          {historial === null && <p className="px-1 text-sm text-muted-foreground">Cargando…</p>}
-          {historial !== null && historial.length === 0 && (
-            <p className="px-1 text-sm text-muted-foreground">
-              Todavía no has jugado ninguna partida competitiva — ¡busca la primera!
-            </p>
-          )}
-          {historial?.map((item) => (
-            <div
-              key={item.codigoSala}
-              className="flex items-center justify-between rounded-xl border border-border bg-card px-3.5 py-2.5 text-sm"
-            >
-              <div className="flex items-center gap-2 truncate">
-                <span className={`rounded-md px-1.5 py-0.5 text-[10px] font-extrabold ${CLASE_RESULTADO[item.resultado]}`}>
-                  {ETIQUETA_RESULTADO[item.resultado]}
-                </span>
-                <span className="truncate text-muted-foreground">
-                  vs {item.rival ? item.rival.nombre : "rival"}
+      {/* Historial en un diálogo (antes era una lista fija siempre visible
+          en la página) -- se abre desde el icono-botón "Historial" de
+          arriba. */}
+      <Dialog open={historialAbierto} onOpenChange={setHistorialAbierto}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Partidas recientes</DialogTitle>
+            <DialogDescription>Tus últimas partidas del modo Competitivo.</DialogDescription>
+          </DialogHeader>
+
+          <div className="flex max-h-[60vh] flex-col gap-2 overflow-y-auto text-left">
+            {historial === null && <p className="px-1 text-sm text-muted-foreground">Cargando…</p>}
+            {historial !== null && historial.length === 0 && (
+              <p className="px-1 text-sm text-muted-foreground">
+                Todavía no has jugado ninguna partida competitiva — ¡busca la primera!
+              </p>
+            )}
+            {historial?.map((item) => (
+              <div
+                key={item.codigoSala}
+                className="flex items-center justify-between rounded-xl border border-border bg-card px-3.5 py-2.5 text-sm"
+              >
+                <div className="flex items-center gap-2 truncate">
+                  <span className={`rounded-md px-1.5 py-0.5 text-[10px] font-extrabold ${CLASE_RESULTADO[item.resultado]}`}>
+                    {ETIQUETA_RESULTADO[item.resultado]}
+                  </span>
+                  <span className="truncate text-muted-foreground">
+                    vs {item.rival ? item.rival.nombre : "rival"}
+                  </span>
+                </div>
+                <span
+                  className={`shrink-0 font-bold ${item.trofeosCambio >= 0 ? "text-primary" : "text-destructive"}`}
+                >
+                  {item.trofeosCambio >= 0 ? "+" : ""}
+                  {item.trofeosCambio} 🏆
                 </span>
               </div>
-              <span
-                className={`shrink-0 font-bold ${item.trofeosCambio >= 0 ? "text-primary" : "text-destructive"}`}
-              >
-                {item.trofeosCambio >= 0 ? "+" : ""}
-                {item.trofeosCambio} 🏆
-              </span>
-            </div>
-          ))}
-        </div>
-      </div>
+            ))}
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

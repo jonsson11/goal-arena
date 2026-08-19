@@ -38,7 +38,13 @@ export async function GET() {
   // ignorar el propio.
   const misPartidas = await prisma.salaJugador.findMany({
     where: { userId: user.id, resultado: { not: null }, sala: { competitiva: true } },
-    orderBy: { sala: { createdAt: "desc" } },
+    // Ordenar por un campo DIRECTO de SalaJugador (`unidoEn`, equivalente
+    // en la práctica a la fecha de la partida -- en ranked la Sala se crea
+    // y el jugador se une en el mismo instante) en vez del `createdAt` de
+    // la relación `sala` -- el `orderBy` anidado sobre una relación es más
+    // frágil, y fue la sospecha nº1 al depurar el bug de "no aparecen las
+    // partidas recientes" (19/08/2026).
+    orderBy: { unidoEn: "desc" },
     take: LIMITE_HISTORIAL,
     include: {
       sala: {
