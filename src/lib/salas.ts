@@ -492,6 +492,7 @@ export async function construirEstadoPartida(salaId: string, miUserId: string): 
 
   const comun = {
     estado: sala.estado,
+    competitiva: sala.competitiva,
     miResultado: (mi.resultado as EstadoPartida["miResultado"]) ?? null,
     miExperiencia: (mi.experiencia as unknown as RespuestaPartida | null) ?? null,
     rivales: sala.jugadores

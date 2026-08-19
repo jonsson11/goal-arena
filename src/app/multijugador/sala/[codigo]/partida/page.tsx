@@ -307,7 +307,9 @@ export default function PartidaMultijugadorPage({ params }: { params: Promise<{ 
   // revancha (vuelve a ESPERANDO) -- entonces me lleva solo a la sala de
   // espera, sin que tenga que hacer nada.
   useEffect(() => {
-    if (partida?.estado !== "FINALIZADA" || !usuario || esCreador) return;
+    // En ranked no hay revancha (cada partida sale de la cola, no tiene
+    // "sala de espera" a la que volver) -- este polling no aplica.
+    if (partida?.estado !== "FINALIZADA" || !usuario || esCreador || partida.competitiva) return;
 
     const intervalo = setInterval(async () => {
       try {
@@ -327,7 +329,7 @@ export default function PartidaMultijugadorPage({ params }: { params: Promise<{ 
     }, INTERVALO_POLLING_SALA_MS);
 
     return () => clearInterval(intervalo);
-  }, [partida?.estado, codigo, usuario, router, esCreador]);
+  }, [partida?.estado, partida?.competitiva, codigo, usuario, router, esCreador]);
 
   if (!usuario) {
     return (
@@ -442,7 +444,9 @@ export default function PartidaMultijugadorPage({ params }: { params: Promise<{ 
   async function salir() {
     activoRef.current = false;
     await fetch(`/api/salas/${codigo}/salir`, { method: "POST" });
-    router.push("/multijugador");
+    // Ranked no tiene "sala" a la que volver -- cada partida era privada
+    // solo para esos dos, así que de vuelta va al hub, no a /multijugador.
+    router.push(partida?.competitiva ? "/multijugador/ranked" : "/multijugador");
   }
 
   async function pedirRevancha() {
@@ -509,6 +513,7 @@ export default function PartidaMultijugadorPage({ params }: { params: Promise<{ 
             esCreador={esCreador}
             onPedirRevancha={pedirRevancha}
             onSalir={() => setConfirmandoSalida(true)}
+            onVolverRanked={salir}
             pidiendoRevancha={pidiendoRevancha}
           />
         ) : esperandoCarga ? (
@@ -782,12 +787,14 @@ function ResultadoPartida({
   esCreador,
   onPedirRevancha,
   onSalir,
+  onVolverRanked,
   pidiendoRevancha,
 }: {
   partida: EstadoPartida;
   esCreador: boolean;
   onPedirRevancha: () => void;
   onSalir: () => void;
+  onVolverRanked: () => void;
   pidiendoRevancha: boolean;
 }) {
   const { usuario } = useAuth();
@@ -916,16 +923,25 @@ function ResultadoPartida({
       )}
 
       <div className="flex w-full flex-col gap-3">
-        {esCreador ? (
+        {partida.competitiva ? (
+          // Ranked no tiene revancha ni sala de espera a la que volver --
+          // cada partida sale de la cola de emparejamiento, así que el
+          // único paso siguiente natural es volver al hub competitivo.
+          <GameButton onClick={onVolverRanked} className="w-full py-3">
+            Volver al Competitivo
+          </GameButton>
+        ) : esCreador ? (
           <GameButton onClick={onPedirRevancha} disabled={pidiendoRevancha} className="w-full py-3">
             {pidiendoRevancha ? "Preparando revancha..." : "Volver a la sala de espera"}
           </GameButton>
         ) : (
           <p className="text-xs text-muted-foreground">Esperando a que el anfitrión decida qué hacer...</p>
         )}
-        <GameButton variant="destructive" onClick={onSalir} className="w-full">
-          Salir
-        </GameButton>
+        {!partida.competitiva && (
+          <GameButton variant="destructive" onClick={onSalir} className="w-full">
+            Salir
+          </GameButton>
+        )}
       </div>
     </div>
   );

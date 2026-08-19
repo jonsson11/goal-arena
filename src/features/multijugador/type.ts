@@ -69,6 +69,11 @@ export type RivalPartida = {
 
 type EstadoPartidaComun = {
   estado: EstadoSala; // "EN_CURSO" mientras se juega, "FINALIZADA" al acabar
+  /** true si esta Sala es una partida de Grid Ranked (Fase 9) -- cambia
+   * cómo se comporta la pantalla al FINALIZAR: sin revancha (no tiene
+   * sentido en ranked, cada partida sale de la cola) y el botón de volver
+   * lleva al hub /multijugador/ranked en vez de a la sala privada. */
+  competitiva: boolean;
   miResultado: "VICTORIA" | "DERROTA" | "EMPATE" | null;
   miExperiencia: RespuestaPartida | null;
   rivales: RivalPartida[];

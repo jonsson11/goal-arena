@@ -58,7 +58,7 @@ export default function CaminoLigasPage() {
 
       <div
         ref={contenedorRef}
-        className="relative z-10 mx-auto flex h-[65vh] max-w-md flex-col overflow-y-auto rounded-2xl border border-border bg-background/40 px-2"
+        className="scrollbar-fina relative z-10 mx-auto flex h-[65vh] max-w-md flex-col overflow-y-auto rounded-2xl border border-border bg-background/40 px-2"
       >
         <div className="relative flex flex-col py-10">
           {/* Línea vertical punteada que atraviesa todo el camino. */}

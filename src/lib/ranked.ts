@@ -8,7 +8,7 @@
 // de una Sala normal (mismo motor, ver src/lib/salas.ts).
 
 import { prisma } from "@/lib/prisma";
-import { generarCodigoSalaUnico, duracionRondaSegundos } from "@/lib/salas";
+import { generarCodigoSalaUnico } from "@/lib/salas";
 import { generarTableroDesdeBD } from "@/features/games/grid/generarTablero.server";
 import { sonEmparejablesEnCola, rangoAceptableTrofeos } from "@/lib/trofeos";
 import type { Dificultad } from "@/features/games/shared/types";
@@ -18,6 +18,13 @@ import type { Dificultad } from "@/features/games/shared/types";
 // "ventaja" jugando en fácil). "medio" es un punto intermedio razonable
 // para empezar; se puede revisar con datos reales de temporada 1.
 export const DIFICULTAD_RANKED: Dificultad = "medio";
+
+// El ranked tiene SU PROPIA duración de ronda, fija en 180s (3 min) --
+// independiente de `duracionRondaSegundos(dificultad)` de salas.ts, que
+// para "medio" da 240s. Decisión del usuario (19/08/2026): el competitivo
+// tiene que sentirse más ágil que una partida casual normal, así que no
+// reutilizamos la escala pensada para el modo casual.
+const DURACION_RONDA_RANKED_SEGUNDOS = 180;
 
 export type EstadoCola =
   | { estado: "esperando"; segundosEsperando: number; rangoAceptable: number }
@@ -125,7 +132,7 @@ async function intentarCrearSalaCompetitiva(a: FilaColaRanked, b: FilaColaRanked
           maxJugadores: 2,
           competitiva: true,
           contenido,
-          duracionSegundos: duracionRondaSegundos(DIFICULTAD_RANKED),
+          duracionSegundos: DURACION_RONDA_RANKED_SEGUNDOS,
           // A diferencia de una Sala casual (que arranca en ESPERANDO y
           // exige que el creador pulse "Empezar"), una Sala ranked empieza
           // YA en marcha -- el emparejamiento automático ES el "empezar".

@@ -320,6 +320,30 @@
   animation: header-scan 6s linear infinite;
 }
 
+/* Barra de scroll fina y coherente con el tema, para paneles internos
+   desplazables (ej. el camino de ligas) -- la barra por defecto del SO
+   (gruesa, gris claro, sin relación con el diseño oscuro) desentonaba
+   mucho en escritorio (19/08/2026). Firefox usa `scrollbar-width`/
+   `scrollbar-color`; el resto de navegadores, el pseudo-elemento
+   `::-webkit-scrollbar`. */
+.scrollbar-fina {
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+.scrollbar-fina::-webkit-scrollbar {
+  width: 6px;
+}
+.scrollbar-fina::-webkit-scrollbar-track {
+  background: transparent;
+}
+.scrollbar-fina::-webkit-scrollbar-thumb {
+  background-color: var(--border);
+  border-radius: 999px;
+}
+.scrollbar-fina::-webkit-scrollbar-thumb:hover {
+  background-color: var(--muted-foreground);
+}
+
 @media (prefers-reduced-motion: reduce) {
   .logo-flip,
   .header-scan-border::after {

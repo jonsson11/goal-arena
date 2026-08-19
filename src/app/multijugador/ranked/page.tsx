@@ -10,7 +10,6 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
 import { Search, X } from "lucide-react";
 import { useAuth } from "@/features/auth/AuthContext";
 import { AuthGate } from "@/features/auth/AuthGate";
@@ -236,9 +235,14 @@ export default function RankedHubPage() {
           </div>
         )}
 
-        <Link href="/multijugador/ranked/ligas" className="text-xs text-secondary underline underline-offset-2">
-          Ver todas las ligas ↓
-        </Link>
+        <GameButton
+          type="button"
+          variant="secondary"
+          onClick={() => router.push("/multijugador/ranked/ligas")}
+          className="w-full py-2.5 text-sm"
+        >
+          Ver todas las ligas
+        </GameButton>
 
         <div className="mt-2 flex w-full flex-col gap-2 text-left">
           <p className="px-1 text-xs font-bold uppercase tracking-wide text-muted-foreground">Partidas recientes</p>
