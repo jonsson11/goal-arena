@@ -23,6 +23,19 @@ import {
   type ResultadoMultijugador,
   type RespuestaPartida,
 } from "@/lib/experiencia";
+import { calcularCambioTrofeos, aplicarCambioTrofeos, type ResultadoRanked } from "@/lib/trofeos";
+
+// SalaJugador.resultado se guarda en MAYÚSCULAS ("VICTORIA"/"DERROTA"/
+// "EMPATE", ver el cierre de finalizarPartidaSiToca más abajo) pero
+// ResultadoMultijugador (experiencia.ts) usa minúsculas -- este mapa evita
+// escribir el `.toUpperCase()` a mano en dos sitios distintos y que se
+// desincronicen. `calcularCambioTrofeos` (trofeos.ts) espera el mismo
+// formato en mayúsculas que ya se guarda en BD.
+const RESULTADO_A_RANKED: Record<ResultadoMultijugador, ResultadoRanked> = {
+  victoria: "VICTORIA",
+  derrota: "DERROTA",
+  empate: "EMPATE",
+};
 
 // Sin 0/O, 1/I/L, ni vocales que formen palabras raras por accidente --
 // alfabeto reducido a propósito para que un código se pueda leer en voz
@@ -357,8 +370,9 @@ export async function finalizarPartidaSiToca(salaId: string): Promise<void> {
           rachaActual: number;
           rachaMaxima: number;
           ultimoBonusDiario: Date | null;
+          trofeos: number;
         }>
-      >`SELECT nivel, "xpActual", "xpSiguienteNivel", "partidasJugadas", "rachaActual", "rachaMaxima", "ultimoBonusDiario"
+      >`SELECT nivel, "xpActual", "xpSiguienteNivel", "partidasJugadas", "rachaActual", "rachaMaxima", "ultimoBonusDiario", trofeos
         FROM "User" WHERE id = ${sj.userId} FOR UPDATE`;
       const actual = filasUsuario[0];
       if (!actual) continue; // no debería poder pasar, pero no tumbamos el cierre de la sala por esto
@@ -392,6 +406,27 @@ export async function finalizarPartidaSiToca(salaId: string): Promise<void> {
       const esVictoria = resultado === "victoria";
       const nuevaRacha = esVictoria ? actual.rachaActual + 1 : 0;
 
+      // Trofeos (solo Salas competitivas, Fase 9) -- sistema totalmente
+      // aparte del nivel/EXP de arriba, ninguno de los dos afecta al otro.
+      // `trofeosAlEmpezar` de AMBOS jugadores se fijó al crear la Sala
+      // (ver intentarCrearSalaCompetitiva en src/lib/ranked.ts), así que
+      // el cálculo Elo usa esa foto fija en vez del valor en vivo de
+      // `User.trofeos` -- determinista pase lo que pase entre medias.
+      // Ranked es siempre 1vs1, así que basta con buscar "el otro" jugador
+      // de esta misma Sala.
+      let cambioTrofeos: number | null = null;
+      if (sala.competitiva) {
+        const rival = jugadores.find((otro) => otro.userId !== sj.userId);
+        if (rival && sj.trofeosAlEmpezar !== null && rival.trofeosAlEmpezar !== null) {
+          cambioTrofeos = calcularCambioTrofeos(
+            sj.trofeosAlEmpezar,
+            rival.trofeosAlEmpezar,
+            RESULTADO_A_RANKED[resultado]
+          );
+        }
+      }
+      const nuevosTrofeos = cambioTrofeos !== null ? aplicarCambioTrofeos(actual.trofeos, cambioTrofeos) : null;
+
       await tx.user.update({
         where: { id: sj.userId },
         data: {
@@ -402,6 +437,7 @@ export async function finalizarPartidaSiToca(salaId: string): Promise<void> {
           rachaActual: nuevaRacha,
           rachaMaxima: Math.max(actual.rachaMaxima, nuevaRacha),
           ...(bonusDiario ? { ultimoBonusDiario: ahora } : {}),
+          ...(nuevosTrofeos !== null ? { trofeos: nuevosTrofeos } : {}),
         },
       });
 
@@ -424,7 +460,11 @@ export async function finalizarPartidaSiToca(salaId: string): Promise<void> {
 
       await tx.salaJugador.update({
         where: { id: sj.id },
-        data: { resultado: resultado.toUpperCase(), experiencia: respuestaPartida },
+        data: {
+          resultado: resultado.toUpperCase(),
+          experiencia: respuestaPartida,
+          ...(cambioTrofeos !== null ? { trofeosCambio: cambioTrofeos } : {}),
+        },
       });
     }
   });

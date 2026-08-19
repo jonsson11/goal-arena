@@ -67,6 +67,18 @@ model User {
 
   // Logros reclamados -- ver el modelo LogroReclamado más abajo.
   logrosReclamados LogroReclamado[]
+
+  // Trofeos del modo competitivo (Grid Ranked, ver sección 4 más abajo) --
+  // sistema totalmente aparte del nivel/EXP de siempre, ninguno de los dos
+  // afecta al otro. La liga (Canterano/Amateur/.../Leyenda) no se guarda
+  // aquí: se deriva de `trofeos` en caliente con `ligaPorTrofeos()`
+  // (src/lib/trofeos.ts), igual que el nivel se deriva de la EXP -- así
+  // cambiar los rangos de las ligas en el futuro no pide ninguna migración
+  // ni recalcular nada guardado.
+  trofeos Int @default(0)
+
+  entradaCola     ColaRanked?
+  historialTemporadas HistorialTemporada[]
 }
 
 // Logros -- el catálogo en sí (32 logros: nivel, amigos, partidas
@@ -396,6 +408,14 @@ model Sala {
   dificultad   String?
   maxJugadores Int     @default(2) // 2-8, validado en la API, no aquí
 
+  // true = esta Sala es una partida de Grid Ranked (1vs1 competitivo,
+  // emparejada por el sistema, ver ColaRanked más abajo), no una Sala
+  // casual creada por código -- por lo demás, es la MISMA Sala de siempre
+  // (mismo tablero compartido, mismo timer, mismo polling). Al cerrarse,
+  // `finalizarPartidaSiToca` reparte trofeos además de EXP cuando esto es
+  // true (ver src/lib/trofeos.ts). Una Sala casual nunca lo tiene a true.
+  competitiva Boolean @default(false)
+
   // Límite de tiempo de la partida en sí (no de la sala de espera), fijado
   // según la dificultad al crear la sala -- ver DURACION_RONDA_SEGUNDOS en
   // src/lib/salas.ts. Junto con `empezadaEn`, es la fuente única de verdad
@@ -508,8 +528,93 @@ model SalaJugador {
   // ronda anterior.
   cargado Boolean @default(false)
 
+  // Solo se rellenan en Salas competitivas (`Sala.competitiva = true`).
+  // `trofeosAlEmpezar` es una FOTO del total de trofeos de este jugador en
+  // el momento exacto en que se creó la Sala (al emparejar en la cola) --
+  // se usa como base del cálculo Elo al cerrar la partida en vez de leer
+  // `User.trofeos` en ese momento, para que el resultado sea determinista
+  // aunque (por lo que sea) el valor de `User.trofeos` cambiase entre medias.
+  // `trofeosCambio` es el +N/-N ya aplicado a `User.trofeos` al cerrar --
+  // guardado aquí para poder pintarlo en el historial de partidas ranked
+  // sin tener que recalcularlo.
+  trofeosAlEmpezar Int?
+  trofeosCambio    Int?
+
   // Un jugador no puede estar dos veces en la misma sala.
   @@unique([salaId, userId])
+}
+
+// ============================================================
+// 4. MODO COMPETITIVO — Grid Ranked (Fase 9)
+// ============================================================
+//
+// Diseño completo en el documento del proyecto "Modo competitivo (Fase 9)
+// — Grid Ranked". Resumen: 1vs1 de Grid con matchmaking automático por
+// trofeos (Elo simplificado, ver src/lib/trofeos.ts), organizado en
+// temporadas. Reutiliza Sala/SalaJugador de la sección 3 casi tal cual --
+// lo único nuevo de verdad es la cola de emparejamiento y las temporadas.
+
+// Cola de emparejamiento de Grid Ranked. Una fila por usuario buscando
+// partida ahora mismo -- se borra en cuanto se empareja (se crea la Sala
+// competitiva) o el usuario cancela la búsqueda. Nunca es un historial,
+// solo el estado "quién está buscando ahora mismo".
+model ColaRanked {
+  id     String @id @default(cuid())
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String @unique // no se puede estar en la cola dos veces a la vez
+
+  // Foto de los trofeos en el momento de entrar en cola -- el rango de
+  // rival aceptable (ver src/lib/trofeos.ts) se calcula contra esto, no
+  // contra `User.trofeos` en vivo (aunque en la práctica no deberían
+  // cambiar mientras se está en cola, al no poder jugar dos partidas a la
+  // vez).
+  trofeosEnCola Int
+
+  entradaEn DateTime @default(now())
+
+  // Para poder purgar entradas "fantasma" (pestaña cerrada sin cancelar
+  // explícitamente) por antigüedad si hiciera falta más adelante.
+  @@index([entradaEn])
+}
+
+// Una temporada del ladder competitivo. Al cerrarla (proceso manual al
+// principio, igual que otras tareas administrativas del proyecto): se
+// registra un `HistorialTemporada` por jugador con trofeos y se aplica el
+// soft-reset (ver documento de diseño) antes de abrir la siguiente.
+model Temporada {
+  id          String    @id @default(cuid())
+  numero      Int       @unique
+  fechaInicio DateTime
+  fechaFin    DateTime?
+  activa      Boolean   @default(true)
+
+  historial HistorialTemporada[]
+
+  @@index([activa])
+}
+
+// Snapshot de cómo terminó cada jugador una temporada ya cerrada -- fuente
+// de la insignia permanente de "mejor liga alcanzada" en el perfil (ver
+// documento de diseño, sección de recompensas). Solo se crea al cerrar la
+// temporada, nunca en caliente.
+model HistorialTemporada {
+  id     String @id @default(cuid())
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String
+
+  temporada   Temporada @relation(fields: [temporadaId], references: [id], onDelete: Cascade)
+  temporadaId String
+
+  trofeosFinales Int
+  // Id estable de LIGAS en src/lib/trofeos.ts (p. ej. "PROFESIONAL"), no el
+  // nombre visible -- así un cambio de naming en el futuro no rompe el
+  // historial ya guardado.
+  ligaFinal String
+
+  creadoEn DateTime @default(now())
+
+  // Un jugador solo puede tener un resultado por temporada.
+  @@unique([userId, temporadaId])
 }
 
 // Aquí vivían Match, MatchParticipant, Round, RoundResult (y los enums
