@@ -29,7 +29,9 @@ export type CategoriaLogro =
   | "dificil"
   | "racha"
   | "victorias-multijugador"
-  | "especial";
+  | "especial"
+  | "liga-ranked"
+  | "victorias-ranked";
 
 export type Logro = {
   id: string;
@@ -82,6 +84,8 @@ export const ICONO_POR_CATEGORIA: Record<CategoriaLogro, string> = {
   racha: "Zap",
   "victorias-multijugador": "Target",
   especial: "Trophy", // los especiales pisan este icono por defecto con `icono` propio si hace falta, ver LOGROS
+  "liga-ranked": "Shield",
+  "victorias-ranked": "Crown",
 };
 
 // Nombre visible de cada categoría, para agrupar la pantalla de Logros.
@@ -95,6 +99,8 @@ export const NOMBRE_CATEGORIA: Record<CategoriaLogro, string> = {
   racha: "Rachas",
   "victorias-multijugador": "Victorias multijugador",
   especial: "Especiales",
+  "liga-ranked": "Ligas del Competitivo",
+  "victorias-ranked": "Victorias en el Competitivo",
 };
 
 export const LOGROS: Logro[] = [
@@ -147,6 +153,28 @@ export const LOGROS: Logro[] = [
   { id: "primera-victoria", categoria: "especial", tier: "bronce", nombre: "Primera victoria", descripcion: "Gana tu primera partida, del juego que sea.", umbral: 1 },
   { id: "explorador", categoria: "especial", tier: "plata", nombre: "Explorador", descripcion: "Juega al menos una vez a cada minijuego disponible.", umbral: 1 },
   { id: "cien-no-es-nada", categoria: "especial", tier: "zafiro", nombre: "Cien no es nada", descripcion: "Juega 100 partidas en total, individuales o multijugador.", umbral: 100 },
+
+  // ── Ligas del Competitivo (5, Fase 9/5, 19/08/2026) ─────────
+  // Uno por cada liga alcanzada ALGUNA VEZ (pico histórico, ver
+  // `trofeosMaximos`), Canterano de propósito excluido (es donde empieza
+  // todo el mundo, no es un hito). El `umbral` de cada uno es el ÍNDICE
+  // de esa liga dentro de LIGAS (src/lib/trofeos.ts) -- el contador
+  // compartido de esta categoría es "el índice de la liga más alta
+  // alcanzada nunca", igual de simple que el resto de progresiones de
+  // este catálogo (ver valorParaLogro en progresoLogros.ts).
+  { id: "ranked-liga-amateur", categoria: "liga-ranked", tier: "plata", nombre: "Subiendo escalones", descripcion: "Alcanza la liga Amateur en el modo Competitivo.", umbral: 1 },
+  { id: "ranked-liga-semiprofesional", categoria: "liga-ranked", tier: "oro", nombre: "Ya no es un hobby", descripcion: "Alcanza la liga Semiprofesional en el modo Competitivo.", umbral: 2 },
+  { id: "ranked-liga-profesional", categoria: "liga-ranked", tier: "esmeralda", nombre: "Fichaje confirmado", descripcion: "Alcanza la liga Profesional en el modo Competitivo.", umbral: 3 },
+  { id: "ranked-liga-internacional", categoria: "liga-ranked", tier: "rubi", nombre: "Nivel selección", descripcion: "Alcanza la liga Internacional en el modo Competitivo.", umbral: 4 },
+  { id: "ranked-liga-leyenda", categoria: "liga-ranked", tier: "legendario", nombre: "Ballon d'Or", descripcion: "Alcanza la liga Leyenda, la más alta del modo Competitivo.", umbral: 5 },
+
+  // ── Victorias en el Competitivo (6, Fase 9/5, 19/08/2026) ───
+  { id: "ranked-victorias-1", categoria: "victorias-ranked", tier: "bronce", nombre: "Debut competitivo", descripcion: "Gana tu primera partida en el modo Competitivo.", umbral: 1 },
+  { id: "ranked-victorias-5", categoria: "victorias-ranked", tier: "plata", nombre: "Va en serio", descripcion: "Gana 5 partidas en el modo Competitivo.", umbral: 5 },
+  { id: "ranked-victorias-10", categoria: "victorias-ranked", tier: "oro", nombre: "Rodaje competitivo", descripcion: "Gana 10 partidas en el modo Competitivo.", umbral: 10 },
+  { id: "ranked-victorias-25", categoria: "victorias-ranked", tier: "esmeralda", nombre: "Curtido en la cola", descripcion: "Gana 25 partidas en el modo Competitivo.", umbral: 25 },
+  { id: "ranked-victorias-50", categoria: "victorias-ranked", tier: "zafiro", nombre: "Pesadilla del ladder", descripcion: "Gana 50 partidas en el modo Competitivo.", umbral: 50 },
+  { id: "ranked-victorias-100", categoria: "victorias-ranked", tier: "rubi", nombre: "Terror de la cola", descripcion: "Gana 100 partidas en el modo Competitivo.", umbral: 100 },
 ];
 
 // Icono propio por logro "especial" (no todos comparten el mismo dibujo,

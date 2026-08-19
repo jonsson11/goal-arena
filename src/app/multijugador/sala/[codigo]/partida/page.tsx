@@ -9,6 +9,7 @@ import { GameButton } from "@/features/games/shared/GameButton";
 import { ConfirmDialog } from "@/features/games/shared/ConfirmDialog";
 import { PlayerSearch } from "@/features/games/shared/PlayerSearch";
 import { ExperienciaGanada } from "@/features/games/shared/ExperienciaGanada";
+import { CambioTrofeos } from "@/features/ranked/CambioTrofeos";
 import { obtenerCodigoPais } from "@/features/games/shared/banderas";
 import { CasillaGrid, EncabezadoCondicion } from "@/features/games/grid/GridCasillas";
 import { celdasValidasParaJugador } from "@/features/games/grid/logic";
@@ -867,6 +868,17 @@ function ResultadoPartida({
           partida, así que la animación (barra llenándose, destello si
           subes de nivel...) sale gratis, sin reinventarla aquí. */}
       <ExperienciaGanada respuesta={partida.miExperiencia} />
+
+      {/* Cambio de trofeos (Fase 5, 19/08/2026) -- solo en partidas
+          competitivas, justo debajo de la EXP para que el orden de
+          lectura sea "esto ganaste de EXP, esto te cambió el ranking". */}
+      {partida.competitiva && (
+        <CambioTrofeos
+          cambio={partida.miTrofeosCambio}
+          trofeosAntes={partida.miTrofeosAntes}
+          trofeosDespues={partida.miTrofeosDespues}
+        />
+      )}
 
       {/* Misma clasificación de siempre, pero como un único panel de
           cristal con separadores -- mismo criterio que la lista de

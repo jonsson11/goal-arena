@@ -60,6 +60,37 @@ export function ligaPorId(id: Liga["id"]): Liga {
   return liga;
 }
 
+// ---------------------------------------------------------------
+// Cosméticos de liga (Fase 5, 19/08/2026) -- permanentes y opcionales:
+// una vez alcanzada una liga (según `trofeosMaximos`, el pico histórico,
+// nunca la liga actual en vivo) queda desbloqueada para siempre como
+// cosmético, aunque luego bajes de trofeos o haya un reset de temporada.
+// El jugador puede "equipar" cualquiera de las que tenga desbloqueadas
+// para presumir de un hito pasado, en vez de estar atado siempre a su
+// liga actual.
+// ---------------------------------------------------------------
+
+/** ¿Tiene desbloqueado el cosmético de esta liga? -- alcanzarla alguna
+ * vez (pico histórico) basta, no hace falta seguir estando en ella. */
+export function ligaDesbloqueadaComoCosmetico(ligaId: Liga["id"], trofeosMaximos: number): boolean {
+  const liga = LIGAS.find((l) => l.id === ligaId);
+  return liga !== undefined && trofeosMaximos >= liga.rangoMin;
+}
+
+/** La liga que hay que MOSTRAR de verdad (aro de avatar, escudo del
+ * header...): si el jugador ha elegido un cosmético concreto (y sigue
+ * desbloqueado -- por si algún día se recalibran los rangos de liga y un
+ * id deja de tener sentido) se muestra ese; si no, la liga actual en vivo,
+ * comportamiento de siempre. Centralizado aquí para que ningún sitio de
+ * la UI tenga que repetir este if/else. */
+export function ligaMostrada(trofeos: number, trofeosMaximos: number, aroEquipado: string | null): Liga {
+  if (aroEquipado) {
+    const elegida = LIGAS.find((l) => l.id === aroEquipado);
+    if (elegida && ligaDesbloqueadaComoCosmetico(elegida.id, trofeosMaximos)) return elegida;
+  }
+  return ligaPorTrofeos(trofeos);
+}
+
 export type ProgresoLiga = {
   liga: Liga;
   /** null si `liga` ya es la última (Leyenda, sin techo). */

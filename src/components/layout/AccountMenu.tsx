@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Trophy } from "lucide-react";
 import { useAuth } from "@/features/auth/AuthContext";
-import { ligaPorTrofeos } from "@/lib/trofeos";
+import { ligaMostrada } from "@/lib/trofeos";
 import { AnilloLiga } from "@/features/ranked/AnilloLiga";
 
 // Tamaño real del botón de avatar (h-10 w-10 = 2.5rem = 40px con el root
@@ -59,7 +59,10 @@ export function AccountMenu() {
   }
 
   const porcentajeXp = Math.min(100, Math.round((usuario.xpActual / usuario.xpSiguienteNivel) * 100));
-  const liga = ligaPorTrofeos(usuario.trofeos);
+  // Fase 5 (19/08/2026): si el jugador ha equipado un cosmético de liga
+  // concreto, se muestra ese en vez de la liga actual en vivo -- ver
+  // ligaMostrada() en src/lib/trofeos.ts.
+  const liga = ligaMostrada(usuario.trofeos, usuario.trofeosMaximos, usuario.aroEquipado);
 
   return (
     <div className="flex items-center gap-2.5">

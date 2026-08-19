@@ -37,6 +37,8 @@ export async function GET() {
     xpActual: perfil.xpActual,
     xpSiguienteNivel: perfil.xpSiguienteNivel,
     trofeos: perfil.trofeos,
+    trofeosMaximos: perfil.trofeosMaximos,
+    aroEquipado: perfil.aroEquipado,
   };
 
   return NextResponse.json({ usuario });

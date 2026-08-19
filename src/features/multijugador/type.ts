@@ -74,6 +74,14 @@ type EstadoPartidaComun = {
    * sentido en ranked, cada partida sale de la cola) y el botón de volver
    * lleva al hub /multijugador/ranked en vez de a la sala privada. */
   competitiva: boolean;
+  /** Solo relevante si `competitiva` -- cuánto cambiaron mis trofeos con
+   * esta partida (+N/-N), y el antes/después para poder animar la cuenta
+   * y detectar un posible cambio de liga en el cartel de resultado (ver
+   * ResultadoPartida en .../partida/page.tsx). Todo `null` mientras la
+   * partida no está FINALIZADA, o si no es competitiva. */
+  miTrofeosCambio: number | null;
+  miTrofeosAntes: number | null;
+  miTrofeosDespues: number | null;
   miResultado: "VICTORIA" | "DERROTA" | "EMPATE" | null;
   miExperiencia: RespuestaPartida | null;
   rivales: RivalPartida[];

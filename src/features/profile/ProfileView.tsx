@@ -7,11 +7,19 @@ import { GameButton } from "@/features/games/shared/GameButton";
 import { EditProfileDialog } from "./EditProfileDialog";
 import { FriendsCarousel } from "./FriendsCarousel";
 import { LogrosView } from "./LogrosView";
+import { CosmeticosView } from "./CosmeticosView";
 import { useLogrosReclamables } from "./LogrosReclamablesContext";
+import { ligaMostrada } from "@/lib/trofeos";
+import { AnilloLiga } from "@/features/ranked/AnilloLiga";
 import type { Amigo } from "@/features/social/type";
 import type { EstadisticasPerfil, TipoAvatar } from "./type";
 
-type Pestana = "resumen" | "logros";
+type Pestana = "resumen" | "logros" | "cosmeticos";
+
+// Mismo tamaño que TAMANO_AVATAR_PX de AccountMenu.tsx pero para el
+// avatar grande del perfil (h-24 w-24 = 96px) -- AnilloLiga necesita el
+// tamaño exacto en px para quedar pegado al borde del avatar de verdad.
+const TAMANO_AVATAR_PERFIL_PX = 96;
 
 function formatearFecha(iso: string): string {
   const fecha = new Date(iso);
@@ -74,6 +82,7 @@ export function ProfileView() {
   }
 
   const porcentajeXp = Math.round((usuario.xpActual / usuario.xpSiguienteNivel) * 100);
+  const liga = ligaMostrada(usuario.trofeos, usuario.trofeosMaximos, usuario.aroEquipado);
 
   const statsRapidas = [
     { valor: estadisticas?.total.partidasJugadas ?? 0, etiqueta: "Partidas" },
@@ -101,6 +110,10 @@ export function ProfileView() {
           <div className="absolute -bottom-1 -right-1 flex h-8 w-8 items-center justify-center rounded-full border-2 border-card bg-primary text-xs font-extrabold text-primary-foreground shadow-[0_0_10px_-1px_rgba(74,222,154,0.8)]">
             {usuario.nivel}
           </div>
+          {/* Aro de liga (Fase 5, 19/08/2026) -- mismo cosmético que el
+              Header, respeta el que el jugador haya equipado en la
+              pestaña "Cosméticos" en vez de forzar siempre la liga actual. */}
+          <AnilloLiga liga={liga} tamano={TAMANO_AVATAR_PERFIL_PX} />
         </div>
 
         <h1 className="text-2xl font-extrabold text-foreground">{usuario.nombre}</h1>
@@ -150,6 +163,16 @@ export function ProfileView() {
               {logrosReclamables}
             </span>
           )}
+        </button>
+        <button
+          onClick={() => setPestana("cosmeticos")}
+          className={`flex-1 rounded-full px-4 py-2 text-sm font-semibold transition-all duration-200 ${
+            pestana === "cosmeticos"
+              ? "bg-primary text-primary-foreground shadow-[0_0_16px_-2px_rgba(74,222,154,0.7)]"
+              : "text-muted-foreground hover:text-foreground"
+          }`}
+        >
+          Cosméticos
         </button>
       </div>
 
@@ -292,6 +315,16 @@ export function ProfileView() {
         }
       >
         <LogrosView />
+      </div>
+
+      <div
+        className={
+          pestana === "cosmeticos"
+            ? "animate-in fade-in slide-in-from-bottom-1 duration-300 w-full min-w-0"
+            : "hidden"
+        }
+      >
+        <CosmeticosView />
       </div>
 
       <EditProfileDialog

@@ -11,14 +11,14 @@
 // arrastrar react/lucide.
 
 import {
-  Star, UserPlus, Swords, Grid3x3, ListOrdered, Flame, Zap, Target, Trophy, Compass, Medal,
+  Star, UserPlus, Swords, Grid3x3, ListOrdered, Flame, Zap, Target, Trophy, Compass, Medal, Shield, Crown,
   Lock, Check, type LucideIcon,
 } from "lucide-react";
 import type { LogroConProgreso, TierLogro } from "@/lib/logros";
 import { iconoDeLogro } from "@/lib/logros";
 
 const COMPONENTE_POR_ICONO: Record<string, LucideIcon> = {
-  Star, UserPlus, Swords, Grid3x3, ListOrdered, Flame, Zap, Target, Trophy, Compass, Medal,
+  Star, UserPlus, Swords, Grid3x3, ListOrdered, Flame, Zap, Target, Trophy, Compass, Medal, Shield, Crown,
 };
 
 // La escala de "rareza" en sí -- el mismo orden que ORDEN_TIERS en

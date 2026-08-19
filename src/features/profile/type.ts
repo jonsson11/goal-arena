@@ -15,6 +15,16 @@ export type Usuario = {
   // viaja aquí: se deriva de `trofeos` en el cliente con `ligaPorTrofeos()`
   // (src/lib/trofeos.ts), igual que ya se deriva en el servidor.
   trofeos: number;
+  // Pico histórico de trofeos (Fase 5, 19/08/2026) -- nunca baja, decide
+  // qué cosméticos de liga tienes desbloqueados para siempre (ver
+  // ligaDesbloqueadaComoCosmetico en src/lib/trofeos.ts), independiente de
+  // que `trofeos` haya bajado desde entonces.
+  trofeosMaximos: number;
+  // Id de Liga (o null = automático, se muestra la liga actual en vivo)
+  // que el jugador ha elegido presumir como aro/escudo -- ver
+  // ligaMostrada() en src/lib/trofeos.ts, que es quien de verdad decide
+  // qué liga pintar a partir de estos dos campos.
+  aroEquipado: string | null;
 };
 
 export type ResultadoPartida = "victoria" | "derrota";

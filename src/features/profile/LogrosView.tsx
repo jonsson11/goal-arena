@@ -10,7 +10,7 @@
 
 import { useEffect, useState } from "react";
 import {
-  Star, UserPlus, Swords, Grid3x3, ListOrdered, Flame, Zap, Target, Trophy, Compass, Medal,
+  Star, UserPlus, Swords, Grid3x3, ListOrdered, Flame, Zap, Target, Trophy, Compass, Medal, Shield, Crown,
   type LucideIcon,
 } from "lucide-react";
 import { useAuth } from "@/features/auth/AuthContext";
@@ -21,7 +21,7 @@ import { NOMBRE_CATEGORIA, ICONO_POR_CATEGORIA, type CategoriaLogro, type LogroC
 import type { RespuestaPartida } from "@/lib/experiencia";
 
 const COMPONENTE_POR_ICONO: Record<string, LucideIcon> = {
-  Star, UserPlus, Swords, Grid3x3, ListOrdered, Flame, Zap, Target, Trophy, Compass, Medal,
+  Star, UserPlus, Swords, Grid3x3, ListOrdered, Flame, Zap, Target, Trophy, Compass, Medal, Shield, Crown,
 };
 
 function agruparPorCategoria(logros: LogroConProgreso[]): { categoria: CategoriaLogro; logros: LogroConProgreso[] }[] {

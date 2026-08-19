@@ -77,6 +77,28 @@ model User {
   // ni recalcular nada guardado.
   trofeos Int @default(0)
 
+  // Pico histórico de trofeos, nunca baja (ni al perder, ni si algún día
+  // se hace un reset de temporada) -- a diferencia de `trofeos` de arriba,
+  // que sí sube y baja con cada partida. Esto es lo que decide qué ligas
+  // has "alcanzado alguna vez" de verdad, para dos cosas que tienen que
+  // sobrevivir a que bajes de trofeos (o a un futuro reset de temporada):
+  // los logros de liga (ver src/lib/logros.ts, categoría "liga-ranked") y
+  // qué cosméticos de liga tienes desbloqueados para equipar (ver
+  // `aroEquipado` justo debajo). Se actualiza en el mismo sitio que
+  // `trofeos`, dentro de `finalizarPartidaSiToca` (src/lib/salas.ts).
+  trofeosMaximos Int @default(0)
+
+  // Cosmético de liga elegido para MOSTRAR (aro de avatar / escudo) --
+  // null = automático (se muestra la liga ACTUAL, según `trofeos` en
+  // vivo, comportamiento de siempre). Si tiene un id de Liga (ver
+  // src/lib/trofeos.ts), se muestra esa liga fija en su lugar, aunque ya
+  // no sea la actual -- así una insignia de una liga alcanzada en el
+  // pasado sigue siendo presumible aunque hayas bajado de división.
+  // Validado contra `trofeosMaximos` al guardar (src/lib/trofeos.ts,
+  // `ligaDesbloqueadaComoCosmetico`) -- nunca se puede "hacer trampa" y
+  // equipar una liga que no se ha alcanzado nunca.
+  aroEquipado String?
+
   entradaCola     ColaRanked?
   historialTemporadas HistorialTemporada[]
 }

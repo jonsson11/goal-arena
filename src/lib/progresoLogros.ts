@@ -9,6 +9,7 @@
 import { prisma } from "@/lib/prisma";
 import { LOGROS, EXP_POR_TIER, type Logro, type EstadoLogro, type LogroConProgreso } from "./logros";
 import { aplicarExperiencia, type RespuestaPartida } from "./experiencia";
+import { LIGAS, ligaPorTrofeos } from "./trofeos";
 
 type Contadores = {
   nivel: number;
@@ -22,6 +23,18 @@ type Contadores = {
   victoriasTotales: number;
   partidasTotales: number;
   jugoAmbosJuegos: boolean;
+  /** Índice (0-5) dentro de LIGAS de la liga más alta alcanzada NUNCA --
+   * se deriva de `trofeosMaximos` (el pico histórico), no de la liga
+   * actual en vivo, para que el logro no "desaparezca" si luego bajas de
+   * trofeos. Ver src/lib/trofeos.ts. */
+  peakLigaIndex: number;
+  /** Victorias SOLO en Salas competitivas (Grid Ranked) -- a propósito
+   * distinto de `victoriasMultijugador`, que cuenta cualquier victoria
+   * multijugador (casual incluida). No se puede sacar de PartidaJugada
+   * (su `modo` es "medio-online" tanto en ranked como en casual medio, ver
+   * finalizarPartidaSiToca en salas.ts), así que se cuenta directamente
+   * sobre SalaJugador filtrando `sala.competitiva`. */
+  victoriasRanked: number;
 };
 
 // Una sola pasada sobre TODAS las partidas del usuario (traídas en una
@@ -29,13 +42,21 @@ type Contadores = {
 // para un usuario normal son pocas filas, así que es más barato hacerlo
 // así que lanzar 8-10 queries distintas a la base de datos.
 async function calcularContadores(userId: string): Promise<Contadores> {
-  const [usuario, amigosCount, partidas] = await Promise.all([
-    prisma.user.findUniqueOrThrow({ where: { id: userId }, select: { nivel: true, rachaMaxima: true } }),
+  const [usuario, amigosCount, partidas, victoriasRanked] = await Promise.all([
+    prisma.user.findUniqueOrThrow({
+      where: { id: userId },
+      select: { nivel: true, rachaMaxima: true, trofeosMaximos: true },
+    }),
     prisma.friendship.count({
       where: { estado: "ACEPTADA", OR: [{ solicitanteId: userId }, { receptorId: userId }] },
     }),
     prisma.partidaJugada.findMany({ where: { userId }, select: { juego: true, modo: true, resultado: true } }),
+    prisma.salaJugador.count({
+      where: { userId, resultado: "VICTORIA", sala: { competitiva: true } },
+    }),
   ]);
+
+  const peakLigaIndex = LIGAS.findIndex((l) => l.id === ligaPorTrofeos(usuario.trofeosMaximos).id);
 
   let multijugadorJugadas = 0;
   let victoriasGrid = 0;
@@ -82,6 +103,8 @@ async function calcularContadores(userId: string): Promise<Contadores> {
     victoriasTotales,
     partidasTotales: partidas.length,
     jugoAmbosJuegos: jugoGrid && jugoTop10,
+    peakLigaIndex,
+    victoriasRanked,
   };
 }
 
@@ -107,6 +130,10 @@ function valorParaLogro(logro: Logro, c: Contadores): number {
       return c.rachaMaxima;
     case "victorias-multijugador":
       return c.victoriasMultijugador;
+    case "liga-ranked":
+      return c.peakLigaIndex;
+    case "victorias-ranked":
+      return c.victoriasRanked;
     case "especial":
       if (logro.id === "primera-victoria") return c.victoriasTotales;
       if (logro.id === "explorador") return c.jugoAmbosJuegos ? 1 : 0;

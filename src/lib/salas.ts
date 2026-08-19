@@ -371,8 +371,9 @@ export async function finalizarPartidaSiToca(salaId: string): Promise<void> {
           rachaMaxima: number;
           ultimoBonusDiario: Date | null;
           trofeos: number;
+          trofeosMaximos: number;
         }>
-      >`SELECT nivel, "xpActual", "xpSiguienteNivel", "partidasJugadas", "rachaActual", "rachaMaxima", "ultimoBonusDiario", trofeos
+      >`SELECT nivel, "xpActual", "xpSiguienteNivel", "partidasJugadas", "rachaActual", "rachaMaxima", "ultimoBonusDiario", trofeos, "trofeosMaximos"
         FROM "User" WHERE id = ${sj.userId} FOR UPDATE`;
       const actual = filasUsuario[0];
       if (!actual) continue; // no debería poder pasar, pero no tumbamos el cierre de la sala por esto
@@ -426,6 +427,12 @@ export async function finalizarPartidaSiToca(salaId: string): Promise<void> {
         }
       }
       const nuevosTrofeos = cambioTrofeos !== null ? aplicarCambioTrofeos(actual.trofeos, cambioTrofeos) : null;
+      // Pico histórico (Fase 5, 19/08/2026) -- solo puede SUBIR, nunca se
+      // toca a la baja aquí (ni en una derrota, ni en un futuro reset de
+      // temporada, que solo tocaría `trofeos`). Ver comentario largo junto
+      // a `User.trofeosMaximos` en el schema.
+      const nuevosTrofeosMaximos =
+        nuevosTrofeos !== null ? Math.max(actual.trofeosMaximos, nuevosTrofeos) : null;
 
       await tx.user.update({
         where: { id: sj.userId },
@@ -438,6 +445,7 @@ export async function finalizarPartidaSiToca(salaId: string): Promise<void> {
           rachaMaxima: Math.max(actual.rachaMaxima, nuevaRacha),
           ...(bonusDiario ? { ultimoBonusDiario: ahora } : {}),
           ...(nuevosTrofeos !== null ? { trofeos: nuevosTrofeos } : {}),
+          ...(nuevosTrofeosMaximos !== null ? { trofeosMaximos: nuevosTrofeosMaximos } : {}),
         },
       });
 
@@ -493,6 +501,16 @@ export async function construirEstadoPartida(salaId: string, miUserId: string): 
   const comun = {
     estado: sala.estado,
     competitiva: sala.competitiva,
+    // Solo tienen sentido tras FINALIZADA (trofeosCambio se rellena al
+    // cerrar la partida, ver finalizarPartidaSiToca más abajo) -- antes de
+    // eso serán null sin más, el cliente no debe pintar nada con ellos
+    // mientras la partida sigue EN_CURSO.
+    miTrofeosCambio: mi.trofeosCambio,
+    miTrofeosAntes: mi.trofeosAlEmpezar,
+    miTrofeosDespues:
+      mi.trofeosAlEmpezar !== null && mi.trofeosCambio !== null
+        ? aplicarCambioTrofeos(mi.trofeosAlEmpezar, mi.trofeosCambio)
+        : null,
     miResultado: (mi.resultado as EstadoPartida["miResultado"]) ?? null,
     miExperiencia: (mi.experiencia as unknown as RespuestaPartida | null) ?? null,
     rivales: sala.jugadores
