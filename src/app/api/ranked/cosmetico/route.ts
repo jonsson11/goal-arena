@@ -3,14 +3,15 @@
 // PATCH { ligaId: string | null } -> cambia qué liga se muestra como
 // cosmético (aro de avatar / escudo del header y del perfil). `null`
 // vuelve al modo "automático" (se enseña la liga actual en vivo, el
-// comportamiento de siempre). Cualquier id de Liga se valida en el
-// servidor contra `trofeosMaximos` -- nunca te fías del cliente para
-// decidir si algo está desbloqueado (Fase 5, 19/08/2026).
+// comportamiento de siempre); `ARO_OCULTO` ("OCULTO") no muestra ningún
+// aro, solo el avatar. Cualquier id de Liga se valida en el servidor
+// contra `trofeosMaximos` -- nunca te fías del cliente para decidir si
+// algo está desbloqueado (Fase 5, 19/08/2026).
 
 import { NextResponse } from "next/server";
 import { crearClienteSupabaseServidor } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
-import { LIGAS, ligaDesbloqueadaComoCosmetico } from "@/lib/trofeos";
+import { ARO_OCULTO, LIGAS, ligaDesbloqueadaComoCosmetico } from "@/lib/trofeos";
 import type { Usuario } from "@/features/profile/type";
 
 export async function PATCH(request: Request) {
@@ -32,7 +33,7 @@ export async function PATCH(request: Request) {
 
   const ligaId = body.ligaId ?? null;
 
-  if (ligaId !== null) {
+  if (ligaId !== null && ligaId !== ARO_OCULTO) {
     const liga = LIGAS.find((l) => l.id === ligaId);
     if (!liga) {
       return NextResponse.json({ error: "Esa liga no existe." }, { status: 400 });

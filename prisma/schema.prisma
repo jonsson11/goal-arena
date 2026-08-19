@@ -93,10 +93,12 @@ model User {
   // vivo, comportamiento de siempre). Si tiene un id de Liga (ver
   // src/lib/trofeos.ts), se muestra esa liga fija en su lugar, aunque ya
   // no sea la actual -- así una insignia de una liga alcanzada en el
-  // pasado sigue siendo presumible aunque hayas bajado de división.
-  // Validado contra `trofeosMaximos` al guardar (src/lib/trofeos.ts,
-  // `ligaDesbloqueadaComoCosmetico`) -- nunca se puede "hacer trampa" y
-  // equipar una liga que no se ha alcanzado nunca.
+  // pasado sigue siendo presumible aunque hayas bajado de división. El
+  // valor especial "OCULTO" (constante `ARO_OCULTO` en trofeos.ts) apaga
+  // el aro del todo -- solo se ve el avatar, sin ningún halo (pedido del
+  // usuario, 19/08/2026). Validado contra `trofeosMaximos` al guardar
+  // (src/lib/trofeos.ts, `ligaDesbloqueadaComoCosmetico`) -- nunca se
+  // puede "hacer trampa" y equipar una liga que no se ha alcanzado nunca.
   aroEquipado String?
 
   entradaCola     ColaRanked?

@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Trophy } from "lucide-react";
 import { useAuth } from "@/features/auth/AuthContext";
-import { ligaMostrada } from "@/lib/trofeos";
+import { ligaMostrada, ligaPorTrofeos } from "@/lib/trofeos";
 import { AnilloLiga } from "@/features/ranked/AnilloLiga";
 
 // Tamaño real del botón de avatar (h-10 w-10 = 2.5rem = 40px con el root
@@ -59,10 +59,13 @@ export function AccountMenu() {
   }
 
   const porcentajeXp = Math.min(100, Math.round((usuario.xpActual / usuario.xpSiguienteNivel) * 100));
-  // Fase 5 (19/08/2026): si el jugador ha equipado un cosmético de liga
-  // concreto, se muestra ese en vez de la liga actual en vivo -- ver
-  // ligaMostrada() en src/lib/trofeos.ts.
-  const liga = ligaMostrada(usuario.trofeos, usuario.trofeosMaximos, usuario.aroEquipado);
+  // La liga REAL (para los textos: "Liga X · N trofeos") es siempre la
+  // actual en vivo, se elija lo que se elija como cosmético. El aro en sí
+  // (ligaCosmetica) puede ser una liga distinta ya alcanzada, o null si el
+  // jugador ha elegido no mostrar ningún aro -- ver ligaMostrada() en
+  // src/lib/trofeos.ts (Fase 5, 19/08/2026).
+  const ligaReal = ligaPorTrofeos(usuario.trofeos);
+  const ligaCosmetica = ligaMostrada(usuario.trofeos, usuario.trofeosMaximos, usuario.aroEquipado);
 
   return (
     <div className="flex items-center gap-2.5">
@@ -75,7 +78,7 @@ export function AccountMenu() {
       <Link
         href="/multijugador/ranked"
         className="flex items-center gap-1 text-xs font-bold text-[#D4AF37] transition-opacity hover:opacity-80"
-        title={`${usuario.trofeos} trofeos · Liga ${liga.nombre}`}
+        title={`${usuario.trofeos} trofeos · Liga ${ligaReal.nombre}`}
       >
         <Trophy className="h-3.5 w-3.5" />
         {usuario.trofeos.toLocaleString("es-ES")}
@@ -136,7 +139,7 @@ export function AccountMenu() {
             borde fijo verde que tenía el botón de antes. Overlay absoluto
             del mismo tamaño exacto que el botón (ver TAMANO_AVATAR_PX),
             sin bloquear el click porque es pointer-events-none. */}
-        <AnilloLiga liga={liga} tamano={TAMANO_AVATAR_PX} />
+        {ligaCosmetica && <AnilloLiga liga={ligaCosmetica} tamano={TAMANO_AVATAR_PX} />}
 
         {/* Mismo dato (nivel) que la barra de al lado, en formato insignia
             -- solo en móvil, donde la barra ya no lleva el chip "Nv. X" de
@@ -150,8 +153,8 @@ export function AccountMenu() {
             <div className="border-b border-border px-3 py-2">
               <p className="text-sm font-semibold text-foreground">{usuario.nombre}</p>
               <p className="text-xs text-muted-foreground">Nivel {usuario.nivel}</p>
-              <p className="text-xs font-semibold" style={{ color: liga.color }}>
-                {liga.nombre} · {usuario.trofeos.toLocaleString("es-ES")} 🏆
+              <p className="text-xs font-semibold" style={{ color: ligaReal.color }}>
+                {ligaReal.nombre} · {usuario.trofeos.toLocaleString("es-ES")} 🏆
               </p>
             </div>
 

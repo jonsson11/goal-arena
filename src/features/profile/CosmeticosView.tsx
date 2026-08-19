@@ -15,9 +15,9 @@
 // pasado es una elección, no algo automático.
 
 import { useState } from "react";
-import { Check, Lock, Sparkles } from "lucide-react";
+import { Check, Lock, Sparkles, Ban } from "lucide-react";
 import { useAuth } from "@/features/auth/AuthContext";
-import { LIGAS, ligaDesbloqueadaComoCosmetico, ligaPorTrofeos } from "@/lib/trofeos";
+import { ARO_OCULTO, LIGAS, ligaDesbloqueadaComoCosmetico, ligaPorTrofeos } from "@/lib/trofeos";
 import { EscudoLiga } from "@/features/ranked/EscudoLiga";
 
 export function CosmeticosView() {
@@ -81,6 +81,37 @@ export function CosmeticosView() {
           <p className="truncate text-xs text-muted-foreground">Muestra siempre tu liga actual ({ligaActual.nombre})</p>
         </div>
         {usuario.aroEquipado === null && <Check className="h-5 w-5 shrink-0 text-primary" />}
+      </button>
+
+      {/* Opción "Sin aro" (pedido explícito del usuario, 19/08/2026): solo
+          el avatar, sin ningún halo de liga encima -- tan legítima como
+          elegir una liga concreta. */}
+      <button
+        onClick={() => equipar(ARO_OCULTO)}
+        disabled={guardando !== null}
+        className={`flex items-center gap-3 rounded-xl border p-3 text-left transition-all duration-200 disabled:opacity-60 ${
+          usuario.aroEquipado === ARO_OCULTO
+            ? "border-primary/60 bg-primary/10 shadow-[0_0_16px_-4px_rgba(74,222,154,0.5)]"
+            : "border-border bg-card hover:border-primary/40"
+        }`}
+      >
+        <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full border border-border bg-muted text-2xl">
+          {usuario.avatarTipo === "foto" ? (
+            // eslint-disable-next-line @next/next/no-img-element -- previsualización del propio avatar del usuario
+            <img src={usuario.avatar} alt={usuario.nombre} className="h-full w-full rounded-full object-cover" />
+          ) : (
+            usuario.avatar
+          )}
+        </div>
+        <div className="min-w-0 flex-1">
+          <p className="truncate text-sm font-bold text-foreground">Sin aro</p>
+          <p className="truncate text-xs text-muted-foreground">Solo tu avatar, sin ningún halo de liga</p>
+        </div>
+        {usuario.aroEquipado === ARO_OCULTO ? (
+          <Check className="h-5 w-5 shrink-0 text-primary" />
+        ) : (
+          <Ban className="h-5 w-5 shrink-0 text-muted-foreground" />
+        )}
       </button>
 
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">

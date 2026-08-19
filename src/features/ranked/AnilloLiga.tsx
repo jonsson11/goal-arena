@@ -71,14 +71,20 @@ export function AnilloLiga({ liga, tamano, className }: Props) {
       className={`pointer-events-none absolute inset-0 ${className ?? ""}`}
       aria-hidden
     >
-      {doble && <circle cx={30} cy={30} r={27} fill="none" stroke={liga.color} strokeWidth={2} opacity={0.45} />}
+      {/* Radio pegado al borde del viewBox (30 = mitad de 60) a propósito
+          -- antes el aro quedaba muy hacia dentro, con un hueco visible
+          entre el borde del avatar y el aro (feedback del usuario,
+          19/08/2026: "sería más interesante que el halo recubriera la
+          circunferencia en vez de estar en el centro"). Ahora el trazo
+          principal casi toca el borde exterior. */}
+      {doble && <circle cx={30} cy={30} r={29} fill="none" stroke={liga.color} strokeWidth={1.8} opacity={0.5} />}
       <circle
         cx={30}
         cy={30}
-        r={doble ? 23 : 24}
+        r={doble ? 26 : 27.5}
         fill="none"
         stroke={liga.color}
-        strokeWidth={doble ? 3.5 : 2.5}
+        strokeWidth={doble ? 3.4 : 3}
       />
       {puntos.map(([x, y], i) => (
         <circle key={i} cx={x} cy={y} r={2.6} fill={liga.colorLuz} stroke="#0B1220" strokeWidth={1} />

@@ -82,7 +82,9 @@ export function ProfileView() {
   }
 
   const porcentajeXp = Math.round((usuario.xpActual / usuario.xpSiguienteNivel) * 100);
-  const liga = ligaMostrada(usuario.trofeos, usuario.trofeosMaximos, usuario.aroEquipado);
+  // Puede ser null si el jugador ha elegido no mostrar ningún aro -- ver
+  // ligaMostrada() en src/lib/trofeos.ts (Fase 5, 19/08/2026).
+  const ligaCosmetica = ligaMostrada(usuario.trofeos, usuario.trofeosMaximos, usuario.aroEquipado);
 
   const statsRapidas = [
     { valor: estadisticas?.total.partidasJugadas ?? 0, etiqueta: "Partidas" },
@@ -113,7 +115,7 @@ export function ProfileView() {
           {/* Aro de liga (Fase 5, 19/08/2026) -- mismo cosmético que el
               Header, respeta el que el jugador haya equipado en la
               pestaña "Cosméticos" en vez de forzar siempre la liga actual. */}
-          <AnilloLiga liga={liga} tamano={TAMANO_AVATAR_PERFIL_PX} />
+          {ligaCosmetica && <AnilloLiga liga={ligaCosmetica} tamano={TAMANO_AVATAR_PERFIL_PX} />}
         </div>
 
         <h1 className="text-2xl font-extrabold text-foreground">{usuario.nombre}</h1>

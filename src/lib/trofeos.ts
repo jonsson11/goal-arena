@@ -77,13 +77,21 @@ export function ligaDesbloqueadaComoCosmetico(ligaId: Liga["id"], trofeosMaximos
   return liga !== undefined && trofeosMaximos >= liga.rangoMin;
 }
 
-/** La liga que hay que MOSTRAR de verdad (aro de avatar, escudo del
- * header...): si el jugador ha elegido un cosmético concreto (y sigue
- * desbloqueado -- por si algún día se recalibran los rangos de liga y un
- * id deja de tener sentido) se muestra ese; si no, la liga actual en vivo,
- * comportamiento de siempre. Centralizado aquí para que ningún sitio de
- * la UI tenga que repetir este if/else. */
-export function ligaMostrada(trofeos: number, trofeosMaximos: number, aroEquipado: string | null): Liga {
+// Valor especial de `User.aroEquipado` (además de un id de Liga o `null`)
+// para "no quiero ningún aro, solo mi avatar" -- pedido explícito del
+// usuario (19/08/2026): tan válido como elegir una liga concreta o dejarlo
+// en automático.
+export const ARO_OCULTO = "OCULTO";
+
+/** La liga que hay que MOSTRAR de verdad como aro de avatar (Header,
+ * Perfil...): `null` si el jugador ha elegido no mostrar ningún aro. Si ha
+ * elegido un cosmético concreto (y sigue desbloqueado -- por si algún día
+ * se recalibran los rangos de liga y un id deja de tener sentido) se
+ * muestra ese; si no ha tocado nada, la liga actual en vivo, comportamiento
+ * de siempre. Centralizado aquí para que ningún sitio de la UI tenga que
+ * repetir este if/else. */
+export function ligaMostrada(trofeos: number, trofeosMaximos: number, aroEquipado: string | null): Liga | null {
+  if (aroEquipado === ARO_OCULTO) return null;
   if (aroEquipado) {
     const elegida = LIGAS.find((l) => l.id === aroEquipado);
     if (elegida && ligaDesbloqueadaComoCosmetico(elegida.id, trofeosMaximos)) return elegida;
@@ -124,27 +132,43 @@ export function progresoLiga(trofeos: number): ProgresoLiga {
 }
 
 // ---------------------------------------------------------------
-// Cálculo de trofeos (Elo simplificado)
+// Cálculo de trofeos (estilo Clash Royale, revisado 19/08/2026)
 // ---------------------------------------------------------------
+//
+// Primera versión (Elo clásico, K=32) daba cambios pequeños y muy planos
+// cerca del 50/50 (una victoria "normal" apenas subía ~16 trofeos) --
+// pedido explícito del usuario: que se suba MÁS por victoria (~30 de
+// media, como el estilo Clash Royale) y que la variación por rival sea
+// una horquilla pequeña alrededor de esa media, no el rango amplio que
+// daba la fórmula Elo pura.
+//
+// Diseño: base fija de 30 trofeos por victoria, con un ajuste de hasta
+// ±3 según qué tan favorito/infravalorado eras contra ese rival --
+// vencer a alguien con más trofeos que tú (ibas de infravalorado) da más
+// (hasta 33); vencer a alguien con menos (ibas de favorito) da menos
+// (hasta 27). La derrota es la imagen especular: perder contra alguien
+// mejor (se esperaba) cuesta menos (-27); perder contra alguien peor (un
+// palo inesperado) cuesta más (-33). Resultado: victorias siempre entre
+// 27-33, derrotas siempre entre -27 y -33, nunca los extremos disparados
+// que podía dar el Elo puro con diferencias de trofeos muy grandes.
 
-// "Volumen" de trofeos en juego por partida -- más alto = el ranking
-// reacciona más rápido a cada partida, más bajo = más estable pero tarda
-// más en reflejar tu nivel real. 32 es el valor clásico de arranque en
-// sistemas Elo, buen punto de partida antes de tener datos reales que
-// sugieran otra cosa.
-const K_FACTOR = 32;
+const BASE_TROFEOS_VICTORIA = 30;
+// Rango resultante: victorias entre 30-3=27 y 30+3=33 (y su espejo en derrota).
+const VARIANZA_MAXIMA_TROFEOS = 3;
 
-// En empate, ambos jugadores ganan una pequeña cantidad en vez de que uno
-// gane y otro pierda -- ver reglas de empate ya decididas en el diseño de
-// Arena (Fase 9). 0.15 de K friendo un empate a nivel similar en ~5
-// trofeos, un bonus de participación real pero menor que una victoria.
-const BONUS_EMPATE_FACTOR = 0.15;
+// En empate, ambos jugadores ganan una pequeña cantidad fija -- no hay
+// "favorito"/"infravalorado" que valga en un empate, así que aquí no
+// aplica la variación por rival, solo un bonus de participación menor
+// que cualquier victoria.
+const TROFEOS_EMPATE = 10;
 
 export type ResultadoRanked = "VICTORIA" | "DERROTA" | "EMPATE";
 
 /** Probabilidad esperada de que el jugador con `trofeosPropios` gane
- * contra uno con `trofeosRival`, fórmula Elo estándar. Symmetric:
- * probabilidadEsperada(a,b) + probabilidadEsperada(b,a) === 1. */
+ * contra uno con `trofeosRival`, fórmula Elo estándar -- se sigue usando
+ * aquí solo para decidir CUÁNTO te desvías de la base de 30, no para el
+ * cambio de trofeos en sí. Symmetric: probabilidadEsperada(a,b) +
+ * probabilidadEsperada(b,a) === 1. */
 function probabilidadEsperada(trofeosPropios: number, trofeosRival: number): number {
   return 1 / (1 + Math.pow(10, (trofeosRival - trofeosPropios) / 400));
 }
@@ -160,16 +184,26 @@ export function calcularCambioTrofeos(
   trofeosRival: number,
   resultado: ResultadoRanked
 ): number {
+  if (resultado === "EMPATE") {
+    return TROFEOS_EMPATE;
+  }
+
+  // `esperado` = probabilidad de que TÚ ganaras. Cerca de 0 = eras el
+  // infravalorado (rival con más trofeos); cerca de 1 = eras el favorito.
   const esperado = probabilidadEsperada(trofeosPropios, trofeosRival);
 
-  if (resultado === "EMPATE") {
-    return Math.round(K_FACTOR * BONUS_EMPATE_FACTOR);
-  }
+  // De +3 (infravalorado, esperado=0) a -3 (favorito, esperado=1), pasando
+  // por 0 en un emparejamiento parejo (esperado=0.5).
+  const ajusteSinRecortar = Math.round(VARIANZA_MAXIMA_TROFEOS * (1 - 2 * esperado));
+  const ajuste = Math.max(-VARIANZA_MAXIMA_TROFEOS, Math.min(VARIANZA_MAXIMA_TROFEOS, ajusteSinRecortar));
+
   if (resultado === "VICTORIA") {
-    return Math.round(K_FACTOR * (1 - esperado));
+    return BASE_TROFEOS_VICTORIA + ajuste; // 27 (favorito) .. 33 (infravalorado)
   }
-  // DERROTA
-  return -Math.round(K_FACTOR * esperado);
+  // DERROTA -- mismo `ajuste` (calculado con TU perspectiva, no cambia
+  // según el resultado): perder de favorito cuesta más, perder de
+  // infravalorado cuesta menos.
+  return -(BASE_TROFEOS_VICTORIA - ajuste); // -27 (ibas de infravalorado) .. -33 (ibas de favorito)
 }
 
 /** Aplica un cambio de trofeos ya calculado, sin dejar que el total baje
