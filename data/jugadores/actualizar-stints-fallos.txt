@@ -1,5 +1,5 @@
 
---- Reintento 2026-08-14T08:59:19.300Z -- siguen fallando tras corregir ---
+--- Tanda iniciada 2026-09-02T08:05:55.989Z ---
 Aleksandar Stanković (cms2x6sc80050ygduk4w7asqa) — sin_infobox
 Antonio Casas (cms2xa52k00d8ygdumsoleal6) — sin_infobox
 Arthur (cms329yi3011xp8du82twwa0r) — sin_infobox
@@ -15,4 +15,7 @@ Frank Möller (cms32jnd901pjp8dubuxy88e6) — sin_infobox
 Giovane (cms2wn42o00kf0wduc8bqsyse) — sin_infobox
 İlhan Mansiz (cms75ytnm000dscduylyyf1h8) — sin_pagina
 Jorge Benítez  (cmryu3kc500w120du9s7he0x4) — sin_infobox
+Kyle Walker (cmsd5vilm01xiicduis0oxfm6) — sin_pagina
+Kyle Walker-Peters (cms2v430g01g5asdui4zirl3o) — sin_pagina
 Love (cmryv4ps40089w8dulvsh8cio) — sin_infobox
+Roberto Fernandes  (cmryv3swm006hw8du7olbwbg5) — sin_etapas
