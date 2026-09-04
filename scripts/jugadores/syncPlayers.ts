@@ -34,8 +34,12 @@ type EntradaJugador = string | { nombre: string; url: string };
 //
 //  { nombre: "", url: "" },
 const JUGADORES_INICIALES: EntradaJugador[] = [
-"Dele Alli"
-  ];
+"Willy Kambwala",
+"Thomas Delaney",
+"Mikel Arteta",
+"Christian Atsu",
+
+];
 
 // Deriva el externalId ("wiki:Titulo Con Espacios") a partir de una URL
 // de en.wikipedia.org, sin tocar wikipediaSync.ts -- misma lógica que
