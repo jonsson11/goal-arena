@@ -68,6 +68,10 @@ export type RivalPartida = {
   completado: boolean;
   /** Solo se rellena tras FINALIZADA. */
   resultado: "VICTORIA" | "DERROTA" | "EMPATE" | null;
+  /** true si ESTE rival cerró la partida rindiéndose (07/09/2026, Ranked)
+   * en vez de perder por tiempo -- el cartel de resultado usa esto para
+   * mostrar "Tu rival se ha rendido" en vez del genérico "¡Has ganado!". */
+  rendido: boolean;
 };
 
 type EstadoPartidaComun = {

@@ -19,6 +19,10 @@ import { prisma } from "@/lib/prisma";
 import { estaConectado } from "@/lib/presencia";
 import type { Amigo, EstadisticasPublicas } from "@/features/social/type";
 
+// Ver el comentario largo en /api/auth/me/route.ts (07/09/2026) -- misma
+// familia de ruta (GET de datos de perfil), mismo hueco.
+export const dynamic = "force-dynamic";
+
 export async function GET(_request: Request, { params }: { params: Promise<{ nombre: string }> }) {
   const { nombre } = await params;
 

@@ -407,6 +407,7 @@ export default function PartidaMultijugadorPage({ params }: { params: Promise<{ 
   // mismo instante real, sin importar cuándo cada uno empezó a mirar.
   const [ahora, setAhora] = useState(() => Date.now());
   const [confirmandoSalida, setConfirmandoSalida] = useState(false);
+  const [confirmandoRendicion, setConfirmandoRendicion] = useState(false);
   const [pidiendoRevancha, setPidiendoRevancha] = useState(false);
 
   const activoRef = useRef(true);
@@ -659,6 +660,26 @@ export default function PartidaMultijugadorPage({ params }: { params: Promise<{ 
     }
   }
 
+  async function rendirse() {
+    setMensaje("");
+    try {
+      const res = await fetch(`/api/salas/${codigo}/rendirse`, { method: "POST" });
+      const datos = await res.json();
+      if (!res.ok) {
+        setMensaje(datos.error ?? "No se pudo abandonar la partida.");
+        return;
+      }
+      const nueva = datos as EstadoPartida;
+      if (estadoActualRef.current !== "FINALIZADA" && nueva.estado === "FINALIZADA") {
+        refrescarUsuario();
+      }
+      estadoActualRef.current = nueva.estado;
+      setPartida(nueva);
+    } catch {
+      setMensaje("No se pudo conectar con el servidor.");
+    }
+  }
+
   async function salir() {
     activoRef.current = false;
     await fetch(`/api/salas/${codigo}/salir`, { method: "POST" });
@@ -721,7 +742,6 @@ export default function PartidaMultijugadorPage({ params }: { params: Promise<{ 
   const enRevelacion =
     !finalizada && !esperandoCarga && msHastaEmpezar !== null && msHastaEmpezar > SEGUNDOS_CUENTA_ATRAS * 1000;
   const enCuentaAtras = !finalizada && !esperandoCarga && !enRevelacion && segundosCuentaAtras > 0;
-  const totalJugadores = partida.rivales.length + 1;
   const jugadoresEnfrentamiento: JugadorEnfrentamiento[] = usuario
     ? [
         { id: usuario.id, nombre: usuario.nombre, avatar: usuario.avatar, avatarTipo: usuario.avatarTipo, nivel: usuario.nivel, esYo: true },
@@ -760,6 +780,23 @@ export default function PartidaMultijugadorPage({ params }: { params: Promise<{ 
           </div>
         )}
 
+        {/* "Abandonar partida" (07/09/2026) -- solo en Ranked (pedido
+            explícito del usuario) y solo mientras se está jugando de
+            verdad, no durante la revelación/cuenta atrás ni tras acabar.
+            Rendirse cuenta como derrota (trofeos incluidos, igual que
+            perder de cualquier otra forma) y al rival le aparece "se ha
+            rendido" en vez del cartel de victoria genérico -- ver
+            ResultadoPartida más abajo. */}
+        {!finalizada && !esperandoCarga && !enRevelacion && !enCuentaAtras && partida.competitiva && (
+          <button
+            type="button"
+            onClick={() => setConfirmandoRendicion(true)}
+            className="text-xs font-semibold text-muted-foreground underline-offset-2 transition-colors hover:text-destructive hover:underline"
+          >
+            Abandonar partida
+          </button>
+        )}
+
         {finalizada ? (
           <ResultadoPartida
             partida={partida}
@@ -770,14 +807,21 @@ export default function PartidaMultijugadorPage({ params }: { params: Promise<{ 
             pidiendoRevancha={pidiendoRevancha}
           />
         ) : esperandoCarga ? (
-          <div className="flex h-72 w-full flex-col items-center justify-center gap-3">
+          // Antes mostraba un contador "X/Y jugadores listos" que cambiaba
+          // de número en fracciones de segundo (normal en un 1vs1: los dos
+          // clientes llegan aquí casi a la vez) y se sentía como una
+          // pantalla rota parpadeando. Ahora es visualmente IDÉNTICA al
+          // halo de más arriba (estado `cargando`, antes del primer
+          // fetch) -- aunque esta fase dure un instante, no hay ningún
+          // cambio visual perceptible entre las dos, así que no puede dar
+          // sensación de bug.
+          <div className="flex h-80 w-full flex-col items-center justify-center gap-4">
+            <div className="launcher-halo-pulso flex h-16 w-16 items-center justify-center rounded-full border border-primary/35">
+              <Image src="/LOGO ARENA-SinLetra.png" alt="" width={30} height={30} />
+            </div>
             <span className="text-xs font-bold uppercase tracking-[0.3em] text-muted-foreground">
               Cargando partida
             </span>
-            <span className="text-4xl font-extrabold tabular-nums text-primary">
-              {partida.cargados}/{totalJugadores}
-            </span>
-            <span className="text-sm text-muted-foreground">jugadores listos</span>
           </div>
         ) : enRevelacion ? (
           <RevelacionRivalPartida jugadores={jugadoresEnfrentamiento} />
@@ -804,6 +848,15 @@ export default function PartidaMultijugadorPage({ params }: { params: Promise<{ 
         ) : (
           <SeccionTop10 partida={partida} mensaje={mensaje} onAcertar={acertarJugador} />
         )}
+
+        <ConfirmDialog
+          open={confirmandoRendicion}
+          onOpenChange={setConfirmandoRendicion}
+          titulo="¿Abandonar la partida?"
+          descripcion="Cuenta como derrota -- perderás trofeos igual que si perdieras jugando, y tu rival se lleva la victoria."
+          textoConfirmar="Sí, abandonar"
+          onConfirmar={rendirse}
+        />
 
         <ConfirmDialog
           open={confirmandoSalida}
@@ -1071,8 +1124,19 @@ function ResultadoPartida({
     }
   }
 
+  // Si algún rival se rindió (07/09/2026, Ranked -- siempre 1vs1, así que
+  // "algún" es "el único"), el ganador ve un título distinto al genérico
+  // "¡Has ganado!" -- deja claro que el rival abandonó, no que perdió
+  // jugando de verdad.
+  const rivalRendido = partida.rivales.find((r) => r.rendido);
   const titulo =
-    partida.miResultado === "VICTORIA" ? "¡Has ganado!" : partida.miResultado === "EMPATE" ? "Empate" : "Has perdido";
+    partida.miResultado === "VICTORIA"
+      ? rivalRendido
+        ? "Tu rival se ha rendido"
+        : "¡Has ganado!"
+      : partida.miResultado === "EMPATE"
+        ? "Empate"
+        : "Has perdido";
   const colorTitulo =
     partida.miResultado === "VICTORIA"
       ? "text-primary"

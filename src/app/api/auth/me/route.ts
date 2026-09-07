@@ -10,6 +10,19 @@ import { crearClienteSupabaseServidor } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
 import type { Usuario } from "@/features/profile/type";
 
+// Sin esto, Next.js puede cachear la respuesta de esta ruta (GET sin
+// parámetros dinámicos en la URL) en vez de leer la fila de `User` fresca
+// en cada petición -- causa real encontrada el 07/09/2026 al investigar
+// "los trofeos del Header no coinciden con los de verdad": era la única
+// ruta GET de autenticación/perfil del proyecto sin `force-dynamic`
+// (todas las demás rutas de /api/salas, /api/ranked, etc. ya lo llevan).
+// AuthContext llama a esta ruta para poblar `usuario` (incluidos
+// `trofeos`/`nivel`/`xp`) al arrancar la app y cada vez que se pide un
+// refresco tras terminar una partida -- una respuesta cacheada de más
+// deja el Header (y cualquier otro sitio que lea `usuario` del contexto)
+// mostrando datos viejos hasta que la caché expira por su cuenta.
+export const dynamic = "force-dynamic";
+
 export async function GET() {
   const supabase = await crearClienteSupabaseServidor();
   const {

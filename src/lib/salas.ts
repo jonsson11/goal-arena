@@ -3,7 +3,7 @@
 // SOLO SERVIDOR. Helpers compartidos por las rutas de /api/salas/*.
 
 import { prisma } from "@/lib/prisma";
-import type { Prisma } from "@prisma/client";
+import type { Prisma, Sala as SalaDB } from "@prisma/client";
 import type {
   Sala,
   JuegoMultijugador,
@@ -362,130 +362,187 @@ export async function finalizarPartidaSiToca(salaId: string): Promise<void> {
     if (!alguienCompleto && !tiempoAgotado) return; // todavía no toca cerrarla
 
     const resultados = calcularResultados(jugadores, sala.empezadaEn!);
-    const ahora = new Date();
+    await cerrarSalaConResultados(tx, sala, jugadores, resultados);
+  });
+}
 
-    await tx.sala.update({ where: { id: sala.id }, data: { estado: "FINALIZADA" } });
+/** Cierra de verdad una Sala EN_CURSO: marca FINALIZADA y reparte
+ * resultado/EXP/trofeos a cada jugador según el mapa `resultados` ya
+ * decidido por quien llama (por completar/timeout en finalizarPartidaSiToca,
+ * o por rendición en rendirsePartida). Extraído de finalizarPartidaSiToca
+ * (07/09/2026) para que las dos vías de cierre compartan exactamente la
+ * misma lógica de payout sin duplicarla -- lo único que cambia entre ellas
+ * es CÓMO se decidió el resultado de cada jugador, no qué se hace con él.
+ * DEBE llamarse siempre dentro de una transacción con la fila de la Sala
+ * ya bloqueada (`FOR UPDATE`) por quien invoca esta función. */
+async function cerrarSalaConResultados(
+  tx: Prisma.TransactionClient,
+  sala: SalaDB,
+  jugadores: SalaJugadorConUser[],
+  resultados: Map<string, { resultado: ResultadoMultijugador; segundos: number }>,
+  rendidos: Set<string> = new Set()
+): Promise<void> {
+  const ahora = new Date();
 
-    for (const sj of jugadores) {
-      const { resultado, segundos } = resultados.get(sj.userId)!;
+  await tx.sala.update({ where: { id: sala.id }, data: { estado: "FINALIZADA" } });
 
-      // Mismo patrón que POST /api/partidas: fila de usuario bloqueada
-      // hasta aplicar su EXP, para que dos finalizaciones (de salas
-      // distintas) casi simultáneas para el mismo usuario no se pisen.
-      const filasUsuario = await tx.$queryRaw<
-        Array<{
-          nivel: number;
-          xpActual: number;
-          xpSiguienteNivel: number;
-          partidasJugadas: number;
-          rachaActual: number;
-          rachaMaxima: number;
-          ultimoBonusDiario: Date | null;
-          trofeos: number;
-          trofeosMaximos: number;
-        }>
-      >`SELECT nivel, "xpActual", "xpSiguienteNivel", "partidasJugadas", "rachaActual", "rachaMaxima", "ultimoBonusDiario", trofeos, "trofeosMaximos"
-        FROM "User" WHERE id = ${sj.userId} FOR UPDATE`;
-      const actual = filasUsuario[0];
-      if (!actual) continue; // no debería poder pasar, pero no tumbamos el cierre de la sala por esto
+  for (const sj of jugadores) {
+    const { resultado, segundos } = resultados.get(sj.userId)!;
 
-      const bonusDiarioDisponible =
-        resultado === "victoria" && estaDisponibleBonusDiario(actual.ultimoBonusDiario, ahora);
-      const { bonusDiario, expGanada, expBase, bonusTiempoPct, expTiempoExtra } = calcularExperienciaMultijugador(
-        (sala.dificultad as Dificultad) ?? "medio",
-        resultado,
-        segundos,
-        bonusDiarioDisponible
-      );
+    // Mismo patrón que POST /api/partidas: fila de usuario bloqueada
+    // hasta aplicar su EXP, para que dos finalizaciones (de salas
+    // distintas) casi simultáneas para el mismo usuario no se pisen.
+    const filasUsuario = await tx.$queryRaw<
+      Array<{
+        nivel: number;
+        xpActual: number;
+        xpSiguienteNivel: number;
+        partidasJugadas: number;
+        rachaActual: number;
+        rachaMaxima: number;
+        ultimoBonusDiario: Date | null;
+        trofeos: number;
+        trofeosMaximos: number;
+      }>
+    >`SELECT nivel, "xpActual", "xpSiguienteNivel", "partidasJugadas", "rachaActual", "rachaMaxima", "ultimoBonusDiario", trofeos, "trofeosMaximos"
+      FROM "User" WHERE id = ${sj.userId} FOR UPDATE`;
+    const actual = filasUsuario[0];
+    if (!actual) continue; // no debería poder pasar, pero no tumbamos el cierre de la sala por esto
 
-      const estadoAntes = { nivel: actual.nivel, xpActual: actual.xpActual, xpSiguienteNivel: actual.xpSiguienteNivel };
-      const estadoDespues = aplicarExperiencia(estadoAntes, expGanada);
+    const bonusDiarioDisponible =
+      resultado === "victoria" && estaDisponibleBonusDiario(actual.ultimoBonusDiario, ahora);
+    const { bonusDiario, expGanada, expBase, bonusTiempoPct, expTiempoExtra } = calcularExperienciaMultijugador(
+      (sala.dificultad as Dificultad) ?? "medio",
+      resultado,
+      segundos,
+      bonusDiarioDisponible
+    );
 
-      // Mismo objeto RespuestaPartida que ya devuelve POST /api/partidas
-      // en el modo individual -- guardarlo tal cual (no solo el número
-      // final) es lo que permite reutilizar ExperienciaGanada.tsx sin
-      // cambiar ni una línea de esa animación.
-      const respuestaPartida: RespuestaPartida = {
-        estadoAntes,
-        estadoDespues,
-        expBase,
-        bonusTiempoPct,
-        expTiempoExtra,
-        bonusDiario,
-        expGanada,
-      };
+    const estadoAntes = { nivel: actual.nivel, xpActual: actual.xpActual, xpSiguienteNivel: actual.xpSiguienteNivel };
+    const estadoDespues = aplicarExperiencia(estadoAntes, expGanada);
 
-      const esVictoria = resultado === "victoria";
-      const nuevaRacha = esVictoria ? actual.rachaActual + 1 : 0;
+    // Mismo objeto RespuestaPartida que ya devuelve POST /api/partidas
+    // en el modo individual -- guardarlo tal cual (no solo el número
+    // final) es lo que permite reutilizar ExperienciaGanada.tsx sin
+    // cambiar ni una línea de esa animación.
+    const respuestaPartida: RespuestaPartida = {
+      estadoAntes,
+      estadoDespues,
+      expBase,
+      bonusTiempoPct,
+      expTiempoExtra,
+      bonusDiario,
+      expGanada,
+    };
 
-      // Trofeos (solo Salas competitivas, Fase 9) -- sistema totalmente
-      // aparte del nivel/EXP de arriba, ninguno de los dos afecta al otro.
-      // `trofeosAlEmpezar` de AMBOS jugadores se fijó al crear la Sala
-      // (ver intentarCrearSalaCompetitiva en src/lib/ranked.ts), así que
-      // el cálculo Elo usa esa foto fija en vez del valor en vivo de
-      // `User.trofeos` -- determinista pase lo que pase entre medias.
-      // Ranked es siempre 1vs1, así que basta con buscar "el otro" jugador
-      // de esta misma Sala.
-      let cambioTrofeos: number | null = null;
-      if (sala.competitiva) {
-        const rival = jugadores.find((otro) => otro.userId !== sj.userId);
-        if (rival && sj.trofeosAlEmpezar !== null && rival.trofeosAlEmpezar !== null) {
-          cambioTrofeos = calcularCambioTrofeos(
-            sj.trofeosAlEmpezar,
-            rival.trofeosAlEmpezar,
-            RESULTADO_A_RANKED[resultado]
-          );
-        }
+    const esVictoria = resultado === "victoria";
+    const nuevaRacha = esVictoria ? actual.rachaActual + 1 : 0;
+
+    // Trofeos (solo Salas competitivas, Fase 9) -- sistema totalmente
+    // aparte del nivel/EXP de arriba, ninguno de los dos afecta al otro.
+    // `trofeosAlEmpezar` de AMBOS jugadores se fijó al crear la Sala
+    // (ver intentarCrearSalaCompetitiva en src/lib/ranked.ts), así que
+    // el cálculo Elo usa esa foto fija en vez del valor en vivo de
+    // `User.trofeos` -- determinista pase lo que pase entre medias.
+    // Ranked es siempre 1vs1, así que basta con buscar "el otro" jugador
+    // de esta misma Sala. Una rendición cierra la partida por esta MISMA
+    // vía (mismo `resultados` con "victoria"/"derrota" ya decididos), así
+    // que el ganador por rendición recibe/pierde trofeos exactamente
+    // igual que en una victoria o derrota normal -- pedido explícito del
+    // usuario (07/09/2026).
+    let cambioTrofeos: number | null = null;
+    if (sala.competitiva) {
+      const rival = jugadores.find((otro) => otro.userId !== sj.userId);
+      if (rival && sj.trofeosAlEmpezar !== null && rival.trofeosAlEmpezar !== null) {
+        cambioTrofeos = calcularCambioTrofeos(
+          sj.trofeosAlEmpezar,
+          rival.trofeosAlEmpezar,
+          RESULTADO_A_RANKED[resultado]
+        );
       }
-      const nuevosTrofeos = cambioTrofeos !== null ? aplicarCambioTrofeos(actual.trofeos, cambioTrofeos) : null;
-      // Pico histórico (Fase 5, 19/08/2026) -- solo puede SUBIR, nunca se
-      // toca a la baja aquí (ni en una derrota, ni en un futuro reset de
-      // temporada, que solo tocaría `trofeos`). Ver comentario largo junto
-      // a `User.trofeosMaximos` en el schema.
-      const nuevosTrofeosMaximos =
-        nuevosTrofeos !== null ? Math.max(actual.trofeosMaximos, nuevosTrofeos) : null;
+    }
+    const nuevosTrofeos = cambioTrofeos !== null ? aplicarCambioTrofeos(actual.trofeos, cambioTrofeos) : null;
+    // Pico histórico (Fase 5, 19/08/2026) -- solo puede SUBIR, nunca se
+    // toca a la baja aquí (ni en una derrota, ni en un futuro reset de
+    // temporada, que solo tocaría `trofeos`). Ver comentario largo junto
+    // a `User.trofeosMaximos` en el schema.
+    const nuevosTrofeosMaximos =
+      nuevosTrofeos !== null ? Math.max(actual.trofeosMaximos, nuevosTrofeos) : null;
 
-      await tx.user.update({
-        where: { id: sj.userId },
-        data: {
-          nivel: estadoDespues.nivel,
-          xpActual: estadoDespues.xpActual,
-          xpSiguienteNivel: estadoDespues.xpSiguienteNivel,
-          partidasJugadas: actual.partidasJugadas + 1,
-          rachaActual: nuevaRacha,
-          rachaMaxima: Math.max(actual.rachaMaxima, nuevaRacha),
-          ...(bonusDiario ? { ultimoBonusDiario: ahora } : {}),
-          ...(nuevosTrofeos !== null ? { trofeos: nuevosTrofeos } : {}),
-          ...(nuevosTrofeosMaximos !== null ? { trofeosMaximos: nuevosTrofeosMaximos } : {}),
-        },
-      });
+    await tx.user.update({
+      where: { id: sj.userId },
+      data: {
+        nivel: estadoDespues.nivel,
+        xpActual: estadoDespues.xpActual,
+        xpSiguienteNivel: estadoDespues.xpSiguienteNivel,
+        partidasJugadas: actual.partidasJugadas + 1,
+        rachaActual: nuevaRacha,
+        rachaMaxima: Math.max(actual.rachaMaxima, nuevaRacha),
+        ...(bonusDiario ? { ultimoBonusDiario: ahora } : {}),
+        ...(nuevosTrofeos !== null ? { trofeos: nuevosTrofeos } : {}),
+        ...(nuevosTrofeosMaximos !== null ? { trofeosMaximos: nuevosTrofeosMaximos } : {}),
+      },
+    });
 
-      await tx.partidaJugada.create({
-        data: {
-          userId: sj.userId,
-          juego: sala.juego,
-          // Sufijo "-online" para poder diferenciar en estadísticas más
-          // adelante sin que afecte al cálculo de EXP (que solo mira la
-          // dificultad base) -- ver comentario en calcularExperienciaMultijugador.
-          // TOP10 no tiene dificultad, así que aquí solo "online" (GRID sí,
-          // "facil-online"/"medio-online"/"dificil-online").
-          modo: sala.dificultad ? `${sala.dificultad}-online` : "online",
-          resultado: esVictoria ? "VICTORIA" : "DERROTA", // el schema no tiene EMPATE -- se guarda como derrota a efectos de "victorias/derrotas", el resultado real vive en SalaJugador.resultado
-          expGanada,
-          bonusDiario,
-          jugadaEn: ahora,
-        },
-      });
+    await tx.partidaJugada.create({
+      data: {
+        userId: sj.userId,
+        juego: sala.juego,
+        // Sufijo "-online" para poder diferenciar en estadísticas más
+        // adelante sin que afecte al cálculo de EXP (que solo mira la
+        // dificultad base) -- ver comentario en calcularExperienciaMultijugador.
+        // TOP10 no tiene dificultad, así que aquí solo "online" (GRID sí,
+        // "facil-online"/"medio-online"/"dificil-online").
+        modo: sala.dificultad ? `${sala.dificultad}-online` : "online",
+        resultado: esVictoria ? "VICTORIA" : "DERROTA", // el schema no tiene EMPATE -- se guarda como derrota a efectos de "victorias/derrotas", el resultado real vive en SalaJugador.resultado
+        expGanada,
+        bonusDiario,
+        jugadaEn: ahora,
+      },
+    });
 
-      await tx.salaJugador.update({
-        where: { id: sj.id },
-        data: {
-          resultado: resultado.toUpperCase(),
-          experiencia: respuestaPartida,
-          ...(cambioTrofeos !== null ? { trofeosCambio: cambioTrofeos } : {}),
-        },
+    await tx.salaJugador.update({
+      where: { id: sj.id },
+      data: {
+        resultado: resultado.toUpperCase(),
+        experiencia: respuestaPartida,
+        rendido: rendidos.has(sj.userId),
+        ...(cambioTrofeos !== null ? { trofeosCambio: cambioTrofeos } : {}),
+      },
+    });
+  }
+}
+
+/** Cierra una Sala EN_CURSO por rendición de `userId`: él pierde, TODOS
+ * los demás jugadores de la sala ganan -- mismo payout de EXP/trofeos que
+ * una victoria/derrota normal (ver cerrarSalaConResultados), solo cambia
+ * cómo se decidió el resultado. Pensado sobre todo para Ranked (1vs1,
+ * "Abandonar partida" con confirmación, 07/09/2026) pero funciona igual de
+ * bien con más jugadores si se necesitara en el futuro. Idempotente ante
+ * llamadas concurrentes por el mismo `FOR UPDATE` que ya usa
+ * finalizarPartidaSiToca -- si la sala ya está FINALIZADA (por ejemplo, se
+ * cerró por timeout justo antes de que esto llegara a ejecutarse), no hace
+ * nada. */
+export async function rendirsePartida(salaId: string, userId: string): Promise<void> {
+  await prisma.$transaction(async (tx) => {
+    const filas = await tx.$queryRaw<Array<{ estado: string }>>`
+      SELECT estado FROM "Sala" WHERE id = ${salaId} FOR UPDATE`;
+    if (filas[0]?.estado !== "EN_CURSO") return; // ya cerrada, o no está en curso
+
+    const sala = await tx.sala.findUniqueOrThrow({ where: { id: salaId } });
+    const jugadores = await tx.salaJugador.findMany({ where: { salaId }, include: { user: true } });
+    const mi = jugadores.find((sj) => sj.userId === userId);
+    if (!mi) return; // no está en esta sala, nada que rendir
+
+    const resultados = new Map<string, { resultado: ResultadoMultijugador; segundos: number }>();
+    for (const sj of jugadores) {
+      resultados.set(sj.userId, {
+        resultado: sj.userId === userId ? "derrota" : "victoria",
+        segundos: 0, // walkover -- nunca hay bono de rapidez, mismo criterio que un cierre por timeout
       });
     }
+
+    await cerrarSalaConResultados(tx, sala, jugadores, resultados, new Set([userId]));
   });
 }
 
@@ -537,6 +594,7 @@ export async function construirEstadoPartida(salaId: string, miUserId: string): 
           celdasResueltas: sj.celdasResueltas,
           completado: sj.terminadaEn !== null,
           resultado: (sj.resultado as RivalPartida["resultado"]) ?? null,
+          rendido: sj.rendido,
         })
       ),
     empezadaEn: sala.empezadaEn ? sala.empezadaEn.toISOString() : null,

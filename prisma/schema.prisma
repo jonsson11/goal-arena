@@ -531,6 +531,14 @@ model SalaJugador {
   // mientras la partida sigue en marcha.
   resultado String?
 
+  // true si ESTE jugador cerró la partida rindiéndose (07/09/2026,
+  // Ranked) en vez de perder por tiempo o por completar menos que el
+  // rival -- así el rival ve "se ha rendido" en vez del cartel de
+  // victoria genérico. Ver rendirsePartida en src/lib/salas.ts. Solo
+  // puede ser true en la fila del propio jugador que se rindió, nunca en
+  // la del rival.
+  rendido Boolean @default(false)
+
   // Cuánta EXP dio esta partida multijugador, y con qué desglose (base,
   // bono de rapidez, bono diario, nivel de antes/después) -- mismo tipo
   // RespuestaPartida que ya usa el modo individual (ver src/lib/
