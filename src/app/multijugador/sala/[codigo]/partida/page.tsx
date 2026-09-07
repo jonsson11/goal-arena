@@ -2,6 +2,7 @@
 
 import { use, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import { Eye, EyeOff } from "lucide-react";
 import { useAuth } from "@/features/auth/AuthContext";
 import { AuthGate } from "@/features/auth/AuthGate";
@@ -25,6 +26,12 @@ import { TarjetasObjetivo, EslabonCadena } from "@/features/games/linkplayers/Li
 
 const INTERVALO_POLLING_PARTIDA_MS = 1500;
 const INTERVALO_POLLING_SALA_MS = 2000; // tras acabar, esperando revancha del anfitrión
+
+// Duración de la cuenta atrás 3-2-1, en segundos -- DEBE coincidir con
+// SEGUNDOS_CUENTA_ATRAS de src/lib/salas.ts. No se puede importar esa
+// constante aquí (salas.ts es "SOLO SERVIDOR", tira de Prisma) así que se
+// repite como constante local; si se cambia una, cambiar la otra.
+const SEGUNDOS_CUENTA_ATRAS = 3;
 
 const ETIQUETA_DIFICULTAD: Record<string, string> = { facil: "Fácil", medio: "Medio", dificil: "Difícil" };
 
@@ -102,6 +109,119 @@ function FichaRival({
             : `${celdasResueltas}/${objetivo} aciertos`}
         </p>
       </div>
+    </div>
+  );
+}
+
+type JugadorEnfrentamiento = {
+  id: string;
+  nombre: string;
+  avatar: string;
+  avatarTipo: "emoji" | "foto";
+  esYo: boolean;
+};
+
+function AvatarJugadorPartida({
+  jugador,
+  tamano = "h-9 w-9 text-lg",
+}: {
+  jugador: JugadorEnfrentamiento;
+  tamano?: string;
+}) {
+  const borde = jugador.esYo ? "border-primary" : "border-border";
+  return jugador.avatarTipo === "foto" ? (
+    // eslint-disable-next-line @next/next/no-img-element -- avatar de usuario, URL de Supabase Storage
+    <img
+      src={jugador.avatar}
+      alt={jugador.nombre}
+      className={`shrink-0 rounded-full border object-cover ${borde} ${tamano}`}
+    />
+  ) : (
+    <div className={`flex shrink-0 items-center justify-center rounded-full border bg-background ${borde} ${tamano}`}>
+      {jugador.avatar}
+    </div>
+  );
+}
+
+// Cuenta atrás 3-2-1 antes de que arranque la ronda -- misma pantalla para
+// salas privadas y ranked (07/09/2026, mockup aprobado "Opción A: halo
+// central"). El aro (SVG) y el halo que respira viven en el MISMO
+// contenedor de 190x190px, ambos centrados dentro de él -- el aro por
+// tamaño exacto (`inset-0`, mide justo 190x190) y el halo por posición
+// absoluta al 50%/50% + `-translate-x/y-1/2` (168x168, centrado sobre el
+// punto medio del contenedor). Así quedan siempre concéntricos de verdad,
+// en vez de depender de que flexbox coloque bien un hijo `absolute` suelto
+// entre hermanos de tamaño distinto -- que es justo el desajuste que se
+// veía en el primer mockup HTML.
+function CuentaAtrasPartida({
+  segundos,
+  fraccionRestante,
+  jugadores,
+}: {
+  segundos: number;
+  fraccionRestante: number;
+  jugadores: JugadorEnfrentamiento[];
+}) {
+  const RADIO = 88;
+  const CIRCUNFERENCIA = 2 * Math.PI * RADIO;
+  const offset = CIRCUNFERENCIA * (1 - fraccionRestante);
+  const esUnoContraUno = jugadores.length === 2;
+
+  return (
+    <div className="relative flex h-80 w-full flex-col items-center justify-center gap-4">
+      <Image src="/LOGO ARENA-SinLetra.png" alt="" width={44} height={44} className="absolute top-0" />
+
+      <div className="relative flex h-[190px] w-[190px] shrink-0 items-center justify-center">
+        <svg viewBox="0 0 190 190" className="absolute inset-0 -rotate-90">
+          <circle cx="95" cy="95" r={RADIO} fill="none" strokeWidth="3" className="stroke-white/10" />
+          <circle
+            cx="95"
+            cy="95"
+            r={RADIO}
+            fill="none"
+            strokeWidth="3"
+            strokeLinecap="round"
+            strokeDasharray={CIRCUNFERENCIA}
+            strokeDashoffset={offset}
+            className="stroke-primary transition-[stroke-dashoffset] duration-200 ease-linear"
+          />
+        </svg>
+        <div className="launcher-halo-pulso absolute left-1/2 top-1/2 flex h-[168px] w-[168px] -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border border-primary/35">
+          <span
+            key={segundos}
+            className="animate-in zoom-in-50 fade-in bg-gradient-to-r from-primary via-[#7ef2bd] to-secondary bg-clip-text text-8xl font-extrabold text-transparent duration-300"
+          >
+            {segundos > 0 ? segundos : "¡YA!"}
+          </span>
+        </div>
+      </div>
+
+      <span className="text-xs font-bold uppercase tracking-[0.3em] text-muted-foreground">Preparaos</span>
+
+      {esUnoContraUno ? (
+        <div className="absolute bottom-0 flex w-full max-w-xs items-center justify-between gap-2 rounded-2xl border border-border/60 bg-card/70 px-4 py-3 backdrop-blur-md">
+          <div className="flex min-w-0 items-center gap-2">
+            <AvatarJugadorPartida jugador={jugadores[0]} />
+            <p className="truncate text-xs font-bold text-foreground">{jugadores[0].nombre}</p>
+          </div>
+          <span className="shrink-0 text-sm font-extrabold text-[#D4AF37]">VS</span>
+          <div className="flex min-w-0 flex-row-reverse items-center gap-2 text-right">
+            <AvatarJugadorPartida jugador={jugadores[1]} />
+            <p className="truncate text-xs font-bold text-foreground">{jugadores[1].nombre}</p>
+          </div>
+        </div>
+      ) : (
+        <div className="absolute bottom-0 flex w-full max-w-md flex-wrap items-center justify-center gap-3 rounded-2xl border border-border/60 bg-card/70 px-4 py-3 backdrop-blur-md">
+          {jugadores.map((j) => (
+            <div key={j.id} className="flex flex-col items-center gap-1">
+              <AvatarJugadorPartida jugador={j} tamano="h-8 w-8 text-base" />
+              <p className="max-w-14 truncate text-[10px] font-semibold text-muted-foreground">
+                {j.esYo ? "Tú" : j.nombre}
+              </p>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
@@ -315,6 +435,15 @@ export default function PartidaMultijugadorPage({ params }: { params: Promise<{ 
   const empezadaEnMs = partida?.empezadaEn ? new Date(partida.empezadaEn).getTime() : null;
   const segundosCuentaAtras =
     empezadaEnMs !== null ? Math.max(0, Math.ceil((empezadaEnMs - ahora) / 1000)) : 0;
+  // Fracción continua (1 = recién empezada, 0 = ya se acabó) para el aro
+  // que se vacía en CuentaAtrasPartida -- a diferencia de
+  // `segundosCuentaAtras` (entero, salta de 3 en 3 pasos), esto avanza
+  // suave en cada tic de `ahora` (cada 200ms), así el aro se ve fluido en
+  // vez de dar tres saltos bruscos.
+  const fraccionCuentaAtras =
+    empezadaEnMs !== null
+      ? Math.min(1, Math.max(0, (empezadaEnMs - ahora) / (SEGUNDOS_CUENTA_ATRAS * 1000)))
+      : 0;
   const segundosRestantes =
     empezadaEnMs !== null && partida
       ? Math.max(0, Math.min(partida.duracionSegundos, partida.duracionSegundos - Math.max(0, (ahora - empezadaEnMs) / 1000)))
@@ -549,18 +678,25 @@ export default function PartidaMultijugadorPage({ params }: { params: Promise<{ 
         ) : enCuentaAtras ? (
           // Cuenta atrás 3-2-1: el tablero/ranking ya está cargado (fetch
           // hecho, solo que no se pinta todavía) -- lo único que falta es
-          // que llegue el instante `empezadaEn` compartido. key=segundosCuentaAtras
-          // fuerza a React a remontar el número en cada tic, así se
-          // dispara la animación de entrada en cada cambio.
-          <div className="flex h-72 w-full flex-col items-center justify-center gap-3">
-            <span className="text-xs font-bold uppercase tracking-[0.3em] text-muted-foreground">Prepárate</span>
-            <span
-              key={segundosCuentaAtras}
-              className="animate-in zoom-in-50 fade-in text-8xl font-extrabold text-primary duration-300"
-            >
-              {segundosCuentaAtras}
-            </span>
-          </div>
+          // que llegue el instante `empezadaEn` compartido.
+          <CuentaAtrasPartida
+            segundos={segundosCuentaAtras}
+            fraccionRestante={fraccionCuentaAtras}
+            jugadores={
+              usuario
+                ? [
+                    { id: usuario.id, nombre: usuario.nombre, avatar: usuario.avatar, avatarTipo: usuario.avatarTipo, esYo: true },
+                    ...partida.rivales.map((r) => ({
+                      id: r.id,
+                      nombre: r.nombre,
+                      avatar: r.avatar,
+                      avatarTipo: r.avatarTipo,
+                      esYo: false,
+                    })),
+                  ]
+                : []
+            }
+          />
         ) : partida.juego === "GRID" ? (
           <SeccionGrid
             partida={partida}
