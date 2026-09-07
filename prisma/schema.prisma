@@ -596,9 +596,20 @@ model ColaRanked {
 
   entradaEn DateTime @default(now())
 
-  // Para poder purgar entradas "fantasma" (pestaña cerrada sin cancelar
-  // explícitamente) por antigüedad si hiciera falta más adelante.
+  // Último "sigo aquí de verdad" -- se refresca en cada POST/GET a
+  // /api/ranked/cola (entrar en cola y cada poll mientras se busca), a
+  // diferencia de `entradaEn` (fija, se usa para el rango de trofeos
+  // aceptable, no se puede tocar sin romper la prioridad por antigüedad).
+  // Sirve para purgar entradas "fantasma" (pestaña cerrada o conexión
+  // perdida a media búsqueda, sin pasar por el DELETE explícito) antes de
+  // emparejar a nadie contra ellas -- ver purgarColaAbandonada() en
+  // src/lib/ranked.ts. Bug real 07/09/2026: sin esto, un jugador podía
+  // "gastar" su emparejamiento contra una entrada fantasma de una sesión
+  // abandonada, dejando a su rival de verdad esperando solo indefinidamente.
+  ultimoPing DateTime @default(now())
+
   @@index([entradaEn])
+  @@index([ultimoPing])
 }
 
 // Una temporada del ladder competitivo. Al cerrarla (proceso manual al

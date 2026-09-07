@@ -26,6 +26,15 @@ export const DIFICULTAD_RANKED: Dificultad = "medio";
 // reutilizamos la escala pensada para el modo casual.
 const DURACION_RONDA_RANKED_SEGUNDOS = 180;
 
+// Cuánto tiempo sin "dar señales de vida" (sin que su cliente haga un
+// POST/GET a /api/ranked/cola) tiene que pasar para considerar una fila
+// de ColaRanked abandonada y purgarla antes de emparejar a nadie contra
+// ella. El cliente hace polling cada 2000ms (INTERVALO_POLLING_COLA_MS en
+// el hub) -- 8s da margen de sobra para 3-4 polls perdidos por un blip de
+// red o la pestaña en segundo plano, sin dejar una ventana larga en la
+// que un jugador real pueda "gastar" su emparejamiento contra un fantasma.
+const MS_ABANDONO_COLA = 8_000;
+
 export type EstadoCola =
   | { estado: "esperando"; segundosEsperando: number; rangoAceptable: number }
   | { estado: "emparejado"; codigoSala: string }
@@ -43,7 +52,7 @@ export type EstadoCola =
 export async function entrarEnCola(userId: string, trofeosActuales: number): Promise<EstadoCola> {
   await prisma.colaRanked.upsert({
     where: { userId },
-    update: { trofeosEnCola: trofeosActuales },
+    update: { trofeosEnCola: trofeosActuales, ultimoPing: new Date() },
     create: { userId, trofeosEnCola: trofeosActuales },
   });
 
@@ -54,11 +63,28 @@ export async function salirDeCola(userId: string): Promise<void> {
   await prisma.colaRanked.deleteMany({ where: { userId } });
 }
 
+/** Borra las filas de ColaRanked que llevan demasiado tiempo sin dar
+ * señales de vida (ver MS_ABANDONO_COLA) -- pestaña cerrada, conexión
+ * perdida, o cualquier salida que no pasó por el DELETE explícito de
+ * /api/ranked/cola. Se llama al principio de `intentarEmparejar`, antes
+ * de mirar candidatos, para que nadie pueda emparejarse contra un
+ * fantasma: eso dejaría a su rival de verdad esperando solo, sin nadie
+ * con quien emparejarlo, y es exactamente el bug reportado el
+ * 07/09/2026 (dos amigos buscando partida a la vez -- uno entró, el otro
+ * se quedó "buscando" indefinidamente). */
+async function purgarColaAbandonada(): Promise<void> {
+  await prisma.colaRanked.deleteMany({
+    where: { ultimoPing: { lt: new Date(Date.now() - MS_ABANDONO_COLA) } },
+  });
+}
+
 /** Comprueba si `userId` sigue en cola y, si es así, intenta emparejarlo
  * con algún candidato compatible ahora mismo. Se llama tanto al entrar en
  * cola como en cada poll (GET /api/ranked/cola) -- es la única puerta de
  * entrada a la creación de una Sala competitiva. */
 export async function intentarEmparejar(userId: string): Promise<EstadoCola> {
+  await purgarColaAbandonada();
+
   const propio = await prisma.colaRanked.findUnique({ where: { userId } });
   if (!propio) {
     // Ya no está en cola -- o bien se le acaba de emparejar (comprobamos
@@ -67,6 +93,11 @@ export async function intentarEmparejar(userId: string): Promise<EstadoCola> {
     if (salaReciente) return { estado: "emparejado", codigoSala: salaReciente };
     return { estado: "fuera" };
   }
+
+  // Cada llamada (entrada inicial o poll) es una prueba de vida real --
+  // la refrescamos ya, antes de intentar nada más, para que esta misma
+  // fila no pueda ser purgada por error mientras el jugador sigue aquí.
+  await prisma.colaRanked.update({ where: { userId }, data: { ultimoPing: new Date() } });
 
   const segundosPropios = (Date.now() - propio.entradaEn.getTime()) / 1000;
 
@@ -89,6 +120,20 @@ export async function intentarEmparejar(userId: string): Promise<EstadoCola> {
     // los dos ya se emparejó con otra persona justo antes (carrera entre
     // dos polls casi simultáneos) -- seguimos probando con el siguiente
     // candidato en vez de rendirnos.
+  }
+
+  // Antes de decir "esperando": puede que justo en este intento hayamos
+  // perdido nosotros mismos una carrera de emparejamiento (otro poll,
+  // nuestro o de un candidato, nos emparejó con alguien mientras
+  // recorríamos la lista de arriba) -- sin esta comprobación, esta misma
+  // respuesta sería una mentira momentánea ("esperando" cuando en
+  // realidad ya hay Sala) que solo se corregía en el SIGUIENTE poll, 2s
+  // más tarde. Nos volvemos a asegurar de que seguimos en cola de verdad.
+  const seguimosEnCola = await prisma.colaRanked.findUnique({ where: { userId }, select: { id: true } });
+  if (!seguimosEnCola) {
+    const salaReciente = await salaCompetitivaEnCursoDe(userId);
+    if (salaReciente) return { estado: "emparejado", codigoSala: salaReciente };
+    return { estado: "fuera" };
   }
 
   return {

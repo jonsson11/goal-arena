@@ -208,12 +208,21 @@ export default function PartidaMultijugadorPage({ params }: { params: Promise<{ 
   const [mensaje, setMensaje] = useState("");
   const [celdasPendientes, setCeldasPendientes] = useState<Celda[]>([]);
   const [jugadorPendiente, setJugadorPendiente] = useState<Jugador | null>(null);
-  const [segundosRestantes, setSegundosRestantes] = useState(0);
-  // Cuenta atrás 3-2-1 antes de que arranque el timer real -- 0 significa
-  // "ya se puede jugar". Se recalcula en cada respuesta del servidor
-  // contra `empezadaEn` (un reloj compartido), nunca es un cronómetro
-  // propio del cliente -- ver comentario largo en /lib/salas.ts.
-  const [segundosCuentaAtras, setSegundosCuentaAtras] = useState(0);
+  // Reloj local, solo para forzar el re-render del contador cada tanto --
+  // NUNCA se usa para decidir el dígito que se pinta (ver `ahora` más
+  // abajo). Arreglo del 07/09/2026: antes había un segundo `setInterval`
+  // que decrementaba `segundosCuentaAtras`/`segundosRestantes` en local
+  // ("s => s - 1") en paralelo al que los recalculaba de verdad contra
+  // `empezadaEn` en cada poll -- los dos relojes competían por el mismo
+  // estado, sin estar en fase entre sí ni con el otro jugador, así que un
+  // dígito podía durar 0,1s si el poll corregía el valor justo antes de
+  // que el tic local lo volviera a restar, y el "3" podía no llegar a
+  // pintarse nunca. Ahora `segundosCuentaAtras`/`segundosRestantes` NO son
+  // estado propio: se calculan en cada render a partir de `empezadaEn`
+  // (el reloj compartido de servidor) y de `ahora`, así que solo hay una
+  // fuente de verdad y los dos jugadores convergen al mismo dígito en el
+  // mismo instante real, sin importar cuándo cada uno empezó a mirar.
+  const [ahora, setAhora] = useState(() => Date.now());
   const [confirmandoSalida, setConfirmandoSalida] = useState(false);
   const [pidiendoRevancha, setPidiendoRevancha] = useState(false);
 
@@ -256,15 +265,11 @@ export default function PartidaMultijugadorPage({ params }: { params: Promise<{ 
         estadoActualRef.current = nueva.estado;
         setPartida(nueva);
         setCargando(false);
-
-        if (nueva.empezadaEn) {
-          const empezadaEnMs = new Date(nueva.empezadaEn).getTime();
-          const msHastaEmpezar = empezadaEnMs - Date.now();
-          setSegundosCuentaAtras(msHastaEmpezar > 0 ? Math.ceil(msHastaEmpezar / 1000) : 0);
-
-          const segundosTranscurridos = Math.max(0, (Date.now() - empezadaEnMs) / 1000);
-          setSegundosRestantes(Math.max(0, Math.min(nueva.duracionSegundos, nueva.duracionSegundos - segundosTranscurridos)));
-        }
+        // Ya NO se recalculan aquí `segundosCuentaAtras`/`segundosRestantes`
+        // -- son valores derivados de `partida.empezadaEn` + `ahora` (ver
+        // más abajo), no estado propio. El poll solo necesita refrescar
+        // `partida` (que trae `empezadaEn` fresco de verdad); el reloj
+        // local (`ahora`) se encarga de que el número avance entre polls.
       } catch {
         if (activoRef.current) setError("No se pudo conectar con el servidor.");
       }
@@ -288,18 +293,32 @@ export default function PartidaMultijugadorPage({ params }: { params: Promise<{ 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [codigo, usuario]);
 
-  // Tic local cada segundo -- adelanta tanto la cuenta atrás 3-2-1 como el
-  // timer real de la ronda, y se corrige solo con cada respuesta fresca
-  // del servidor (arriba). Un único efecto para los dos relojes, no dos
-  // por separado.
+  // Tic local -- solo actualiza `ahora`, nunca decrementa nada a mano.
+  // 200ms (no 1000ms) para que el segundo cambie en pantalla sin esperar
+  // hasta el próximo segundo entero una vez que `ahora` ya lo cruzó --
+  // el dígito en sí sigue siendo un cálculo exacto contra `empezadaEn`,
+  // esto solo dispara el re-render con la frecuencia suficiente para que
+  // se sienta fluido.
   useEffect(() => {
     if (partida?.estado !== "EN_CURSO") return;
-    const tic = setInterval(() => {
-      setSegundosCuentaAtras((s) => Math.max(0, s - 1));
-      setSegundosRestantes((s) => Math.max(0, s - 1));
-    }, 1000);
+    const tic = setInterval(() => setAhora(Date.now()), 200);
     return () => clearInterval(tic);
   }, [partida?.estado]);
+
+  // Cuenta atrás 3-2-1 (0 = "ya se puede jugar") y timer real de la ronda,
+  // ambos derivados SIEMPRE del reloj compartido de servidor (`empezadaEn`)
+  // más `ahora` -- nunca de un contador local que se decrementa a sí
+  // mismo. Así, sin importar cuándo cada jugador empezó a observar la
+  // cuenta atrás, los dos convergen al mismo dígito en el mismo instante
+  // real (mismo criterio que ya se explica en el comentario largo de
+  // /lib/salas.ts para el servidor).
+  const empezadaEnMs = partida?.empezadaEn ? new Date(partida.empezadaEn).getTime() : null;
+  const segundosCuentaAtras =
+    empezadaEnMs !== null ? Math.max(0, Math.ceil((empezadaEnMs - ahora) / 1000)) : 0;
+  const segundosRestantes =
+    empezadaEnMs !== null && partida
+      ? Math.max(0, Math.min(partida.duracionSegundos, partida.duracionSegundos - Math.max(0, (ahora - empezadaEnMs) / 1000)))
+      : 0;
 
   const esCreador = usuario && partida ? !partida.rivales.some((r) => r.esCreador) : false;
 
