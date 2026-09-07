@@ -173,14 +173,25 @@ export function objetivoAciertos(juego: JuegoMultijugador, contenido: unknown): 
   return (contenido as RankingTop10).respuestas.length;
 }
 
-// Cuenta atrás compartida antes de que arranque de verdad el timer de la
-// ronda -- todos los jugadores llegan a la pantalla de partida con datos
-// ya cargados (tablero, etc., aunque no visibles) y ven 3, 2, 1 hasta este
-// mismo instante de servidor. Como `empezadaEn` es un reloj compartido, da
-// igual la velocidad de conexión de cada uno: todos empiezan a la vez de
-// verdad, no "en cuanto su cliente esté listo". Ver el uso en
-// /api/salas/[codigo]/empezar (fija empezadaEn en el futuro) y en la
-// pantalla de partida (dibuja el 3-2-1 mientras `ahora < empezadaEn`).
+// Ventana compartida antes de que arranque de verdad el timer de la ronda,
+// dividida en dos fases -- ambas contra el MISMO reloj de servidor
+// (`empezadaEn`), así que las dos quedan sincronizadas entre jugadores por
+// construcción, sin necesitar un segundo mecanismo de sincronización:
+//  1. "Revelación" (SEGUNDOS_REVELACION_RIVAL): cara a cara con el rival --
+//     el cliente la pinta mientras falte MÁS de SEGUNDOS_CUENTA_ATRAS para
+//     `empezadaEn`.
+//  2. Cuenta atrás 3-2-1 (SEGUNDOS_CUENTA_ATRAS): los últimos segundos
+//     antes de `empezadaEn` -- el cliente dibuja el 3-2-1 mientras
+//     `ahora < empezadaEn` y falten SEGUNDOS_CUENTA_ATRAS o menos.
+// Todos los jugadores llegan a la pantalla de partida con datos ya
+// cargados (tablero, etc., aunque no visibles), así que da igual la
+// velocidad de conexión de cada uno: las dos fases empiezan a la vez de
+// verdad para todos, no "en cuanto su cliente esté listo". Ver el uso en
+// marcarCargadoYArrancarCuentaAtrasSiToca (fija empezadaEn en el futuro,
+// sumando las dos duraciones) y en la pantalla de partida (decide qué fase
+// pintar comparando cuánto falta para empezadaEn contra
+// SEGUNDOS_CUENTA_ATRAS*1000).
+export const SEGUNDOS_REVELACION_RIVAL = 2;
 export const SEGUNDOS_CUENTA_ATRAS = 3;
 // Margen de seguridad (12/08/2026, arreglo de sincronización): si pasa
 // este tiempo desde que la sala pasó a EN_CURSO sin que TODOS hayan
@@ -298,7 +309,7 @@ export async function marcarCargadoYArrancarCuentaAtrasSiToca(salaId: string, us
 
     await tx.sala.update({
       where: { id: salaId },
-      data: { empezadaEn: new Date(Date.now() + SEGUNDOS_CUENTA_ATRAS * 1000) },
+      data: { empezadaEn: new Date(Date.now() + (SEGUNDOS_REVELACION_RIVAL + SEGUNDOS_CUENTA_ATRAS) * 1000) },
     });
   });
 }
@@ -521,6 +532,7 @@ export async function construirEstadoPartida(salaId: string, miUserId: string): 
           nombre: sj.user.nombre,
           avatar: sj.user.avatar,
           avatarTipo: sj.user.avatarTipo === "FOTO" ? "foto" : "emoji",
+          nivel: sj.user.nivel,
           esCreador: sj.user.id === sala.creadorId,
           celdasResueltas: sj.celdasResueltas,
           completado: sj.terminadaEn !== null,

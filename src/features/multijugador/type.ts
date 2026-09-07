@@ -60,6 +60,9 @@ export type RivalPartida = {
   nombre: string;
   avatar: string;
   avatarTipo: TipoAvatar;
+  // Solo para la pantalla de revelación "cara a cara" antes de la cuenta
+  // atrás (07/09/2026) -- el resto de la partida no lo usa.
+  nivel: number;
   esCreador: boolean;
   celdasResueltas: number;
   completado: boolean;

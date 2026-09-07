@@ -53,7 +53,6 @@ export default function RankedHubPage() {
   const [trofeos, setTrofeos] = useState<number | null>(usuario?.trofeos ?? null);
   const [historial, setHistorial] = useState<ItemHistorial[] | null>(null);
   const [buscando, setBuscando] = useState(false);
-  const [segundosEsperando, setSegundosEsperando] = useState(0);
   const [error, setError] = useState<string | null>(null);
   const [historialAbierto, setHistorialAbierto] = useState(false);
 
@@ -80,7 +79,10 @@ export default function RankedHubPage() {
         return;
       }
       if (datos.estado === "esperando") {
-        setSegundosEsperando(datos.segundosEsperando);
+        // Ya no se guarda `segundosEsperando` -- el contador visible se
+        // quitó a petición del usuario (07/09/2026, "es inútil"). El
+        // campo lo sigue mandando el servidor por si algo más lo necesita
+        // en el futuro, simplemente no se pinta.
         return;
       }
       // "fuera" -- no debería pasar mientras `buscando` es true (solo se
@@ -264,9 +266,7 @@ export default function RankedHubPage() {
           </GameButton>
         ) : (
           <div className="mt-1 flex w-full flex-col items-center gap-3 rounded-2xl border border-primary/30 bg-primary/5 px-5 py-4">
-            <p className="text-sm font-semibold text-foreground">
-              Buscando rival… {segundosEsperando}s
-            </p>
+            <p className="text-sm font-semibold text-foreground">Buscando rival…</p>
             <p className="text-xs text-muted-foreground">
               Puede tardar si no hay más gente jugando ahora mismo — no te vamos a emparejar con cualquiera,
               solo con rivales de un nivel razonable.

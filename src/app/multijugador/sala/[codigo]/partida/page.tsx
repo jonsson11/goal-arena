@@ -30,7 +30,11 @@ const INTERVALO_POLLING_SALA_MS = 2000; // tras acabar, esperando revancha del a
 // Duración de la cuenta atrás 3-2-1, en segundos -- DEBE coincidir con
 // SEGUNDOS_CUENTA_ATRAS de src/lib/salas.ts. No se puede importar esa
 // constante aquí (salas.ts es "SOLO SERVIDOR", tira de Prisma) así que se
-// repite como constante local; si se cambia una, cambiar la otra.
+// repite como constante local; si se cambia allí, cambiar también aquí.
+// (La duración de la revelación "cara a cara" que precede al 3-2-1,
+// SEGUNDOS_REVELACION_RIVAL en salas.ts, no hace falta repetirla aquí --
+// el cliente solo necesita saber "¿faltan más de SEGUNDOS_CUENTA_ATRAS
+// para empezadaEn?" para decidir qué fase pintar, no la duración total.)
 const SEGUNDOS_CUENTA_ATRAS = 3;
 
 const ETIQUETA_DIFICULTAD: Record<string, string> = { facil: "Fácil", medio: "Medio", dificil: "Difícil" };
@@ -118,6 +122,7 @@ type JugadorEnfrentamiento = {
   nombre: string;
   avatar: string;
   avatarTipo: "emoji" | "foto";
+  nivel: number;
   esYo: boolean;
 };
 
@@ -139,6 +144,64 @@ function AvatarJugadorPartida({
   ) : (
     <div className={`flex shrink-0 items-center justify-center rounded-full border bg-background ${borde} ${tamano}`}>
       {jugador.avatar}
+    </div>
+  );
+}
+
+// Revelación "cara a cara" antes de la cuenta atrás -- fase nueva
+// (07/09/2026), pintada mientras `ahora` está a MÁS de SEGUNDOS_CUENTA_ATRAS
+// de `empezadaEn` (ver el cálculo de `enRevelacion` más abajo). Con
+// exactamente 2 jugadores (el caso normal, tanto en ranked como en una
+// sala privada 1vs1) es el "cara a cara" de verdad: avatares entrando
+// desde los lados con un destello al llegar al centro. Con más de 2 (sala
+// privada de grupo) no hay "rival" singular al que enfrentar, así que cae
+// a una versión más simple -- fila de avatares entrando con un pequeño
+// escalonado, sin VS ni destello.
+function RevelacionRivalPartida({ jugadores }: { jugadores: JugadorEnfrentamiento[] }) {
+  const esUnoContraUno = jugadores.length === 2;
+
+  return (
+    <div className="relative flex h-80 w-full flex-col items-center justify-center gap-6">
+      <Image src="/LOGO ARENA-SinLetra.png" alt="" width={44} height={44} className="absolute top-0" />
+
+      <span className="text-shimmer bg-gradient-to-r from-primary via-[#7ef2bd] to-secondary bg-clip-text text-sm font-extrabold uppercase tracking-[0.2em] text-transparent">
+        {esUnoContraUno ? "¡Rival encontrado!" : "Todos preparados"}
+      </span>
+
+      {esUnoContraUno ? (
+        <div className="relative flex w-full max-w-sm items-center justify-center gap-4">
+          <span
+            aria-hidden
+            className="revelacion-destello absolute h-32 w-32 rounded-full bg-primary/50 blur-2xl"
+          />
+          <div className="revelacion-desliza-izq relative z-10 flex w-28 flex-col items-center gap-2">
+            <AvatarJugadorPartida jugador={jugadores[0]} tamano="h-16 w-16 text-3xl" />
+            <p className="w-full truncate text-center text-sm font-extrabold text-foreground">{jugadores[0].nombre}</p>
+            <span className="text-[11px] font-extrabold text-[#D4AF37]">★ Nv. {jugadores[0].nivel}</span>
+          </div>
+          <span className="relative z-10 text-3xl font-extrabold text-[#D4AF37]">VS</span>
+          <div className="revelacion-desliza-der relative z-10 flex w-28 flex-col items-center gap-2">
+            <AvatarJugadorPartida jugador={jugadores[1]} tamano="h-16 w-16 text-3xl" />
+            <p className="w-full truncate text-center text-sm font-extrabold text-foreground">{jugadores[1].nombre}</p>
+            <span className="text-[11px] font-extrabold text-[#D4AF37]">★ Nv. {jugadores[1].nivel}</span>
+          </div>
+        </div>
+      ) : (
+        <div className="flex w-full max-w-md flex-wrap items-center justify-center gap-4">
+          {jugadores.map((j, i) => (
+            <div
+              key={j.id}
+              className="revelacion-desliza-izq flex flex-col items-center gap-1.5"
+              style={{ animationDelay: `${i * 80}ms` }}
+            >
+              <AvatarJugadorPartida jugador={j} tamano="h-12 w-12 text-xl" />
+              <p className="max-w-16 truncate text-[11px] font-semibold text-muted-foreground">
+                {j.esYo ? "Tú" : j.nombre}
+              </p>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
@@ -433,8 +496,14 @@ export default function PartidaMultijugadorPage({ params }: { params: Promise<{ 
   // real (mismo criterio que ya se explica en el comentario largo de
   // /lib/salas.ts para el servidor).
   const empezadaEnMs = partida?.empezadaEn ? new Date(partida.empezadaEn).getTime() : null;
+  // Cuánto falta para `empezadaEn` -- por encima de SEGUNDOS_CUENTA_ATRAS
+  // todavía estamos en la revelación "cara a cara"; por debajo (y &gt; 0),
+  // en el 3-2-1 numérico. Las dos fases comparten el mismo reloj de
+  // servidor, así que quedan sincronizadas entre jugadores sin necesitar
+  // nada más.
+  const msHastaEmpezar = empezadaEnMs !== null ? empezadaEnMs - ahora : null;
   const segundosCuentaAtras =
-    empezadaEnMs !== null ? Math.max(0, Math.ceil((empezadaEnMs - ahora) / 1000)) : 0;
+    msHastaEmpezar !== null ? Math.max(0, Math.ceil(msHastaEmpezar / 1000)) : 0;
   // Fracción continua (1 = recién empezada, 0 = ya se acabó) para el aro
   // que se vacía en CuentaAtrasPartida -- a diferencia de
   // `segundosCuentaAtras` (entero, salta de 3 en 3 pasos), esto avanza
@@ -629,13 +698,32 @@ export default function PartidaMultijugadorPage({ params }: { params: Promise<{ 
 
   const finalizada = partida.estado === "FINALIZADA";
   const esperandoCarga = !finalizada && partida.empezadaEn === null;
-  const enCuentaAtras = !finalizada && !esperandoCarga && segundosCuentaAtras > 0;
+  // "Revelación" (cara a cara) mientras falte MÁS de SEGUNDOS_CUENTA_ATRAS
+  // para empezadaEn; el 3-2-1 numérico solo en los últimos
+  // SEGUNDOS_CUENTA_ATRAS segundos -- ver el comentario largo junto a
+  // SEGUNDOS_REVELACION_RIVAL en src/lib/salas.ts.
+  const enRevelacion =
+    !finalizada && !esperandoCarga && msHastaEmpezar !== null && msHastaEmpezar > SEGUNDOS_CUENTA_ATRAS * 1000;
+  const enCuentaAtras = !finalizada && !esperandoCarga && !enRevelacion && segundosCuentaAtras > 0;
   const totalJugadores = partida.rivales.length + 1;
+  const jugadoresEnfrentamiento: JugadorEnfrentamiento[] = usuario
+    ? [
+        { id: usuario.id, nombre: usuario.nombre, avatar: usuario.avatar, avatarTipo: usuario.avatarTipo, nivel: usuario.nivel, esYo: true },
+        ...partida.rivales.map((r) => ({
+          id: r.id,
+          nombre: r.nombre,
+          avatar: r.avatar,
+          avatarTipo: r.avatarTipo,
+          nivel: r.nivel,
+          esYo: false,
+        })),
+      ]
+    : [];
 
   return (
     <div className="px-4 pb-14 pt-8 sm:px-6 sm:pt-10">
       <div className="mx-auto flex max-w-4xl flex-col items-center gap-6">
-        {!finalizada && !esperandoCarga && !enCuentaAtras && (
+        {!finalizada && !esperandoCarga && !enRevelacion && !enCuentaAtras && (
           <div className="flex w-full max-w-md items-center justify-between">
             <span className="rounded-full border border-border bg-card px-3 py-1 text-xs font-medium text-muted-foreground">
               {partida.juego === "GRID"
@@ -675,6 +763,8 @@ export default function PartidaMultijugadorPage({ params }: { params: Promise<{ 
             </span>
             <span className="text-sm text-muted-foreground">jugadores listos</span>
           </div>
+        ) : enRevelacion ? (
+          <RevelacionRivalPartida jugadores={jugadoresEnfrentamiento} />
         ) : enCuentaAtras ? (
           // Cuenta atrás 3-2-1: el tablero/ranking ya está cargado (fetch
           // hecho, solo que no se pinta todavía) -- lo único que falta es
@@ -682,20 +772,7 @@ export default function PartidaMultijugadorPage({ params }: { params: Promise<{ 
           <CuentaAtrasPartida
             segundos={segundosCuentaAtras}
             fraccionRestante={fraccionCuentaAtras}
-            jugadores={
-              usuario
-                ? [
-                    { id: usuario.id, nombre: usuario.nombre, avatar: usuario.avatar, avatarTipo: usuario.avatarTipo, esYo: true },
-                    ...partida.rivales.map((r) => ({
-                      id: r.id,
-                      nombre: r.nombre,
-                      avatar: r.avatar,
-                      avatarTipo: r.avatarTipo,
-                      esYo: false,
-                    })),
-                  ]
-                : []
-            }
+            jugadores={jugadoresEnfrentamiento}
           />
         ) : partida.juego === "GRID" ? (
           <SeccionGrid
