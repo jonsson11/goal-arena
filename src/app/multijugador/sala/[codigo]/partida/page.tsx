@@ -678,9 +678,25 @@ export default function PartidaMultijugadorPage({ params }: { params: Promise<{ 
   }
 
   if (cargando) {
+    // Antes era un simple texto suelto sin ningún diseño -- se veía justo
+    // cuando el emparejamiento era instantáneo (el segundo jugador
+    // encuentra al primero ya esperando) y la navegación a esta página
+    // llegaba antes de que respondiera el primer fetch de la partida:
+    // daba sensación de pantalla rota, cortando de golpe la confirmación
+    // "¡Rival encontrado!" del hub. Mismo halo que ya usa CuentaAtrasPartida
+    // más abajo, para que no haya un hueco visual en la transición.
     return (
-      <div className="flex flex-col items-center gap-3 px-6 py-20 text-center">
-        <p className="text-sm text-muted-foreground">Cargando partida...</p>
+      <div className="px-4 pb-14 pt-8 sm:px-6 sm:pt-10">
+        <div className="mx-auto flex max-w-4xl flex-col items-center gap-6">
+          <div className="flex h-80 w-full flex-col items-center justify-center gap-4">
+            <div className="launcher-halo-pulso flex h-16 w-16 items-center justify-center rounded-full border border-primary/35">
+              <Image src="/LOGO ARENA-SinLetra.png" alt="" width={30} height={30} />
+            </div>
+            <span className="text-xs font-bold uppercase tracking-[0.3em] text-muted-foreground">
+              Cargando partida
+            </span>
+          </div>
+        </div>
       </div>
     );
   }

@@ -414,3 +414,30 @@
     animation: none;
   }
 }
+
+/* ------------------------------------------------------------
+   Cola de Ranked -- barra indeterminada mientras se busca rival
+   (07/09/2026, opción B elegida tras comparar mockups). Va y viene
+   dentro de su contenedor mientras no hay emparejamiento; al
+   encontrarlo, el propio componente le quita esta clase y la deja al
+   100% con una transición normal de `width` (ver ranked/page.tsx).
+   ------------------------------------------------------------ */
+
+@keyframes cola-barra-indeterminada {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(250%);
+  }
+}
+
+.cola-barra-indeterminada {
+  animation: cola-barra-indeterminada 1.1s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cola-barra-indeterminada {
+    animation: none;
+  }
+}

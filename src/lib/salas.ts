@@ -191,7 +191,7 @@ export function objetivoAciertos(juego: JuegoMultijugador, contenido: unknown): 
 // sumando las dos duraciones) y en la pantalla de partida (decide qué fase
 // pintar comparando cuánto falta para empezadaEn contra
 // SEGUNDOS_CUENTA_ATRAS*1000).
-export const SEGUNDOS_REVELACION_RIVAL = 2;
+export const SEGUNDOS_REVELACION_RIVAL = 4;
 export const SEGUNDOS_CUENTA_ATRAS = 3;
 // Margen de seguridad (12/08/2026, arreglo de sincronización): si pasa
 // este tiempo desde que la sala pasó a EN_CURSO sin que TODOS hayan

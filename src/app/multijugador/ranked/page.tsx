@@ -20,6 +20,15 @@ import { progresoLiga } from "@/lib/trofeos";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 
 const INTERVALO_POLLING_COLA_MS = 2000;
+// Mínimo que se ve la tarjeta "Buscando rival…" antes de poder pasar a
+// "encontrado", aunque el emparejamiento en sí haya sido instantáneo (el
+// caso típico: el segundo jugador en buscar encuentra al primero ya
+// esperando) -- sin esto, el botón podía dar la sensación de que no había
+// pasado nada (bug reportado 07/09/2026). Y cuánto se queda la tarjeta en
+// "encontrado" (opción B del mockup: barra al 100% + texto en verde)
+// antes de navegar a la partida.
+const MS_MINIMO_BUSCANDO = 600;
+const MS_MOSTRAR_ENCONTRADO = 900;
 
 type EstadoColaAPI =
   | { estado: "esperando"; segundosEsperando: number; rangoAceptable: number }
@@ -52,7 +61,10 @@ export default function RankedHubPage() {
 
   const [trofeos, setTrofeos] = useState<number | null>(usuario?.trofeos ?? null);
   const [historial, setHistorial] = useState<ItemHistorial[] | null>(null);
-  const [buscando, setBuscando] = useState(false);
+  // "idle" = botón "Buscar partida" normal; "buscando" = tarjeta con la
+  // barra indeterminada; "encontrado" = misma tarjeta, barra al 100% y
+  // texto en verde, justo antes de navegar a la partida.
+  const [fase, setFase] = useState<"idle" | "buscando" | "encontrado">("idle");
   const [error, setError] = useState<string | null>(null);
   const [historialAbierto, setHistorialAbierto] = useState(false);
 
@@ -61,6 +73,10 @@ export default function RankedHubPage() {
   // desactualizado -- patrón habitual con setInterval + React.
   const intervaloRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const buscandoRef = useRef(false);
+  // Instante real en el que empezó a verse la tarjeta "Buscando rival…"
+  // -- se usa para calcular cuánto falta hasta MS_MINIMO_BUSCANDO cuando
+  // llega un "emparejado" (posiblemente casi instantáneo).
+  const inicioBusquedaRef = useRef(0);
 
   const detenerPolling = useCallback(() => {
     if (intervaloRef.current) {
@@ -70,11 +86,27 @@ export default function RankedHubPage() {
   }, []);
 
   const manejarRespuestaCola = useCallback(
-    (datos: EstadoColaAPI) => {
+    async (datos: EstadoColaAPI) => {
       if (datos.estado === "emparejado") {
         detenerPolling();
+
+        // Fuerza un mínimo visible de "Buscando rival…" antes de pasar a
+        // "encontrado", aunque el emparejamiento haya sido instantáneo
+        // (el caso típico: el segundo jugador en buscar encuentra al
+        // primero ya esperando) -- así el botón nunca da sensación de que
+        // no ha pasado nada. `buscandoRef` se revisa después de cada
+        // espera por si el usuario canceló mientras tanto.
+        const transcurrido = Date.now() - inicioBusquedaRef.current;
+        const esperaMinima = Math.max(0, MS_MINIMO_BUSCANDO - transcurrido);
+        if (esperaMinima > 0) await new Promise((r) => setTimeout(r, esperaMinima));
+        if (!buscandoRef.current) return;
+
+        setFase("encontrado");
+        await new Promise((r) => setTimeout(r, MS_MOSTRAR_ENCONTRADO));
+        if (!buscandoRef.current) return;
+
         buscandoRef.current = false;
-        setBuscando(false);
+        setFase("idle");
         router.push(`/multijugador/sala/${datos.codigoSala}/partida`);
         return;
       }
@@ -85,33 +117,34 @@ export default function RankedHubPage() {
         // en el futuro, simplemente no se pinta.
         return;
       }
-      // "fuera" -- no debería pasar mientras `buscando` es true (solo se
+      // "fuera" -- no debería pasar mientras `fase !== "idle"` (solo se
       // llega aquí si canceló desde otra pestaña, o expiró); volvemos al
       // estado inicial en vez de dejar la UI colgada en "buscando...".
       detenerPolling();
       buscandoRef.current = false;
-      setBuscando(false);
+      setFase("idle");
     },
     [detenerPolling, router]
   );
 
   async function iniciarBusqueda() {
     setError(null);
+    inicioBusquedaRef.current = Date.now();
+    buscandoRef.current = true;
+    setFase("buscando");
     try {
       const res = await fetch("/api/ranked/cola", { method: "POST" });
       if (!res.ok) throw new Error((await res.json()).error ?? "No se pudo entrar en la cola.");
       const datos: EstadoColaAPI = await res.json();
 
-      buscandoRef.current = true;
-      setBuscando(true);
-      manejarRespuestaCola(datos);
+      await manejarRespuestaCola(datos);
 
       if (datos.estado === "esperando") {
         intervaloRef.current = setInterval(async () => {
           try {
             const respuesta = await fetch("/api/ranked/cola");
             const datosPoll: EstadoColaAPI = await respuesta.json();
-            manejarRespuestaCola(datosPoll);
+            await manejarRespuestaCola(datosPoll);
           } catch {
             // Un poll suelto que falla (blip de red) no debería tirar toda
             // la búsqueda abajo -- el siguiente intervalo lo reintenta.
@@ -121,14 +154,14 @@ export default function RankedHubPage() {
     } catch (err) {
       setError(err instanceof Error ? err.message : "No se pudo buscar partida.");
       buscandoRef.current = false;
-      setBuscando(false);
+      setFase("idle");
     }
   }
 
   async function cancelarBusqueda() {
     detenerPolling();
     buscandoRef.current = false;
-    setBuscando(false);
+    setFase("idle");
     try {
       await fetch("/api/ranked/cola", { method: "DELETE" });
     } catch {
@@ -255,7 +288,7 @@ export default function RankedHubPage() {
 
         {error && <p className="text-sm text-destructive">{error}</p>}
 
-        {!buscando ? (
+        {fase === "idle" ? (
           <GameButton
             type="button"
             onClick={iniciarBusqueda}
@@ -265,16 +298,41 @@ export default function RankedHubPage() {
             Buscar partida
           </GameButton>
         ) : (
-          <div className="mt-1 flex w-full flex-col items-center gap-3 rounded-2xl border border-primary/30 bg-primary/5 px-5 py-4">
-            <p className="text-sm font-semibold text-foreground">Buscando rival…</p>
-            <p className="text-xs text-muted-foreground">
-              Puede tardar si no hay más gente jugando ahora mismo — no te vamos a emparejar con cualquiera,
-              solo con rivales de un nivel razonable.
+          // Opción B del mockup (07/09/2026): barra indeterminada mientras
+          // se busca, que se completa al 100% con un flash verde en
+          // cuanto se encuentra rival -- ver `cola-barra-indeterminada`
+          // en globals.css. `fase === "encontrado"` se mantiene un rato
+          // fijo (MS_MOSTRAR_ENCONTRADO) antes de navegar, para que la
+          // confirmación se vea de verdad y no sea un parpadeo.
+          <div
+            className={`mt-1 flex w-full flex-col items-center gap-3 rounded-2xl border px-5 py-4 transition-colors duration-300 ${
+              fase === "encontrado"
+                ? "border-primary/60 bg-primary/10 shadow-[0_0_40px_-10px_rgba(74,222,154,0.5)]"
+                : "border-primary/30 bg-primary/5"
+            }`}
+          >
+            <div className="h-1.5 w-full overflow-hidden rounded-full bg-white/10">
+              <div
+                className={`h-full rounded-full bg-gradient-to-r from-primary to-[#7ef2bd] transition-[width] duration-300 ${
+                  fase === "buscando" ? "w-2/5 cola-barra-indeterminada" : "w-full"
+                }`}
+              />
+            </div>
+            <p className={`text-sm font-semibold ${fase === "encontrado" ? "text-primary" : "text-foreground"}`}>
+              {fase === "encontrado" ? "¡Rival encontrado!" : "Buscando rival…"}
             </p>
-            <GameButton type="button" variant="secondary" onClick={cancelarBusqueda} className="flex items-center gap-1.5">
-              <X className="h-4 w-4" />
-              Cancelar búsqueda
-            </GameButton>
+            {fase === "buscando" && (
+              <>
+                <p className="text-xs text-muted-foreground">
+                  Puede tardar si no hay más gente jugando ahora mismo — no te vamos a emparejar con cualquiera,
+                  solo con rivales de un nivel razonable.
+                </p>
+                <GameButton type="button" variant="secondary" onClick={cancelarBusqueda} className="flex items-center gap-1.5">
+                  <X className="h-4 w-4" />
+                  Cancelar búsqueda
+                </GameButton>
+              </>
+            )}
           </div>
         )}
 
