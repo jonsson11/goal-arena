@@ -83,7 +83,7 @@ function FichaRival({
   objetivo,
   ...rival
 }: EstadoPartida["rivales"][number] & { objetivo: number }) {
-  const { nombre, avatar, avatarTipo, celdasResueltas, completado, resultado } = rival;
+  const { nombre, avatar, avatarTipo, celdasResueltas, resultado } = rival;
   // Progreso en directo (07/09/2026, opción A elegida tras comparar
   // mockups): antes era solo texto pequeño en gris ("3/9 aciertos"), poco
   // perceptible de un vistazo. Ahora una barra fina bajo el nombre (dorada
@@ -93,21 +93,14 @@ function FichaRival({
   const cerca = celdasResueltas / objetivo >= 0.75;
   return (
     <div className="flex items-center gap-2 rounded-xl border border-border/60 bg-card/40 px-2.5 py-2 backdrop-blur-md">
-      <div className="relative shrink-0">
-        {avatarTipo === "foto" ? (
-          // eslint-disable-next-line @next/next/no-img-element -- avatar de otro usuario, URL de Supabase Storage
-          <img src={avatar} alt={nombre} className="h-8 w-8 rounded-full border border-border object-cover" />
-        ) : (
-          <div className="flex h-8 w-8 items-center justify-center rounded-full border border-border bg-background text-sm">
-            {avatar}
-          </div>
-        )}
-        {completado && !resultado && (
-          <span className="absolute -bottom-0.5 -right-0.5 flex h-3.5 w-3.5 items-center justify-center rounded-full bg-primary text-[8px] font-bold text-primary-foreground">
-            ✓
-          </span>
-        )}
-      </div>
+      {avatarTipo === "foto" ? (
+        // eslint-disable-next-line @next/next/no-img-element -- avatar de otro usuario, URL de Supabase Storage
+        <img src={avatar} alt={nombre} className="h-8 w-8 shrink-0 rounded-full border border-border object-cover" />
+      ) : (
+        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-border bg-background text-sm">
+          {avatar}
+        </div>
+      )}
       <div className="min-w-0 flex-1">
         <p className="truncate text-xs font-semibold text-foreground">{nombre}</p>
         {resultado ? (
