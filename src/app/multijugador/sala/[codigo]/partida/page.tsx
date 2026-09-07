@@ -84,6 +84,13 @@ function FichaRival({
   ...rival
 }: EstadoPartida["rivales"][number] & { objetivo: number }) {
   const { nombre, avatar, avatarTipo, celdasResueltas, completado, resultado } = rival;
+  // Progreso en directo (07/09/2026, opción A elegida tras comparar
+  // mockups): antes era solo texto pequeño en gris ("3/9 aciertos"), poco
+  // perceptible de un vistazo. Ahora una barra fina bajo el nombre (dorada
+  // + resplandor a partir del 75%, mismo criterio de "ya casi" que el
+  // resto de la app) y el número en grande y en verde, el color de marca.
+  const pct = Math.min(100, Math.round((celdasResueltas / objetivo) * 100));
+  const cerca = celdasResueltas / objetivo >= 0.75;
   return (
     <div className="flex items-center gap-2 rounded-xl border border-border/60 bg-card/40 px-2.5 py-2 backdrop-blur-md">
       <div className="relative shrink-0">
@@ -103,16 +110,27 @@ function FichaRival({
       </div>
       <div className="min-w-0 flex-1">
         <p className="truncate text-xs font-semibold text-foreground">{nombre}</p>
-        <p className="text-[11px] font-bold text-muted-foreground">
-          {resultado
-            ? resultado === "VICTORIA"
-              ? "🏆 Ganó"
-              : resultado === "EMPATE"
-                ? "🤝 Empate"
-                : "—"
-            : `${celdasResueltas}/${objetivo} aciertos`}
-        </p>
+        {resultado ? (
+          <p className="text-[11px] font-bold text-muted-foreground">
+            {resultado === "VICTORIA" ? "🏆 Ganó" : resultado === "EMPATE" ? "🤝 Empate" : "—"}
+          </p>
+        ) : (
+          <div className="mt-1 h-1.5 w-full overflow-hidden rounded-full bg-white/10">
+            <div
+              className={`h-full rounded-full transition-[width] duration-500 ${
+                cerca ? "bg-[#D4AF37] shadow-[0_0_8px_rgba(212,175,55,0.6)]" : "bg-primary"
+              }`}
+              style={{ width: `${pct}%` }}
+            />
+          </div>
+        )}
       </div>
+      {!resultado && (
+        <span className="shrink-0 text-lg font-extrabold tabular-nums text-primary">
+          {celdasResueltas}
+          <span className="text-xs font-semibold text-muted-foreground">/{objetivo}</span>
+        </span>
+      )}
     </div>
   );
 }
